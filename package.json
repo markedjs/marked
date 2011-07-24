@@ -1,0 +1,9 @@
+{
+  "name": "marked",
+  "description": "a fast markdown parser",
+  "author": "Christopher Jeffrey",
+  "version": "0.0.1",
+  "main": "./lib/marked.js",
+  "repository": "git://github.com/chjj/marked.git",
+  "keywords": [ "markdown", "markup" ]
+}
