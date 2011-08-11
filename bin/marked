@@ -1,0 +1,25 @@
+/**
+ * Marked
+ * Usage: $ marked [in] [out]
+ */
+
+var marked = require('../')
+  , fs = require('fs')
+  , fread = fs.readFileSync
+  , fwrite = fs.writeFileSync;
+
+var main = function(argv) {
+  var out = argv.pop()
+    , text = argv.pop();
+
+  text = fread(text, 'utf8');
+  text = marked(text);
+
+  fwrite(out, text);
+};
+
+if (!module.parent) {
+  main(process.argv.slice());
+} else {
+  module.exports = main;
+}
