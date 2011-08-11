@@ -2,12 +2,12 @@
  * Test
  */
 
-var md = require('../')
+var marked = require('../')
   , assert = require('assert')
   , fs = require('fs')
   , text = fs.readFileSync(__dirname + '/in.md', 'utf8');
 
-var a = md(text)
+var a = marked(text)
   , b = fs.readFileSync(__dirname + '/out.html', 'utf8');
 
 console.log(a);
