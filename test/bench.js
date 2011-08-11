@@ -8,9 +8,9 @@ var benchmark = function(func, t) {
   console.log('%s: %sms', func.name, new Date() - start);
 };
 
-var md_ = require('../');
-benchmark(function md() {
-  md_(text);
+var marked_ = require('../');
+benchmark(function marked() {
+  marked_(text);
 });
 
 var showdown_ = require('showdown');

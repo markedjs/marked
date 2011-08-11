@@ -18,17 +18,23 @@ marked lingers around 350 lines long and still implements all markdown features.
 
 ## Install
 
-    $ npm install marked
+``` bash
+$ npm install marked
+```
 
 ## Usage
 
-    var marked = require('marked');
-    console.log(marked('i am using __markdown__.'));
+``` js
+var marked = require('marked');
+console.log(marked('i am using __markdown__.'));
+```
 
 You also have direct access to the lexer and parser if you so desire.
 
-    var tokens = md.lexer(str);
-    console.log(md.parser(tokens));
+``` js
+var tokens = marked.lexer(str);
+console.log(marked.parser(tokens));
+```
 
 ## Todo (& notes to self)
 

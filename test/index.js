@@ -8,11 +8,12 @@ var md = require('../')
   , text = fs.readFileSync(__dirname + '/in.md', 'utf8');
 
 var a = md(text)
-  , b = fs.readFileSync(__dirname + '/out.md', 'utf8');
+  , b = fs.readFileSync(__dirname + '/out.html', 'utf8');
 
 console.log(a);
 console.log('----------------------------------------------------------------');
 console.log(b);
+console.log('----------------------------------------------------------------');
 
 a = a.replace(/\s+/g, '');
 b = b.replace(/\s+/g, '');

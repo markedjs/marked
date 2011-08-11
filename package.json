@@ -4,6 +4,7 @@
   "author": "Christopher Jeffrey",
   "version": "0.0.1",
   "main": "./lib/marked.js",
+  "bin": { "marked": "./bin/marked" },
   "repository": "git://github.com/chjj/marked.git",
   "keywords": [ "markdown", "markup" ]
 }
