@@ -5,10 +5,12 @@ Built for speed.
 
 ## Benchmarks
 
-    $ node test/bench
-    marked: 6260ms
-    showdown: 21665ms
-    markdownjs: 69168ms
+``` bash
+$ node test/bench
+marked: 6260ms
+showdown: 21665ms
+markdownjs: 69168ms
+```
 
 The point of marked was to create a markdown compiler where it was possible to 
 frequently parse huge chunks of markdown without having to worry about 
