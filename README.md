@@ -47,8 +47,6 @@ There may also be some bugs.
 - Optimize the parser so it accepts a stream of tokens from the lexer. This
   should enhance performance even further, although, no lookaheads would 
   be possible.
-- Write actual rules for inline markup (links, em, strong, etc). Currently,
-  only blocks are tokenized.
 - Possibly add some 
   [ReMarkable](http://camendesign.com/code/remarkable/documentation.html) 
   features while remaining backwardly compatible with all markdown syntax.
@@ -58,7 +56,5 @@ There may also be some bugs.
 - Possibly alter rules to recognize arbitrary blocks of HTML better.
 - Recognize and parse paragraph list items better.
 - Add an explicit pretty printing and minification feature.
-- Handle escaping of HTML entities better.
-- Client-side compatibility.
 
 I've still just begun to write this. I expect I will be updating it frequently.
