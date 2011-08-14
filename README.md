@@ -1,6 +1,6 @@
 # marked
 
-A full-featured markdown parser and compiler implemented in ~370 lines of JS.  
+A full-featured markdown parser and compiler implemented in ~430 lines of JS.  
 Built for speed.
 
 ## Benchmarks
@@ -16,7 +16,8 @@ The point of marked was to create a markdown compiler where it was possible to
 frequently parse huge chunks of markdown without having to worry about 
 caching the compiled output somehow...or blocking for an unnecesarily long time.
 
-marked lingers around 350 lines long and still implements all markdown features.
+marked lingers around 430 (may vary) lines long and still implements all 
+markdown features. It is also now fully compatible with the client-side.
 
 ## Install
 
