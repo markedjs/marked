@@ -6,9 +6,9 @@ Just a note, I've found that I can't test my markdown parser vs others.
 For example, both markdown.js and showdown code blocks in lists wrong. They're 
 also completely [inconsistent][test] with regards to paragraphs in list items.
 
-A link
+A link. Not anymore.
 
-<aside>this will make me fail the test because
+<aside>This will make me fail the test because
 markdown.js doesnt acknowledge arbitrary html blocks =/</aside>
 
 * List Item 1
@@ -30,9 +30,10 @@ markdown.js doesnt acknowledge arbitrary html blocks =/</aside>
 >   * New bq Item 2
 >     Text here
 
-> Another blockquote
-> To quoth someone
-> and whatnot
+> Another blockquote!
+> I really need to get
+> more creative with
+> mockup text..
 > markdown.js breaks here again
 
 Another Heading
