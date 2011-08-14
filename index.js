@@ -1,1 +1,1 @@
-module.exports = require('./marked');
+module.exports = require('./lib/marked');
