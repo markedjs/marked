@@ -54,7 +54,6 @@ There may also be some bugs.
 - Find a better way of testing. Create a test suite from scratch because most 
   markdown compilers don't appear to be working properly in every aspect (but 
   it's hard to tell because the markdown "spec" is so vague).
-- Possibly alter rules to recognize arbitrary blocks of HTML better.
 - Recognize and parse paragraph list items better.
 - Add an explicit pretty printing and minification feature.
 
