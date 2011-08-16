@@ -13,12 +13,28 @@ benchmark(function marked() {
   marked_(text);
 });
 
-var showdown_ = require('showdown');
+/**
+ * There's two ways to benchmark showdown here.
+ * The first way is to create a new converter
+ * every time, this will renew any closured
+ * variables. It is the "proper" way of using
+ * showdown. However, for this benchmark, 
+ * I will use the completely improper method
+ * which is must faster, just to be fair.
+ */
+
+var showdown_ = (function() {
+  var Showdown = require('showdown').Showdown;
+  var convert = new Showdown.converter();
+  return function(str) {
+    return convert.makeHtml(str);
+  };
+})();
 benchmark(function showdown() {
   showdown_(text);
 });
 
-var markdown_ = require('markdown');
+var markdownjs_ = require('markdown-js');
 benchmark(function markdownjs() {
-  markdown_.toHTML(text);
+  markdownjs_.toHTML(text);
 });
