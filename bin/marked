@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * Marked
  * Usage: $ marked [in] [out]
