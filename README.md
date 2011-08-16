@@ -45,16 +45,18 @@ This parser was written in one night, so there's still a lot on the todo list.
 There may also be some bugs.
 
 - Implement GFM features.
-- Optimize the parser so it accepts a stream of tokens from the lexer. This
-  should enhance performance even further, although, no lookaheads would 
-  be possible.
 - Possibly add some 
   [ReMarkable](http://camendesign.com/code/remarkable/documentation.html) 
   features while remaining backwardly compatible with all markdown syntax.
+- Optimize the parser so it accepts a stream of tokens from the lexer. This
+  should enhance performance even further, although, no lookaheads would 
+  be possible.
 - Find a better way of testing. Create a test suite from scratch because most 
   markdown compilers don't appear to be working properly in every aspect (but 
   it's hard to tell because the markdown "spec" is so vague).
-- Recognize and parse paragraph list items better.
+- Recognize and parse paragraph list items better. This may be the most 
+  important task. Currently, list items are parsed strictly, it's not possible 
+  to have "loose list items" as they're known.
 - Add an explicit pretty printing and minification feature.
 
 I've still just begun to write this. I expect I will be updating it frequently.
