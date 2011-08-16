@@ -24,6 +24,23 @@ markdown.js doesnt acknowledge arbitrary html blocks =/</aside>
 * List Item 3
   The final item.
 
+
+* Loose List Item 1
+
+* Loose List Item 2
+  * New List Item 1
+    Hi, this is a list item.
+  * New List Item 2
+    Another item
+        Code goes here.
+        Lots of it...
+  * New List Item 3
+    The last item
+
+* Loose List Item 3
+  The final item.
+
+
 > * bq Item 1
 > * bq Item 2
 >   * New bq Item 1
