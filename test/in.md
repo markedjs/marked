@@ -23,7 +23,6 @@ markdown.js doesnt acknowledge arbitrary html blocks =/</aside>
     The last item
 * List Item 3
 The final item.
-
 * List Item 4
 The real final item.
 
