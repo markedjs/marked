@@ -45,7 +45,7 @@ main:
         console.log('\nGot:\n%s\n', 
           pretty(text).trim() || text);
         console.log('\nExpected:\n%s\n', 
-          pretty(html).trim() || chunk2);
+          pretty(html).trim() || html);
         if (breakOnError) {
           break main;
         } else {
