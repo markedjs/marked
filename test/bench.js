@@ -1,5 +1,5 @@
 var fs = require('fs')
-  , text = fs.readFileSync(__dirname + '/in.md', 'utf8');
+  , text = fs.readFileSync(__dirname + '/main.md', 'utf8');
 
 var benchmark = function(func, t) {
   var start = new Date()

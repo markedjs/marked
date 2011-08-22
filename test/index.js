@@ -5,10 +5,10 @@
 var marked = require('../')
   , assert = require('assert')
   , fs = require('fs')
-  , text = fs.readFileSync(__dirname + '/in.md', 'utf8');
+  , text = fs.readFileSync(__dirname + '/main.md', 'utf8');
 
 var a = marked(text)
-  , b = fs.readFileSync(__dirname + '/out.html', 'utf8');
+  , b = fs.readFileSync(__dirname + '/main.html', 'utf8');
 
 console.log(a);
 console.log('----------------------------------------------------------------');
