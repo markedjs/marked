@@ -12,6 +12,7 @@ A link. Not anymore.
 markdown.js doesnt acknowledge arbitrary html blocks =/</aside>
 
 * List Item 1
+
 * List Item 2
   * New List Item 1
     Hi, this is a list item.
@@ -21,14 +22,20 @@ markdown.js doesnt acknowledge arbitrary html blocks =/</aside>
         Lots of it...
   * New List Item 3
     The last item
+
 * List Item 3
-  The final item.
+The final item.
+
+* List Item 4
+The real final item.
+
+Paragraph.
 
 > * bq Item 1
 > * bq Item 2
 >   * New bq Item 1
 >   * New bq Item 2
->     Text here
+>   Text here
 
 > Another blockquote!
 > I really need to get
