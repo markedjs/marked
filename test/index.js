@@ -2,7 +2,7 @@
 
 var fs = require('fs')
   , path = require('path')
-  , markdown = require('marked')
+  , marked = require('marked')
   , dir = __dirname + '/tests';
 
 var breakOnError = true;
@@ -14,7 +14,7 @@ var load = function() {
 
   var list = fs
     .readdirSync(dir)
-    .concat('/../main.md')
+    //.concat('/../main.md')
     .filter(function(file) {
       return path.extname(file) !== '.html';
     })
@@ -57,7 +57,7 @@ main:
     // this was messing with 
     // `node test | less` on sakura
     try { 
-      text = markdown(file.text).replace(/\s/g, '');
+      text = marked(file.text).replace(/\s/g, '');
       html = file.html.replace(/\s/g, '');
     } catch(e) { 
       console.log('%s failed.', filename); 
@@ -148,6 +148,57 @@ var bench = function() {
   main.bench('markdown-js', function(text) {
     markdownjs.toHTML(text);
   });
+};
+
+var old_bench = function() {
+  var text = fs.readFileSync(__dirname + '/main.md', 'utf8');
+
+  var benchmark = function(func, t) {
+    var start = new Date()
+      , i = t || 10000;
+    while (i--) func();
+    console.log('%s: %sms', func.name, new Date() - start);
+  };
+
+  var marked_ = require('../');
+  benchmark(function marked() {
+    marked_(text);
+  });
+
+  var showdown_ = (function() {
+    var Showdown = require('showdown').Showdown;
+    var convert = new Showdown.converter();
+    return function(str) {
+      return convert.makeHtml(str);
+    };
+  })();
+  benchmark(function showdown() {
+    showdown_(text);
+  });
+
+  var markdownjs_ = require('markdown-js');
+  benchmark(function markdownjs() {
+    markdownjs_.toHTML(text);
+  });
+};
+
+var old_test = function() {
+  var assert = require('assert')
+    , text = fs.readFileSync(__dirname + '/main.md', 'utf8');
+
+  var a = markdown(text)
+    , b = fs.readFileSync(__dirname + '/main.html', 'utf8');
+
+  console.log(a);
+  console.log('--------------------------------------------------------------');
+  console.log(b);
+  console.log('--------------------------------------------------------------');
+
+  a = a.replace(/\s+/g, '');
+  b = b.replace(/\s+/g, '');
+
+  assert.ok(a === b, 'Failed.');
+  console.log('Complete.');
 };
 
 /**
@@ -261,6 +312,10 @@ var pretty = (function() {
 if (!module.parent) {
   if (~process.argv.indexOf('--bench')) {
     bench();
+  } else if (~process.argv.indexOf('--old_bench')) {
+    old_bench();
+  } else if (~process.argv.indexOf('--old_test')) {
+    old_test();
   } else {
     main();
   }

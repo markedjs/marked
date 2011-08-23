@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cd `dirname "$0"`
+
+cat README
+
+rm -rf tests
+cp original tests -R
+node fix.js
+cp main.html tests/main.html
+cp main.md tests/main.text
