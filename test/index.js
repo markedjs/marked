@@ -2,38 +2,72 @@
 
 var fs = require('fs')
   , path = require('path')
-  , marked = require('marked')
+  , markdown = require('marked')
   , dir = __dirname + '/tests';
 
 var breakOnError = true;
 
+var files;
+
+var load = function() {
+  files = {};
+
+  var list = fs
+    .readdirSync(dir)
+    .concat('/../main.md')
+    .filter(function(file) {
+      return path.extname(file) !== '.html';
+    })
+    .sort(function(a, b) {
+      a = path.basename(a).toLowerCase().charCodeAt(0);
+      b = path.basename(b).toLowerCase().charCodeAt(0);
+      return a > b ? 1 : (a < b ? -1 : 0);
+    });
+
+  var i = 0
+    , l = list.length
+    , file;
+
+  for (; i < l; i++) {
+    file = path.join(dir, list[i]);
+    files[path.basename(file)] = {
+      text: fs.readFileSync(file, 'utf8'),
+      html: fs.readFileSync(file.replace(/[^.]+$/, 'html'), 'utf8')
+    };
+  }
+};
+
 var main = function() {
-  var list = fs.readdirSync(dir)
-    , complete = 0;
+  if (!files) load();
 
-  list = list.filter(function(file) {
-    return path.extname(file) === '.text';
-  });
-
-  list.push('/../main.md');
+  var complete = 0
+    , keys = Object.keys(files)
+    , i_ = 0
+    , l_ = keys.length
+    , filename
+    , file
+    , text
+    , html;
 
 main: 
-  for (var i_ = 0, l_ = list.length, file; i_ < l_; i_++) {
-    file = list[i_];
-    file = path.join(dir, file);
+  for (; i_ < l_; i_++) {
+    filename = keys[i_];
+    file = files[filename];
 
-    var text = fs.readFileSync(file, 'utf8')
-      , html = fs.readFileSync(file.replace(/\.(text|md)$/, '.html'), 'utf8');
-
-    try { // this was messing with `node test | less` on sakura
-      text = marked(text).replace(/\s/g, '');
-      html = html.replace(/\s/g, '');
+    // this was messing with 
+    // `node test | less` on sakura
+    try { 
+      text = markdown(file.text).replace(/\s/g, '');
+      html = file.html.replace(/\s/g, '');
     } catch(e) { 
-      console.log(list[i_]); 
+      console.log('%s failed.', filename); 
       throw e; 
     }
 
-    for (var i = 0, l = html.length; i < l; i++) {
+    var i = 0
+      , l = html.length;
+
+    for (; i < l; i++) {
       if (text[i] !== html[i]) {
         text = text.substring(
           Math.max(i - 30, 0), 
@@ -43,7 +77,7 @@ main:
           Math.min(i + 30, html.length));
         console.log(
           '\n#%d. %s failed at offset %d. Near: "%s".\n', 
-          i_ + 1, list[i_], i, text);
+          i_ + 1, filename, i, text);
         console.log('\nGot:\n%s\n', 
           pretty(text).trim() || text);
         console.log('\nExpected:\n%s\n', 
@@ -58,18 +92,63 @@ main:
 
     if (i === l) {
       complete++;
-      console.log('#%d. %s completed.', i_ + 1, list[i_]);
+      console.log('#%d. %s completed.', i_ + 1, filename);
     }
   }
 
   console.log('%d/%d tests completed successfully.', complete, l_);
 };
 
-if (!module.parent) {
-  process.nextTick(main);
-} else {
-  module.exports = main;
-}
+main.bench = function(name, func) {
+  if (!files) load();
+
+  var start = Date.now()
+    , times = 1000
+    , keys = Object.keys(files)
+    , i = 0
+    , l = keys.length
+    , filename
+    , file;
+
+  while (times--) {
+    for (i = 0; i < l; i++) {
+      filename = keys[i];
+      file = files[filename];
+      func(file.text);
+    }
+  }
+
+  console.log('%s completed in %dms.', name, Date.now() - start);
+};
+
+var bench = function() {
+  var marked = require('../');
+  main.bench('marked', marked);
+
+  /**
+   * There's two ways to benchmark showdown here.
+   * The first way is to create a new converter
+   * every time, this will renew any closured
+   * variables. It is the "proper" way of using
+   * showdown. However, for this benchmark, 
+   * I will use the completely improper method
+   * which is must faster, just to be fair.
+   */
+
+  var showdown = (function() {
+    var Showdown = require('showdown').Showdown;
+    var convert = new Showdown.converter();
+    return function(text) {
+      return convert.makeHtml(text);
+    };
+  })();
+  main.bench('showdown', showdown);
+
+  var markdownjs = require('markdown-js');
+  main.bench('markdown-js', function(text) {
+    markdownjs.toHTML(text);
+  });
+};
 
 /**
  * Pretty print HTML
@@ -178,3 +257,13 @@ var pretty = (function() {
     return str;
   };
 })();
+
+if (!module.parent) {
+  if (~process.argv.indexOf('--bench')) {
+    bench();
+  } else {
+    main();
+  }
+} else {
+  module.exports = main;
+}
