@@ -15,17 +15,19 @@ var main = function() {
     return path.extname(file) === '.text';
   });
 
+  list.push('/../main.md');
+
 main: 
   for (var i_ = 0, l_ = list.length, file; i_ < l_; i_++) {
     file = list[i_];
     file = path.join(dir, file);
 
     var text = fs.readFileSync(file, 'utf8')
-      , html = fs.readFileSync(file.replace('.text', '.html'), 'utf8');
+      , html = fs.readFileSync(file.replace(/\.(text|md)$/, '.html'), 'utf8');
 
     try { // this was messing with `node test | less` on sakura
-        text = marked(text).replace(/\s/g, '');
-        html = html.replace(/\s/g, '');
+      text = marked(text).replace(/\s/g, '');
+      html = html.replace(/\s/g, '');
     } catch(e) { 
       console.log(list[i_]); 
       throw e; 
