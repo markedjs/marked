@@ -6,11 +6,13 @@ Built for speed.
 ## Benchmarks
 
 ``` bash
-$ node test/bench
+$ node test --old_bench
 marked: 6260ms
 showdown: 21665ms
 markdownjs: 69168ms
 ```
+
+(Above is the old benchmark, try `node test --bench` for the new ones.)
 
 The point of marked was to create a markdown compiler where it was possible to 
 frequently parse huge chunks of markdown without having to worry about 
@@ -18,6 +20,10 @@ caching the compiled output somehow...or blocking for an unnecesarily long time.
 
 marked lingers around 430 (may vary) lines long and still implements all 
 markdown features. It is also now fully compatible with the client-side.
+
+marked more or less passes the official markdown test suite in its 
+entirety. This is important because a surprising number of markdown compilers 
+cannot pass more than a few tests.
 
 ## Install
 
@@ -41,9 +47,6 @@ console.log(marked.parser(tokens));
 
 ## Todo (& notes to self)
 
-This parser was written in one night, so there's still a lot on the todo list.
-There may also be some bugs.
-
 - Implement GFM features.
 - Possibly add some 
   [ReMarkable](http://camendesign.com/code/remarkable/documentation.html) 
@@ -52,5 +55,3 @@ There may also be some bugs.
   should enhance performance even further, although, no lookaheads would 
   be possible.
 - Add an explicit pretty printing and minification feature.
-
-I've still just begun to write this. I expect I will be updating it frequently.
