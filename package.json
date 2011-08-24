@@ -1,6 +1,6 @@
 {
   "name": "marked",
-  "description": "a fast markdown parser",
+  "description": "A markdown parser built for speed",
   "author": "Christopher Jeffrey",
   "version": "0.0.7",
   "main": "./lib/marked.js",
