@@ -14,7 +14,6 @@ var load = function() {
 
   var list = fs
     .readdirSync(dir)
-    //.concat('/../main.md')
     .filter(function(file) {
       return path.extname(file) !== '.html';
     })
