@@ -1,23 +1,115 @@
 #!/usr/bin/env node
 
 /**
- * Marked
- * Usage: $ marked [in] [out]
+ * Marked CLI
+ * Copyright (c) 2011, Christopher Jeffrey (MIT License)
  */
 
-var marked = require('../')
-  , fs = require('fs')
-  , fread = fs.readFileSync
-  , fwrite = fs.writeFileSync;
+var fs = require('fs')
+  , marked = require('../');
+
+var usage = function() {
+  console.log('');
+  console.log('Usage:');
+  console.log('  marked [-oih] [input]');
+  console.log('');
+  console.log('Options:');
+  console.log('  -o, --output: Specify output file. If none is');
+  console.log('                specified, write to stdout.');
+  console.log('  -i, --input:  Specify input file, otherwise use last');
+  console.log('                argument as input file. If no input');
+  console.log('                file is specified, read from stdin.');
+  console.log('  -h, --help:   Display this message.');
+  console.log('');
+  console.log('Examples:');
+  console.log('  cat in.md | marked > out.html');
+  console.log('  echo "hello *world*" | marked');
+  console.log('  marked -o out.html in.md');
+  console.log('  marked --output="hello world.html" -i in.md');
+  console.log('');
+  console.log('  $ marked');
+  console.log('  > hello __world__\\n^D');
+  console.log('  <p>hello <strong>world</strong></p>');
+  process.exit(0);
+};
 
 var main = function(argv) {
-  var out = argv.pop()
-    , text = argv.pop();
+  var files = []
+    , input
+    , output
+    , arg
+    , data;
 
-  text = fread(text, 'utf8');
-  text = marked(text);
+  var getarg = function() {
+    var arg = argv.shift();
+    arg = arg.split('=');
+    if (/^['"]/.test(arg[0])) arg[0] = arg[0].slice(1, -1);
+    if (arg[1] !== undefined) {
+      if (/^['"]/.test(arg[1])) arg[1] = arg[1].slice(1, -1);
+      argv.unshift(arg[1]);
+    }
+    return arg[0];
+  };
 
-  fwrite(out, text);
+  while (argv.length) {
+    //arg = argv.shift();
+    arg = getarg();
+    switch (arg) {
+      case '-o':
+      case '--output':
+        output = argv.shift();
+        //output = getarg();
+        break;
+      case '-i':
+      case '--input':
+        input = argv.shift();
+        //input = getarg();
+        break;
+      case '--gfm':
+        console.log('Implement me!');
+        process.exit(0);
+        break;
+      case '-h':
+      case '--help':
+        usage();
+        break;
+      default:
+        files.push(arg);
+        break;
+    }
+  }
+
+  if (!input) {
+    input = files.pop();
+  }
+
+  // should maybe detect tty and for a repl
+  if (fs.statSync(input).ino === fs.statSync(__filename).ino) {
+    var stdin = process.openStdin()
+      , buff = [];
+
+    stdin.setEncoding('utf8');
+    stdin.on('data', function(data) {
+      buff.push(data);
+    });
+
+    stdin.on('end', function() {
+      data = buff.join('');
+      write();
+    });
+  } else {
+    data = fs.readFileSync(input, 'utf8');
+    write();
+  }
+
+  function write() {
+    data = marked(data);
+    if (!output) {
+      process.stdout.write(data + '\n');
+    } else {
+      fs.writeFileSync(output, data);
+    }
+  }
 };
 
 if (!module.parent) {
@@ -25,3 +117,4 @@ if (!module.parent) {
 } else {
   module.exports = main;
 }
+
