@@ -21,6 +21,15 @@ var usage = function() {
   console.log('                file is specified, read from stdin.');
   console.log('  -h, --help:   Display this message.');
   console.log('');
+  console.log('Examples:');
+  console.log('  cat in.md | marked > out.html');
+  console.log('  echo "hello *world*" | marked');
+  console.log('  marked -o out.html in.md');
+  console.log('  marked --output="hello world.html" -i in.md');
+  console.log('');
+  console.log('  $ marked');
+  console.log('  > hello __world__\\n^D');
+  console.log('  <p>hello <strong>world</strong></p>');
   process.exit(0);
 };
 
@@ -48,13 +57,13 @@ var main = function(argv) {
     switch (arg) {
       case '-o':
       case '--output':
-        //output = argv.shift();
-        output = getarg();
+        output = argv.shift();
+        //output = getarg();
         break;
       case '-i':
       case '--input':
-        //input = argv.shift();
-        input = getarg();
+        input = argv.shift();
+        //input = getarg();
         break;
       case '--gfm':
         console.log('Implement me!');
@@ -74,6 +83,7 @@ var main = function(argv) {
     input = files.pop();
   }
 
+  // should maybe detect tty and for a repl
   if (fs.statSync(input).ino === fs.statSync(__filename).ino) {
     var stdin = process.openStdin()
       , buff = [];
