@@ -11,7 +11,7 @@ var fs = require('fs')
 var usage = function() {
   console.log('');
   console.log('Usage:');
-  console.log('  marked [-oih] [output] [input]');
+  console.log('  marked [-oih] [input]');
   console.log('');
   console.log('Options:');
   console.log('  -o, --output: Specify output file. If none is');
