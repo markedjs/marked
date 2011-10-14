@@ -2,22 +2,98 @@
 
 /**
  * Marked
- * Usage: $ marked [in] [out]
+ * CLI
  */
 
-var marked = require('../')
-  , fs = require('fs')
-  , fread = fs.readFileSync
-  , fwrite = fs.writeFileSync;
+var fs = require('fs')
+  , marked = require('../');
+
+var usage = function() {
+  console.log('Usage:');
+  console.log('');
+  console.log('');
+  console.log('');
+  console.log('');
+  console.log('');
+  console.log('');
+  process.exit(0);
+};
 
 var main = function(argv) {
-  var out = argv.pop()
-    , text = argv.pop();
+  var files = []
+    , input
+    , output
+    , arg
+    , data;
 
-  text = fread(text, 'utf8');
-  text = marked(text);
+  var getarg = function(a) {
+    var arg = argv.shift();
+    arg = arg.split('=');
+    if (/^['"]/.test(arg[0])) arg[0] = arg[0].slice(1, -1);
+    if (arg[1] !== undefined) {
+      if (/^['"]/.test(arg[1])) arg[1] = arg[1].slice(1, -1);
+      argv.unshift(arg[1]);
+    }
+    return arg[0];
+  };
 
-  fwrite(out, text);
+  while (argv.length) {
+    //arg = argv.shift();
+    arg = getarg();
+    switch (arg) {
+      case '-o':
+      case '--output':
+        //output = argv.shift();
+        output = getarg();
+        break;
+      case '-i':
+      case '--input':
+        input = arg;
+        break;
+      case '--gfm':
+        console.log('Implement me!');
+        process.exit(0);
+        break;
+      case '-h':
+      case '--help':
+        usage();
+        break;
+      default:
+        files.push(arg);
+        break;
+    }
+  }
+
+  if (!input) {
+    input = files.pop();
+  }
+
+  if (fs.statSync(input).ino === fs.statSync(__filename).ino) {
+    var stdin = process.openStdin()
+      , buff = [];
+
+    stdin.setEncoding('utf8');
+    stdin.on('data', function(data) {
+      buff.push(data);
+    });
+
+    stdin.on('end', function() {
+      data = buff.join('');
+      write();
+    });
+  } else {
+    data = fs.readFileSync(input, 'utf8');
+    write();
+  }
+
+  function write() {
+    data = marked(data);
+    if (!output) {
+      process.stdout.write(data + '\n');
+    } else {
+      fs.writeFileSync(output, data);
+    }
+  }
 };
 
 if (!module.parent) {
@@ -25,3 +101,4 @@ if (!module.parent) {
 } else {
   module.exports = main;
 }
+
