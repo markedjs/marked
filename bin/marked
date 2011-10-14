@@ -43,7 +43,6 @@ var main = function(argv) {
   var getarg = function() {
     var arg = argv.shift();
     arg = arg.split('=');
-    if (/^['"]/.test(arg[0])) arg[0] = arg[0].slice(1, -1);
     if (arg[1] !== undefined) {
       if (/^['"]/.test(arg[1])) arg[1] = arg[1].slice(1, -1);
       argv.unshift(arg[1]);
@@ -83,7 +82,7 @@ var main = function(argv) {
     input = files.pop();
   }
 
-  // should maybe detect tty and for a repl
+  // should maybe detect tty for a repl: tty.isatty()
   if (fs.statSync(input).ino === fs.statSync(__filename).ino) {
     var stdin = process.openStdin()
       , buff = [];
@@ -103,9 +102,9 @@ var main = function(argv) {
   }
 
   function write() {
-    data = marked(data);
+    data = marked(data) + '\n';
     if (!output) {
-      process.stdout.write(data + '\n');
+      process.stdout.write(data);
     } else {
       fs.writeFileSync(output, data);
     }
@@ -113,8 +112,8 @@ var main = function(argv) {
 };
 
 if (!module.parent) {
+  process.title = 'marked';
   main(process.argv.slice());
 } else {
   module.exports = main;
 }
-
