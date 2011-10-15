@@ -19,6 +19,7 @@ var usage = function() {
   console.log('  -i, --input:  Specify input file, otherwise use last');
   console.log('                argument as input file. If no input');
   console.log('                file is specified, read from stdin.');
+  console.log('  -t, --tokens: Output a token stream instead of html.');
   console.log('  -h, --help:   Display this message.');
   console.log('');
   console.log('Examples:');
@@ -30,6 +31,7 @@ var usage = function() {
   console.log('  $ marked');
   console.log('  > hello __world__\\n^D');
   console.log('  <p>hello <strong>world</strong></p>');
+  console.log('');
   process.exit(0);
 };
 
@@ -38,31 +40,32 @@ var main = function(argv) {
     , input
     , output
     , arg
-    , data;
+    , data
+    , tokens;
 
   var getarg = function() {
     var arg = argv.shift();
     arg = arg.split('=');
-    if (arg[1] !== undefined) {
-      if (/^['"]/.test(arg[1])) arg[1] = arg[1].slice(1, -1);
-      argv.unshift(arg[1]);
+    if (arg.length > 1) {
+      argv.unshift(arg.sice(1).join('='));
     }
     return arg[0];
   };
 
   while (argv.length) {
-    //arg = argv.shift();
     arg = getarg();
     switch (arg) {
       case '-o':
       case '--output':
         output = argv.shift();
-        //output = getarg();
         break;
       case '-i':
       case '--input':
         input = argv.shift();
-        //input = getarg();
+        break;
+      case '-t':
+      case '--tokens':
+        tokens = true;
         break;
       case '--gfm':
         console.log('Implement me!');
@@ -82,7 +85,7 @@ var main = function(argv) {
     input = files.pop();
   }
 
-  // should maybe detect tty for a repl: tty.isatty()
+  // should maybe detect tty for a repl: tty.isatty(0)
   if (fs.statSync(input).ino === fs.statSync(__filename).ino) {
     var stdin = process.openStdin()
       , buff = [];
@@ -102,9 +105,12 @@ var main = function(argv) {
   }
 
   function write() {
-    data = marked(data) + '\n';
+    data = tokens
+      ? JSON.stringify(marked.lexer(data), null, 2)
+      : marked(data);
+
     if (!output) {
-      process.stdout.write(data);
+      process.stdout.write(data + '\n');
     } else {
       fs.writeFileSync(output, data);
     }
