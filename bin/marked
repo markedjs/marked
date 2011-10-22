@@ -6,6 +6,7 @@
  */
 
 var fs = require('fs')
+  , util = require('util')
   , marked = require('../');
 
 var usage = function() {
@@ -106,7 +107,7 @@ var main = function(argv) {
 
   function write() {
     data = tokens
-      ? JSON.stringify(marked.lexer(data), null, 2)
+      ? util.inspect(marked.lexer(data))
       : marked(data);
 
     if (!output) {
