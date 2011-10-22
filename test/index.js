@@ -48,19 +48,19 @@ var main = function() {
     , text
     , html;
 
-main: 
+main:
   for (; i_ < l_; i_++) {
     filename = keys[i_];
     file = files[filename];
 
-    // this was messing with 
+    // this was messing with
     // `node test | less` on sakura
-    try { 
+    try {
       text = marked(file.text).replace(/\s/g, '');
       html = file.html.replace(/\s/g, '');
-    } catch(e) { 
-      console.log('%s failed.', filename); 
-      throw e; 
+    } catch(e) {
+      console.log('%s failed.', filename);
+      throw e;
     }
 
     var i = 0
@@ -69,17 +69,17 @@ main:
     for (; i < l; i++) {
       if (text[i] !== html[i]) {
         text = text.substring(
-          Math.max(i - 30, 0), 
+          Math.max(i - 30, 0),
           Math.min(i + 30, text.length));
         html = html.substring(
-          Math.max(i - 30, 0), 
+          Math.max(i - 30, 0),
           Math.min(i + 30, html.length));
         console.log(
-          '\n#%d. %s failed at offset %d. Near: "%s".\n', 
+          '\n#%d. %s failed at offset %d. Near: "%s".\n',
           i_ + 1, filename, i, text);
-        console.log('\nGot:\n%s\n', 
+        console.log('\nGot:\n%s\n',
           pretty(text).trim() || text);
-        console.log('\nExpected:\n%s\n', 
+        console.log('\nExpected:\n%s\n',
           pretty(html).trim() || html);
         if (breakOnError) {
           break main;
@@ -124,16 +124,6 @@ var bench = function() {
   var marked = require('../');
   main.bench('marked', marked);
 
-  /**
-   * There's two ways to benchmark showdown here.
-   * The first way is to create a new converter
-   * every time, this will renew any closured
-   * variables. It is the "proper" way of using
-   * showdown. However, for this benchmark, 
-   * I will use the completely improper method
-   * which is must faster, just to be fair.
-   */
-
   var showdown = (function() {
     var Showdown = require('showdown').Showdown;
     var convert = new Showdown.converter();
@@ -141,12 +131,26 @@ var bench = function() {
       return convert.makeHtml(text);
     };
   })();
-  main.bench('showdown', showdown);
+  main.bench('showdown (reuse converter)', showdown);
+
+  var showdown_slow = (function() {
+    var Showdown = require('showdown').Showdown;
+    return function(text) {
+      var convert = new Showdown.converter();
+      return convert.makeHtml(text);
+    };
+  })();
+  main.bench('showdown (new converter)', showdown_slow);
 
   var markdownjs = require('markdown-js');
   main.bench('markdown-js', function(text) {
     markdownjs.toHTML(text);
   });
+};
+
+var time = function() {
+  var marked = require('../');
+  main.bench('marked', marked);
 };
 
 var old_bench = function() {
@@ -243,13 +247,13 @@ var pretty = (function() {
       , tag
       , name;
 
-    // temporarily remove elements before 
+    // temporarily remove elements before
     // processing, also remove whitespace
     str = str.replace(remove, function(element, name) {
         element = element
           .replace(/(<[^\/][^>]*>)\s+|\s+(<\/)/g, '$1$2')
           .replace(/[\r\n]/g, '');
-      return '<!' + (hash.push(element) - 1) 
+      return '<!' + (hash.push(element) - 1)
                   + (Array(element.length - 3).join('%')) + '/>';
     });
 
@@ -271,9 +275,9 @@ var pretty = (function() {
 
       if (name[0] !== '/') {
         out.push(indent(depth) + full);
-        if (!closing[name] 
-            && name[0] !== '!' 
-            && name[0] !== '?' 
+        if (!closing[name]
+            && name[0] !== '!'
+            && name[0] !== '?'
             && tag[tag.length-1] !== '/') {
           depth++;
         }
@@ -284,7 +288,7 @@ var pretty = (function() {
     }
     str = out.join('\n');
 
-    // restore the elements to 
+    // restore the elements to
     // their original locations
     str = str.replace(replace, function($0, $1) {
       return hash[$1];
@@ -311,6 +315,8 @@ var pretty = (function() {
 if (!module.parent) {
   if (~process.argv.indexOf('--bench')) {
     bench();
+  } else if (~process.argv.indexOf('--time')) {
+    time();
   } else if (~process.argv.indexOf('--old_bench')) {
     old_bench();
   } else if (~process.argv.indexOf('--old_test')) {
