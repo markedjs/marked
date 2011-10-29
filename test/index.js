@@ -204,6 +204,23 @@ var old_test = function() {
   console.log('Complete.');
 };
 
+var ignore_html = function() {
+  var assert = require('assert')
+    , text = fs.readFileSync(__dirname + '/main.md', 'utf8')
+    , a = marked(text, { ignoreHtml: true })
+    , b = fs.readFileSync(__dirname + '/ignore-html.html', 'utf8');
+
+  console.log(a);
+  console.log('------------------------------------------------------------');
+  console.log(b);
+  console.log('------------------------------------------------------------');
+
+  a = a.replace(/\s+/g, '');
+  b = b.replace(/\s+/g, '');
+  assert.ok(a === b, 'Failed.');
+  console.log('Complete.');
+};
+
 /**
  * Pretty print HTML
  * Copyright (c) 2011, Christopher Jeffrey
@@ -321,6 +338,8 @@ if (!module.parent) {
     old_bench();
   } else if (~process.argv.indexOf('--old_test')) {
     old_test();
+  } else if (~process.argv.indexOf('--ignore-html')) {
+    ignore_html();
   } else {
     main();
   }
