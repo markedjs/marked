@@ -2,7 +2,8 @@
 
 # A heading
 
-Just a note, I've found that I can't test my markdown parser vs others.
+Just a note, I've found that I can't test my markdown parser <span>vs
+others</span>.
 For example, both markdown.js and showdown code blocks in lists wrong. They're
 also completely [inconsistent][test] with regards to paragraphs in list items.
 
