@@ -206,7 +206,7 @@ var old_test = function() {
 
 var ignore_html = function() {
   var assert = require('assert')
-    , text = fs.readFileSync(__dirname + '/main.md', 'utf8')
+    , text = fs.readFileSync(__dirname + '/ignore-html.md', 'utf8')
     , a = marked(text, { ignoreHtml: true })
     , b = fs.readFileSync(__dirname + '/ignore-html.html', 'utf8');
 
