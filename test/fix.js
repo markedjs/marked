@@ -51,16 +51,11 @@ fs.readdirSync(dir).forEach(function(file) {
   fs.writeFileSync(file, text);
 });
 
-// markdown avoids double encoding half of the time
-// and does it the other half. this behavior will be
-// implemented eventually, but for now, this needs to 
-// be changed, because i want to see if the other tests
-// included in this file pass.
+// markdown is weird with encoding
 (function() {
   var file = dir + '/amps_and_angles_encoding.html';
   var html = fs.readFileSync(file, 'utf8')
     .replace('6 > 5.', '6 &gt; 5.')
-    .replace('AT&amp;T is another', 'AT&amp;amp;T is another');
 
   fs.writeFileSync(file, html);
 })();
@@ -73,7 +68,7 @@ fs.readdirSync(dir).forEach(function(file) {
   fs.writeFileSync(file, text);
 })();
 
-// fix strange markup that isnt likely 
+// fix strange markup that isnt likely
 // to exist in the reality
 (function _(ext) {
   var file = dir + '/inline_html_advanced.' + ext;
@@ -86,17 +81,17 @@ fs.readdirSync(dir).forEach(function(file) {
 ('html');
 
 // markdown parses backslashes in a very primitive
-// way because it's not a real parser. i cannot 
+// way because it's not a real parser. i cannot
 // include this test, because marked parses backslashes
 // in a very different way.
 (function(ext) {
-  fs.writeFileSync(dir + '/backslash_escapes.text', 
+  fs.writeFileSync(dir + '/backslash_escapes.text',
     'hello world \\[how](are you) today');
-  fs.writeFileSync(dir + '/backslash_escapes.html', 
+  fs.writeFileSync(dir + '/backslash_escapes.html',
     '<p>hello world [how](are you) today</p>');
 })();
 
-// can't do this for performance reasons 
+// can't do this for performance reasons
 // right now
 (function _(name) {
   fs.unlinkSync(dir + '/' + name + '.text');
