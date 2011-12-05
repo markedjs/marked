@@ -83,11 +83,11 @@ var main = function(argv) {
     }
   }
 
-  if (!input && files.length !== 1) {
+  if (!input && files.length !== 2) {
     input = files.pop();
   }
 
-  if (files.length === 1) {
+  if (!input && files.length === 2) {
     var stdin = process.openStdin()
       , buff = [];
 
