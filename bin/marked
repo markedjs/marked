@@ -10,6 +10,7 @@ var fs = require('fs')
   , marked = require('../');
 
 var usage = function() {
+  console.log('marked - a markdown parser');
   console.log('');
   console.log('Usage:');
   console.log('  marked [-oih] [input]');
@@ -82,12 +83,11 @@ var main = function(argv) {
     }
   }
 
-  if (!input) {
+  if (!input && files.length !== 1) {
     input = files.pop();
   }
 
-  // should maybe detect tty for a repl: tty.isatty(0)
-  if (fs.statSync(input).ino === fs.statSync(__filename).ino) {
+  if (files.length === 1) {
     var stdin = process.openStdin()
       , buff = [];
 
