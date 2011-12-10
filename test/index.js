@@ -53,8 +53,6 @@ main:
     filename = keys[i_];
     file = files[filename];
 
-    // this was messing with
-    // `node test | less` on sakura
     try {
       text = marked(file.text).replace(/\s/g, '');
       html = file.html.replace(/\s/g, '');
@@ -142,9 +140,9 @@ var bench = function() {
   })();
   main.bench('showdown (new converter)', showdown_slow);
 
-  var markdownjs = require('markdown-js');
+  var markdownjs = require('markdown');
   main.bench('markdown-js', function(text) {
-    markdownjs.toHTML(text);
+    markdownjs.parse(text);
   });
 };
 
@@ -179,9 +177,9 @@ var old_bench = function() {
     showdown_(text);
   });
 
-  var markdownjs_ = require('markdown-js');
+  var markdownjs_ = require('markdown');
   benchmark(function markdownjs() {
-    markdownjs_.toHTML(text);
+    markdownjs_.parse(text);
   });
 };
 

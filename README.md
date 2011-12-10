@@ -1,9 +1,11 @@
 # marked
 
-A full-featured markdown parser and compiler implemented in ~430 lines of JS.
+A full-featured markdown parser and compiler.
 Built for speed.
 
 ## Benchmarks
+
+node v0.4.x
 
 ``` bash
 $ node test --bench
@@ -13,20 +15,39 @@ showdown (new converter) completed in 75617ms.
 markdown-js completed in 70069ms.
 ```
 
+__UPDATE:__ Apparently Google optimized v8 very well somewhere between when
+node v0.4.10 and node v0.6.0 were released. Unfortunately they didn't
+seem to optimize my code. marked is still faster than everything (except
+Discount and C modules most likely), however, it's not supremely better,
+like it used to be. For example, its only roughly twice as fast as
+markdown-js now.
+
+node v0.6.x
+
+``` bash
+$ node test --bench
+marked completed in 11998ms.
+showdown (reuse converter) completed in 15686ms.
+showdown (new converter) completed in 18014ms.
+markdown-js completed in 23520ms.
+```
+
+Benchmarks for other engines to come (?).
+
 ## Install
 
 ``` bash
 $ npm install marked
 ```
 
-# Another javascript markdown parser
+## Another javascript markdown parser
 
 The point of marked was to create a markdown compiler where it was possible to
 frequently parse huge chunks of markdown without having to worry about
 caching the compiled output somehow...or blocking for an unnecesarily long time.
 
-marked lingers around 430 (may vary) lines long and still implements all
-markdown features. It is also now fully compatible with the client-side.
+marked is very concise and still implements all markdown features. It is also
+now fully compatible with the client-side.
 
 marked more or less passes the official markdown test suite in its
 entirety. This is important because a surprising number of markdown compilers
@@ -59,11 +80,17 @@ $ node
   links: {} ]
 ```
 
-## Todo (& notes to self)
+## CLI
+
+``` bash
+$ marked -o hello.html
+hello world
+^D
+$ cat hello.html
+<p>hello world</p>
+```
+
+## Todo
 
 - Implement GFM features.
-- Possibly add some
-  [ReMarkable](http://camendesign.com/code/remarkable/documentation.html)
-  features while remaining backwardly compatible with all markdown syntax.
-- Optimize the lexer to return an iterator instead of a collection of tokens.
 - Add an explicit pretty printing and minification feature.
