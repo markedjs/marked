@@ -1,11 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 
-cd `dirname "$0"`
+cd $(dirname "$0")
 
 cat README
 
 rm -rf tests
-cp original tests -R
+cp -r original tests
+
 node fix.js
-cp main.html tests/main.html
-cp main.md tests/main.text
+
+cp new/* -t tests

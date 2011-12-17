@@ -1,0 +1,8 @@
+``` js
+var a = 'hello';
+console.log(a + ' world');
+```
+
+This should be a link: http://example.com/hello-world.
+
+These words should_not_be_emphasized.

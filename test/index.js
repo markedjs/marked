@@ -5,7 +5,7 @@ var fs = require('fs')
   , marked = require('marked')
   , dir = __dirname + '/tests';
 
-var breakOnError = true;
+var BREAK_ON_ERROR = false;
 
 var files;
 
@@ -79,7 +79,7 @@ main:
           pretty(text).trim() || text);
         console.log('\nExpected:\n%s\n',
           pretty(html).trim() || html);
-        if (breakOnError) {
+        if (BREAK_ON_ERROR) {
           break main;
         } else {
           break;
