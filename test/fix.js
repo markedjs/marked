@@ -91,12 +91,34 @@ fs.readdirSync(dir).forEach(function(file) {
     '<p>hello world [how](are you) today</p>');
 })();
 
-// can't do this for performance reasons
-// right now
+// markdown list grammar
+// is exceptionally absurd
+// NOT A LIST:
+//  hello world
+//  * how are you
+// LIST:
+//  > hello world
+//  > * how are you
+// top-level list grammar is special
+
+// potential fix: (add `top` as parameter to block.token)
+// if (top && l === 1 && tokens.length > 1
+//     && tokens[tokens.length-2].type === 'text') {
+//   tokens[tokens.length-1] = {
+//     type: 'text',
+//     text: cap[0]
+//   };
+//   if (cap[0][cap[0].length-1] === '\n') {
+//     tokens.push({
+//       type: 'space'
+//     });
+//   }
+//   continue;
+// }
+
 (function _(name) {
   fs.unlinkSync(dir + '/' + name + '.text');
   fs.unlinkSync(dir + '/' + name + '.html');
   return _;
 })
 ('hard_wrapped_paragraphs_with_list_like_lines');
-
