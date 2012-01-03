@@ -107,7 +107,7 @@ var main = function(argv) {
 
   function write() {
     data = tokens
-      ? util.inspect(marked.lexer(data))
+      ? JSON.stringify(marked.lexer(data), null, 2)
       : marked(data);
 
     if (!output) {
