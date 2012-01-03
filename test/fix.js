@@ -116,9 +116,11 @@ fs.readdirSync(dir).forEach(function(file) {
 //   continue;
 // }
 
+/*
 (function _(name) {
   fs.unlinkSync(dir + '/' + name + '.text');
   fs.unlinkSync(dir + '/' + name + '.html');
   return _;
 })
 ('hard_wrapped_paragraphs_with_list_like_lines');
+*/
