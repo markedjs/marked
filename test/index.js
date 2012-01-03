@@ -127,6 +127,9 @@ var bench = function() {
   var marked = require('../');
   main.bench('marked', marked);
 
+  var discount = require('discount').parse;
+  main.bench('discount', discount);
+
   var showdown = (function() {
     var Showdown = require('showdown').Showdown;
     var convert = new Showdown.converter();

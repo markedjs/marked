@@ -15,22 +15,23 @@ showdown (new converter) completed in 75617ms.
 markdown-js completed in 70069ms.
 ```
 
-__UPDATE:__ Apparently Google optimized v8 very well somewhere between when
-node v0.4.10 and node v0.6.0 were released. Unfortunately they didn't
-seem to optimize my code. marked is still faster than everything (except
-Discount and C modules most likely), however, it's not supremely better,
-like it used to be. For example, its only roughly twice as fast as
-markdown-js now.
-
 node v0.6.x
 
 ``` bash
 $ node test --bench
-marked completed in 11998ms.
-showdown (reuse converter) completed in 15686ms.
-showdown (new converter) completed in 18014ms.
-markdown-js completed in 23520ms.
+marked completed in 7904ms.
+marked (with gfm) completed in 8947ms.
+discount completed in 7171ms.
+showdown (reuse converter) completed in 15729ms.
+showdown (new converter) completed in 18149ms.
+markdown-js completed in 24521ms.
 ```
+
+__Marked is now only ~700ms behind Discount (which is written in C).__
+
+For those feeling skeptical: These benchmarks run the entire markdown test suite
+1000 times. The test suite tests every feature. It doesn't cater to specific
+aspects.
 
 Benchmarks for other engines to come (?).
 
