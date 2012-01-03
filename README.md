@@ -90,7 +90,42 @@ $ cat hello.html
 <p>hello world</p>
 ```
 
-## Todo
+## Syntax Highlighting
 
-- Implement GFM features.
-- Add an explicit pretty printing and minification feature.
+Marked has an interface that allows for a syntax highlighter to highlight code
+blocks before they're output.
+
+Example implementation:
+
+``` js
+var highlight = require('my-syntax-highlighter')
+  , marked_ = require('marked');
+
+var marked = function(text) {
+  var tokens = marked_.lexer(text)
+    , l = tokens.length
+    , i = 0
+    , token;
+
+  for (; i < l; i++) {
+    token = tokens[i];
+    if (token.type === 'code') {
+      token.text = highlight(token.text, token.lang);
+      // marked should not escape this
+      token.escaped = true;
+    }
+  }
+
+  text = marked_.parser(tokens);
+
+  return text;
+};
+
+module.exports = marked;
+```
+
+## License
+
+Copyright (c) 2011-2012, Christopher Jeffrey. (MIT License)
+
+See LICENSE for more info.
