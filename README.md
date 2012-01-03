@@ -58,6 +58,9 @@ of performance, but did not in order to be exactly what you expect in terms
 of a markdown rendering. In fact, this is why marked could be considered at a
 disadvantage in the benchmarks above.
 
+Along with implementing every markdown feature, marked also implements
+[GFM features](http://github.github.com/github-flavored-markdown/).
+
 ## Usage
 
 ``` js
