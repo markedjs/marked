@@ -97,7 +97,12 @@ main:
 };
 
 main.bench = function(name, func) {
-  if (!files) load();
+  if (!files) {
+    load();
+    Object.keys(files).forEach(function(name) {
+      if (name.indexOf('gfm') === 0) delete files[name];
+    });
+  }
 
   var start = Date.now()
     , times = 1000
