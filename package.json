@@ -6,5 +6,9 @@
   "main": "./lib/marked.js",
   "bin": { "marked": "./bin/marked" },
   "repository": "git://github.com/chjj/marked.git",
-  "keywords": [ "markdown", "markup" ]
+  "bugs" : {
+    "url": "http://github.com/chjj/marked/issues"
+  },
+  "keywords": [ "markdown", "markup", "html" ],
+  "tags": [ "markdown", "markup", "html" ]
 }
