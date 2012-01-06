@@ -99,9 +99,12 @@ main:
 main.bench = function(name, func) {
   if (!files) {
     load();
+    // remove these as they affect the
+    // comparison to older benchmark times.
     Object.keys(files).forEach(function(name) {
       if (name.indexOf('gfm') === 0) delete files[name];
     });
+    delete files['toplevel_paragraphs.text'];
   }
 
   var start = Date.now()
