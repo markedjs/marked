@@ -101,10 +101,11 @@ main.bench = function(name, func) {
     load();
     // remove these as they affect the
     // comparison to older benchmark times.
-    Object.keys(files).forEach(function(name) {
-      if (name.indexOf('gfm') === 0) delete files[name];
+    fs.readdirSync(__dirname + '/new').forEach(function(name) {
+      if (name.split('.').pop() === 'html') return;
+      if (name === 'main.text') return;
+      delete files[name];
     });
-    delete files['toplevel_paragraphs.text'];
   }
 
   var start = Date.now()

@@ -60,14 +60,6 @@ fs.readdirSync(dir).forEach(function(file) {
   fs.writeFileSync(file, html);
 })();
 
-// fix bad grammar
-(function() {
-  var file = dir + '/ordered_and_unordered_lists.text';
-  var text = fs.readFileSync(file, 'utf8');
-  text = text.replace(/(\n\*\sasterisk\s3\n\n)(\*\s\*\s\*)/, '$1\n$2');
-  fs.writeFileSync(file, text);
-})();
-
 // fix strange markup that isnt likely
 // to exist in the reality
 (function _(ext) {
