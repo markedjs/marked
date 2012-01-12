@@ -19,15 +19,15 @@ node v0.6.x
 
 ``` bash
 $ node test --bench
-marked completed in 7904ms.
-marked (with gfm) completed in 8947ms.
-discount completed in 7171ms.
-showdown (reuse converter) completed in 15729ms.
-showdown (new converter) completed in 18149ms.
-markdown-js completed in 24521ms.
+marked completed in 7303ms.
+marked (with gfm) completed in 8206ms.
+discount completed in 7170ms.
+showdown (reuse converter) completed in 15865ms.
+showdown (new converter) completed in 18140ms.
+markdown-js completed in 24357ms.
 ```
 
-__Marked is now only ~700ms behind Discount (which is written in C).__
+__Marked is now only ~130ms behind Discount, which is written in C.__
 
 For those feeling skeptical: These benchmarks run the entire markdown test suite
 1000 times. The test suite tests every feature. It doesn't cater to specific
