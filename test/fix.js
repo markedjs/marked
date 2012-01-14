@@ -60,14 +60,3 @@ fs.readdirSync(dir).forEach(function(file) {
 
   fs.writeFileSync(file, html);
 })();
-
-// markdown parses backslashes in a very primitive
-// way because it's not a real parser. i cannot
-// include this test, because marked parses backslashes
-// in a very different way.
-(function(ext) {
-  fs.writeFileSync(dir + '/backslash_escapes.text',
-    'hello world \\[how](are you) today');
-  fs.writeFileSync(dir + '/backslash_escapes.html',
-    '<p>hello world [how](are you) today</p>');
-})();

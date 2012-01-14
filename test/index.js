@@ -99,13 +99,16 @@ main:
 main.bench = function(name, func) {
   if (!files) {
     load();
-    // remove these as they affect the
+    // change certain tests. to allow
     // comparison to older benchmark times.
     fs.readdirSync(__dirname + '/new').forEach(function(name) {
       if (name.split('.').pop() === 'html') return;
       if (name === 'main.text') return;
       delete files[name];
     });
+    files['backslash_escapes.text'] = {
+      text: 'hello world \\[how](are you) today'
+    };
   }
 
   var start = Date.now()
