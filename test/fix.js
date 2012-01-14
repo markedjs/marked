@@ -51,7 +51,8 @@ fs.readdirSync(dir).forEach(function(file) {
   fs.writeFileSync(file, text);
 });
 
-// markdown is weird with encoding
+// markdown does some strange things.
+// it does not encode naked `>`, marked does.
 (function() {
   var file = dir + '/amps_and_angles_encoding.html';
   var html = fs.readFileSync(file, 'utf8')
@@ -59,18 +60,6 @@ fs.readdirSync(dir).forEach(function(file) {
 
   fs.writeFileSync(file, html);
 })();
-
-// fix strange markup that isnt likely
-// to exist in the reality
-(function _(ext) {
-  var file = dir + '/inline_html_advanced.' + ext;
-  var text = fs.readFileSync(file, 'utf8');
-  text = text.replace('style=">"/', 'style=""');
-  fs.writeFileSync(file, text);
-  return _;
-})
-('text')
-('html');
 
 // markdown parses backslashes in a very primitive
 // way because it's not a real parser. i cannot

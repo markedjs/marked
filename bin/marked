@@ -69,10 +69,6 @@ var main = function(argv) {
       case '--tokens':
         tokens = true;
         break;
-      case '--gfm':
-        console.log('Implement me!');
-        process.exit(0);
-        break;
       case '-h':
       case '--help':
         usage();
