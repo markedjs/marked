@@ -31,13 +31,6 @@ fs.readdirSync(dir).filter(function(file) {
     .replace(/&__QUOT__;/g, '"')
     .replace(/&__APOS__;/g, '\'');
 
-  // fix code blocks
-  html = html.replace(/<pre><code>[^\0]+?<\/pre><\/code>/g, function(html) {
-    return html
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&apos;');
-  });
-
   fs.writeFileSync(file, html);
 });
 
