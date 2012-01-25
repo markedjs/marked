@@ -5,6 +5,7 @@
   "version": "0.1.7",
   "main": "./lib/marked.js",
   "bin": { "marked": "./bin/marked" },
+  "ender": "./lib/ender.js",
   "repository": "git://github.com/chjj/marked.git",
   "bugs" : {
     "url": "http://github.com/chjj/marked/issues"
