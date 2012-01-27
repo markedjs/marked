@@ -2,39 +2,30 @@
 
 /**
  * Marked CLI
- * Copyright (c) 2011, Christopher Jeffrey (MIT License)
+ * Copyright (c) 2011-2012, Christopher Jeffrey (MIT License)
  */
 
 var fs = require('fs')
   , util = require('util')
   , marked = require('../');
 
-var usage = function() {
-  console.log('marked - a markdown parser');
-  console.log('');
-  console.log('Usage:');
-  console.log('  marked [-oih] [input]');
-  console.log('');
-  console.log('Options:');
-  console.log('  -o, --output: Specify output file. If none is');
-  console.log('                specified, write to stdout.');
-  console.log('  -i, --input:  Specify input file, otherwise use last');
-  console.log('                argument as input file. If no input');
-  console.log('                file is specified, read from stdin.');
-  console.log('  -t, --tokens: Output a token stream instead of html.');
-  console.log('  -h, --help:   Display this message.');
-  console.log('');
-  console.log('Examples:');
-  console.log('  cat in.md | marked > out.html');
-  console.log('  echo "hello *world*" | marked');
-  console.log('  marked -o out.html in.md');
-  console.log('  marked --output="hello world.html" -i in.md');
-  console.log('');
-  console.log('  $ marked');
-  console.log('  > hello __world__\\n^D');
-  console.log('  <p>hello <strong>world</strong></p>');
-  console.log('');
-  process.exit(0);
+var help = function() {
+  var spawn = require('child_process').spawn;
+
+  var options = {
+    cwd: process.cwd(),
+    env: process.env,
+    setsid: false,
+    customFds: [0, 1, 2]
+  };
+
+  var man = spawn('man',
+    [__dirname + '/../man/marked.1'],
+    options);
+
+  // man.on('exit', function(code) {
+  //   if (code !== 0) console.error('no man page');
+  // });
 };
 
 var main = function(argv) {
@@ -49,7 +40,7 @@ var main = function(argv) {
     var arg = argv.shift();
     arg = arg.split('=');
     if (arg.length > 1) {
-      argv.unshift(arg.sice(1).join('='));
+      argv.unshift(arg.slice(1).join('='));
     }
     return arg[0];
   };
@@ -71,8 +62,7 @@ var main = function(argv) {
         break;
       case '-h':
       case '--help':
-        usage();
-        break;
+        return help();
       default:
         files.push(arg);
         break;
