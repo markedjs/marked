@@ -109,6 +109,7 @@ main.bench = function(name, func) {
     files['backslash_escapes.text'] = {
       text: 'hello world \\[how](are you) today'
     };
+    files['main.text'].text = files['main.text'].text.replace('* * *\n\n', '');
   }
 
   var start = Date.now()
@@ -164,57 +165,6 @@ var bench = function() {
 var time = function() {
   var marked = require('../');
   main.bench('marked', marked);
-};
-
-var old_bench = function() {
-  var text = fs.readFileSync(__dirname + '/main.md', 'utf8');
-
-  var benchmark = function(func, t) {
-    var start = new Date()
-      , i = t || 10000;
-    while (i--) func();
-    console.log('%s: %sms', func.name, new Date() - start);
-  };
-
-  var marked_ = require('../');
-  benchmark(function marked() {
-    marked_(text);
-  });
-
-  var showdown_ = (function() {
-    var Showdown = require('showdown').Showdown;
-    var convert = new Showdown.converter();
-    return function(str) {
-      return convert.makeHtml(str);
-    };
-  })();
-  benchmark(function showdown() {
-    showdown_(text);
-  });
-
-  var markdownjs_ = require('markdown');
-  benchmark(function markdownjs() {
-    markdownjs_.parse(text);
-  });
-};
-
-var old_test = function() {
-  var assert = require('assert')
-    , text = fs.readFileSync(__dirname + '/main.md', 'utf8');
-
-  var a = markdown(text)
-    , b = fs.readFileSync(__dirname + '/main.html', 'utf8');
-
-  console.log(a);
-  console.log('--------------------------------------------------------------');
-  console.log(b);
-  console.log('--------------------------------------------------------------');
-
-  a = a.replace(/\s+/g, '');
-  b = b.replace(/\s+/g, '');
-
-  assert.ok(a === b, 'Failed.');
-  console.log('Complete.');
 };
 
 /**
@@ -330,10 +280,6 @@ if (!module.parent) {
     bench();
   } else if (~process.argv.indexOf('--time')) {
     time();
-  } else if (~process.argv.indexOf('--old_bench')) {
-    old_bench();
-  } else if (~process.argv.indexOf('--old_test')) {
-    old_test();
   } else {
     main();
   }
