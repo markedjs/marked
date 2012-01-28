@@ -9,6 +9,10 @@ var fs = require('fs')
   , util = require('util')
   , marked = require('../');
 
+/**
+ * Man Page
+ */
+
 var help = function() {
   var spawn = require('child_process').spawn;
 
@@ -28,12 +32,16 @@ var help = function() {
   // });
 };
 
+/**
+ * Main
+ */
+
 var main = function(argv) {
   var files = []
+    , data = ''
     , input
     , output
     , arg
-    , data
     , tokens;
 
   var getarg = function() {
@@ -69,27 +77,26 @@ var main = function(argv) {
     }
   }
 
-  if (!input && files.length !== 2) {
+  if (!input) {
+    if (files.length <= 2) {
+      var stdin = process.stdin;
+
+      stdin.setEncoding('utf8');
+      stdin.resume();
+
+      stdin.on('data', function(text) {
+        data += text;
+      });
+
+      stdin.on('end', write);
+
+      return;
+    }
     input = files.pop();
   }
 
-  if (!input && files.length === 2) {
-    var stdin = process.openStdin()
-      , buff = [];
-
-    stdin.setEncoding('utf8');
-    stdin.on('data', function(data) {
-      buff.push(data);
-    });
-
-    stdin.on('end', function() {
-      data = buff.join('');
-      write();
-    });
-  } else {
-    data = fs.readFileSync(input, 'utf8');
-    write();
-  }
+  data = fs.readFileSync(input, 'utf8');
+  write();
 
   function write() {
     data = tokens
