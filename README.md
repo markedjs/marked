@@ -19,12 +19,12 @@ node v0.6.x
 
 ``` bash
 $ node test --bench
-marked completed in 6623ms.
-marked (with gfm) completed in 7618ms.
-discount completed in 7230ms.
-showdown (reuse converter) completed in 16136ms.
-showdown (new converter) completed in 18526ms.
-markdown-js completed in 24347ms.
+marked completed in 6485ms.
+marked (with gfm) completed in 7466ms.
+discount completed in 7169ms.
+showdown (reuse converter) completed in 15937ms.
+showdown (new converter) completed in 18279ms.
+markdown-js completed in 23572ms.
 ```
 
 __Marked is now faster than Discount, which is written in C.__
