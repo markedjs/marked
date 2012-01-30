@@ -23,13 +23,9 @@ var help = function() {
     customFds: [0, 1, 2]
   };
 
-  var man = spawn('man',
+  spawn('man',
     [__dirname + '/../man/marked.1'],
     options);
-
-  // man.on('exit', function(code) {
-  //   if (code !== 0) console.error('no man page');
-  // });
 };
 
 /**

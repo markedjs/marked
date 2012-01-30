@@ -9,9 +9,6 @@
 // fail for reasons unrelated to
 // conformance.
 
-// fix the fact that the original markdown
-// does not escape quotes for some reason
-
 var path = require('path')
   , fs = require('fs')
   , dir = __dirname + '/tests';
@@ -49,7 +46,7 @@ fs.readdirSync(dir).forEach(function(file) {
 (function() {
   var file = dir + '/amps_and_angles_encoding.html';
   var html = fs.readFileSync(file, 'utf8')
-    .replace('6 > 5.', '6 &gt; 5.')
+    .replace('6 > 5.', '6 &gt; 5.');
 
   fs.writeFileSync(file, html);
 })();
