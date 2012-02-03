@@ -24,7 +24,7 @@ fs.readdirSync(dir).filter(function(file) {
     .replace(/='([^\n']*)'(?=[^<>\n]*>)/g, '=&__APOS__;$1&__APOS__;')
     .replace(/="([^\n"]*)"(?=[^<>\n]*>)/g, '=&__QUOT__;$1&__QUOT__;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;')
+    .replace(/'/g, '&#39;')
     .replace(/&__QUOT__;/g, '"')
     .replace(/&__APOS__;/g, '\'');
 
