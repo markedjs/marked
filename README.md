@@ -64,8 +64,30 @@ Along with implementing every markdown feature, marked also implements
 ## Usage
 
 ``` js
+var html = marked(markdown, options);
+```
+
+### Options
+
+- __pedantic__: Conform to obscure parts of `markdown.pl` as much as possible.
+  Don't fix any of the original markdown bugs or poor behavior.
+- __gfm__: Enabled github flavored markdown (default for backward compatibility).
+- __sanitize__: Sanitize the output. Ignore an HTML that has been input.
+
+None of the above are mutually exclusive/inclusive.
+
+## Example Usage
+
+``` js
 var marked = require('marked');
 console.log(marked('i am using __markdown__.'));
+
+// gfm
+console.log(marked('```\ni am using GFM.\n```', {
+  gfm: true,
+  pedantic: false,
+  sanitize: true
+}));
 ```
 
 You also have direct access to the lexer and parser if you so desire.
