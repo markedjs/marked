@@ -77,7 +77,7 @@ var html = marked(markdown, options);
 - __pedantic__: Conform to obscure parts of `markdown.pl` as much as possible.
   Don't fix any of the original markdown bugs or poor behavior.
 - __gfm__: Enabled github flavored markdown (default for backward compatibility).
-- __sanitize__: Sanitize the output. Ignore an HTML that has been input.
+- __sanitize__: Sanitize the output. Ignore any HTML that has been input.
 
 None of the above are mutually exclusive/inclusive.
 
