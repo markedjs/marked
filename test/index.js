@@ -132,8 +132,11 @@ main.bench = function(name, func) {
 };
 
 var bench = function() {
-  var marked = require('../');
+  marked.setDefaults({ gfm: false });
   main.bench('marked', marked);
+
+  marked.setDefaults({ gfm: true });
+  main.bench('marked (with gfm)', marked);
 
   var discount = require('discount').parse;
   main.bench('discount', discount);

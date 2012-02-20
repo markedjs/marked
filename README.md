@@ -64,6 +64,11 @@ Along with implementing every markdown feature, marked also implements
 ## Usage
 
 ``` js
+marked.setDefaults({
+  gfm: true,
+  pedantic: false,
+  sanitize: true
+});
 var html = marked(markdown, options);
 ```
 
