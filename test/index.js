@@ -132,13 +132,13 @@ main.bench = function(name, func) {
 };
 
 var bench = function() {
-  marked.setDefaults({ gfm: false });
+  marked.setOptions({ gfm: false });
   main.bench('marked', marked);
 
-  marked.setDefaults({ gfm: true });
+  marked.setOptions({ gfm: true });
   main.bench('marked (gfm)', marked);
 
-  marked.setDefaults({ pedantic: true });
+  marked.setOptions({ pedantic: true });
   main.bench('marked (pedantic)', marked);
 
   var discount = require('discount').parse;

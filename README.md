@@ -19,12 +19,13 @@ node v0.6.x
 
 ``` bash
 $ node test --bench
-marked completed in 6485ms.
-marked (with gfm) completed in 7466ms.
-discount completed in 7169ms.
-showdown (reuse converter) completed in 15937ms.
-showdown (new converter) completed in 18279ms.
-markdown-js completed in 23572ms.
+marked completed in 6448ms.
+marked (gfm) completed in 7357ms.
+marked (pedantic) completed in 6092ms.
+discount completed in 7314ms.
+showdown (reuse converter) completed in 16018ms.
+showdown (new converter) completed in 18234ms.
+markdown-js completed in 24270ms.
 ```
 
 __Marked is now faster than Discount, which is written in C.__
@@ -61,18 +62,9 @@ disadvantage in the benchmarks above.
 Along with implementing every markdown feature, marked also implements
 [GFM features](http://github.github.com/github-flavored-markdown/).
 
-## Usage
+## Options
 
-``` js
-marked.setDefaults({
-  gfm: true,
-  pedantic: false,
-  sanitize: true
-});
-var html = marked(markdown, options);
-```
-
-### Options
+marked has 3 different switches which change behavior.
 
 - __pedantic__: Conform to obscure parts of `markdown.pl` as much as possible.
   Don't fix any of the original markdown bugs or poor behavior.
@@ -81,18 +73,16 @@ var html = marked(markdown, options);
 
 None of the above are mutually exclusive/inclusive.
 
-## Example Usage
+## Usage
 
 ``` js
-var marked = require('marked');
-console.log(marked('i am using __markdown__.'));
-
-// gfm
-console.log(marked('```\ni am using GFM.\n```', {
+// set default options
+marked.setOptions({
   gfm: true,
   pedantic: false,
   sanitize: true
-}));
+});
+console.log(marked('i am using __markdown__.'));
 ```
 
 You also have direct access to the lexer and parser if you so desire.
