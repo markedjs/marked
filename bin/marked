@@ -34,6 +34,7 @@ var help = function() {
 
 var main = function(argv) {
   var files = []
+    , options = {}
     , data = ''
     , input
     , output
@@ -63,6 +64,15 @@ var main = function(argv) {
       case '-t':
       case '--tokens':
         tokens = true;
+        break;
+      case '--gfm':
+        options.gfm = true;
+        break;
+      case '--sanitize':
+        options.sanitize = true;
+        break;
+      case '--pedantic':
+        options.pedantic = true;
         break;
       case '-h':
       case '--help':
@@ -97,7 +107,7 @@ var main = function(argv) {
   function write() {
     data = tokens
       ? JSON.stringify(marked.lexer(data), null, 2)
-      : marked(data);
+      : marked(data, options);
 
     if (!output) {
       process.stdout.write(data + '\n');
