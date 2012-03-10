@@ -34,6 +34,8 @@ var load = function() {
       html: fs.readFileSync(file.replace(/[^.]+$/, 'html'), 'utf8')
     };
   }
+
+  return files;
 };
 
 var main = function() {
@@ -290,5 +292,6 @@ if (!module.parent) {
     main();
   }
 } else {
+  main.load = load;
   module.exports = main;
 }
