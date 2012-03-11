@@ -18,10 +18,6 @@ var print = function(text) {
 
 var console = { log: print };
 
-var pretty = function(text) {
-  return text;
-};
-
 var load = function() {};
 
 Object.keys = Object.keys || function(obj) {
