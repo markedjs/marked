@@ -7,7 +7,7 @@
 
 var fs = require('fs')
   , util = require('util')
-  , marked = require('../');
+  , marked = require('marked');
 
 /**
  * Man Page
