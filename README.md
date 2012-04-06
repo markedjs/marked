@@ -62,7 +62,7 @@ Along with implementing every markdown feature, marked also implements
 
 ## Options
 
-marked has 3 different switches which change behavior.
+marked has 4 different switches which change behavior.
 
 - __pedantic__: Conform to obscure parts of `markdown.pl` as much as possible.
   Don't fix any of the original markdown bugs or poor behavior.
