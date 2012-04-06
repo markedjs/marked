@@ -1,6 +1,6 @@
 # marked
 
-A full-featured markdown parser and compiler.
+A full-featured markdown parser and compiler, written in javascript.
 Built for speed.
 
 ## Benchmarks
@@ -34,15 +34,13 @@ For those feeling skeptical: These benchmarks run the entire markdown test suite
 1000 times. The test suite tests every feature. It doesn't cater to specific
 aspects.
 
-Benchmarks for other engines to come (?).
-
 ## Install
 
 ``` bash
 $ npm install marked
 ```
 
-## Another javascript markdown parser
+## Another Javascript Markdown Parser
 
 The point of marked was to create a markdown compiler where it was possible to
 frequently parse huge chunks of markdown without having to worry about
@@ -68,7 +66,7 @@ marked has 3 different switches which change behavior.
 
 - __pedantic__: Conform to obscure parts of `markdown.pl` as much as possible.
   Don't fix any of the original markdown bugs or poor behavior.
-- __gfm__: Enabled github flavored markdown (default for backward compatibility).
+- __gfm__: Enable github flavored markdown (enabled by default).
 - __sanitize__: Sanitize the output. Ignore any HTML that has been input.
 
 None of the above are mutually exclusive/inclusive.
@@ -76,7 +74,7 @@ None of the above are mutually exclusive/inclusive.
 ## Usage
 
 ``` js
-// set default options
+// Set default options
 marked.setOptions({
   gfm: true,
   pedantic: false,
@@ -88,7 +86,7 @@ console.log(marked('i am using __markdown__.'));
 You also have direct access to the lexer and parser if you so desire.
 
 ``` js
-var tokens = marked.lexer(str);
+var tokens = marked.lexer(text);
 console.log(marked.parser(tokens));
 ```
 
@@ -96,7 +94,8 @@ console.log(marked.parser(tokens));
 $ node
 > require('marked').lexer('> i am using marked.')
 [ { type: 'blockquote_start' },
-  { type: 'text', text: ' i am using marked.' },
+  { type: 'paragraph',
+    text: 'i am using marked.' },
   { type: 'blockquote_end' },
   links: {} ]
 ```
@@ -120,10 +119,10 @@ Example implementation:
 
 ``` js
 var highlight = require('my-syntax-highlighter')
-  , marked_ = require('marked');
+  , marked = require('marked');
 
-var marked = function(text) {
-  var tokens = marked_.lexer(text)
+marked.highlight = function(text) {
+  var tokens = marked.lexer(text)
     , l = tokens.length
     , i = 0
     , token;
@@ -132,14 +131,13 @@ var marked = function(text) {
     token = tokens[i];
     if (token.type === 'code') {
       token.text = highlight(token.text, token.lang);
-      // marked should not escape this
+      // Tell marked that this
+      // token is already escaped.
       token.escaped = true;
     }
   }
 
-  text = marked_.parser(tokens);
-
-  return text;
+  return marked.parser(tokens);
 };
 
 module.exports = marked;
