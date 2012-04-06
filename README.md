@@ -68,6 +68,7 @@ marked has 3 different switches which change behavior.
   Don't fix any of the original markdown bugs or poor behavior.
 - __gfm__: Enable github flavored markdown (enabled by default).
 - __sanitize__: Sanitize the output. Ignore any HTML that has been input.
+- __highlight__: A callback to highlight code blocks.
 
 None of the above are mutually exclusive/inclusive.
 
@@ -78,7 +79,14 @@ None of the above are mutually exclusive/inclusive.
 marked.setOptions({
   gfm: true,
   pedantic: false,
-  sanitize: true
+  sanitize: true,
+  // callback for code highlighter
+  highlight: function(code, language) {
+    if (language === 'js') {
+      code = highlight(code);
+    }
+    return code;
+  }
 });
 console.log(marked('i am using __markdown__.'));
 ```
@@ -108,39 +116,6 @@ hello world
 ^D
 $ cat hello.html
 <p>hello world</p>
-```
-
-## Syntax Highlighting
-
-Marked has an interface that allows for a syntax highlighter to highlight code
-blocks before they're output.
-
-Example implementation:
-
-``` js
-var highlight = require('my-syntax-highlighter')
-  , marked = require('marked');
-
-marked.highlight = function(text) {
-  var tokens = marked.lexer(text)
-    , l = tokens.length
-    , i = 0
-    , token;
-
-  for (; i < l; i++) {
-    token = tokens[i];
-    if (token.type === 'code') {
-      token.text = highlight(token.text, token.lang);
-      // Tell marked that this
-      // token is already escaped.
-      token.escaped = true;
-    }
-  }
-
-  return marked.parser(tokens);
-};
-
-module.exports = marked;
 ```
 
 ## License
