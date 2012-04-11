@@ -81,9 +81,9 @@ marked.setOptions({
   pedantic: false,
   sanitize: true,
   // callback for code highlighter
-  highlight: function(code, language) {
-    if (language === 'js') {
-      code = highlight(code);
+  highlight: function(code, lang) {
+    if (lang === 'js') {
+      return javascriptHighlighter(code);
     }
     return code;
   }
