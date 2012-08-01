@@ -5,6 +5,12 @@ var fs = require('fs')
   , marked = require('marked')
   , dir = __dirname + '/tests';
 
+marked.plugins = {
+  youtube: function(arg) {
+    return '<iframe class="youtube" src="https://www.youtube.com/embed/' + arg + '"></iframe>';
+  }
+};
+
 var BREAK_ON_ERROR = false;
 
 var files;
