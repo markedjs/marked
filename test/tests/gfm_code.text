@@ -2,3 +2,7 @@
 var a = 'hello';
 console.log(a + ' world');
 ```
+
+~~~bash
+echo "hello, ${WORLD}"
+~~~
