@@ -68,6 +68,7 @@ marked has 4 different switches which change behavior.
   Don't fix any of the original markdown bugs or poor behavior.
 - __gfm__: Enable github flavored markdown (enabled by default).
 - __sanitize__: Sanitize the output. Ignore any HTML that has been input.
+- __anchors__: Create an anchor for each heading in output.
 - __highlight__: A callback to highlight code blocks.
 
 None of the above are mutually exclusive/inclusive.
@@ -80,6 +81,7 @@ marked.setOptions({
   gfm: true,
   pedantic: false,
   sanitize: true,
+  anchors: false,
   // callback for code highlighter
   highlight: function(code, lang) {
     if (lang === 'js') {
