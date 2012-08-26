@@ -74,6 +74,9 @@ var main = function(argv) {
       case '--pedantic':
         options.pedantic = true;
         break;
+      case '--anchors':
+        options.anchors = true;
+        break;
       case '-h':
       case '--help':
         return help();
