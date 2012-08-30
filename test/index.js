@@ -177,6 +177,31 @@ var time = function() {
   main.bench('marked', marked);
 };
 
+var inline = function(){
+  if(
+    marked('@marked #marked', { inline: function(down){
+      return down(/(^|[ \t]+)@([a-zA-Z0-9]+)/,
+        function(cap, src){
+          return src.substring(cap[0].length);
+        },
+        function(cap, escape){
+          return ['<a href="https://twitter.com/',
+            cap[2], '">@', cap[2], '</a>'].join('');
+        }
+      ) || down(/(^|[ \t]+)#([a-zA-Z0-9]+)/,
+        function(cap, src){
+          return src.substring(cap[0].length);
+        },
+        function(cap, escape){
+          return ['<a href="https://twitter.com/#!/search/%23',
+            cap[2], '">#', cap[2], '</a>'].join('');
+        }
+      )
+    }}) != '<p><a href="https://twitter.com/marked">@marked</a>' + 
+        '<a href="https://twitter.com/#!/search/%23marked">#marked</a></p>\n'
+  ) console.log( "external inline test failed" );
+}
+
 if (!module.parent) {
   if (~process.argv.indexOf('--bench')) {
     bench();
@@ -184,9 +209,11 @@ if (!module.parent) {
     time();
   } else {
     main();
+    inline();
   }
 } else {
   main.main = main;
   main.load = load;
   module.exports = main;
 }
+
