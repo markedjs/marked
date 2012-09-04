@@ -1,0 +1,4 @@
+:::
+var a = 'hello';
+console.log(a + ' world');
+:::
