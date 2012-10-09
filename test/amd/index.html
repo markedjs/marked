@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<script type="text/javascript">
+		// This is a simple test case to ensure that marked correctly
+		// registers itself as an AMD module in an AMD environment.
+		// The test defines a mock window.define and window.define.amd
+		// to simulate AMD.
+		(function(window) {
+
+			var pass, fail;
+
+			pass = fail = 0;
+
+			// Base assert function
+			function assert(truthiness, name) {
+				if(truthiness) {
+					++pass;
+					console.log('PASS: ' + name);
+				} else {
+					++fail;
+					console.error('FAIL: ' + name)
+				}
+			}
+
+			// Called after all tests have been run to report results
+			function done() {
+				console.log('DONE -- Tests: ' + (pass+fail) + ', Passed: ' + pass + ', Failed: ' + fail);
+
+				// This is not part of AMD
+				// We're just using it to ensure that the tests were actually run
+				window.define.done = true;
+			}
+
+			// Is it a function?
+			assert.isFunction = function(it, name) {
+				assert.equals(typeof it, 'function', name);
+			};
+
+			// Are a and b equal?
+			assert.equals = function(a, b, name) {
+				assert(a == b, name);
+			};
+
+			// Set up a fake AMD define() to test if marked calls it correctly
+			window.define = function(factory) {
+				assert.isFunction(factory, 'Called define() with factory function');
+
+				var marked = factory();
+
+				assert.isFunction(marked, 'Factory returned a function');
+				assert.isFunction(marked.setOptions, 'marked has setOptions function');
+				assert.isFunction(marked.lexer, 'marked has lexer function');
+				assert.isFunction(marked.parser, 'marked has parser function');
+
+				// The intention here is to show that marked() is the function
+				// we think it is.  We don't need to test its full functionality
+				// since that is covered by the main test suite.
+				assert.equals('<h1>Marked</h1>\n', marked('# Marked'), 'Marked converts markdown');
+
+				done();
+			};
+
+			// The AMD spec says define.amd must be truthy
+			window.define.amd = {};
+
+		}(window));
+	</script>
+
+	<!-- Since we're using a mock window.define(), load marked directly and
+	     let it call window.define(), which will run the tests above -->
+	<script type="text/javascript" src="../../lib/marked.js"></script>
+
+	<script type="text/javascript">
+		// Ensure that the tests were actually executed
+		if(!window.define.done) {
+			alert('Some tests were not executed, marked AMD support is probably broken');
+		}
+	</script>
+</head>
+<body>
+
+</body>
+</html>
