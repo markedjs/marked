@@ -2,7 +2,7 @@
 
 /**
  * Marked CLI
- * Copyright (c) 2011-2012, Christopher Jeffrey (MIT License)
+ * Copyright (c) 2011-2013, Christopher Jeffrey (MIT License)
  */
 
 var fs = require('fs')
@@ -13,7 +13,7 @@ var fs = require('fs')
  * Man Page
  */
 
-var help = function() {
+function help() {
   var spawn = require('child_process').spawn;
 
   var options = {
@@ -26,29 +26,28 @@ var help = function() {
   spawn('man',
     [__dirname + '/../man/marked.1'],
     options);
-};
+}
 
 /**
  * Main
  */
 
-var main = function(argv) {
+function main(argv) {
   var files = []
     , options = {}
-    , data = ''
     , input
     , output
     , arg
     , tokens;
 
-  var getarg = function() {
+  function getarg() {
     var arg = argv.shift();
     arg = arg.split('=');
     if (arg.length > 1) {
       argv.unshift(arg.slice(1).join('='));
     }
     return arg[0];
-  };
+  }
 
   while (argv.length) {
     arg = getarg();
@@ -65,65 +64,67 @@ var main = function(argv) {
       case '--tokens':
         tokens = true;
         break;
-      case '--gfm':
-        options.gfm = true;
-        break;
-      case '--tables':
-        options.tables = true;
-        break;
-      case '--breaks':
-        options.breaks = true;
-        break;
-      case '--sanitize':
-        options.sanitize = true;
-        break;
-      case '--pedantic':
-        options.pedantic = true;
-        break;
       case '-h':
       case '--help':
         return help();
       default:
-        files.push(arg);
+        if (arg.indexOf('--') === 0) {
+          arg = arg.substring(2);
+          if (arg.indexOf('no-') === 0) {
+            arg = arg.substring(3);
+            options[arg] = false;
+          } else {
+            options[arg] = true;
+          }
+        } else {
+          files.push(arg);
+        }
         break;
     }
   }
 
-  if (!input) {
-    if (files.length <= 2) {
-      var stdin = process.stdin;
+  function getData(callback) {
+    var data = '';
 
-      stdin.setEncoding('utf8');
-      stdin.resume();
+    if (!input) {
+      if (files.length <= 2) {
+        var stdin = process.stdin;
 
-      stdin.on('data', function(text) {
-        data += text;
-      });
+        stdin.setEncoding('utf8');
+        stdin.resume();
 
-      stdin.on('end', write);
+        stdin.on('data', function(text) {
+          data += text;
+        });
 
-      return;
+        stdin.on('error', function(err) {
+          return callback(err);
+        });
+
+        stdin.on('end', function() {
+          return callback(null, data);
+        });
+
+        return;
+      }
+      input = files.pop();
     }
-    input = files.pop();
+
+    return fs.readFile(input, 'utf8', callback);
   }
 
-  data = fs.readFileSync(input, 'utf8');
-  write();
-
-  function write() {
-    marked.setOptions(options);
+  return getData(function(err, data) {
+    if (err) throw err;
 
     data = tokens
-      ? JSON.stringify(marked.lexer(data), null, 2)
-      : marked(data);
+      ? JSON.stringify(marked.lexer(data, options), null, 2)
+      : marked(data, options);
 
-    if (!output) {
-      process.stdout.write(data + '\n');
-    } else {
-      fs.writeFileSync(output, data);
-    }
-  }
-};
+    return !output
+      ? process.stdout.write(data + '\n')
+      : fs.writeFileSync(output, data);
+  });
+}
 
 if (!module.parent) {
   process.title = 'marked';
