@@ -68,6 +68,12 @@ var main = function(argv) {
       case '--gfm':
         options.gfm = true;
         break;
+      case '--tables':
+        options.tables = true;
+        break;
+      case '--breaks':
+        options.breaks = true;
+        break;
       case '--sanitize':
         options.sanitize = true;
         break;
