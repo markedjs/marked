@@ -5,11 +5,11 @@ var fs = require('fs')
   , marked = require('marked')
   , dir = __dirname + '/tests';
 
-var BREAK_ON_ERROR = false;
-
 var files;
 
-var load = function() {
+var BREAK_ON_ERROR = false;
+
+function load() {
   files = {};
 
   var list = fs
@@ -36,9 +36,9 @@ var load = function() {
   }
 
   return files;
-};
+}
 
-var main = function() {
+function runTests() {
   if (!files) load();
 
   var complete = 0
@@ -98,9 +98,9 @@ main:
   }
 
   console.log('%d/%d tests completed successfully.', complete, l_);
-};
+}
 
-main.bench = function(name, func) {
+function bench(name, func) {
   if (!files) {
     load();
     // change certain tests. to allow
@@ -133,20 +133,20 @@ main.bench = function(name, func) {
   }
 
   console.log('%s completed in %dms.', name, Date.now() - start);
-};
+}
 
-var bench = function() {
+function runBench() {
   marked.setOptions({ gfm: false });
-  main.bench('marked', marked);
+  bench('marked', marked);
 
   marked.setOptions({ gfm: true });
-  main.bench('marked (gfm)', marked);
+  bench('marked (gfm)', marked);
 
   marked.setOptions({ pedantic: true });
-  main.bench('marked (pedantic)', marked);
+  bench('marked (pedantic)', marked);
 
   var discount = require('discount').parse;
-  main.bench('discount', discount);
+  bench('discount', discount);
 
   var showdown = (function() {
     var Showdown = require('showdown').Showdown;
@@ -155,7 +155,7 @@ var bench = function() {
       return convert.makeHtml(text);
     };
   })();
-  main.bench('showdown (reuse converter)', showdown);
+  bench('showdown (reuse converter)', showdown);
 
   var showdown_slow = (function() {
     var Showdown = require('showdown').Showdown;
@@ -164,29 +164,37 @@ var bench = function() {
       return convert.makeHtml(text);
     };
   })();
-  main.bench('showdown (new converter)', showdown_slow);
+  bench('showdown (new converter)', showdown_slow);
 
   var markdownjs = require('markdown');
-  main.bench('markdown-js', function(text) {
+  bench('markdown-js', function(text) {
     markdownjs.parse(text);
   });
-};
+}
 
-var time = function() {
+function time() {
   var marked = require('../');
-  main.bench('marked', marked);
-};
+  bench('marked', marked);
+}
+
+function main(argv) {
+  if (~argv.indexOf('--bench')) {
+    return runBench();
+  }
+
+  if (~argv.indexOf('--time')) {
+    return time();
+  }
+
+  return runTests();
+}
 
 if (!module.parent) {
-  if (~process.argv.indexOf('--bench')) {
-    bench();
-  } else if (~process.argv.indexOf('--time')) {
-    time();
-  } else {
-    main();
-  }
+  main(process.argv.slice());
 } else {
+  main = runTests;
   main.main = main;
   main.load = load;
+  main.bench = bench;
   module.exports = main;
 }

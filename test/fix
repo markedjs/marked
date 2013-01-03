@@ -9,4 +9,4 @@ cp -r original tests
 
 node fix.js
 
-cp new/* -t tests
+cp new/* tests/
