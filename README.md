@@ -62,15 +62,16 @@ Along with implementing every markdown feature, marked also implements
 
 ## Options
 
-marked has 4 different switches which change behavior.
+marked has a few different switches which change behavior.
 
 - __pedantic__: Conform to obscure parts of `markdown.pl` as much as possible.
   Don't fix any of the original markdown bugs or poor behavior.
 - __gfm__: Enable github flavored markdown (enabled by default).
 - __sanitize__: Sanitize the output. Ignore any HTML that has been input.
 - __highlight__: A callback to highlight code blocks.
-
-None of the above are mutually exclusive/inclusive.
+- __tables__: Enable GFM tables. This is enabled by default. (Requires the
+  `gfm` option in order to be enabled).
+- __breaks__: Enable GFM line breaks. Disabled by default.
 
 ## Usage
 
@@ -78,12 +79,13 @@ None of the above are mutually exclusive/inclusive.
 // Set default options
 marked.setOptions({
   gfm: true,
+  tables: true,
+  breaks: false,
   pedantic: false,
   sanitize: true,
-  // callback for code highlighter
   highlight: function(code, lang) {
     if (lang === 'js') {
-      return javascriptHighlighter(code);
+      return highlighter.javascript(code);
     }
     return code;
   }
@@ -94,8 +96,15 @@ console.log(marked('i am using __markdown__.'));
 You also have direct access to the lexer and parser if you so desire.
 
 ``` js
-var tokens = marked.lexer(text);
+var tokens = marked.lexer(text, options);
 console.log(marked.parser(tokens));
+```
+
+``` js
+var lexer = new marked.Lexer(options);
+var tokens = lexer.lex(text);
+console.log(tokens);
+console.log(lexer.rules);
 ```
 
 ``` bash
@@ -120,6 +129,6 @@ $ cat hello.html
 
 ## License
 
-Copyright (c) 2011-2012, Christopher Jeffrey. (MIT License)
+Copyright (c) 2011-2013, Christopher Jeffrey. (MIT License)
 
 See LICENSE for more info.
