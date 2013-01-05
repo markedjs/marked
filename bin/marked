@@ -32,7 +32,7 @@ function help() {
  * Main
  */
 
-function main(argv) {
+function main(argv, callback) {
   var files = []
     , options = {}
     , input
@@ -42,11 +42,30 @@ function main(argv) {
 
   function getarg() {
     var arg = argv.shift();
-    arg = arg.split('=');
-    if (arg.length > 1) {
-      argv.unshift(arg.slice(1).join('='));
+
+    if (arg.indexOf('--') === 0) {
+      // e.g. --opt
+      arg = arg.split('=');
+      if (arg.length > 1) {
+        // e.g. --opt=val
+        argv.unshift(arg.slice(1).join('='));
+      }
+      arg = arg[0];
+    } else if (arg[0] === '-') {
+      if (arg.length > 2) {
+        // e.g. -abc
+        argv = arg.substring(1).split('').map(function(ch) {
+          return '-' + ch;
+        }).concat(argv);
+        arg = argv.shift();
+      } else {
+        // e.g. -a
+      }
+    } else {
+      // e.g. foo
     }
-    return arg[0];
+
+    return arg;
   }
 
   while (argv.length) {
@@ -84,51 +103,70 @@ function main(argv) {
   }
 
   function getData(callback) {
-    var data = '';
-
     if (!input) {
       if (files.length <= 2) {
-        var stdin = process.stdin;
-
-        stdin.setEncoding('utf8');
-        stdin.resume();
-
-        stdin.on('data', function(text) {
-          data += text;
-        });
-
-        stdin.on('error', function(err) {
-          return callback(err);
-        });
-
-        stdin.on('end', function() {
-          return callback(null, data);
-        });
-
-        return;
+        return getStdin(callback);
       }
       input = files.pop();
     }
-
     return fs.readFile(input, 'utf8', callback);
   }
 
   return getData(function(err, data) {
-    if (err) throw err;
+    if (err) return callback(err);
 
     data = tokens
       ? JSON.stringify(marked.lexer(data, options), null, 2)
       : marked(data, options);
 
-    return !output
-      ? process.stdout.write(data + '\n')
-      : fs.writeFileSync(output, data);
+    if (!output) {
+      process.stdout.write(data + '\n');
+      return callback();
+    }
+
+    return fs.writeFile(output, data, callback);
   });
 }
 
+/**
+ * Helpers
+ */
+
+function getStdin(callback) {
+  var stdin = process.stdin
+    , buff = '';
+
+  stdin.setEncoding('utf8');
+
+  stdin.on('data', function(data) {
+    buff += data;
+  });
+
+  stdin.on('error', function(err) {
+    return callback(err);
+  });
+
+  stdin.on('end', function() {
+    return callback(null, buff);
+  });
+
+  try {
+    stdin.resume();
+  } catch (e) {
+    callback(e);
+  }
+}
+
+/**
+ * Expose / Entry Point
+ */
+
 if (!module.parent) {
   process.title = 'marked';
-  main(process.argv.slice());
+  main(process.argv.slice(), function(err, code) {
+    if (err) throw err;
+    return process.exit(code || 0);
+  });
 } else {
   module.exports = main;
 }
