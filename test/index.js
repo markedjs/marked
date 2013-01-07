@@ -2,14 +2,17 @@
 
 var fs = require('fs')
   , path = require('path')
-  , marked = require('marked')
-  , dir = __dirname + '/tests'
-  , files;
+  , marked = require('marked');
 
 function load() {
-  files = {};
+  var dir = __dirname + '/tests'
+    , files = {}
+    , list
+    , file
+    , i
+    , l;
 
-  var list = fs
+  list = fs
     .readdirSync(dir)
     .filter(function(file) {
       return path.extname(file) !== '.html';
@@ -20,9 +23,8 @@ function load() {
       return a > b ? 1 : (a < b ? -1 : 0);
     });
 
-  var i = 0
-    , l = list.length
-    , file;
+  i = 0;
+  l = list.length;
 
   for (; i < l; i++) {
     file = path.join(dir, list[i]);
@@ -36,9 +38,8 @@ function load() {
 }
 
 function runTests(options) {
-  if (!files) load();
-
   var options = options || {}
+    , files = options.files || load()
     , complete = 0
     , keys = Object.keys(files)
     , i = 0
@@ -99,18 +100,23 @@ main:
 }
 
 function bench(name, func) {
-  if (!files) {
-    load();
+  var files = bench.files || load();
+
+  if (!bench.files) {
+    bench.files = files;
+
     // Change certain tests to allow
     // comparison to older benchmark times.
     fs.readdirSync(__dirname + '/new').forEach(function(name) {
-      if (name.split('.').pop() === 'html') return;
+      if (path.extname(name) === '.html') return;
       if (name === 'main.text') return;
       delete files[name];
     });
+
     files['backslash_escapes.text'] = {
       text: 'hello world \\[how](are you) today'
     };
+
     files['main.text'].text = files['main.text'].text.replace('* * *\n\n', '');
   }
 
