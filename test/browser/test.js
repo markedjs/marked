@@ -1,10 +1,9 @@
 ;(function() {
 
-var files = __TESTS__;
+var console = {}
+  , files = __TESTS__;
 
-var BREAK_ON_ERROR = false;
-
-function print(text) {
+console.log = function(text) {
   var args = Array.prototype.slice.call(arguments, 1)
     , i = 0;
 
@@ -14,11 +13,7 @@ function print(text) {
 
   if (window.console) window.console.log(text);
   document.body.innerHTML += '<pre>' + escape(text) + '</pre>';
-}
-
-var console = { log: print };
-
-function load() {}
+};
 
 Object.keys = Object.keys || function(obj) {
   var out = []
@@ -36,6 +31,8 @@ Object.keys = Object.keys || function(obj) {
 String.prototype.trim = String.prototype.trim || function() {
   return this.replace(/^\s+|\s+$/g, '');
 };
+
+function load() {}
 
 function escape(html, encode) {
   return html

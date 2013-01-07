@@ -3,11 +3,8 @@
 var fs = require('fs')
   , path = require('path')
   , marked = require('marked')
-  , dir = __dirname + '/tests';
-
-var files;
-
-var BREAK_ON_ERROR = false;
+  , dir = __dirname + '/tests'
+  , files;
 
 function load() {
   files = {};
@@ -38,21 +35,24 @@ function load() {
   return files;
 }
 
-function runTests() {
+function runTests(options) {
   if (!files) load();
 
-  var complete = 0
+  var options = options || {}
+    , complete = 0
     , keys = Object.keys(files)
-    , i_ = 0
-    , l_ = keys.length
+    , i = 0
+    , len = keys.length
     , filename
     , file
     , text
-    , html;
+    , html
+    , j
+    , l;
 
 main:
-  for (; i_ < l_; i_++) {
-    filename = keys[i_];
+  for (; i < len; i++) {
+    filename = keys[i];
     file = files[filename];
 
     try {
@@ -63,47 +63,45 @@ main:
       throw e;
     }
 
-    var i = 0
-      , l = html.length;
+    j = 0;
+    l = html.length;
 
-    for (; i < l; i++) {
-      if (text[i] !== html[i]) {
+    for (; j < l; j++) {
+      if (text[j] !== html[j]) {
         text = text.substring(
-          Math.max(i - 30, 0),
-          Math.min(i + 30, text.length));
+          Math.max(j - 30, 0),
+          Math.min(j + 30, text.length));
 
         html = html.substring(
-          Math.max(i - 30, 0),
-          Math.min(i + 30, html.length));
+          Math.max(j - 30, 0),
+          Math.min(j + 30, html.length));
 
         console.log(
           '\n#%d. %s failed at offset %d. Near: "%s".\n',
-          i_ + 1, filename, i, text);
+          i + 1, filename, j, text);
 
         console.log('\nGot:\n%s\n', text.trim() || text);
         console.log('\nExpected:\n%s\n', html.trim() || html);
 
-        if (BREAK_ON_ERROR) {
+        if (options.stop) {
           break main;
-        } else {
-          break;
         }
+
+        continue main;
       }
     }
 
-    if (i === l) {
-      complete++;
-      console.log('#%d. %s completed.', i_ + 1, filename);
-    }
+    complete++;
+    console.log('#%d. %s completed.', i + 1, filename);
   }
 
-  console.log('%d/%d tests completed successfully.', complete, l_);
+  console.log('%d/%d tests completed successfully.', complete, len);
 }
 
 function bench(name, func) {
   if (!files) {
     load();
-    // change certain tests. to allow
+    // Change certain tests to allow
     // comparison to older benchmark times.
     fs.readdirSync(__dirname + '/new').forEach(function(name) {
       if (name.split('.').pop() === 'html') return;
@@ -119,7 +117,7 @@ function bench(name, func) {
   var start = Date.now()
     , times = 1000
     , keys = Object.keys(files)
-    , i = 0
+    , i
     , l = keys.length
     , filename
     , file;
@@ -186,7 +184,9 @@ function main(argv) {
     return time();
   }
 
-  return runTests();
+  return runTests({
+    stop: !!~argv.indexOf('--stop')
+  });
 }
 
 if (!module.parent) {
