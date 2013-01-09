@@ -140,13 +140,31 @@ function bench(name, func) {
 }
 
 function runBench() {
-  marked.setOptions({ gfm: false });
+  marked.setOptions({
+    gfm: false,
+    tables: false,
+    breaks: false,
+    pedantic: false,
+    sanitize: false
+  });
   bench('marked', marked);
 
-  marked.setOptions({ gfm: true });
+  marked.setOptions({
+    gfm: true,
+    tables: false,
+    breaks: false,
+    pedantic: false,
+    sanitize: false
+  });
   bench('marked (gfm)', marked);
 
-  marked.setOptions({ pedantic: true });
+  marked.setOptions({
+    gfm: false,
+    tables: false,
+    breaks: false,
+    pedantic: true,
+    sanitize: false
+  });
   bench('marked (pedantic)', marked);
 
   var discount = require('discount').parse;
