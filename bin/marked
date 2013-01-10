@@ -38,7 +38,8 @@ function main(argv, callback) {
     , input
     , output
     , arg
-    , tokens;
+    , tokens
+    , opt;
 
   function getarg() {
     var arg = argv.shift();
@@ -88,12 +89,18 @@ function main(argv, callback) {
         return help();
       default:
         if (arg.indexOf('--') === 0) {
-          arg = arg.substring(2);
-          if (arg.indexOf('no-') === 0) {
-            arg = arg.substring(3);
-            options[arg] = false;
+          opt = camelize(arg.replace(/^--(no-)?/, ''));
+          if (!marked.defaults.hasOwnProperty(opt)) {
+            continue;
+          }
+          if (arg.indexOf('--no-') === 0) {
+            options[opt] = typeof marked.defaults[opt] !== 'boolean'
+              ? null
+              : false;
           } else {
-            options[arg] = true;
+            options[opt] = typeof marked.defaults[opt] !== 'boolean'
+              ? argv.shift()
+              : true;
           }
         } else {
           files.push(arg);
@@ -155,6 +162,12 @@ function getStdin(callback) {
   } catch (e) {
     callback(e);
   }
+}
+
+function camelize(text) {
+  return text.replace(/(\w)-(\w)/g, function(_, a, b) {
+    return a + b.toUpperCase();
+  });
 }
 
 /**
