@@ -72,6 +72,9 @@ marked has a few different switches which change behavior.
 - __tables__: Enable GFM tables. This is enabled by default. (Requires the
   `gfm` option in order to be enabled).
 - __breaks__: Enable GFM line breaks. Disabled by default.
+- __smartLists__: Use smarter list behavior than the original markdown.
+  Disabled by default. May eventually be default with the old behavior
+  moved into `pedantic`.
 
 ## Usage
 
@@ -83,6 +86,7 @@ marked.setOptions({
   breaks: false,
   pedantic: false,
   sanitize: true,
+  smartLists: true,
   highlight: function(code, lang) {
     if (lang === 'js') {
       return highlighter.javascript(code);
