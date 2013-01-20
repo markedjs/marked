@@ -2,7 +2,7 @@
 
 var fs = require('fs')
   , path = require('path')
-  , marked = require('marked');
+  , marked = require('../');
 
 function load() {
   var dir = __dirname + '/tests'
