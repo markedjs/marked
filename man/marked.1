@@ -1,15 +1,16 @@
 .ds q \N'34'
-.TH marked 1
+.TH marked 1 "2013-01-05" "v0.2.7" "marked.js"
 
 .SH NAME
 marked \- a javascript markdown parser
 
 .SH SYNOPSIS
 .B marked
-[\-o output] [\-i input] [\-\-help]
+[\-o \fI<output>\fP] [\-i \fI<input>\fP] [\-\-help]
 [\-\-tokens] [\-\-pedantic] [\-\-gfm]
 [\-\-breaks] [\-\-tables] [\-\-sanitize]
-[\-\-silent] [input]
+[\-\-smart\-lists] [\-\-lang\-prefix \fI<prefix>\fP]
+[\-\-no\-etc...] [\-\-silent] [\fIfilename\fP]
 
 .SH DESCRIPTION
 .B marked
@@ -28,10 +29,10 @@ marked --output="hello world.html" -i in.md --no-breaks
 
 .SH OPTIONS
 .TP
-.BI \-o,\ \-\-output\ [output]
+.BI \-o,\ \-\-output\ [\fIoutput\fP]
 Specify file output. If none is specified, write to stdout.
 .TP
-.BI \-i,\ \-\-input\ [input]
+.BI \-i,\ \-\-input\ [\fIinput\fP]
 Specify file input, otherwise use last argument as input file. If no input file
 is specified, read from stdin.
 .TP
@@ -57,7 +58,7 @@ Sanitize output. Ignore any HTML input.
 .BI \-\-smart\-lists
 Use smarter list behavior than the original markdown.
 .TP
-.BI \-\-lang\-prefix\ [prefix]
+.BI \-\-lang\-prefix\ [\fIprefix\fP]
 Set the prefix for code block classes.
 .TP
 .BI \-\-no\-sanitize,\ \-no-etc...
@@ -80,8 +81,8 @@ For configuring and running programmatically.
 Please report any bugs to https://github.com/chjj/marked.
 
 .SH LICENSE
-Copyright (c) 2011-2013, Christopher Jeffrey (MIT License)
+Copyright (c) 2011-2013, Christopher Jeffrey (MIT License).
 
-.SH SEE ALSO
+.SH "SEE ALSO"
 .BR markdown(1),
 .BR node.js(1)
