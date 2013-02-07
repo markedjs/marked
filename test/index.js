@@ -1,8 +1,22 @@
 #!/usr/bin/env node
 
+/**
+ * marked tests
+ * Copyright (c) 2011-2013, Christopher Jeffrey. (MIT Licensed)
+ * https://github.com/chjj/marked
+ */
+
+/**
+ * Modules
+ */
+
 var fs = require('fs')
   , path = require('path')
   , marked = require('../');
+
+/**
+ * Load Tests
+ */
 
 function load() {
   var dir = __dirname + '/tests'
@@ -37,10 +51,22 @@ function load() {
   return files;
 }
 
-function runTests(options) {
-  var options = options || {}
+/**
+ * Test Runner
+ */
+
+function runTests(engine, options) {
+  if (typeof engine !== 'function') {
+    options = engine;
+    engine = null;
+  }
+
+  var engine = engine || marked
+    , options = options || {}
     , files = options.files || load()
     , complete = 0
+    , failed = 0
+    , skipped = 0
     , keys = Object.keys(files)
     , i = 0
     , len = keys.length
@@ -51,13 +77,28 @@ function runTests(options) {
     , j
     , l;
 
+  if (options.marked) {
+    marked.setOptions(options.marked);
+  }
+
 main:
   for (; i < len; i++) {
     filename = keys[i];
     file = files[filename];
 
+    if ((~filename.indexOf('.gfm.') && !marked.defaults.gfm)
+        || (~filename.indexOf('.tables.') && !marked.defaults.tables)
+        || (~filename.indexOf('.breaks.') && !marked.defaults.breaks)
+        || (~filename.indexOf('.pedantic.') && !marked.defaults.pedantic)
+        || (~filename.indexOf('.sanitize.') && !marked.defaults.sanitize)
+        || (~filename.indexOf('.smartlists.') && !marked.defaults.smartLists)) {
+      skipped++;
+      console.log('#%d. %s skipped.', i + 1, filename);
+      continue main;
+    }
+
     try {
-      text = marked(file.text).replace(/\s/g, '');
+      text = engine(file.text).replace(/\s/g, '');
       html = file.html.replace(/\s/g, '');
     } catch(e) {
       console.log('%s failed.', filename);
@@ -76,6 +117,8 @@ main:
         html = html.substring(
           Math.max(j - 30, 0),
           Math.min(j + 30, html.length));
+
+        failed++;
 
         console.log(
           '\n#%d. %s failed at offset %d. Near: "%s".\n',
@@ -97,7 +140,13 @@ main:
   }
 
   console.log('%d/%d tests completed successfully.', complete, len);
+  if (failed) console.log('%d/%d tests failed.', failed, len);
+  if (skipped) console.log('%d/%d tests skipped.', skipped, len);
 }
+
+/**
+ * Benchmark a function
+ */
 
 function bench(name, func) {
   var files = bench.files || load();
@@ -139,37 +188,60 @@ function bench(name, func) {
   console.log('%s completed in %dms.', name, Date.now() - start);
 }
 
-function runBench() {
+/**
+ * Benchmark all engines
+ */
+
+function runBench(options) {
+  var options = options || {};
+
+  // Non-GFM, Non-pedantic
   marked.setOptions({
     gfm: false,
     tables: false,
     breaks: false,
     pedantic: false,
-    sanitize: false
+    sanitize: false,
+    smartLists: false
   });
+  if (options.marked) {
+    marked.setOptions(options.marked);
+  }
   bench('marked', marked);
 
+  // GFM
   marked.setOptions({
     gfm: true,
     tables: false,
     breaks: false,
     pedantic: false,
-    sanitize: false
+    sanitize: false,
+    smartLists: false
   });
+  if (options.marked) {
+    marked.setOptions(options.marked);
+  }
   bench('marked (gfm)', marked);
 
+  // Pedantic
   marked.setOptions({
     gfm: false,
     tables: false,
     breaks: false,
     pedantic: true,
-    sanitize: false
+    sanitize: false,
+    smartLists: false
   });
+  if (options.marked) {
+    marked.setOptions(options.marked);
+  }
   bench('marked (pedantic)', marked);
 
+  // Discount
   var discount = require('discount').parse;
   bench('discount', discount);
 
+  // Showdown (Reusing the converter)
   var showdown = (function() {
     var Showdown = require('showdown').Showdown;
     var convert = new Showdown.converter();
@@ -179,6 +251,7 @@ function runBench() {
   })();
   bench('showdown (reuse converter)', showdown);
 
+  // Showdown
   var showdown_slow = (function() {
     var Showdown = require('showdown').Showdown;
     return function(text) {
@@ -188,37 +261,145 @@ function runBench() {
   })();
   bench('showdown (new converter)', showdown_slow);
 
+  // markdown-js
   var markdownjs = require('markdown');
   bench('markdown-js', function(text) {
     markdownjs.parse(text);
   });
 }
 
-function time() {
-  var marked = require('../');
+/**
+ * A simple one-time benchmark
+ */
+
+function time(options) {
+  var options = options || {};
+  if (options.marked) {
+    marked.setOptions(options.marked);
+  }
   bench('marked', marked);
 }
 
-function main(argv) {
-  if (~argv.indexOf('--bench')) {
-    return runBench();
+/**
+ * Argument Parsing
+ */
+
+function parseArg(argv) {
+  var argv = process.argv.slice(2)
+    , options = {}
+    , orphans = []
+    , arg;
+
+  function getarg() {
+    var arg = argv.shift();
+
+    if (arg.indexOf('--') === 0) {
+      // e.g. --opt
+      arg = arg.split('=');
+      if (arg.length > 1) {
+        // e.g. --opt=val
+        argv.unshift(arg.slice(1).join('='));
+      }
+      arg = arg[0];
+    } else if (arg[0] === '-') {
+      if (arg.length > 2) {
+        // e.g. -abc
+        argv = arg.substring(1).split('').map(function(ch) {
+          return '-' + ch;
+        }).concat(argv);
+        arg = argv.shift();
+      } else {
+        // e.g. -a
+      }
+    } else {
+      // e.g. foo
+    }
+
+    return arg;
   }
 
-  if (~argv.indexOf('--time')) {
-    return time();
+  while (argv.length) {
+    arg = getarg();
+    switch (arg) {
+      case '-b':
+      case '--bench':
+        options.bench = true;
+        break;
+      case '-s':
+      case '--stop':
+        options.stop = true;
+        break;
+      case '-t':
+      case '--time':
+        options.time = true;
+        break;
+      default:
+        if (arg.indexOf('--') === 0) {
+          opt = camelize(arg.replace(/^--(no-)?/, ''));
+          if (!marked.defaults.hasOwnProperty(opt)) {
+            continue;
+          }
+          options.marked = options.marked || {};
+          if (arg.indexOf('--no-') === 0) {
+            options.marked[opt] = typeof marked.defaults[opt] !== 'boolean'
+              ? null
+              : false;
+          } else {
+            options.marked[opt] = typeof marked.defaults[opt] !== 'boolean'
+              ? argv.shift()
+              : true;
+          }
+        } else {
+          orphans.push(arg);
+        }
+        break;
+    }
   }
 
-  return runTests({
-    stop: !!~argv.indexOf('--stop')
+  return options;
+}
+
+/**
+ * Helpers
+ */
+
+function camelize(text) {
+  return text.replace(/(\w)-(\w)/g, function(_, a, b) {
+    return a + b.toUpperCase();
   });
 }
 
+/**
+ * Main
+ */
+
+function main(argv) {
+  var opt = parseArg();
+
+  if (opt.bench) {
+    return runBench(opt);
+  }
+
+  if (opt.time) {
+    return time(opt);
+  }
+
+  return runTests(opt);
+}
+
+/**
+ * Execute
+ */
+
 if (!module.parent) {
+  process.title = 'marked';
   main(process.argv.slice());
 } else {
-  main = runTests;
-  main.main = main;
-  main.load = load;
-  main.bench = bench;
-  module.exports = main;
+  exports = main;
+  exports.main = main;
+  exports.runTests = runTests;
+  exports.runBench = runBench;
+  exports.load = load;
+  exports.bench = bench;
+  module.exports = exports;
 }
