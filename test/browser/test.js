@@ -32,7 +32,9 @@ String.prototype.trim = String.prototype.trim || function() {
   return this.replace(/^\s+|\s+$/g, '');
 };
 
-function load() {}
+function load() {
+  return files;
+}
 
 function escape(html, encode) {
   return html
