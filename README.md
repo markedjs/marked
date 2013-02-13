@@ -90,6 +90,10 @@ marked has a few different switches which change behavior.
   Disabled by default. May eventually be default with the old behavior
   moved into `pedantic`.
 - __langPrefix__: Set the prefix for code block classes. Defaults to `lang-`.
+- __anchorClass__: Set the class to be used when generating a heading
+  anchor. Defaults to `anchor`. (Requires the `anchors` option.)
+- __anchorContent__: Set the content to be placed within the anchor tag.
+  Defaults to an empty string. (Requires the `anchors` option.)
 
 ## Usage
 
