@@ -76,7 +76,7 @@ marked has a few different switches which change behavior.
   Disabled by default. May eventually be default with the old behavior
   moved into `pedantic`.
 - __langPrefix__: Set the prefix for code block classes. Defaults to `lang-`.
-- __emojis__: Enables the use of emojis.
+- __emojis__: Enable the use of emojis ([Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/)).
 - __emojisPath__: Sets the path for where the images are (The ones included in the repo are from [Gemoji](https://github.com/github/gemoji)).
 
 ## Usage
