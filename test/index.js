@@ -91,7 +91,8 @@ main:
         || (~filename.indexOf('.breaks.') && !marked.defaults.breaks)
         || (~filename.indexOf('.pedantic.') && !marked.defaults.pedantic)
         || (~filename.indexOf('.sanitize.') && !marked.defaults.sanitize)
-        || (~filename.indexOf('.smartlists.') && !marked.defaults.smartLists)) {
+        || (~filename.indexOf('.smartlists.') && !marked.defaults.smartLists)
+        || (~filename.indexOf('preserveNumbering.') && !marked.defaults.preserveNumbering)) {
       skipped++;
       console.log('#%d. %s skipped.', i + 1, filename);
       continue main;
