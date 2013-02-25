@@ -76,6 +76,8 @@ marked has a few different switches which change behavior.
   Disabled by default. May eventually be default with the old behavior
   moved into `pedantic`.
 - __langPrefix__: Set the prefix for code block classes. Defaults to `lang-`.
+- __emojis__: Enables the use of emojis.
+- __emojisPath__: Sets the path for where the images are (The ones included in the repo are from [Gemoji](https://github.com/github/gemoji)).
 
 ## Usage
 
@@ -89,6 +91,8 @@ marked.setOptions({
   sanitize: true,
   smartLists: true,
   langPrefix: 'language-',
+  emojis: false,
+  emojisPath: 'img/emojis/',
   highlight: function(code, lang) {
     if (lang === 'js') {
       return highlighter.javascript(code);
