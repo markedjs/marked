@@ -75,6 +75,7 @@ marked has a few different switches which change behavior.
 - __smartLists__: Use smarter list behavior than the original markdown.
   Disabled by default. May eventually be default with the old behavior
   moved into `pedantic`.
+- __preserveNumbering__: Preserves the ordered list numbering of the input (allows starting at a number other than 1, counting down, skipping numbers, etc).
 - __langPrefix__: Set the prefix for code block classes. Defaults to `lang-`.
 
 ## Usage
@@ -88,6 +89,7 @@ marked.setOptions({
   pedantic: false,
   sanitize: true,
   smartLists: true,
+  preserveNumbering: false,
   langPrefix: 'language-',
   highlight: function(code, lang) {
     if (lang === 'js') {
