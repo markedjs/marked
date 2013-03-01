@@ -75,9 +75,10 @@ marked has a few different switches which change behavior.
 - __smartLists__: Use smarter list behavior than the original markdown.
   Disabled by default. May eventually be default with the old behavior
   moved into `pedantic`.
-- __langPrefix__: Set the prefix for code block classes. Defaults to `lang-`.
 
 ## Usage
+
+A simple overview of the usage:
 
 ``` js
 // Set default options
@@ -87,17 +88,53 @@ marked.setOptions({
   breaks: false,
   pedantic: false,
   sanitize: true,
-  smartLists: true,
-  langPrefix: 'language-',
-  highlight: function(code, lang) {
-    if (lang === 'js') {
-      return highlighter.javascript(code);
-    }
-    return code;
-  }
+  smartLists: true
 });
 console.log(marked('i am using __markdown__.'));
 ```
+
+### High level
+
+You can customize the result with a customized renderer.
+
+``` js
+var renderer = new marked.Renderer();
+renderer.blockcode = function(code, lang) {
+  if (!lang) {
+    return '<pre><code>' + code + '</code></pre>';
+  }
+  return highlight(code, lang);
+};
+renderer.header = function(text, level) {
+  return '<div class="h-' + level + '">' + text + '</div>';
+};
+
+var parser = new marked.Parser(options, renderer);
+console.log(parser.parse('# h1'));
+```
+
+The renderer API:
+
+```
+blockcode: function(code, lang)
+blockquote: function(text)
+blockhtml: function(html)
+
+header: function(text, level)
+paragraph: function(text)
+
+hrule: function()
+
+list: function(contents, isOrdered)
+listitem: function(text)
+
+table: function(header, body)
+tablerow: function(content)
+tablecell: function(text, flags)
+// flags: {header: false, align: 'center'}
+```
+
+### Pro level
 
 You also have direct access to the lexer and parser if you so desire.
 
