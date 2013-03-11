@@ -109,8 +109,10 @@ renderer.header = function(text, level) {
   return '<div class="h-' + level + '">' + text + '</div>';
 };
 
-var parser = new marked.Parser(options, renderer);
-console.log(parser.parse('# h1'));
+var parse = function(src, options) {
+  marked.parser(marked.lexer(src, options), options, renderer);
+}
+console.log(parse('# h1'));
 ```
 
 The renderer API:
