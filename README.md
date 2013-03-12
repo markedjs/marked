@@ -98,21 +98,18 @@ console.log(marked('i am using __markdown__.'));
 You can customize the result with a customized renderer.
 
 ``` js
-var renderer = new marked.Renderer();
-renderer.blockcode = function(code, lang) {
-  if (!lang) {
-    return '<pre><code>' + code + '</code></pre>';
-  }
-  return highlight(code, lang);
-};
+var renderer = new marked.Renderer()
+
 renderer.header = function(text, level) {
-  return '<div class="h-' + level + '">' + text + '</div>';
-};
+  return '<div class="h-' + level + '">' + text + '</div>'
+}
 
 var parse = function(src, options) {
-  marked.parser(marked.lexer(src, options), options, renderer);
+  options = options || {};
+  return marked.parser(marked.lexer(src, options), options, renderer);
 }
-console.log(parse('# h1'));
+
+console.log(parse('# h1'))
 ```
 
 The renderer API:
