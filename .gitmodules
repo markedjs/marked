@@ -1,0 +1,3 @@
+[submodule "sub-modules/gemoji"]
+	path = sub-modules/gemoji
+	url = git://github.com/github/gemoji.git
