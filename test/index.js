@@ -87,6 +87,7 @@ main:
     file = files[filename];
 
     if ((~filename.indexOf('.gfm.') && !marked.defaults.gfm)
+        || ((~filename.indexOf('.customAttributes.') && true || false) != (marked.defaults.customAttributes.a && true || false))
         || (~filename.indexOf('.tables.') && !marked.defaults.tables)
         || (~filename.indexOf('.breaks.') && !marked.defaults.breaks)
         || (~filename.indexOf('.pedantic.') && !marked.defaults.pedantic)
@@ -416,6 +417,10 @@ function parseArg(argv) {
       case '-t':
       case '--time':
         options.time = true;
+        break;
+      case 'customAttributes':
+        options.marked = options.marked || {};
+        options.marked.customAttributes = { "a": " target=\"_blank\""};
         break;
       default:
         if (arg.indexOf('--') === 0) {
