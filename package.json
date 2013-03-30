@@ -12,5 +12,10 @@
   "bugs": { "url": "http://github.com/chjj/marked/issues" },
   "keywords": ["markdown", "markup", "html"],
   "tags": ["markdown", "markup", "html"],
+  "devDependencies": {
+    "markdown": "*",
+    "showdown": "*",
+    "robotskirt": "*"
+  },
   "scripts": { "test": "node test", "bench": "node test --bench" }
 }
