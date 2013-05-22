@@ -72,7 +72,7 @@ function main(argv, callback) {
   while (argv.length) {
     arg = getarg();
     switch (arg) {
-      case 'test':
+      case '--test':
         return require('../test').main(process.argv.slice());
       case '-o':
       case '--output':
