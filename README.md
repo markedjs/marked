@@ -84,11 +84,16 @@ marked has a few different switches which change behavior.
 - __highlight__: A callback to highlight code blocks.
 - __tables__: Enable GFM tables. This is enabled by default. (Requires the
   `gfm` option in order to be enabled).
+- __anchors__: Create an HTML anchor in the output for each heading.
 - __breaks__: Enable GFM line breaks. Disabled by default.
 - __smartLists__: Use smarter list behavior than the original markdown.
   Disabled by default. May eventually be default with the old behavior
   moved into `pedantic`.
 - __langPrefix__: Set the prefix for code block classes. Defaults to `lang-`.
+- __anchorClass__: Set the class to be used when generating a heading
+  anchor. Defaults to `anchor`. (Requires the `anchors` option.)
+- __anchorContent__: Set the content to be placed within the anchor tag.
+  Defaults to an empty string. (Requires the `anchors` option.)
 
 ## Usage
 
@@ -97,6 +102,7 @@ marked has a few different switches which change behavior.
 marked.setOptions({
   gfm: true,
   tables: true,
+  anchors: false,
   breaks: false,
   pedantic: false,
   sanitize: true,
