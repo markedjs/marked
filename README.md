@@ -88,6 +88,8 @@ marked has a few different switches which change behavior.
 - __smartLists__: Use smarter list behavior than the original markdown.
   Disabled by default. May eventually be default with the old behavior
   moved into `pedantic`.
+- __smartypants__: Use "smart" typograhic punctuation for things like quotes
+  and dashes.
 - __langPrefix__: Set the prefix for code block classes. Defaults to `lang-`.
 
 ## Usage
@@ -101,6 +103,7 @@ marked.setOptions({
   pedantic: false,
   sanitize: true,
   smartLists: true,
+  smartypants: false,
   langPrefix: 'language-',
   highlight: function(code, lang) {
     if (lang === 'js') {
