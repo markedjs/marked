@@ -37,7 +37,11 @@ marked.setOptions({
   langPrefix: 'lang-'
 });
 
-console.log(marked('I am using __markdown__.'));
+// Using async version of marked
+marked('I am using __markdown__.', function (err, content) {
+  if (err) throw err;
+  console.log(content);
+});
 ```
 
 ## marked(markdownString, [options], [callback])
@@ -55,14 +59,8 @@ Hash of options. Can also be set using the `marked.setOptions` method as seen ab
 ### callback
 Type: `Function`
 
-Function called when the `markdownString` has been fully parsed. If the `options` argument is omitted, this can be used as the second argument as follows:
-```js
-marked(markdownString, function (err, content) {
-  if (err) throw err;
-  console.log(content);
-  // Outputs parsed html
-});
-```
+Function called when the `markdownString` has been fully parsed when using async highlighting. If the `options` argument is omitted, this can be used as the second argument as seen above:
+
 ## Options
 
 ### gfm
