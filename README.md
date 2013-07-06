@@ -2,7 +2,7 @@
 
 > A full-featured markdown parser and compiler, written in JavaScript. Built for speed.
 
-[![NPM version](https://badge.fury.io/js/marked.png)](http://badge.fury.io/js/marked)  
+[![NPM version](https://badge.fury.io/js/marked.png)](http://badge.fury.io/js/marked)
 
 ## Install
 
@@ -38,7 +38,28 @@ marked.setOptions({
 });
 
 console.log(marked('I am using __markdown__.'));
+
+marked('A piece of code:
+
+	```javascript
+		function entity(a) {
+			return a;
+		}
+	```
+
+	',
+	function (err, result) {
+		if (err) {
+			console.error(err);
+		} else {
+			console.log(result);
+		}
+	}
+);
+
 ```
+
+Note that the above example, the first call to `marked` doesn't require a callback function because the markdown text to parse doesn't contain any piece of source code unlike the second call which requires a callback function because this example uses an asynchronous library to highlight the source code syntax.
 
 ## marked(markdownString, [options], [callback])
 
