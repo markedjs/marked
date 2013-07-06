@@ -239,6 +239,71 @@ disadvantage in the benchmarks above.
 Along with implementing every markdown feature, marked also implements
 [GFM features](http://github.github.com/github-flavored-markdown/).
 
+<<<<<<< HEAD
+=======
+## Options
+
+marked has a few different switches which change behavior.
+
+- __pedantic__: Conform to obscure parts of `markdown.pl` as much as possible.
+  Don't fix any of the original markdown bugs or poor behavior.
+- __gfm__: Enable github flavored markdown (enabled by default).
+- __sanitize__: Sanitize the output. Ignore any HTML that has been input.
+- __highlight__: A callback to highlight code blocks.
+- __tables__: Enable GFM tables. This is enabled by default. (Requires the
+  `gfm` option in order to be enabled).
+- __anchors__: Create an HTML anchor in the output for each heading.
+- __breaks__: Enable GFM line breaks. Disabled by default.
+- __smartLists__: Use smarter list behavior than the original markdown.
+  Disabled by default. May eventually be default with the old behavior
+  moved into `pedantic`.
+- __smartypants__: Use "smart" typograhic punctuation for things like quotes
+  and dashes.
+- __langPrefix__: Set the prefix for code block classes. Defaults to `lang-`.
+- __anchorClass__: Set the class to be used when generating a heading
+  anchor. Defaults to `anchor`. (Requires the `anchors` option.)
+- __anchorContent__: Set the content to be placed within the anchor tag.
+  Defaults to an empty string. (Requires the `anchors` option.)
+
+## Usage
+
+``` js
+// Set default options
+marked.setOptions({
+  gfm: true,
+  tables: true,
+  anchors: false,
+  breaks: false,
+  pedantic: false,
+  sanitize: true,
+  smartLists: true,
+  smartypants: false,
+  langPrefix: 'language-',
+  highlight: function(code, lang) {
+    if (lang === 'js') {
+      return highlighter.javascript(code);
+    }
+    return code;
+  }
+});
+console.log(marked('i am using __markdown__.'));
+```
+
+You also have direct access to the lexer and parser if you so desire.
+
+``` js
+var tokens = marked.lexer(text, options);
+console.log(marked.parser(tokens));
+```
+
+``` js
+var lexer = new marked.Lexer(options);
+var tokens = lexer.lex(text);
+console.log(tokens);
+console.log(lexer.rules);
+```
+
+>>>>>>> 40b3f286203ec7013e81d2c6ce03fabf8a4129b0
 ``` bash
 $ node
 > require('marked').lexer('> i am using marked.')
