@@ -125,7 +125,7 @@ Conform to obscure parts of `markdown.pl` as much as possible. Don't fix any of 
 
 ### sanitize
 Type: `Boolean`
-Default: `true`
+Default: `false`
 
 Sanitize the output. Ignore any HTML that has been input.
 
