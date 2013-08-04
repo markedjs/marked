@@ -499,10 +499,7 @@ function main(argv) {
     return time(opt);
   }
 
-  if (!module.parent) {
-    var passed = runTests(opt);
-    process.exit(!passed);
-  } else return runTests(opt);
+  return runTests(opt);
 }
 
 /**
@@ -511,7 +508,7 @@ function main(argv) {
 
 if (!module.parent) {
   process.title = 'marked';
-  main(process.argv.slice());
+  process.exit(main(process.argv.slice()) ? 0 : 1);
 } else {
   exports = main;
   exports.main = main;
