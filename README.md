@@ -77,7 +77,7 @@ A function to highlight code blocks. The function takes three arguments: code, l
 ```js
 marked.setOptions({
   highlight: function (code, lang) {
-    return hljs.highlightAuto(code, lang).value;
+    return hljs.highlightAuto(lang, code).value;
   }
 });
 ```
