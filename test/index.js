@@ -349,7 +349,7 @@ function fix(options) {
           .replace(/&lt;/g, '<')
           .replace(/&amp;/g, '&');
 
-        id = id.toLowerCase().replace(/\s/g, '-');
+        id = id.toLowerCase().replace(/[^\w]+/g, '-');
 
         return '<' + h + ' id="' + id + '">' + text + '</' + h + '>';
       });
