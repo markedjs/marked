@@ -324,13 +324,13 @@ function fix(options) {
   // node fix.js
   var dir = __dirname + '/tests';
 
-  // fix unencoded quotes
   fs.readdirSync(dir).filter(function(file) {
     return path.extname(file) === '.html';
   }).forEach(function(file) {
     var file = path.join(dir, file)
       , html = fs.readFileSync(file, 'utf8');
 
+    // fix unencoded quotes
     html = html
       .replace(/='([^\n']*)'(?=[^<>\n]*>)/g, '=&__APOS__;$1&__APOS__;')
       .replace(/="([^\n"]*)"(?=[^<>\n]*>)/g, '=&__QUOT__;$1&__QUOT__;')
@@ -338,6 +338,21 @@ function fix(options) {
       .replace(/'/g, '&#39;')
       .replace(/&__QUOT__;/g, '"')
       .replace(/&__APOS__;/g, '\'');
+
+    // add heading id's
+    html = html
+      .replace(/<(h[1-6])>([^<]+)<\/\1>/g, function(s, h, text) {
+        var id = text
+          .replace(/&#39;/g, '\'')
+          .replace(/&quot;/g, '"')
+          .replace(/&gt;/g, '>')
+          .replace(/&lt;/g, '<')
+          .replace(/&amp;/g, '&');
+
+        id = id.toLowerCase().replace(/\s/g, '-');
+
+        return '<' + h + ' id="' + id + '">' + text + '</' + h + '>';
+      });
 
     fs.writeFileSync(file, html);
   });
