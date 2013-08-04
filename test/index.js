@@ -143,6 +143,8 @@ main:
   console.log('%d/%d tests completed successfully.', complete, len);
   if (failed) console.log('%d/%d tests failed.', failed, len);
   if (skipped) console.log('%d/%d tests skipped.', skipped, len);
+
+  return !failed;
 }
 
 /**
@@ -497,7 +499,10 @@ function main(argv) {
     return time(opt);
   }
 
-  return runTests(opt);
+  if (!module.parent) {
+    var passed = runTests(opt);
+    process.exit(!passed);
+  } else return runTests(opt);
 }
 
 /**
