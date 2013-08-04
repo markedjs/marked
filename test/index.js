@@ -486,7 +486,7 @@ function main(argv) {
 
   if (!module.parent) {
     var passed = runTests(opt);
-    process.exit(!passed)
+    process.exit(!passed);
   } else return runTests(opt);
 }
 
