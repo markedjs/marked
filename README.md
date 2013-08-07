@@ -92,7 +92,8 @@ lang, and callback. The above example uses async highlighting with
 ```js
 marked.setOptions({
   highlight: function (code, lang) {
-    return hljs.highlightAuto(lang, code).value;
+    return hljs.highlight(lang, code).value;
+    // or for auto-detection: return hljs.highlightAuto(code).value;
   }
 });
 ```
