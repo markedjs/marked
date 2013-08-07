@@ -1,8 +1,9 @@
 # marked
 
-> A full-featured markdown parser and compiler, written in JavaScript. Built for speed.
+> A full-featured markdown parser and compiler, written in javascript. Built
+> for speed.
 
-[![NPM version](https://badge.fury.io/js/marked.png)](http://badge.fury.io/js/marked)  
+[![NPM version](https://badge.fury.io/js/marked.png)][badge]
 
 ## Install
 
@@ -13,19 +14,22 @@ npm install marked --save
 ## Usage
 
 Minimal usage:
+
 ```js
 console.log(marked('I am using __markdown__.'));
 // Outputs: <p>I am using <i>markdown</i>.</p>
 ```
 
 Example using all options:
+
 ```js
 // Set default options except highlight which has no default
 marked.setOptions({
   gfm: true,
   highlight: function (code, lang, callback) {
     pygmentize({ lang: lang, format: 'html' }, code, function (err, result) {
-      callback(err, result.toString());
+      if (err) return callback(err);
+      callback(null, result.toString());
     });
   },
   tables: true,
@@ -47,32 +51,43 @@ marked('I am using __markdown__.', function (err, content) {
 ## marked(markdownString, [options], [callback])
 
 ### markdownString
+
 Type: `String`
 
 String of markdown source to be compiled.
 
 ### options
+
 Type: `Object`
 
-Hash of options. Can also be set using the `marked.setOptions` method as seen above.
+Hash of options. Can also be set using the `marked.setOptions` method as seen
+above.
 
 ### callback
+
 Type: `Function`
 
-Function called when the `markdownString` has been fully parsed when using async highlighting. If the `options` argument is omitted, this can be used as the second argument as seen above:
+Function called when the `markdownString` has been fully parsed when using
+async highlighting. If the `options` argument is omitted, this can be used as
+the second argument as seen above:
 
 ## Options
 
 ### gfm
+
 Type: `Boolean`
 Default: `true`
 
-Enable [GitHub flavored markdown](https://help.github.com/articles/github-flavored-markdown).
+Enable [GitHub flavored markdown][gfm].
 
 ### highlight
+
 Type: `Function`
 
-A function to highlight code blocks. The function takes three arguments: code, lang, and callback. The above example uses async highlighting with [node-pygementize-bundled](https://github.com/rvagg/node-pygmentize-bundled), and here is a synchronous example using [highlight.js](https://github.com/isagalaev/highlight.js) which doesn't require the callback argument:
+A function to highlight code blocks. The function takes three arguments: code,
+lang, and callback. The above example uses async highlighting with
+[node-pygementize-bundled][pygmentize], and here is a synchronous example using
+[highlight.js][highlight] which doesn't require the callback argument:
 
 ```js
 marked.setOptions({
@@ -83,6 +98,7 @@ marked.setOptions({
 ```
 
 #### highlight arguments
+
 `code`
 
 Type: `String`
@@ -102,53 +118,60 @@ Type: `String`
 The callback function to call when using an async highlighter.
 
 ### tables
+
 Type: `Boolean`
 Default: `true`
 
-Enable GFM [tables](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#wiki-tables). This option requires the
-  `gfm` option to be true.
+Enable GFM [tables][tables].
+This option requires the `gfm` option to be true.
 
 ### breaks
+
 Type: `Boolean`
 Default: `false`
 
-Enable GFM [line breaks](https://help.github.com/articles/github-flavored-markdown#newlines). This option requires the
-  `gfm` option to be true.
+Enable GFM [line breaks][breaks].
+This option requires the `gfm` option to be true.
 
 ### pedantic
+
 Type: `Boolean`
 Default: `false`
 
-Conform to obscure parts of `markdown.pl` as much as possible. Don't fix any of the original markdown bugs or poor behavior.
+Conform to obscure parts of `markdown.pl` as much as possible. Don't fix any of
+the original markdown bugs or poor behavior.
 
 ### sanitize
+
 Type: `Boolean`
 Default: `false`
 
 Sanitize the output. Ignore any HTML that has been input.
 
 ### smartLists
+
 Type: `Boolean`
 Default: `true`
 
-Use smarter list behavior than the original markdown.
-  May eventually be default with the old behavior
-  moved into `pedantic`.
+Use smarter list behavior than the original markdown. May eventually be
+default with the old behavior moved into `pedantic`.
 
 ### smartypants
+
 Type: `Boolean`
 Default: `false`
 
-Use "smart" typograhic punctuation for things like quotes
-  and dashes.
+Use "smart" typograhic punctuation for things like quotes and dashes.
 
 ### langPrefix
+
 Type: `String`
 Default: `lang-`
 
 Set the prefix for code block classes.
 
 ## Access to lexer and parser
+
 You also have direct access to the lexer and parser if you so desire.
 
 ``` js
@@ -234,8 +257,8 @@ of performance, but did not in order to be exactly what you expect in terms
 of a markdown rendering. In fact, this is why marked could be considered at a
 disadvantage in the benchmarks above.
 
-Along with implementing every markdown feature, marked also implements
-[GFM features](http://github.github.com/github-flavored-markdown/).
+Along with implementing every markdown feature, marked also implements [GFM
+features][gfmf].
 
 ``` bash
 $ node
@@ -247,8 +270,43 @@ $ node
   links: {} ]
 ```
 
+## Running Tests & Contributing
+
+If you want to submit a pull request, make sure your changes pass the test
+suite. If you're adding a new feature, be sure to add your own test.
+
+The marked test suite is set up slightly strangely: `test/new` is for all tests
+that are not part of the original markdown.pl test suite (this is where your
+test should go if you make one). `test/original` is only for the original
+markdown.pl tests. `test/tests` houses both types of tests after they have been
+combined and moved/generated by running `node test --fix` or `marked --test
+--fix`.
+
+In other words, if you have a test to add, add it to `test/new/` and then
+regenerate the tests with `node test --fix`. Commit the result. If your test
+uses a certain feature, for example, maybe it assumes GFM is *not* enabled, you
+can add `.nogfm` to the filename. So, `my-test.text` becomes
+`my-test.nogfm.text`. You can do this with any marked option. Say you want
+line breaks and smartypants enabled, your filename should be:
+`my-test.breaks.smartypants.text`.
+
+To run the tests:
+
+``` js
+cd marked/
+node test
+```
+
 ## License
 
 Copyright (c) 2011-2013, Christopher Jeffrey. (MIT License)
 
 See LICENSE for more info.
+
+[gfm]: https://help.github.com/articles/github-flavored-markdown
+[gfmf]: http://github.github.com/github-flavored-markdown/
+[pygmentize]: https://github.com/rvagg/node-pygmentize-bundled
+[highlight]: https://github.com/isagalaev/highlight.js
+[badge]: http://badge.fury.io/js/marked
+[tables]: https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#wiki-tables
+[breaks]: https://help.github.com/articles/github-flavored-markdown#newlines
