@@ -29,7 +29,7 @@ app.get('/test.js', function(req, res, next) {
     , files = load();
 
   test = test.replace('__TESTS__', JSON.stringify(files));
-  test = test.replace('__MAIN__', runTests + '');
+  test = test.replace('__MAIN__', test.replacePre + '\n\n' + runTests + '');
 
   res.contentType('.js');
   res.send(test);

@@ -51,6 +51,37 @@ function load() {
   return files;
 }
 
+function stripPre() {
+  var keys = Object.keys(files)
+    , i = 0
+    , key;
+
+  for (; i < keys.length; i++) {
+    key = keys[i];
+    files[key].text = replacePre(files[key].text, true);
+    files[key].html = replacePre(files[key].html, true);
+  }
+}
+
+function replacePre(text, remove) {
+  var o = /(?:^|\n)#if +([^\s]+)\n([\s\S]*?)(?:\n#else\n([\s\S]*?))?\n#endif/g;
+  if (remove) {
+    return text.replace(o, '');
+  }
+  return text.replace(o, function(str, option, content, els) {
+    var set = true;
+    option = option.toLowerCase();
+    if (option[0] === '!') {
+      option = option.substring(1);
+      set = false;
+    }
+    if (!!marked.defaults[option] === set) {
+      return '\n' + content;
+    }
+    return '\n' + (els || '');
+  });
+}
+
 /**
  * Test Runner
  */
@@ -98,9 +129,12 @@ main:
       continue main;
     }
 
+    text = replacePre(file.text);
+    html = replacePre(file.html);
+
     try {
-      text = engine(file.text).replace(/\s/g, '');
-      html = file.html.replace(/\s/g, '');
+      text = engine(text).replace(/\s/g, '');
+      html = html.replace(/\s/g, '');
     } catch(e) {
       console.log('%s failed.', filename);
       throw e;
@@ -171,6 +205,8 @@ function bench(name, func) {
 
     files['main.text'].text = files['main.text'].text.replace('* * *\n\n', '');
   }
+
+  stripPre();
 
   var start = Date.now()
     , times = 1000
@@ -511,6 +547,7 @@ if (!module.parent) {
 } else {
   exports = main;
   exports.main = main;
+  exports.replacePre = replacePre;
   exports.runTests = runTests;
   exports.runBench = runBench;
   exports.load = load;
