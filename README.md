@@ -292,7 +292,7 @@ line breaks and smartypants enabled, your filename should be:
 
 To run the tests:
 
-``` js
+``` bash
 cd marked/
 node test
 ```
