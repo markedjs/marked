@@ -15,22 +15,34 @@ console.log = function(text) {
   document.body.innerHTML += '<pre>' + escape(text) + '</pre>';
 };
 
-Object.keys = Object.keys || function(obj) {
-  var out = []
-    , key;
+if (!Object.keys) {
+  Object.keys = function(obj) {
+    var out = []
+      , key;
 
-  for (key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      out.push(key);
+    for (key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        out.push(key);
+      }
     }
-  }
 
-  return out;
-};
+    return out;
+  };
+}
 
-String.prototype.trim = String.prototype.trim || function() {
-  return this.replace(/^\s+|\s+$/g, '');
-};
+if (!Array.prototype.forEach) {
+  Array.prototype.forEach = function(callback, context) {
+    for (var i = 0; i < this.length; i++) {
+      callback.call(context || null, this[i], i, obj);
+    }
+  };
+}
+
+if (!String.prototype.trim) {
+  String.prototype.trim = function() {
+    return this.replace(/^\s+|\s+$/g, '');
+  };
+}
 
 function load() {
   return files;

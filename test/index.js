@@ -51,37 +51,6 @@ function load() {
   return files;
 }
 
-function stripPre() {
-  var keys = Object.keys(files)
-    , i = 0
-    , key;
-
-  for (; i < keys.length; i++) {
-    key = keys[i];
-    files[key].text = replacePre(files[key].text, true);
-    files[key].html = replacePre(files[key].html, true);
-  }
-}
-
-function replacePre(text, remove) {
-  var o = /(?:^|\n)#if +([^\s]+)\n([\s\S]*?)(?:\n#else\n([\s\S]*?))?\n#endif/g;
-  if (remove) {
-    return text.replace(o, '');
-  }
-  return text.replace(o, function(str, option, content, els) {
-    var set = true;
-    option = option.toLowerCase();
-    if (option[0] === '!') {
-      option = option.substring(1);
-      set = false;
-    }
-    if (!!marked.defaults[option] === set) {
-      return '\n' + content;
-    }
-    return '\n' + (els || '');
-  });
-}
-
 /**
  * Test Runner
  */
@@ -97,12 +66,12 @@ function runTests(engine, options) {
     , files = options.files || load()
     , complete = 0
     , failed = 0
-    , skipped = 0
     , keys = Object.keys(files)
     , i = 0
     , len = keys.length
     , filename
     , file
+    , flags
     , text
     , html
     , j
@@ -117,24 +86,33 @@ main:
     filename = keys[i];
     file = files[filename];
 
-    if ((~filename.indexOf('.gfm.') && !marked.defaults.gfm)
-        || (~filename.indexOf('.tables.') && !marked.defaults.tables)
-        || (~filename.indexOf('.breaks.') && !marked.defaults.breaks)
-        || (~filename.indexOf('.pedantic.') && !marked.defaults.pedantic)
-        || (~filename.indexOf('.sanitize.') && !marked.defaults.sanitize)
-        || (~filename.indexOf('.smartlists.') && !marked.defaults.smartLists)
-        || (~filename.indexOf('.smartypants.') && !marked.defaults.smartypants)) {
-      skipped++;
-      console.log('#%d. %s skipped.', i + 1, filename);
-      continue main;
+    if (marked._original) {
+      marked.defaults = marked._original;
+      delete marked._original;
     }
 
-    text = replacePre(file.text);
-    html = replacePre(file.html);
+    flags = filename.split('.').slice(1, -1);
+    if (flags.length) {
+      marked._original = marked.defaults;
+      marked.defaults = {};
+      Object.keys(marked._original).forEach(function(key) {
+        marked.defaults[key] = marked._original[key];
+      });
+      flags.forEach(function(key) {
+        var val = true;
+        if (key.indexOf('no') === 0) {
+          key = key.substring(2);
+          val = false;
+        }
+        if (marked.defaults.hasOwnProperty(key)) {
+          marked.defaults[key] = val;
+        }
+      });
+    }
 
     try {
-      text = engine(text).replace(/\s/g, '');
-      html = html.replace(/\s/g, '');
+      text = engine(file.text).replace(/\s/g, '');
+      html = file.html.replace(/\s/g, '');
     } catch(e) {
       console.log('%s failed.', filename);
       throw e;
@@ -176,7 +154,6 @@ main:
 
   console.log('%d/%d tests completed successfully.', complete, len);
   if (failed) console.log('%d/%d tests failed.', failed, len);
-  if (skipped) console.log('%d/%d tests skipped.', skipped, len);
 
   return !failed;
 }
@@ -205,8 +182,6 @@ function bench(name, func) {
 
     files['main.text'].text = files['main.text'].text.replace('* * *\n\n', '');
   }
-
-  stripPre();
 
   var start = Date.now()
     , times = 1000
@@ -355,7 +330,11 @@ function fix(options) {
 
   // cp -r original tests
   fs.readdirSync(path.resolve(__dirname, 'original')).forEach(function(file) {
-    fs.writeFileSync(path.resolve(__dirname, 'tests', file),
+    var nfile = file;
+    if (file.indexOf('hard_wrapped_paragraphs_with_list_like_lines.') === 0) {
+      nfile = file.replace(/\.(text|html)$/, '.nogfm.$1');
+    }
+    fs.writeFileSync(path.resolve(__dirname, 'tests', nfile),
       fs.readFileSync(path.resolve(__dirname, 'original', file)));
   });
 
@@ -547,7 +526,6 @@ if (!module.parent) {
 } else {
   exports = main;
   exports.main = main;
-  exports.replacePre = replacePre;
   exports.runTests = runTests;
   exports.runBench = runBench;
   exports.load = load;
