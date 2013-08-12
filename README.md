@@ -170,6 +170,14 @@ Default: `lang-`
 
 Set the prefix for code block classes.
 
+### codeClass
+
+Type: `String`
+Default: `null`
+
+Set the name for pre block classes. No class name be default.
+If set `codeClass: "prettyprint"`, will get `<pre class="prettyprint">`.
+
 ## Access to lexer and parser
 
 You also have direct access to the lexer and parser if you so desire.
