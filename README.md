@@ -297,6 +297,12 @@ cd marked/
 node test
 ```
 
+### Contribution and License Agreement
+
+If you contribute code to marked, you are implicitly allowing your code to be
+distributed under the MIT license. You are also implicitly verifying that all
+code is your original work. `</legalese>`
+
 ## License
 
 Copyright (c) 2011-2013, Christopher Jeffrey. (MIT License)
