@@ -34,7 +34,12 @@ marked.setOptions({
   },
   tables: true,
   breaks: false,
-  pedantic: false,
+  pedantic: {
+		html: false,
+		outdent: false,
+		code: false,
+		inline: false
+	},
   sanitize: true,
   smartLists: true,
   smartypants: false,
@@ -140,6 +145,36 @@ Default: `false`
 
 Conform to obscure parts of `markdown.pl` as much as possible. Don't fix any of
 the original markdown bugs or poor behavior.
+
+The flowing sub-features will collectively enable by `pedantic: true` or they can be enabled individually.
+
+#### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;html
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type: `Boolean`
+Default: `false`
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bypass parsing HTML for inline markdown.
+
+#### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outdent
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type: `Boolean`
+Default: `false`
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Outdent lists according to `markdown.pl` specification.
+
+#### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;code
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type: `Boolean`
+Default: `false`
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Don't remove trailing newline characters from code blocks.
+
+#### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inline
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type: `Boolean`
+Default: `false`
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Seek inline markdown according `markdown.pl` specification.
 
 ### sanitize
 
