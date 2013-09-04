@@ -148,33 +148,33 @@ the original markdown bugs or poor behavior.
 
 The flowing sub-features will collectively enable by `pedantic: true` or they can be enabled individually.
 
-####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;html
+#### html
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type: `Boolean`
+Type: `Boolean`
 Default: `false`
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bypass parsing HTML for inline markdown.
+Bypass parsing HTML for inline markdown.
 
-####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outdent
+#### outdent
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type: `Boolean`
+Type: `Boolean`
 Default: `false`
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Outdent lists according to `markdown.pl` specification.
+Outdent lists according to `markdown.pl` specification.
 
-####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;code
+#### code
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type: `Boolean`
+Type: `Boolean`
 Default: `false`
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Don't remove trailing newline characters from code blocks.
+Don't remove trailing newline characters from code blocks.
 
-####&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inline
+#### inline
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type: `Boolean`
+Type: `Boolean`
 Default: `false`
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Seek inline markdown according `markdown.pl` specification.
+Seek inline markdown according `markdown.pl` specification.
 
 ### sanitize
 
