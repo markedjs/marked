@@ -17,7 +17,7 @@ Minimal usage:
 
 ```js
 console.log(marked('I am using __markdown__.'));
-// Outputs: <p>I am using <i>markdown</i>.</p>
+// Outputs: <p>I am using <strong>markdown</strong>.</p>
 ```
 
 Example using all options:
