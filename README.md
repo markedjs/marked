@@ -32,6 +32,17 @@ marked.setOptions({
       callback(null, result.toString());
     });
   },
+  header: function () {
+    return '<h'
+      + this.token.depth
+      + ' id="'
+      + this.token.text.toLowerCase().replace(/[^\w]+/g, '-')
+      + '">'
+      + this.inline.output(this.token.text)
+      + '</h'
+      + this.token.depth
+      + '>\n';
+  },
   tables: true,
   breaks: false,
   pedantic: false,
@@ -116,6 +127,24 @@ The programming language specified in the code block.
 Type: `String`
 
 The callback function to call when using an async highlighter.
+
+### header
+
+Type: `Function`
+Default:
+```js
+return '<h'
+  + this.token.depth
+  + ' id="'
+  + this.token.text.toLowerCase().replace(/[^\w]+/g, '-')
+  + '">'
+  + this.inline.output(this.token.text)
+  + '</h'
+  + this.token.depth
+  + '>\n';
+```
+
+Function to render custom html header markup. This is used for creating custom headers like GitHub's hover links.
 
 ### tables
 
