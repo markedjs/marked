@@ -99,6 +99,22 @@ main:
         marked.defaults[key] = marked._original[key];
       });
       flags.forEach(function(key) {
+        if (key === 'header') {
+          marked.defaults.header = function () {
+           return '<h'
+          + this.token.depth
+          + '><a name="'
+          +  this.token.text.toLowerCase().replace(/[^\w]+/g, '-')
+          + '"class="anchor" href="#'
+          + this.token.text.toLowerCase().replace(/[^\w]+/g, '-')
+          + '"><span class="header-link"></span></a>'
+          + this.inline.output(this.token.text)
+          + '</h'
+          + this.token.depth
+          + '>\n';
+          }
+          return;
+        }
         var val = true;
         if (key.indexOf('no') === 0) {
           key = key.substring(2);
