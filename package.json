@@ -15,7 +15,8 @@
   "devDependencies": {
     "markdown": "*",
     "showdown": "*",
-    "robotskirt": "*"
+    "robotskirt": "*",
+    "stringex": "*"
   },
   "scripts": { "test": "node test", "bench": "node test --bench" }
 }
