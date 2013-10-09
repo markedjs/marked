@@ -1,0 +1,9 @@
+{
+  "name": "marked",
+  "version": "0.2.9",
+  "repo": "chjj/marked",
+  "description": "A markdown parser built for speed",
+  "keywords": ["markdown", "markup", "html"],
+  "main": "lib/marked.js",
+  "license": "MIT"
+}
