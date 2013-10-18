@@ -1,0 +1,29 @@
+	code block on the first line
+	
+Regular text.
+
+    code block indented by spaces
+
+Regular text.
+
+	the lines in this block  
+	all contain trailing spaces  
+
+GFM Fences.
+
+``` js
+var a = 'hello';
+console.log(a + ' world');
+```
+
+~~~bash
+echo "hello, ${WORLD}"
+~~~
+
+```````longfence
+Q: What do you call a tall person who sells stolen goods?
+```````
+
+~~~~~~~~~~  ManyTildes
+A longfence!
+~~~~~~~~~~
