@@ -117,6 +117,18 @@ Type: `String`
 
 The callback function to call when using an async highlighter.
 
+### lookupCodeLink
+
+Type: `Function`
+
+An optional function for turning certain `` `code` `` blocks into links
+if there is an applicable reference for `"code"`.  The function receives
+the content of the backticks and must return a link object if there is
+an applicable reference, or undefined otherwise.  A link object must
+have an `href` property, and may have `text` and `title` properties.
+The `text` defaults to the given code.  The link has no title by
+default.
+
 ### tables
 
 Type: `Boolean`
