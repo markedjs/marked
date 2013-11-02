@@ -38,7 +38,8 @@ marked.setOptions({
   sanitize: true,
   smartLists: true,
   smartypants: false,
-  langPrefix: 'lang-'
+  langPrefix: 'lang-',
+  wrap: true
 });
 
 // Using async version of marked
@@ -169,6 +170,16 @@ Type: `String`
 Default: `lang-`
 
 Set the prefix for code block classes.
+
+### wrap
+
+Type: `Boolean`
+Default: `true`
+
+Wrap the code block with `<pre><code>...</code></pre>`.
+If not set the `langPrefix` option is ignored and the `highlight` option
+can be used to generate custom wrapper.
+
 
 ## Access to lexer and parser
 
