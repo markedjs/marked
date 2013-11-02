@@ -17,7 +17,7 @@ Minimal usage:
 
 ```js
 console.log(marked('I am using __markdown__.'));
-// Outputs: <p>I am using <i>markdown</i>.</p>
+// Outputs: <p>I am using <strong>markdown</strong>.</p>
 ```
 
 Example using all options:
@@ -169,6 +169,13 @@ Type: `String`
 Default: `lang-`
 
 Set the prefix for code block classes.
+
+### headerPrefix
+
+Type: `String`
+Default: ``
+
+Set the prefix for header IDs.
 
 ## Access to lexer and parser
 
