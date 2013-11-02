@@ -61,8 +61,8 @@ function runTests(engine, options) {
     engine = null;
   }
 
-  var engine = engine || marked
-    , options = options || {}
+  engine = engine || marked;
+  var options = options || {}
     , files = options.files || load()
     , complete = 0
     , failed = 0
@@ -111,7 +111,13 @@ main:
     }
 
     try {
-      text = engine(file.text).replace(/\s/g, '');
+      text = engine(file.text, {
+        lookupCodeLink: function (name) {
+          if (name === "CodeReference") {
+            return {href: "#CodeReference"};
+          }
+        }
+      }).replace(/\s/g, '');
       html = file.html.replace(/\s/g, '');
     } catch(e) {
       console.log('%s failed.', filename);
