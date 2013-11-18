@@ -86,7 +86,7 @@ Type: `Function`
 
 A function to highlight code blocks. The function takes three arguments: code,
 lang, and callback. The above example uses async highlighting with
-[node-pygementize-bundled][pygmentize], and here is a synchronous example using
+[node-pygmentize-bundled][pygmentize], and here is a synchronous example using
 [highlight.js][highlight] which doesn't require the callback argument:
 
 ```js
