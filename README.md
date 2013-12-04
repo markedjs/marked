@@ -179,7 +179,7 @@ example:
 ```javascript
 var r = new marked.Renderer()
 r.blockcode = function(code, lang) {
-    return highlight(code, lang).value;
+  return highlight(lang, code).value;
 }
 
 console.log(marked(text, {renderer: r}))
@@ -189,11 +189,11 @@ You can control anything you want.
 
 ### Block Level
 
-- blockcode(code, language)
+- code(code, language)
 - blockquote(quote)
-- blockhtml(html)
-- header(text, level)
-- hrule()
+- html(html)
+- heading(text, level)
+- hr()
 - list(body, ordered)
 - listitem(text)
 - paragraph(text)
@@ -213,10 +213,10 @@ You can control anything you want.
 ### Span Level
 
 - strong(text)
-- emphasis(text)
+- em(text)
 - codespan(code)
-- linebreak()
-- strikethrough(text)
+- br()
+- del(text)
 - link(href, title, text)
 - image(href, title, text)
 
