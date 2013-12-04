@@ -113,7 +113,7 @@ The programming language specified in the code block.
 
 `callback`
 
-Type: `String`
+Type: `Function`
 
 The callback function to call when using an async highlighter.
 
