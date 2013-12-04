@@ -23,22 +23,14 @@ console.log(marked('I am using __markdown__.'));
 Example using all options:
 
 ```js
-// Set default options except highlight which has no default
 marked.setOptions({
   gfm: true,
-  highlight: function (code, lang, callback) {
-    pygmentize({ lang: lang, format: 'html' }, code, function (err, result) {
-      if (err) return callback(err);
-      callback(null, result.toString());
-    });
-  },
   tables: true,
   breaks: false,
   pedantic: false,
   sanitize: true,
   smartLists: true,
   smartypants: false,
-  langPrefix: 'lang-'
 });
 
 // Using async version of marked
@@ -79,43 +71,6 @@ Type: `Boolean`
 Default: `true`
 
 Enable [GitHub flavored markdown][gfm].
-
-### highlight
-
-Type: `Function`
-
-A function to highlight code blocks. The function takes three arguments: code,
-lang, and callback. The above example uses async highlighting with
-[node-pygmentize-bundled][pygmentize], and here is a synchronous example using
-[highlight.js][highlight] which doesn't require the callback argument:
-
-```js
-marked.setOptions({
-  highlight: function(code, lang) {
-    return hljs.highlightAuto(lang, code).value;
-  }
-});
-```
-
-#### highlight arguments
-
-`code`
-
-Type: `String`
-
-The section of code to pass to the highlighter.
-
-`lang`
-
-Type: `String`
-
-The programming language specified in the code block.
-
-`callback`
-
-Type: `Function`
-
-The callback function to call when using an async highlighter.
 
 ### tables
 
@@ -219,13 +174,6 @@ You can control anything you want.
 - del(text)
 - link(href, title, text)
 - image(href, title, text)
-
-### headerPrefix
-
-Type: `String`
-Default: ``
-
-Set the prefix for header IDs.
 
 ## Access to lexer and parser
 
