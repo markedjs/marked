@@ -287,14 +287,14 @@ console.log(parse('# h1'))
 The renderer API:
 
 ```
-blockcode: function(code, lang)
+code: function(code, lang)
 blockquote: function(text)
-blockhtml: function(html)
+html: function(html)
 
-header: function(text, level)
+heading: function(text, level)
 paragraph: function(text)
 
-hrule: function()
+hr: function()
 
 list: function(contents, isOrdered)
 listitem: function(text)
