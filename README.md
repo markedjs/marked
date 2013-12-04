@@ -80,43 +80,6 @@ Default: `true`
 
 Enable [GitHub flavored markdown][gfm].
 
-### highlight
-
-Type: `Function`
-
-A function to highlight code blocks. The function takes three arguments: code,
-lang, and callback. The above example uses async highlighting with
-[node-pygementize-bundled][pygmentize], and here is a synchronous example using
-[highlight.js][highlight] which doesn't require the callback argument:
-
-```js
-marked.setOptions({
-  highlight: function (code, lang) {
-    return hljs.highlightAuto(lang, code).value;
-  }
-});
-```
-
-#### highlight arguments
-
-`code`
-
-Type: `String`
-
-The section of code to pass to the highlighter.
-
-`lang`
-
-Type: `String`
-
-The programming language specified in the code block.
-
-`callback`
-
-Type: `String`
-
-The callback function to call when using an async highlighter.
-
 ### tables
 
 Type: `Boolean`
@@ -163,12 +126,62 @@ Default: `false`
 
 Use "smart" typograhic punctuation for things like quotes and dashes.
 
-### langPrefix
+### renderer
 
-Type: `String`
-Default: `lang-`
+Type: `Renderer`
+Default: `new Renderer()`
 
-Set the prefix for code block classes.
+A renderer instance for rendering ast to html. Learn more on the Renderer
+section.
+
+## Renderer
+
+Renderer is a the new way for rendering tokens to html. Here is a simple
+example:
+
+```javascript
+var r = new marked.Renderer()
+r.blockcode = function(code, lang) {
+    return highlight(code, lang).value;
+}
+
+console.log(marked(text, {renderer: r}))
+```
+
+You can control anything you want.
+
+### Block Level
+
+- blockcode(code, language)
+- blockquote(quote)
+- blockhtml(html)
+- header(text, level)
+- hrule()
+- list(body, ordered)
+- listitem(text)
+- paragraph(text)
+- table(header, body)
+- tablerow(content)
+- tablecell(content, flags)
+
+`flags` is an object like this:
+
+```
+{
+    header: true,
+    align: 'center'
+}
+```
+
+### Span Level
+
+- strong(text)
+- emphasis(text)
+- codespan(code)
+- linebreak()
+- strikethrough(text)
+- link(href, title, text)
+- image(href, title, text)
 
 ## Access to lexer and parser
 
