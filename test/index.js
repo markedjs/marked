@@ -356,20 +356,6 @@ function fix(options) {
       .replace(/&__QUOT__;/g, '"')
       .replace(/&__APOS__;/g, '\'');
 
-    // add heading id's
-    html = html.replace(/<(h[1-6])>([^<]+)<\/\1>/g, function(s, h, text) {
-      var id = text
-        .replace(/&#39;/g, '\'')
-        .replace(/&quot;/g, '"')
-        .replace(/&gt;/g, '>')
-        .replace(/&lt;/g, '<')
-        .replace(/&amp;/g, '&');
-
-      id = id.toLowerCase().replace(/[^\w]+/g, '-');
-
-      return '<' + h + ' id="' + id + '">' + text + '</' + h + '>';
-    });
-
     fs.writeFileSync(file, html);
   });
 
