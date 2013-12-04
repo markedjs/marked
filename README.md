@@ -42,7 +42,7 @@ marked.setOptions({
 });
 
 // Using async version of marked
-marked('I am using __markdown__.', function (err, content) {
+marked('I am using __markdown__.', {}, function (err, content) {
   if (err) throw err;
   console.log(content);
 });
