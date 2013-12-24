@@ -133,7 +133,7 @@ example:
 
 ```javascript
 var r = new marked.Renderer()
-r.blockcode = function(code, lang) {
+r.code = function(code, lang) {
   return highlight(lang, code).value;
 }
 
