@@ -118,6 +118,21 @@ Default: `false`
 
 Use "smart" typograhic punctuation for things like quotes and dashes.
 
+### highlight
+
+Type: `Callback`
+Default: `null`
+
+A callback function to highlight. Here is an example:
+
+```javascript
+marked.setOptions({
+    highlight: function (code, lang) {
+        return highlight(lang, code).value;
+    }
+});
+```
+
 ### renderer
 
 Type: `Renderer`
