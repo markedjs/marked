@@ -128,8 +128,13 @@ section.
 
 ## Renderer
 
-Renderer is a the new way for rendering tokens to html. Here is a simple
-example:
+**NOT RELEASED YET**
+
+Renderer is a the new way for rendering tokens to html.
+
+This feature is provided by [Hsiaoming Yang](https://github.com/lepture).
+
+Here is a simple example:
 
 ```javascript
 var r = new marked.Renderer()
