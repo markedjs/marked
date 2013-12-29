@@ -10,6 +10,7 @@
   "repository": "git://github.com/chjj/marked.git",
   "homepage": "https://github.com/chjj/marked",
   "bugs": { "url": "http://github.com/chjj/marked/issues" },
+  "license": "MIT",
   "keywords": ["markdown", "markup", "html"],
   "tags": ["markdown", "markup", "html"],
   "devDependencies": {
