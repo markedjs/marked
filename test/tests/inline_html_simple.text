@@ -45,21 +45,21 @@ Just plain comment, with trailing spaces on the line:
 
 Code:
 
-	<hr>
+	<hr />
 	
 Hr's:
 
 <hr>
 
-<hr>
+<hr/>
 
-<hr>
+<hr />
 
 <hr>   
 
-<hr>  
+<hr/>  
 
-<hr> 
+<hr /> 
 
 <hr class="foo" id="bar" />
 
