@@ -382,16 +382,6 @@ function fix(options) {
     fs.writeFileSync(file, html);
   });
 
-  // turn <hr /> into <hr>
-  fs.readdirSync(dir).forEach(function(file) {
-    var file = path.join(dir, file)
-      , text = fs.readFileSync(file, 'utf8');
-
-    text = text.replace(/(<|&lt;)hr\s*\/(>|&gt;)/g, '$1hr$2');
-
-    fs.writeFileSync(file, text);
-  });
-
   // markdown does some strange things.
   // it does not encode naked `>`, marked does.
   (function() {
