@@ -521,7 +521,7 @@ it's also easy to use Markdown to write about Markdown's own syntax.
 
 <h3 id="hr">Horizontal Rules</h3>
 
-You can produce a horizontal rule tag (`<hr>`) by placing three or
+You can produce a horizontal rule tag (`<hr />`) by placing three or
 more hyphens, asterisks, or underscores on a line by themselves. If you
 wish, you may use spaces between the hyphens or asterisks. Each of the
 following lines will produce a horizontal rule:
