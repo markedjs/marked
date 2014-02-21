@@ -244,7 +244,9 @@ $ sundown # upskirt
 <li>hello
 &gt; world</li>
 </ul>
+```
 
+``` bash
 $ marked
 * hello
   > world
