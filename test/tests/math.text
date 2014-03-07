@@ -1,0 +1,8 @@
+\$ this \$ is *not* math \$
+this $ y=x^2 $ is math
+*   some list  
+    some text  
+    $$
+        y = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+    $$
+*   some more list
