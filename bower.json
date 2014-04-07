@@ -8,5 +8,6 @@
   "homepage": "https://github.com/chjj/marked",
   "repo": "chjj/marked",
   "keywords": ["markdown", "markup", "html"],
+  "moduleType": ["amd", "node", "globals"],
   "license": "MIT"
 }
