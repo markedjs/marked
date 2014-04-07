@@ -1,0 +1,13 @@
+{
+  "name": "marked",
+  "description": "A markdown parser built for speed",
+  "version": "0.3.2",
+  "main": "./lib/marked.js",
+  "license": "MIT",
+  "authors": ["Christopher Jeffrey"],
+  "homepage": "https://github.com/chjj/marked",
+  "repo": "chjj/marked",
+  "keywords": ["markdown", "markup", "html"],
+  "moduleType": ["amd", "node", "globals"],
+  "license": "MIT"
+}
