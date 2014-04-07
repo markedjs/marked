@@ -1,9 +1,12 @@
 {
   "name": "marked",
-  "version": "0.2.9",
-  "repo": "chjj/marked",
   "description": "A markdown parser built for speed",
+  "version": "0.3.2",
+  "main": "./lib/marked.js",
+  "license": "MIT",
+  "authors": ["Christopher Jeffrey"],
+  "homepage": "https://github.com/chjj/marked",
+  "repo": "chjj/marked",
   "keywords": ["markdown", "markup", "html"],
-  "main": "lib/marked.js",
   "license": "MIT"
 }
