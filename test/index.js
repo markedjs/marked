@@ -158,10 +158,8 @@ main:
   if (failed) console.log('%d/%d tests failed.', failed, len);
 
   // Tests currently failing.
-  if (~failures.indexOf('def_blocks.text')
-      && ~failures.indexOf('double_link.text')
-      && ~failures.indexOf('gfm_code_hr_list.text')) {
-    failed -= 3;
+  if (~failures.indexOf('def_blocks.text')) {
+    failed -= 1;
   }
 
   return !failed;
