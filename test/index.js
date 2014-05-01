@@ -193,7 +193,7 @@ function bench(name, func) {
   }
 
   var start = Date.now()
-    , times = 50000
+    , times = 1000
     , keys = Object.keys(files)
     , i
     , l = keys.length
