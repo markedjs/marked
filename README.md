@@ -288,7 +288,7 @@ cannot pass more than a few tests. It was very difficult to get marked as
 compliant as it is. It could have cut corners in several areas for the sake
 of performance, but did not in order to be exactly what you expect in terms
 of a markdown rendering. In fact, this is why marked could be considered at a
-disadvantage in the benchmarks above.
+disadvantage in the benchmarks.
 
 Along with implementing every markdown feature, marked also implements [GFM
 features][gfmf].
