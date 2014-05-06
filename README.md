@@ -39,6 +39,16 @@ marked.setOptions({
 console.log(marked('I am using __markdown__.'));
 ```
 
+### CLI
+
+``` bash
+$ marked -o hello.html
+hello world
+^D
+$ cat hello.html
+<p>hello world</p>
+```
+
 ## marked(markdownString [,options] [,callback])
 
 ### markdownString
@@ -261,16 +271,6 @@ var lexer = new marked.Lexer(options);
 var tokens = lexer.lex(text);
 console.log(tokens);
 console.log(lexer.rules);
-```
-
-## CLI
-
-``` bash
-$ marked -o hello.html
-hello world
-^D
-$ cat hello.html
-<p>hello world</p>
 ```
 
 ## Philosophy behind marked
