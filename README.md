@@ -64,6 +64,13 @@ the second argument.
 
 ## Options
 
+### highlightClass
+
+Type: `string`
+
+Class to be set on wrapping `<pre>` element. Some highlighters require class on a wrapping 
+element to properly render background.
+
 ### highlight
 
 Type: `function`
@@ -94,6 +101,7 @@ marked(markdownString, function (err, content) {
 
 // Synchronous highlighting with highlight.js
 marked.setOptions({
+  highlightClass: 'hljs',
   highlight: function (code) {
     return require('highlight.js').highlightAuto(code).value;
   }
