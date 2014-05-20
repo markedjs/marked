@@ -12,7 +12,9 @@
 
 var fs = require('fs')
   , path = require('path')
-  , marked = require('../');
+  , marked = require('../')
+  , jsdiff = require('diff')
+  , clc = require('cli-color');
 
 /**
  * Load Tests
@@ -119,35 +121,48 @@ main:
       throw e;
     }
 
-    j = 0;
-    l = html.length;
+    var diff = jsdiff.diffLines(html, text);
 
-    for (; j < l; j++) {
-      if (text[j] !== html[j]) {
-        failed++;
-        failures.push(filename);
+    var hasDifferences = diff.some(function(part) {
+      return part.added || part.removed;
+    });
 
-        text = text.substring(
-          Math.max(j - 30, 0),
-          Math.min(j + 30, text.length));
+    if(hasDifferences) {
+      console.log(
+        '\n#%d. %s failed.\n',
+        i + 1, filename);
 
-        html = html.substring(
-          Math.max(j - 30, 0),
-          Math.min(j + 30, html.length));
+      failed++;
+      failures.push(filename);
 
-        console.log(
-          '\n#%d. %s failed at offset %d. Near: "%s".\n',
-          i + 1, filename, j, text);
+      if(diff.length === 2 && diff[0].added && diff[1].removed) {
+        var lineDiff = jsdiff.diffChars(diff[0].value, diff[1].value);
+        lineDiff.forEach(function(part){
+          // green for additions, red for deletions
+          // grey for common parts
+          var color = part.added ? 'green' : part.removed ? 'red' : 'white';
 
-        console.log('\nGot:\n%s\n', text.trim() || text);
-        console.log('\nExpected:\n%s\n', html.trim() || html);
+          process.stdout.write(clc[color](part.value));
+        });
+        process.stdout.write('\n');
+      } else {
+        diff.forEach(function(part){
+          // green for additions, red for deletions
+          // grey for common parts
+          var color = part.added ? 'green' :
+            part.removed ? 'red' : 'white';
 
-        if (options.stop) {
-          break main;
-        }
-
-        continue main;
+          console.log(clc[color](part.value));
+        });
       }
+
+
+
+      if (options.stop) {
+        break main;
+      }
+
+      continue main;
     }
 
     complete++;
