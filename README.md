@@ -273,6 +273,16 @@ console.log(tokens);
 console.log(lexer.rules);
 ```
 
+``` bash
+$ node
+> require('marked').lexer('> i am using marked.')
+[ { type: 'blockquote_start' },
+  { type: 'paragraph',
+    text: 'i am using marked.' },
+  { type: 'blockquote_end' },
+  links: {} ]
+```
+
 ## CLI
 
 ``` bash
@@ -323,32 +333,6 @@ __Marked is now faster than Discount, which is written in C.__
 For those feeling skeptical: These benchmarks run the entire markdown test suite
 1000 times. The test suite tests every feature. It doesn't cater to specific
 aspects.
-
-### Pro level
-
-You also have direct access to the lexer and parser if you so desire.
-
-``` js
-var tokens = marked.lexer(text, options);
-console.log(marked.parser(tokens));
-```
-
-``` js
-var lexer = new marked.Lexer(options);
-var tokens = lexer.lex(text);
-console.log(tokens);
-console.log(lexer.rules);
-```
-
-``` bash
-$ node
-> require('marked').lexer('> i am using marked.')
-[ { type: 'blockquote_start' },
-  { type: 'paragraph',
-    text: 'i am using marked.' },
-  { type: 'blockquote_end' },
-  links: {} ]
-```
 
 ## Running Tests & Contributing
 
