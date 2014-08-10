@@ -245,7 +245,7 @@ default with the old behavior moved into `pedantic`.
 Type: `boolean`
 Default: `false`
 
-Use "smart" typograhic punctuation for things like quotes and dashes.
+Use "smart" typographic punctuation for things like quotes and dashes.
 
 ## Access to lexer and parser
 
