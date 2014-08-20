@@ -12,7 +12,7 @@ npm install optimizely-marked --save-dev
 
 ###options.linkPath
 
-Prepends a string to relative links.
+Prepends a string to relative links. Useful when your link paths change based on the environment.
 
 ## Usage
 
