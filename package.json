@@ -2,13 +2,6 @@
   "name": "optimizely-marked",
   "description": "A fork of the marked Markdown parser customized for Optimizely.",
   "author": "Christopher Jeffrey",
-  "contributors": [
-    {
-      "name": "Kyle Rush",
-      "email": "kylerrush@gmail.com",
-      "url": "http://kylerush.net"
-    }
-  ],
   "version": "0.0.1",
   "main": "./lib/marked.js",
   "bin": "./bin/marked",
