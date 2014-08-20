@@ -1,15 +1,22 @@
 {
-  "name": "marked",
-  "description": "A markdown parser built for speed",
+  "name": "optimizely-marked",
+  "description": "A fork of the marked Markdown parser customized for Optimizely.",
   "author": "Christopher Jeffrey",
-  "version": "0.3.2",
+  "contributors": [
+    {
+      "name": "Kyle Rush",
+      "email": "kylerrush@gmail.com",
+      "url": "http://kylerush.net"
+    }
+  ],
+  "version": "0.0.1",
   "main": "./lib/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
   "preferGlobal": true,
-  "repository": "git://github.com/chjj/marked.git",
-  "homepage": "https://github.com/chjj/marked",
-  "bugs": { "url": "http://github.com/chjj/marked/issues" },
+  "repository": "git://github.com/optimizely/marked.git",
+  "homepage": "https://github.com/optimizely/marked",
+  "bugs": { "url": "http://github.com/optimizely/marked/issues" },
   "license": "MIT",
   "keywords": ["markdown", "markup", "html"],
   "tags": ["markdown", "markup", "html"],

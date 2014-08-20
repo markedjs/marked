@@ -1,15 +1,18 @@
 # marked
 
-> A full-featured markdown parser and compiler, written in JavaScript. Built
-> for speed.
-
-[![NPM version](https://badge.fury.io/js/marked.png)][badge]
+> A fork of the [Marked](https://github.com/chjj/marked) markdown parser customized for Optimizely.
 
 ## Install
 
 ``` bash
-npm install marked --save
+npm install optimizely-marked --save-dev
 ```
+
+##Changes in the fork
+
+###options.linkPath
+
+Prepends a string to relative links.
 
 ## Usage
 
