@@ -39,6 +39,26 @@ marked.setOptions({
 console.log(marked('I am using __markdown__.'));
 ```
 
+### Browser
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Marked in the browser</title>
+  <script src="lib/marked.js"></script>
+</head>
+<body>
+  <div id="content"></div>
+  <script>
+    document.getElementById('content').innerHTML =
+      marked('# Marked in browser\n\nRendered by **marked**.');
+  </script>
+</body>
+</html>
+```
+
 ## marked(markdownString [,options] [,callback])
 
 ### markdownString
