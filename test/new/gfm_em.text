@@ -1,1 +1,13 @@
 These words should_not_be_emphasized.
+
+abc_def ghi
+
+abc_def ghi_
+
+just_a_few_underscores. And here is the _emphasis_.
+
+Lorem_ipsum_dolor sit_amet, consectetur adipisicing elit. _[laborum rerum](laborum rerum)_
+
+a _few _words_ with _http://example.com_ as url
+
+This is un*believe*able! This d_oe_s not work!

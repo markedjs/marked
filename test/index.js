@@ -120,7 +120,7 @@ main:
     }
 
     j = 0;
-    l = html.length;
+    l = html.length > text.length ? html.length : text.length;
 
     for (; j < l; j++) {
       if (text[j] !== html[j]) {
