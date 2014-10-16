@@ -14,6 +14,8 @@
   "main": "lib/marked.js",
   "license": "MIT",
   "ignore": [
+    "**/.*",
+    "!bower.json",
     "node_modules",
     "bower_components",
     "app/bower_components",
