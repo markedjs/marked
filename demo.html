@@ -1,0 +1,223 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>commonmark.js demo</title>
+  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="http://spec.commonmark.org/js/commonmark.js"></script>
+  <script src="lib/marked.js"></script>
+  <script type="text/javascript">
+
+var writer = new commonmark.HtmlRenderer();
+var reader = new commonmark.DocParser();
+
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return decodeURIComponent(pair[1]);}
+       }
+       return null;
+}
+
+
+$(document).ready(function() {
+  var timer;
+  var x;
+  var parsed;
+  var render = function() {
+      if (parsed === undefined) {
+        return;
+      }
+      var startTime = new Date().getTime();
+      var result = writer.renderBlock(parsed);
+      var endTime = new Date().getTime();
+      var renderTime = endTime - startTime;
+      // $("#html").text(result);
+      $("#preview").html(result);
+      $("#html").text(result);
+      $("#ast").text(commonmark.ASTRenderer(parsed));
+      $("#rendertime").text(renderTime);
+  };
+  var _rule = {
+    positionFromEnd: 1,
+    regExp: /\$\$\$/,
+    name: 'myNewRule',
+    parser: function() {
+      return this.renderer.myNewRule(this.token.text);
+    },
+    renderer: function(text) {
+      return 'Three ' + text + ' Dollars';
+    },
+    type: 'inline',
+    action: function(outputVars) {
+      if (outputVars.cap = this.rules.myNewRule.exec(outputVars.src)) {
+        outputVars.src = outputVars.src.substring(outputVars.cap[0].length);
+        outputVars.out += this.renderer.myNewRule(outputVars.cap[0]);
+
+        return true;
+      }
+
+      return false;
+    }
+  }
+  //marked.registerRule(_rule);
+  var parseAndRender = function () {
+// var renderer = new marked.Renderer();
+
+// renderer.heading = function (text, level) {
+//   var escapedText = text.toLowerCase().replace(/[^\w]+/ig, '-');
+
+//   return '<h' + level + '>' + text + '</h' + level + '>';
+// }
+
+// renderer.threeDollars = function(text) {
+//   return 'Three ' + text + ' Dollars';
+// }
+
+// var lexer = new marked.Lexer({renderer: renderer});
+
+// lexer.rules.threeDollars = /\$\$\$/;
+// if($.inArray('threeDollars', lexer.ruleExecuteOrder) === -1) {
+
+// }
+// console.log(lexer.ruleExecuteOrder.join(','));
+// lexer.ruleFunctions.threeDollars = function(tokenVars, top, bq) {
+//     if (tokenVars.cap = lexer.rules.threeDollars.exec(tokenVars.src)) {
+//       tokenVars.src = tokenVars.src.substring(tokenVars.cap[0].length);
+//       lexer.tokens.push({
+//         type: 'threeDollars',
+//         text: tokenVars.cap
+//       });
+
+//       return true;
+//     }
+
+//     return false;
+// };
+
+// var parser = new marked.Parser({renderer: renderer});
+
+// parser.tok = function() {
+//   switch (this.token.type) {
+//     case 'threeDollars': {
+//       return this.renderer.threeDollars(this.token.text);
+//     }
+//   }
+
+//   return marked.Parser.prototype.tok.apply(this, arguments);
+// };
+
+// console.log(parser.parse(lexer.lex($("#text").val())));
+  	$("#preview").html(marked($("#text").val()));
+  	return;
+    if (x) { x.abort() } // If there is an existing XHR, abort it.
+    clearTimeout(timer); // Clear the timer so we don't end up with dupes.
+    timer = setTimeout(function() { // assign timer a new timeout
+      var startTime = new Date().getTime();
+      parsed = reader.parse($("#text").val());
+      var endTime = new Date().getTime();
+      var parseTime = endTime - startTime;
+      $("#parsetime").text(parseTime);
+      $(".timing").css('visibility','visible');
+      /*
+      var warnings = parsed.warnings;
+      $("#warnings").html('');
+      for (i=0; i < warnings.length; i++) {
+        var w = warnings[i];
+        var warning = $("#warnings").append('<li></li>');
+        $("#warnings li").last().text('Line ' + w.line + ' column ' + w.column + ': ' + w.message);
+      }
+      */
+      render();
+    }, 0); // ms delay
+  };
+  var initial_text = getQueryVariable("text");
+  if (initial_text) {
+    $("#text").val(initial_text);
+    // show HTML tab if text is from query
+    $('#result-tabs a[href="#result"]').tab('show');
+  }
+  // make tab insert a tab in the text box:
+  $("#text").keydown(function (e) {
+    if (e.which == 9) {
+        e.preventDefault();
+        this.value += "\t";
+    }
+  });
+  parseAndRender();
+  $("#clear-text-box").click(function(e) {
+    $("#text").val('');
+    window.location.search = "";
+    parseAndRender();
+  });
+  $("#permalink").click(function(e) {
+    window.location.pathname = "/index.html";
+    window.location.search = "text=" + encodeURIComponent($("#text").val());
+  });
+  $("#text").bind('keyup paste cut mouseup', parseAndRender);
+  $(".option").change(render);
+});
+  </script>
+  <style type="text/css">
+    h1.title { font-family: monospace; font-size: 120%; font-weight: bold;
+          margin-top: 0.5em; margin-bottom: 0; }
+    textarea#text { height: 400px; width: 95%; font-family: monospace; font-size: 92%; }
+    pre code#html { font-size: 92%; font-family: monospace; }
+    pre#htmlpre { height: 400px; overflow: scroll; resize: vertical; width: 95%; }
+    div#astpre  { height: 400px; overflow: scroll; resize: vertical; width: 95%; }
+    div#preview { height: 400px; overflow: scroll; resize: vertical; width: 95%; }
+    div.row { margin-top: 1em; }
+    blockquote { font-size: 100%; }
+    footer { color: #555; text-align: center; margin: 1em; }
+    pre { display: block; padding: 0.5em; color: #333; background: #f8f8ff }
+    #warnings li { color: red; font-weight: bold; }
+    label { padding-left: 1em; padding-top: 0; padding-bottom: 0; }
+    div.timing { color: gray; visibility: hidden; height: 2em; }
+    p#text-controls { height: 1em; margin-top: 1em; }
+    a#permalink { margin-left: 1em; }
+    span.timing { font-weight: bold; }
+    span.timing { font-weight: bold; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h1 class="title">commonmark.js dingus</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <p id="text-controls"><a id="clear-text-box">clear</a>&nbsp;<a
+      id="permalink">permalink</a></p>
+      <textarea id="text"></textarea>
+      <ul id="warnings"></ul>
+      <div class="timing">Parsed in <span class="timing" id="parsetime"></span> 
+      ms.  Rendered in <span class="timing" id="rendertime"></span> ms.</div>
+    </div>
+    <div class="col-md-6">
+      <ul id="result-tabs" class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#preview" role="tab" data-toggle="tab">Preview</a></li>
+        <li><a href="#result" role="tab" data-toggle="tab">HTML</a></li>
+        <li><a href="#result-ast" role="tab" data-toggle="tab">AST</a></li>
+      </ul>
+      <div class="tab-content">
+        <div id="preview" class="tab-pane active">
+        </div>
+        <div id="result" class="tab-pane">
+          <pre id="htmlpre"><code id="html"></code></pre>
+        </div>
+        <div id="result-ast" class="tab-pane">
+          <pre id="astpre"><code id="ast"></code></pre>
+        </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
