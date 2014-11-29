@@ -113,6 +113,7 @@ marked(markdownString, function (err, content) {
 });
 
 // Synchronous highlighting with highlight.js
+// npm install highlight.js (not highlight)
 marked.setOptions({
   highlight: function (code) {
     return require('highlight.js').highlightAuto(code).value;
