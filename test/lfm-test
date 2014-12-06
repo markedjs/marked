@@ -1,0 +1,33 @@
+#!/bin/bash
+
+cd $(dirname $0)
+MARKED='../bin/marked'
+WORKDIR="levii/.work"
+
+rm -rf $WORKDIR
+mkdir -p $WORKDIR
+
+for file in $(ls -1 levii/*.text); do
+	exp=`echo $file | sed -e 's/\.text/.html/'`
+	got="$WORKDIR/$(basename $exp)"
+	cmd="$MARKED -i $file -o $got"
+	$cmd || (
+		echo "test failed: $file (command: $cmd)"
+		exit 1
+	)
+
+	if [ ! -f "$got" ]; then
+		echo "test failed: $file (output file: $out does not found)"
+		exit 1
+	fi
+
+	difference=`diff -u $exp $got`
+	if [ ! -z "$difference" ]; then
+		echo "test failed: $file"
+		echo
+		diff -u $exp $got
+		exit 1
+	fi
+
+	echo "test ok: $file"
+done
