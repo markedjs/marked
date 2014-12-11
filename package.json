@@ -16,7 +16,8 @@
   "devDependencies": {
     "markdown": "*",
     "showdown": "*",
-    "robotskirt": "*"
+    "robotskirt": "*",
+    "remarkable": "*"
   },
   "scripts": { "test": "node test", "bench": "node test --bench" }
 }
