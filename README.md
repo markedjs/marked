@@ -3,7 +3,8 @@
 > A full-featured markdown parser and compiler, written in JavaScript. Built
 > for speed.
 
-[![NPM version](https://badge.fury.io/js/marked.png)][badge]
+[![NPM version](https://badge.fury.io/js/marked.png)][npm-badge]
+[![Build Status](https://travis-ci.org/chjj/marked.svg)](travis-badge)
 
 ## Install
 
@@ -33,7 +34,8 @@ marked.setOptions({
   pedantic: false,
   sanitize: true,
   smartLists: true,
-  smartypants: false
+  smartypants: false,
+  xhtml: false
 });
 
 console.log(marked('I am using __markdown__.'));
@@ -78,9 +80,9 @@ above.
 
 Type: `function`
 
-Function called when the `markdownString` has been fully parsed when using
-async highlighting. If the `options` argument is omitted, this can be used as
-the second argument.
+Function called when the `markdownString` has been fully parsed when using async
+highlighting. If the `options` argument is omitted, this can be used as the
+second argument.
 
 ## Options
 
@@ -88,9 +90,9 @@ the second argument.
 
 Type: `function`
 
-A function to highlight code blocks. The first example below uses async highlighting with
-[node-pygmentize-bundled][pygmentize], and the second is a synchronous example using
-[highlight.js][highlight]:
+A function to highlight code blocks. The first example below uses async
+highlighting with [node-pygmentize-bundled][pygmentize], and the second is a
+synchronous example using [highlight.js][highlight]:
 
 ```js
 var marked = require('marked');
@@ -151,8 +153,9 @@ An object containing functions to render tokens to HTML.
 
 #### Overriding renderer methods
 
-The renderer option allows you to render tokens in a custom manor. Here is an
-example of overriding the default heading token rendering by adding an embedded anchor tag like on GitHub:
+The renderer option allows you to render tokens in a custom manner. Here is an
+example of overriding the default heading token rendering by adding an embedded
+anchor tag like on GitHub:
 
 ```javascript
 var marked = require('marked');
@@ -257,82 +260,24 @@ Sanitize the output. Ignore any HTML that has been input.
 Type: `boolean`
 Default: `true`
 
-Use smarter list behavior than the original markdown. May eventually be
-default with the old behavior moved into `pedantic`.
+Use smarter list behavior than the original markdown. May eventually be default
+with the old behavior moved into `pedantic`.
 
 ### smartypants
 
 Type: `boolean`
 Default: `false`
 
-Use "smart" typograhic punctuation for things like quotes and dashes.
+Use "smart" typographic punctuation for things like quotes and dashes.
+
+### xhtml
+
+Type: `boolean`
+Default: `false`
+
+Add a trailing slash to elements like `br`, `hr`, and `img`.
 
 ## Access to lexer and parser
-
-You also have direct access to the lexer and parser if you so desire.
-
-``` js
-var tokens = marked.lexer(text, options);
-console.log(marked.parser(tokens));
-```
-
-``` js
-var lexer = new marked.Lexer(options);
-var tokens = lexer.lex(text);
-console.log(tokens);
-console.log(lexer.rules);
-```
-
-## CLI
-
-``` bash
-$ marked -o hello.html
-hello world
-^D
-$ cat hello.html
-<p>hello world</p>
-```
-
-## Philosophy behind marked
-
-The point of marked was to create a markdown compiler where it was possible to
-frequently parse huge chunks of markdown without having to worry about
-caching the compiled output somehow...or blocking for an unnecesarily long time.
-
-marked is very concise and still implements all markdown features. It is also
-now fully compatible with the client-side.
-
-marked more or less passes the official markdown test suite in its
-entirety. This is important because a surprising number of markdown compilers
-cannot pass more than a few tests. It was very difficult to get marked as
-compliant as it is. It could have cut corners in several areas for the sake
-of performance, but did not in order to be exactly what you expect in terms
-of a markdown rendering. In fact, this is why marked could be considered at a
-disadvantage in the benchmarks above.
-
-Along with implementing every markdown feature, marked also implements [GFM
-features][gfmf].
-
-## Benchmarks
-
-node v0.8.x
-
-``` bash
-$ node test --bench
-marked completed in 3411ms.
-marked (gfm) completed in 3727ms.
-marked (pedantic) completed in 3201ms.
-robotskirt completed in 808ms.
-showdown (reuse converter) completed in 11954ms.
-showdown (new converter) completed in 17774ms.
-markdown-js completed in 17191ms.
-```
-
-__Marked is now faster than Discount, which is written in C.__
-
-For those feeling skeptical: These benchmarks run the entire markdown test suite 1000 times. The test suite tests every feature. It doesn't cater to specific aspects.
-
-### Pro level
 
 You also have direct access to the lexer and parser if you so desire.
 
@@ -358,6 +303,57 @@ $ node
   links: {} ]
 ```
 
+## CLI
+
+``` bash
+$ marked -o hello.html
+hello world
+^D
+$ cat hello.html
+<p>hello world</p>
+```
+
+## Philosophy behind marked
+
+The point of marked was to create a markdown compiler where it was possible to
+frequently parse huge chunks of markdown without having to worry about caching
+the compiled output somehow... or blocking for an unnecessarily long time.
+
+marked is very concise and still implements all markdown features. It is also
+now fully compatible with the client-side.
+
+marked more or less passes the official markdown test suite in its entirety.
+This is important because a surprising number of markdown compilers cannot pass
+more than a few tests. It was very difficult to get marked as compliant as it
+is. It could have cut corners in several areas for the sake of performance, but
+did not in order to be exactly what you expect in terms of a markdown rendering.
+In fact, this is why marked could be considered at a disadvantage in the
+benchmarks.
+
+Along with implementing every markdown feature, marked also implements [GFM
+features][gfmf].
+
+## Benchmarks
+
+node v0.8.x
+
+``` bash
+$ node test --bench
+marked completed in 3411ms.
+marked (gfm) completed in 3727ms.
+marked (pedantic) completed in 3201ms.
+robotskirt completed in 808ms.
+showdown (reuse converter) completed in 11954ms.
+showdown (new converter) completed in 17774ms.
+markdown-js completed in 17191ms.
+```
+
+__Marked is now faster than Discount, which is written in C.__
+
+For those feeling skeptical: These benchmarks run the entire markdown test suite
+1000 times. The test suite tests every feature. It doesn't cater to specific
+aspects.
+
 ## Running Tests & Contributing
 
 If you want to submit a pull request, make sure your changes pass the test
@@ -374,8 +370,8 @@ In other words, if you have a test to add, add it to `test/new/` and then
 regenerate the tests with `node test --fix`. Commit the result. If your test
 uses a certain feature, for example, maybe it assumes GFM is *not* enabled, you
 can add `.nogfm` to the filename. So, `my-test.text` becomes
-`my-test.nogfm.text`. You can do this with any marked option. Say you want
-line breaks and smartypants enabled, your filename should be:
+`my-test.nogfm.text`. You can do this with any marked option. Say you want line
+breaks and smartypants enabled, your filename should be:
 `my-test.breaks.smartypants.text`.
 
 To run the tests:
@@ -387,9 +383,9 @@ node test
 
 ### Contribution and License Agreement
 
-If you contribute code to this project, you are implicitly allowing your code
-to be distributed under the MIT license. You are also implicitly verifying that
-all code is your original work. `</legalese>`
+If you contribute code to this project, you are implicitly allowing your code to
+be distributed under the MIT license. You are also implicitly verifying that all
+code is your original work. `</legalese>`
 
 ## License
 
@@ -401,6 +397,7 @@ See LICENSE for more info.
 [gfmf]: http://github.github.com/github-flavored-markdown/
 [pygmentize]: https://github.com/rvagg/node-pygmentize-bundled
 [highlight]: https://github.com/isagalaev/highlight.js
-[badge]: http://badge.fury.io/js/marked
+[npm-badge]: http://badge.fury.io/js/marked
+[travis-badge]: https://travis-ci.org/chjj/marked
 [tables]: https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#wiki-tables
 [breaks]: https://help.github.com/articles/github-flavored-markdown#newlines
