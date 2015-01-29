@@ -297,6 +297,21 @@ function runBench(options) {
   } catch (e) {
     console.log('Could not bench markdown.js.');
   }
+
+  // remarkable
+  try {
+    var Remarkable = require('remarkable');
+    var md = new Remarkable({
+      html: true,
+      linkify: true,
+      typographer: true
+    });
+    bench('remarkable', function(data) {
+      return md.render(data);
+    });
+  } catch (e) {
+    console.log('Could not bench remarkable.');
+  }
 }
 
 /**
