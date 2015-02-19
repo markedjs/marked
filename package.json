@@ -18,5 +18,5 @@
     "showdown": "*",
     "robotskirt": "*"
   },
-  "scripts": { "test": "node test", "bench": "node test --bench" }
+  "scripts": { "test": "node test; node test/lexer", "bench": "node test --bench" }
 }
