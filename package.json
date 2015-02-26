@@ -16,7 +16,10 @@
   "devDependencies": {
     "markdown": "*",
     "showdown": "*",
-    "robotskirt": "*"
+    "robotskirt": "*",
+    "gulp": "^3.8.11",
+    "gulp-uglify": "^1.1.0",
+    "gulp-concat": "^2.5.2"
   },
   "scripts": { "test": "node test", "bench": "node test --bench" }
 }
