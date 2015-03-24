@@ -39,6 +39,15 @@ marked.setOptions({
 console.log(marked('I am using __markdown__.'));
 ```
 
+### Images from base64
+
+ - customized by dokenzy
+ - Get images from base64 string which is defined in angular's scope. You specify image files table by id **#md-images**
+
+```html
+<table id="md-images">
+```
+
 ### Browser
 
 ```html
