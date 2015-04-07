@@ -41,11 +41,17 @@ console.log(marked('I am using __markdown__.'));
 
 ### Images from base64
 
- - customized by dokenzy
- - Get images from base64 string which is defined in angular's scope. You specify image files table by id **#md-images**
+ - Customized by *dokenzy*
+ - Get images from base64 string which is defined in angular's scope. You have to specify the table including base64 images by id **#md-images**
 
 ```html
-<table id="md-images">
+<table ng-if="model.images.length > 0" id="md-images" class="hide">
+  <tr ng-repeat="image in model.images">
+    <td>{{ image.name }}</td>
+    <td><img src ng-src="{{ image.data }}"></td>
+    <td>{{ image.size }}</td>
+  </tr>
+</table>
 ```
 
 ### Browser
