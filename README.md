@@ -188,7 +188,8 @@ This code will output the following HTML:
 - html(*string* html)
 - heading(*string* text, *number*  level)
 - hr()
-- list(*string* body, *boolean* ordered)
+- list(*string* body, *boolean* ordered, *boolean* taskList)
+  - `taskList` true when `gfm` is `true` and there is a list item with a check box
 - listitem(*string*  text)
 - paragraph(*string* text)
 - table(*string* header, *string* body)
@@ -211,7 +212,8 @@ This code will output the following HTML:
 - codespan(*string* code)
 - br()
 - del(*string* text)
-- link(*string* href, *string* title, *string* text)
+- link(*string* href, *string* title, *string* text, [*boolean* checked]).
+  - `checked` only defined when `gfm` is `true` and there is a check box at the start of the list item (e.g. `* [ ] foo`).
 - image(*string* href, *string* title, *string* text)
 
 ### gfm
