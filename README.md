@@ -151,7 +151,7 @@ An object containing functions to render tokens to HTML.
 
 #### Overriding renderer methods
 
-The renderer option allows you to render tokens in a custom manor. Here is an
+The renderer option allows you to render tokens in a custom manner. Here is an
 example of overriding the default heading token rendering by adding an embedded anchor tag like on GitHub:
 
 ```javascript
