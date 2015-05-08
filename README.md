@@ -33,7 +33,8 @@ marked.setOptions({
   pedantic: false,
   sanitize: true,
   smartLists: true,
-  smartypants: false
+  smartypants: false,
+  headings: true
 });
 
 console.log(marked('I am using __markdown__.'));
@@ -266,6 +267,13 @@ Type: `boolean`
 Default: `false`
 
 Use "smart" typograhic punctuation for things like quotes and dashes.
+
+### headings
+
+Type: `boolean`
+Default: `true`
+
+Enable interpretation of headings. If `false`, headings will treated as ordinary paragraphs.
 
 ## Access to lexer and parser
 
