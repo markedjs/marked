@@ -33,7 +33,8 @@ marked.setOptions({
   pedantic: false,
   sanitize: true,
   smartLists: true,
-  smartypants: false
+  smartypants: false,
+  math: null
 });
 
 console.log(marked('I am using __markdown__.'));
@@ -141,6 +142,28 @@ The programming language specified in the code block.
 Type: `function`
 
 The callback function to call when using an async highlighter.
+
+### Math
+
+Type: { render: Function }
+
+An object with a `render` method that parses math expressions inside `$$ ... $$` blocks, or inline inside `$ ... $` expressions, and returns a rendered version. Here's an example with the [KaTeX](http://khan.github.io/KaTeX/) typesetter.
+
+```js
+marked.setOptions({
+  gfm: true,
+  math: {
+    render: function (tex) {
+      return katex.renderToString(tex);
+    }
+  }
+});
+
+marked(markdownString, function (err, content) {
+  if (err) { throw err; }
+  console.log(content);
+});
+```
 
 ### renderer
 
