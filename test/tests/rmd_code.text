@@ -1,0 +1,14 @@
+```{r}
+summary(cars)
+```
+
+```{r simulate_data}
+x <- rnorm(100)
+y <- 2*x + rnorm(100)
+```
+
+```{r chunk_name, echo=FALSE}
+x <- rnorm(100)
+y <- 2*x + rnorm(100)
+cor(x, y)
+```
