@@ -86,6 +86,10 @@ function main(argv, callback) {
       case '--tokens':
         tokens = true;
         break;
+      case '--options':
+        var p = require("path").join(process.cwd(), argv.shift());
+        options = require(p);
+        break;
       case '-h':
       case '--help':
         return help();
