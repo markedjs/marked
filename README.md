@@ -393,7 +393,7 @@ all code is your original work. `</legalese>`
 
 ## License
 
-Copyright (c) 2011-2014, Christopher Jeffrey. (MIT License)
+Copyright (c) 2011-2015, Christopher Jeffrey. (MIT License)
 
 See LICENSE for more info.
 
