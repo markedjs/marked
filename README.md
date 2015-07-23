@@ -1,7 +1,7 @@
 # marked
 
-> A full-featured markdown parser and compiler, written in JavaScript. Built
-> for speed.
+> A full-featured, pure regular expression based markdown parser and compiler,
+> written in JavaScript. Built for speed.
 
 [![NPM version](https://badge.fury.io/js/marked.png)][badge]
 
