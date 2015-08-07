@@ -1,1 +1,9 @@
-This should be a link: http://example.com/hello-world.
+link with . http://example.com/hello-world.
+link with ! http://example.com/hello-world!
+link with : http://example.com/hello-world:
+link with , http://example.com/hello-world,
+link with ; http://example.com/hello-world;
+link with ' http://example.com/hello-world'
+link with " http://example.com/hello-world"
+link with ) http://example.com/hello-world)
+link with nothing http://example.com/hello-world
