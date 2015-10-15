@@ -114,8 +114,8 @@ marked(markdownString, function (err, content) {
 
 // Synchronous highlighting with highlight.js
 marked.setOptions({
-  highlight: function (code) {
-    return require('highlight.js').highlightAuto(code).value;
+  highlight: function (code, lang) {
+    return require('highlight.js').highlight(lang, code).value;
   }
 });
 
