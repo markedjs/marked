@@ -1,9 +1,10 @@
 # Preview panel synchronization
 
 ## Markdown preview block
-For markdown preview block on scroll event you can use the following code.
-**toLine** - float row number (for accurate and smooth synchronization)
-```
+For preview block you can use the following code for scroll event.
+
+`toLine` - float row number (for accurate and smooth synchronization)
+```javascript
 function getOffset(toLine) {
 	var children = _.toArray(containerEl.childNodes);
 	var prev = { ln: 0, dom: { offsetTop: 0 } }
@@ -19,14 +20,14 @@ function getOffset(toLine) {
 	return prev.dom.offsetTop + (dom.offsetTop - prev.dom.offsetTop) / (ln - prev.ln) * (toLine - prev.ln);
 }
 
-// added event handler
+// scroll event handler
 ctrl.events.scroll.push(
 	toLine => ctrl.events.scroll.push(toLine => containerEl.parentNode.scrollTop = getOffset(toLine))
 );
 ```
 				
 ## Ace editor integration
-```
+```javascript
 session.on("changeScrollTop", () => {
 	ctrl.scroll({ top: editor.renderer.getScrollTop() / editor.renderer.lineHeight })
 });
