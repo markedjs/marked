@@ -20,10 +20,8 @@ function getOffset(toLine) {
 	return prev.dom.offsetTop + (dom.offsetTop - prev.dom.offsetTop) / (ln - prev.ln) * (toLine - prev.ln);
 }
 
-ctrl.events.scroll.push(toLine => {
-	var o = getOffset(toLine)
-	o != null && (containerEl.parentNode.scrollTop = o);
-});
+// added event handler
+ctrl.events.scroll.push(toLine => ctrl.events.scroll.push(toLine => containerEl.parentNode.scrollTop = getOffset(toLine)));
 ```
 				
 ## Ace editor integration
