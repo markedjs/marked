@@ -5,7 +5,7 @@ For markdown preview block on scroll event you can use the following code.
 **toLine** - float row number (for accurate and smooth synchonization)
 ```
 function getOffset(toLine) {
-	var children = _.toArray(cotainerEl.childNodes);
+	var children = _.toArray(containerEl.childNodes);
 	var prev = { ln: 0, dom: { offsetTop: 0 } }
 	for (var i = 0; i < children.length; i++) {
 		var dom = children[i];
@@ -22,7 +22,7 @@ function getOffset(toLine) {
 
 ctrl.events.scroll.push(toLine => {
 	var o = getOffset(toLine)
-	o != null && (cotainerEl.parentNode.scrollTop = o);
+	o != null && (containerEl.parentNode.scrollTop = o);
 });
 ```
 				
