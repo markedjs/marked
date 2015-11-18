@@ -1,0 +1,34 @@
+# Preview synchonization
+
+## Markdown preview block
+For markdown preview block on scroll event you can use the following code.
+**toLine** - float row number (for accurate and smooth synchonization)
+```
+function getOffset(toLine) {
+	var children = _.toArray(cotainerEl.childNodes);
+	var prev = { ln: 0, dom: { offsetTop: 0 } }
+	for (var i = 0; i < children.length; i++) {
+		var dom = children[i];
+		var ln = dom.getAttribute && +dom.getAttribute("line-number");
+		if (ln) {
+			if (toLine <= ln)
+				break;
+			prev.ln = ln;
+			prev.dom = dom;
+		}
+	}
+	return prev.dom.offsetTop + (dom.offsetTop - prev.dom.offsetTop) / (ln - prev.ln) * (toLine - prev.ln);
+}
+
+ctrl.events.scroll.push(toLine => {
+	var o = getOffset(toLine)
+	o != null && (cotainerEl.parentNode.scrollTop = o);
+});
+```
+				
+## Ace editor integration
+```
+session.on("changeScrollTop", () => {
+	ctrl.scroll({ top: editor.renderer.getScrollTop() / editor.renderer.lineHeight })
+});
+```
