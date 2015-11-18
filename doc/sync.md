@@ -1,4 +1,4 @@
-# Preview panel synchonization
+# Preview panel synchronization
 
 ## Markdown preview block
 For markdown preview block on scroll event you can use the following code.
