@@ -21,7 +21,7 @@ console.log(marked('I am using __markdown__.'));
 // Outputs: <p>I am using <strong>markdown</strong>.</p>
 ```
 
-Example setting options with default values:
+Example setting options:
 
 ```js
 var marked = require('marked');
