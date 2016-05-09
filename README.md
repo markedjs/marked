@@ -297,7 +297,7 @@ $ cat hello.html
 
 The point of marked was to create a markdown compiler where it was possible to
 frequently parse huge chunks of markdown without having to worry about
-caching the compiled output somehow...or blocking for an unnecesarily long time.
+caching the compiled output somehow...or blocking for an unnecessarily long time.
 
 marked is very concise and still implements all markdown features. It is also
 now fully compatible with the client-side.
