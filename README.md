@@ -39,44 +39,6 @@ marked.setOptions({
 console.log(marked('I am using __markdown__.'));
 ```
 
-Getting tokens from markdown string:
-
-```js
-var marked = require('marked');
-var tokens = marked.toTokenTree('# title \n ## sub-title \n this is a para'));
-/*
-Returns an array of tokens containing markdown nodes
-  [{
-       depth:1,
-       text:'title',
-       type:'heading'
-    },
-    {
-       depth:2,
-       text:'sub-title',
-       type:'heading'
-    },
-    {
-       text:'this is a para',
-       type:'paragraph'
-    }];
-*/
-```
-
-Rendering via token array
-
-```js
-var marked = require('marked');
-var output = marked.renderTokenTree(tokens);
-/*
-Returns rendered output in HTML
-  <h1 id="title">title</h1>
-  <h2 id="sub-title">sub-title</h2>
-  <p>this is a paras</p>
-*/
-```
-
-
 ### Browser
 
 ```html
