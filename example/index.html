@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script type="text/javascript" src="lib/marked.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <script type="text/javascript" src="../lib/marked.js"></script>
   </head>
   <body>
     <h1>Type your markdown here</h1>
@@ -14,12 +15,9 @@
     <script>
       function Editor(input, preview) {
         this.update = function () {
-
-        var tokens =  marked.toTokenTree(input.value)
-        console.log(tokens)
-        var renderedTokens = marked.renderTokenTree(tokens);
-        console.log(renderedTokens)
-        preview.innerHTML = renderedTokens
+          var tokens =  marked.lexer(input.value)
+          var renderedTokens = marked.parser(tokens);
+          preview.innerHTML = renderedTokens
         };
         input.editor = this;
         this.update();
