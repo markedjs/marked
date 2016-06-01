@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="lib/marked.js"></script>
+  </head>
+  <body>
+    <h1>Type your markdown here</h1>
+    <textarea style="width:100%" id="text-input" oninput="this.editor.update()"
+              rows="6" >> - [meta] tag-type:video</textarea>
+    
+    <hr/>
+    <h1>Preview Frame</h1>
+    <div id="preview"> </div>
+    <script>
+      function Editor(input, preview) {
+        this.update = function () {
+
+        var tokens =  marked.toTokenTree(input.value)
+        console.log(tokens)
+        var renderedTokens = marked.renderTokenTree(tokens);
+        console.log(renderedTokens)
+        preview.innerHTML = renderedTokens
+        };
+        input.editor = this;
+        this.update();
+      }
+      var $ = function (id) { return document.getElementById(id); };
+      new Editor($("text-input"), $("preview"));
+    </script>
+  </body>
+</html>
