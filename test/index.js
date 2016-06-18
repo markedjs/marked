@@ -275,7 +275,7 @@ function runBench(options) {
   try {
     bench('showdown (reuse converter)', (function() {
       var Showdown = require('showdown');
-      var convert = new Showdown.converter();
+      var convert = new Showdown.Converter();
       return function(text) {
         return convert.makeHtml(text);
       };
@@ -283,7 +283,7 @@ function runBench(options) {
     bench('showdown (new converter)', (function() {
       var Showdown = require('showdown');
       return function(text) {
-        var convert = new Showdown.converter();
+        var convert = new Showdown.Converter();
         return convert.makeHtml(text);
       };
     })());
