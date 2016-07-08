@@ -6,7 +6,6 @@
   "main": "./lib/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
-  "preferGlobal": true,
   "repository": "git://github.com/chjj/marked.git",
   "homepage": "https://github.com/chjj/marked",
   "bugs": { "url": "http://github.com/chjj/marked/issues" },
