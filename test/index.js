@@ -155,7 +155,9 @@ main:
   }
 
   console.log('%d/%d tests completed successfully.', complete, len);
-  if (failed) console.log('%d/%d tests failed.', failed, len);
+  if (failed){
+    throw failed + '/' + len + ' tests failed.';
+  }
 
   // Tests currently failing.
   if (~failures.indexOf('def_blocks.text')) {
@@ -272,10 +274,10 @@ function runBench(options) {
   }
 
   // showdown
-  try {
+  /*try {*/
     bench('showdown (reuse converter)', (function() {
       var Showdown = require('showdown');
-      var convert = new Showdown.converter();
+      var convert = new Showdown.Converter();
       return function(text) {
         return convert.makeHtml(text);
       };
@@ -283,13 +285,13 @@ function runBench(options) {
     bench('showdown (new converter)', (function() {
       var Showdown = require('showdown');
       return function(text) {
-        var convert = new Showdown.converter();
+        var convert = new Showdown.Converter();
         return convert.makeHtml(text);
       };
     })());
-  } catch (e) {
-    console.log('Could not bench showdown.');
-  }
+    /*} catch (e) {*/
+    /*console.log('Could not bench showdown.');*/
+    /*}*/
 
   // markdown.js
   try {
