@@ -214,6 +214,43 @@ This code will output the following HTML:
 - link(*string* href, *string* title, *string* text)
 - image(*string* href, *string* title, *string* text)
 
+#### Using `Promise`
+
+```html
+<!-- layout.html -->
+<h1>
+Layout Head - %s
+</h1>
+```
+
+```js
+var marked = require('./index')
+  , fs = require('fs')
+  , util = require('util');
+var renderer = new marked.Renderer();
+
+var path = "layout.html";
+
+renderer.heading = function (text, level) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, 'utf8', (err, data) => {
+      try {
+        resolve(util.format(data, text));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  });
+},
+
+marked('# heading', { promise: true, renderer: renderer })
+.then(function(html) {
+  console.log(html);
+}).catch(e => {
+  console.log(e);
+});
+```
+
 ### gfm
 
 Type: `boolean`
