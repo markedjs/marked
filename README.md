@@ -33,7 +33,8 @@ marked.setOptions({
   pedantic: false,
   sanitize: false,
   smartLists: true,
-  smartypants: false
+  smartypants: false,
+  mathDelimiters: false
 });
 
 console.log(marked('I am using __markdown__.'));
@@ -220,6 +221,21 @@ Type: `boolean`
 Default: `true`
 
 Enable [GitHub flavored markdown][gfm].
+
+### mathDelimiters
+
+Type: `Array`
+Default: `null`
+
+Enable raw pass-through of math wrapped in specified delimiters such as `$..$`, `\(..\)`, `\[..\]`, `$$..$$` and `\begin{}..\end{}`.
+For use with MathJax / KaTeX etc.
+A standard setup would use
+
+```
+mathDelimiters: [['$', '$'], ['\\(', '\\)'], ['\\[', '\\]'], ['$$', '$$'], 'beginend']
+```
+
+Note the special delimiter option `beginend`, this properly handles any `\begin{}..\end{}` with possible nested environments inside.
 
 ### tables
 
