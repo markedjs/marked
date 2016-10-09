@@ -176,7 +176,8 @@ The R markdown options. Default value is:
 {
     engine: "r",    // the engin property is always included in the options parameter.
     echo: false,
-    include: false
+    include: false,
+    run: false      // indicate wether the code should be run inside current javascript evironment.
 }
 ```
 
