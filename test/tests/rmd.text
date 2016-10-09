@@ -1,0 +1,26 @@
+```{r}
+```
+
+```{r test}
+```
+
+```{r test, a = 1}
+```
+
+```{r a = 1, b=2}
+```
+
+```{js ttjs, a=2}
+```
+
+```{js engine="js"}
+```
+
+```{r test, echo=true, ext=1234, eee="alkn\n\r\t"}
+```
+
+```{r test, include=true, ext=1234, eee="alkn\n\r\t"}
+```
+
+```{r test, include=false, ext=1234, eee="alkn\n\r\t"}
+```

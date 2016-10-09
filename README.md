@@ -142,6 +142,48 @@ Type: `function`
 
 The callback function to call when using an async highlighter.
 
+### R Markdown
+Name: `rmarkdown`
+
+Type: `function`
+
+A function that parse/execute R markdown code chunk.
+
+```javascript
+marked.setOptions({
+    rmarkdown: function(code, options) {
+        if (/^javascript|js|jscript$/.test(options.engine)) {
+            eval (code);
+        }
+        return "R markdown code chunk running!";
+    }
+});
+```
+#### arguments
+`code`
+
+Type: `string`
+
+The code to be run.
+
+`options`
+
+Type: `object`
+
+The R markdown options. Default value is:
+
+```javascript
+{
+    engine: "r",    // the engin property is always included in the options parameter.
+    echo: false,
+    include: false
+}
+```
+
+#### return
+If the rmarkdown callback returns a string, and the `echo` option is set to true, the returned string would be append to the end of the code block.
+
+
 ### renderer
 
 Type: `object`
