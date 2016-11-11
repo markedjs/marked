@@ -1,0 +1,7 @@
+@github(https)
+  chjj/marked
+
+@ignore
+  a->b: do a
+
+  b->a: do b
