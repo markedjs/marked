@@ -29,7 +29,7 @@ function load() {
   list = fs
     .readdirSync(dir)
     .filter(function(file) {
-      return path.extname(file) !== '.html';
+      return path.extname(file) === '.text';
     })
     .sort(function(a, b) {
       a = path.basename(a).toLowerCase().charCodeAt(0);
