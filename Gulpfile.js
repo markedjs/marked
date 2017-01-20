@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
+var browserify = require('gulp-browserify')
 
 var preserveFirstComment = function() {
   var set = false;
@@ -14,6 +15,7 @@ var preserveFirstComment = function() {
 
 gulp.task('uglify', function() {
   gulp.src('lib/marked.js')
+    .pipe(browserify())
     .pipe(uglify({preserveComments: preserveFirstComment()}))
     .pipe(concat('marked.min.js'))
     .pipe(gulp.dest('.'));
