@@ -192,7 +192,7 @@ This code will output the following HTML:
 - listitem(*string*  text)
 - paragraph(*string* text)
 - table(*string* header, *string* body)
-- tablerow(*string* content)
+- tablerow(*string* content, *object* flags)
 - tablecell(*string* content, *object* flags)
 
 `flags` has the following properties:
@@ -200,7 +200,7 @@ This code will output the following HTML:
 ```js
 {
     header: true || false,
-    align: 'center' || 'left' || 'right'
+    align: 'center' || 'left' || 'right' // only applicaple for tablecell, not for tablerow
 }
 ```
 
