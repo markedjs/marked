@@ -183,10 +183,10 @@ This code will output the following HTML:
 
 #### Block level renderer methods
 
-- code(*string* code, *string* language)
+- code(*string* code, *string* language, *boolean* escaped)
 - blockquote(*string* quote)
 - html(*string* html)
-- heading(*string* text, *number*  level)
+- heading(*string* text, *number* level, *string* raw)
 - hr()
 - list(*string* body, *boolean* ordered)
 - listitem(*string*  text)
@@ -213,6 +213,7 @@ This code will output the following HTML:
 - del(*string* text)
 - link(*string* href, *string* title, *string* text)
 - image(*string* href, *string* title, *string* text)
+- text(*string* text)
 
 ### gfm
 
