@@ -267,6 +267,34 @@ Default: `false`
 
 Use "smart" typograhic punctuation for things like quotes and dashes.
 
+### emoji
++
++Type: `Boolean` / `String` / `Function`
++Default: `false`
++
++Enable replacement of colon-delimited Emoji emoticon codes like `:warning:` or `:+1:`. This option requires the `gfm` option to be true. :octocat:
++
++* `String`: parsed as template for the replacement value, accepts the `{emoji}` variable.
++* `true`: use the default &lt;img&gt; with a local URL prefix.
++* `Function`: called with each emoji code, must return a replacement string like an &lt;img&gt; or &lt;span&gt; tag. Don't forget to use `escape(emoji)` or `encodeURIComponent(emoji)` where needed.
++
++```js
++marked.setOptions({
++  emoji: function (emoji) {
++    return '<span data-emoji="' + emoji + '"></span>';
++  }
++});
++```
++
++The default template:
++
++````
++<img src="/graphics/emojis/warning.png" alt=":warning:" title=":warning:"
++  class="emoji" align="absmiddle" height="20" width="20">`
++````
++
++:warning: The images for the emoji set used by GitHub can be found [in the repos](https://github.com/arvida/emoji-cheat-sheet.com/tree/master/public/graphics/emojis) of the [emoji-cheat-sheet](http://www.emoji-cheat-sheet.com/). :point_left::+1:
+
 ## Access to lexer and parser
 
 You also have direct access to the lexer and parser if you so desire.
