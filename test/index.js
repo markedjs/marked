@@ -87,7 +87,12 @@ function runTests(engine, options) {
   var renderer = new marked.Renderer();
   renderer.plugins = {};
   renderer.plugins.github = function(params, body) {
-    return `<a href="https://github.com/${body}">${body}</a>`;
+    return '<a href="https://github.com/' + body + '">' + body + '</a>';
+  };
+  
+  renderer.plugins.link = function(params, body) {
+    var parts = params.split(/\s*,\s*/);
+    return '<a href="' + parts[1] + '">' + parts[0] + '</a>';
   };
 
 main:
