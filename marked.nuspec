@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+    <metadata>
+        <id>marked</id>
+        <version>0.3.2</version>
+        <authors>Christopher Jeffrey</authors>
+        <owners>chjj</owners>
+        <licenseUrl>https://raw.githubusercontent.com/chjj/marked/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/chjj/marked</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A markdown parser and compiler. Built for speed.</description>
+        <copyright>Copyright Christopher Jeffrey 2014</copyright>
+        <tags>markdown markup html</tags>
+    </metadata>
+    <files>
+        <file src="lib\marked.js" target="content\Scripts" />
+        <file src="marked.min.js" target="content\Scripts" />
+    </files>
+</package>
