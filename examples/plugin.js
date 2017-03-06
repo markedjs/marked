@@ -46,6 +46,14 @@ var renderer = new marked.Renderer({
 
       return table.join('\n');
     },
+    gallery(params, block) {
+      var gallery = ['<ul class="imageGallery">'];
+      block.replace(/^\s+|\s+$/gm, '').split(/\s+\r?\n\s+/).forEach(function(img) {
+        gallery.push('<li class="imageGallery-item"><img src="' + html(img) + '"/></li>');
+      });
+      gallery.push('</ul>');
+      return gallery.join('\n');
+    }
   }
 });
 
