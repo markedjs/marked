@@ -1,8 +1,10 @@
 @link(github, https://github.com)
+
 @github(https)
   chjj/marked
 
-@ignore
-  a->b: do a
+@no()
+  Ignore
 
-  b->a: do b
+@!youtube()
+  No Youtube Plugin
