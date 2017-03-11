@@ -267,6 +267,13 @@ Default: `false`
 
 Use "smart" typograhic punctuation for things like quotes and dashes.
 
+### plugins
+
+Type: `boolean`
+Default: `false`
+
+Enable plugin syntax.
+
 ## Access to lexer and parser
 
 You also have direct access to the lexer and parser if you so desire.
@@ -356,6 +363,45 @@ $ node
     text: 'i am using marked.' },
   { type: 'blockquote_end' },
   links: {} ]
+```
+
+## Plugin syntax
+
+Plugins are customizable blocks which could extend default markdown behavior
+on demand. It could be iframes, podcasts, UML diagrams, video, etc. Plugin block
+starts with '@', plugin name and params in round braces. Plugin could contain
+block of data. Data block should preserve indentation it allow to add any
+content with any markup inside of the block.
+
+```
+@uml(sequence)
+  Alice->Bob: Hi, Bob!
+  Bob->Alice: Hi, Alice!
+```
+If plugin not exists it's just ignoring.
+
+### Define plugin
+
+Plugins could be defined at runtime or for all marked instances:
+
+```javascript
+// Define default plugin
+marked.Renderer.plugins.video = function(params) {
+  return `<video src="${params}"/>`;
+};
+
+// Instance plugins
+var renderer = new marked.Renderer({
+  plugins: {
+    uml(params, block) {
+      //...
+    }
+  }
+});
+
+renderer.plugins.audio = function(params) {
+  return `<audio src="${params}"/>`;
+};
 ```
 
 ## Running Tests & Contributing

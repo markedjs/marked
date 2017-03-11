@@ -82,6 +82,19 @@ function runTests(engine, options) {
     marked.setOptions(options.marked);
   }
 
+  engine.setOptions({plugins: true});
+
+  var renderer = new marked.Renderer();
+  renderer.plugins = {};
+  renderer.plugins.github = function(params, body) {
+    return '<a href="https://github.com/' + body + '">' + body + '</a>';
+  };
+  
+  renderer.plugins.link = function(params, body) {
+    var parts = params.split(/\s*,\s*/);
+    return '<a href="' + parts[1] + '">' + parts[0] + '</a>';
+  };
+
 main:
   for (; i < len; i++) {
     filename = keys[i];
@@ -112,7 +125,7 @@ main:
     }
 
     try {
-      text = engine(file.text).replace(/\s/g, '');
+      text = engine(file.text, {renderer: renderer}).replace(/\s/g, '');
       html = file.html.replace(/\s/g, '');
     } catch(e) {
       console.log('%s failed.', filename);

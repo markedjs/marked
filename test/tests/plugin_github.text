@@ -1,0 +1,10 @@
+@link(github, https://github.com)
+
+@github(https)
+  chjj/marked
+
+@no()
+  Ignore
+
+@!youtube()
+  No Youtube Plugin
