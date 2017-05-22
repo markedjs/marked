@@ -212,7 +212,7 @@ This code will output the following HTML:
 - br()
 - del(*string* text)
 - link(*string* href, *string* title, *string* text)
-- image(*string* href, *string* title, *string* text)
+- image(*string* src, *string* title, *string* alt)
 
 ### gfm
 
