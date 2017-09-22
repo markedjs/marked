@@ -1,3 +1,7 @@
+*This fork is starting out of necessity. To be clear, 8fold is not attempting to hijack the main project.* 
+
+*If the main project appears to pick up again, then we will probably let it go back to those capable hands. In the meantime, this project is here for [Marked](https://github.com/chjj/marked) users to come and collaborate (I hope the folks on the main project are okay). All PRs should be submitted to this repo so we can perform merges into `master` and submit fixes to the main project.*
+
 # marked
 
 > A full-featured markdown parser and compiler, written in JavaScript. Built
