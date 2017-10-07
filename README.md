@@ -38,7 +38,8 @@ marked.setOptions({
   sanitize: false,
   smartLists: true,
   smartypants: false,
-  xhtml: false
+  xhtml: false,
+  baseUrl: null
 });
 
 console.log(marked('I am using __markdown__.'));
@@ -278,6 +279,13 @@ Type: `boolean`
 Default: `false`
 
 Self-close the tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.
+
+### baseUrl
+
+Type: `string`
+Default: null
+
+Replace relative link and image URLs with values resolved against the specified base.
 
 ## Access to lexer and parser
 
