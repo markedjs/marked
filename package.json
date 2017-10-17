@@ -2,17 +2,27 @@
   "name": "8fold-marked",
   "description": "A markdown parser built for speed",
   "author": "Christopher Jeffrey",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "main": "./lib/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
   "preferGlobal": true,
   "repository": "git://github.com/8fold/marked.git",
   "homepage": "https://github.com/8fold/marked",
-  "bugs": { "url": "http://github.com/8fold/marked/issues" },
+  "bugs": {
+    "url": "http://github.com/8fold/marked/issues"
+  },
   "license": "MIT",
-  "keywords": ["markdown", "markup", "html"],
-  "tags": ["markdown", "markup", "html"],
+  "keywords": [
+    "markdown",
+    "markup",
+    "html"
+  ],
+  "tags": [
+    "markdown",
+    "markup",
+    "html"
+  ],
   "devDependencies": {
     "markdown": "*",
     "showdown": "*",
@@ -20,5 +30,8 @@
     "gulp-uglify": "^1.1.0",
     "gulp-concat": "^2.5.2"
   },
-  "scripts": { "test": "node test", "bench": "node test --bench" }
+  "scripts": {
+    "test": "node test",
+    "bench": "node test --bench"
+  }
 }
