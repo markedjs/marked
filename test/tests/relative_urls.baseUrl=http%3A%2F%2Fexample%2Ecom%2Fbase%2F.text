@@ -12,6 +12,11 @@
 ## Relative path
 [![section 4.2](img)](content)
 
+## Dot-relative path
+[![section 3.3](./img)](./content)
+
+[![section 3.3](../img)](../content)
+
 ## Same-document query
 [![section 4.4](?type=image)](?)
 
