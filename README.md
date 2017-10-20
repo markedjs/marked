@@ -1,3 +1,7 @@
+*This fork is starting out of necessity. To be clear, 8fold is not attempting to hijack the main project.* 
+
+*If the main project appears to pick up again, then we will probably let it go back to those capable hands. In the meantime, this project is here for [Marked](https://github.com/chjj/marked) users to come and collaborate (I hope the folks on the main project are okay). All PRs should be submitted to this repo so we can perform merges into `master` here and submit those to the main project as well.*
+
 # marked
 
 > A full-featured markdown parser and compiler, written in JavaScript. Built
@@ -33,7 +37,9 @@ marked.setOptions({
   pedantic: false,
   sanitize: false,
   smartLists: true,
-  smartypants: false
+  smartypants: false,
+  xhtml: false,
+  baseUrl: null
 });
 
 console.log(marked('I am using __markdown__.'));
@@ -266,6 +272,20 @@ Type: `boolean`
 Default: `false`
 
 Use "smart" typograhic punctuation for things like quotes and dashes.
+
+### xhtml
+
+Type: `boolean`
+Default: `false`
+
+Self-close the tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.
+
+### baseUrl
+
+Type: `string`
+Default: null
+
+Replace relative link and image URLs with values resolved against the specified base.
 
 ## Access to lexer and parser
 
