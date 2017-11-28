@@ -2,7 +2,7 @@
   "name": "8fold-marked",
   "description": "A markdown parser built for speed",
   "author": "Christopher Jeffrey",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "main": "./lib/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
