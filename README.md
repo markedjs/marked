@@ -1,4 +1,6 @@
-*This fork is starting out of necessity. To be clear, 8fold is not attempting to hijack the main project.* 
+*UPDATE 12-01-2017: An email was received wherein the owner of the main repository expressed interest in possibly stepping away or opening things up a bit. We're still figuring out what that looks like. In the meantime, please read this issue in the main project: https://github.com/chjj/marked/issues/956 and feel free to continue submitting PRs to this and the main project.*
+
+*10-19-2017: This fork is starting out of necessity. To be clear, 8fold is not attempting to hijack the main project.* 
 
 *If the main project appears to pick up again, then we will probably let it go back to those capable hands. In the meantime, this project is here for [Marked](https://github.com/chjj/marked) users to come and collaborate (I hope the folks on the main project are okay). All PRs should be submitted to this repo so we can perform merges into `master` here and submit those to the main project as well.*
 
