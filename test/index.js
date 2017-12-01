@@ -29,7 +29,7 @@ function load() {
   list = fs
     .readdirSync(dir)
     .filter(function(file) {
-      return path.extname(file) !== '.html';
+      return path.basename(file).charAt(0) !== '.' && path.extname(file) !== '.html';
     })
     .sort(function(a, b) {
       a = path.basename(a).toLowerCase().charCodeAt(0);
@@ -104,6 +104,10 @@ main:
         if (key.indexOf('no') === 0) {
           key = key.substring(2);
           val = false;
+        } else if (key.indexOf('=') !== -1) {
+          val = key.replace(/.*?=/, '');
+          key = key.slice(0, -val.length - 1);
+          val = decodeURIComponent(val);
         }
         if (marked.defaults.hasOwnProperty(key)) {
           marked.defaults[key] = val;
