@@ -207,6 +207,7 @@ This code will output the following HTML:
 #### Inline level renderer methods
 
 - strong(*string* text)
+- tag(*string* text)
 - em(*string* text)
 - codespan(*string* code)
 - br()
