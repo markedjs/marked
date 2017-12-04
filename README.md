@@ -33,7 +33,8 @@ marked.setOptions({
   pedantic: false,
   sanitize: false,
   smartLists: true,
-  smartypants: false
+  smartypants: false,
+  linksInNewTab: false
 });
 
 console.log(marked('I am using __markdown__.'));
@@ -266,6 +267,13 @@ Type: `boolean`
 Default: `false`
 
 Use "smart" typograhic punctuation for things like quotes and dashes.
+
+### linksInNewTab
+
+Type: `boolean`
+Default: `false`
+
+Open links in new tabs.
 
 ## Access to lexer and parser
 
