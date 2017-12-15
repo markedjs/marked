@@ -142,6 +142,143 @@ Type: `function`
 
 The callback function to call when using an async highlighter.
 
+## Custom modules
+
+Using marked registrar you can add custom modules with:
+
+`marked.register(module);`
+
+### custom module structure
+
+Your custom module has three sections:
+
+#### block (optional)
+
+The block section is used to capture multiline blocks of the markdown to render:
+
+```javascript
+block: {
+  rule: /^\$\$\n([\s\S\n]+?)\$\$\n/gm,
+  type: "your_token_type",
+  tokenize: function(cap){
+    return {
+      type: "your_token_type",
+      text: cap[1].replace(/\n/, '')
+    }
+  }
+}
+```
+
+##### rule
+
+This is your regex for capture. The above example has a good structure for general purpose:
+
+`/^CATCH\n([\s\S\n]+?)CATCH\n/gm`
+
+Where 'CATCH' is your custom symbols for capturing your block to work with. Inside these symbols you have a group capture, which is your working data. When marked runs your rule set it will call `tokenize` passing the `cap` to work with, expecting data back.
+
+##### tokenize
+
+This is your custom token info for rendering later on in marked render. Marked will call tokenize and pass on the captured data. The format of this data is:
+
+```javascript
+[0: "$$\ncaptured data\n$$\n",
+ 1: "captured data\n",
+ "index": 0,
+ "input": "$$\ncaptured data\n$$\n"]
+```
+
+tokenize needs to return an object with a type, that needs to match your type in the block. All other data in the object is left to the module to use.
+
+```javascript
+return {
+  type: "your_token_type",
+  data1: "thing",
+  data2: cap[1],
+  ...
+}
+```
+
+###### type
+
+This is an id that is used to check if the token, used later, is matched to your custom module.
+
+#### inline (optional)
+
+This is your inline capture. It is used to capture and render data inline text.
+
+```javascript
+inline: {
+  rule: /^\${1}([\s\S]+?)\$/,
+  text: '\\$'
+}
+```
+
+##### rule
+
+This is the modules inline capture, much like the block version.
+
+##### text
+
+Text is a modifier used to let the inline text not capture your capture.
+
+In the math example, without having `text: '\\$'` the default text capture would not let the module capture its data an stop. Text automatically stops at '\_\`\~\*' if you need the module to stop at an extra symbol add a text option, similar to the one above.
+
+#### render
+
+this is where you run your code to do your custom rendering
+
+```javascript
+renderer: function(cap) {
+  if(cap.type){ // block level
+    return yourCode(cap);
+
+  } else { // inline level
+    return yourCode(cap);
+
+  }
+}
+```
+
+In the block level you all ready did some work with your token. If it is block level code, your token your created is returned to use.
+
+In the inline level, you get the capture, much like you did in your tokenize function.
+
+All together you get:
+
+```javascript
+var custom_module = {
+  block: {
+    rule: /^\$\$\n([\s\S\n]+?)\$\$\n/gm,
+    type: "your_token_type",
+    tokenize: function(cap) {
+      return {
+        type: "your_token_type",
+        data1: "thing",
+        data2: cap[1],
+      }
+    }
+  },
+  inline: {
+    rule: /^\${1}([\s\S]+?)\$/,
+    text: '\\$'
+  },
+  render: function(cap){
+    if(cap.type){ // block
+      return yourCode(cap);
+    } else { // inline
+      return yourCode(cap);
+    }
+  }
+}
+```
+
+Then your simply register your module like so:
+
+```javascript
+marked.register(custom_module);
+```
+
 ### renderer
 
 Type: `object`
