@@ -101,7 +101,10 @@ main:
       });
       flags.forEach(function(key) {
         var val = true;
-        if (key.indexOf('no') === 0) {
+        if(key.indexOf('=') !== -1) {
+          val = decodeURIComponent(key.substring(key.indexOf('=') + 1));
+          key = key.substring(0, key.indexOf('='));
+        } else if (key.indexOf('no') === 0) {
           key = key.substring(2);
           val = false;
         }
