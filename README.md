@@ -403,4 +403,4 @@ See LICENSE for more info.
 [highlight]: https://github.com/isagalaev/highlight.js
 [badge]: http://badge.fury.io/js/marked
 [tables]: https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#wiki-tables
-[breaks]: https://help.github.com/articles/github-flavored-markdown#newlines
+[breaks]: https://help.github.com/articles/writing-on-github/#newlines
