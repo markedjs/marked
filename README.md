@@ -245,6 +245,33 @@ Default: `false`
 Conform to obscure parts of `markdown.pl` as much as possible. Don't fix any of
 the original markdown bugs or poor behavior.
 
+### rawHtml
+
+Type: `boolean`
+Default: `false`
+
+Don't look inside HTML content, just output the raw HTML as is. If you have markup
+with embedded HTML like this
+
+    some markup
+    <div>
+    a = b * c * d;
+    </div>
+
+By default marked will turn that into
+
+    <p>some markup</p>
+    <div>
+    a = b <em> c </em> d;
+    </div>
+
+`rawHtml: true` will change that output to
+
+    <p>some markup</p>
+    <div>
+    a = b * c * d;
+    </div>
+
 ### sanitize
 
 Type: `boolean`
