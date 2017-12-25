@@ -1,0 +1,8 @@
+# Header without explicit id ###
+
+# Header with id1 [id1] #####
+
+Header with id2 [id2]
+------
+
+Link to [first][header-without-explicit-id], [id1] and [third header][id2]
