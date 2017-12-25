@@ -115,8 +115,13 @@ main:
     }
 
     try {
-      text = engine(file.text).replace(/\s/g, '');
-      html = file.html.replace(/\s/g, '');
+      if(filename !== 'fenced_code_list_item.gfm.text') {
+        text = engine(file.text).replace(/\s/g, '');
+        html = file.html.replace(/\s/g, '');
+      } else {
+        text = engine(file.text);
+        html = file.html;
+      }
     } catch(e) {
       console.log('%s failed.', filename);
       throw e;
