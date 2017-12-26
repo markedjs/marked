@@ -58,6 +58,16 @@ Backslashing should suppress \[this] and [this\].
 
 [this]: foo
 
+A link reference definition cannot interrupt a paragraph.
+[bar]: /baz
+
+[bar]
+
+However, it can directly follow other block elements, such as headings
+
+# [Foo]
+[foo]: /url
+> bar
 
 * * *
 

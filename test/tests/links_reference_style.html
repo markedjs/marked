@@ -43,6 +43,16 @@
 
 <p>Backslashing should suppress [this] and [this].</p>
 
+<p>A link reference definition cannot interrupt a paragraph.
+[bar]: /baz</p>
+<p>[bar]</p>
+
+<p>However, it can directly follow other block elements, such as headings</p>
+<h1 id="-foo-"><a href="/url">Foo</a></h1>
+<blockquote>
+<p>bar</p>
+</blockquote>
+
 <hr>
 
 <p>Here&#39;s one where the <a href="/url/">link
