@@ -101,7 +101,7 @@ main:
       });
       flags.forEach(function(key) {
         var val = true;
-        if(key.indexOf('=') !== -1) {
+        if (key.indexOf('=') !== -1) {
           val = decodeURIComponent(key.substring(key.indexOf('=') + 1));
           key = key.substring(0, key.indexOf('='));
         } else if (key.indexOf('no') === 0) {
@@ -117,7 +117,7 @@ main:
     try {
       text = engine(file.text).replace(/\s/g, '');
       html = file.html.replace(/\s/g, '');
-    } catch(e) {
+    } catch (e) {
       console.log('%s failed.', filename);
       throw e;
     }
@@ -319,7 +319,7 @@ function time(options) {
  *   conformance.
  */
 
-function fix(options) {
+function fix() {
   ['tests', 'original', 'new'].forEach(function(dir) {
     try {
       fs.mkdirSync(path.resolve(__dirname, dir), 0755);
@@ -449,7 +449,13 @@ function parseArg(argv) {
       case '-f':
       case '--fix':
       case 'fix':
-        options.fix = true;
+        if (options.fix !== false) {
+          options.fix = true;
+        }
+        break;
+      case '--no-fix':
+      case 'no-fix':
+        options.fix = false;
         break;
       case '-b':
       case '--bench':
@@ -465,7 +471,7 @@ function parseArg(argv) {
         break;
       default:
         if (arg.indexOf('--') === 0) {
-          opt = camelize(arg.replace(/^--(no-)?/, ''));
+          var opt = camelize(arg.replace(/^--(no-)?/, ''));
           if (!marked.defaults.hasOwnProperty(opt)) {
             continue;
           }
@@ -506,8 +512,12 @@ function camelize(text) {
 function main(argv) {
   var opt = parseArg();
 
+  if (opt.fix !== false) {
+    fix();
+  }
+
   if (opt.fix) {
-    return fix(opt);
+    return;
   }
 
   if (opt.bench) {
