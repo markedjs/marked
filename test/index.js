@@ -160,11 +160,6 @@ main:
   console.log('%d/%d tests completed successfully.', complete, len);
   if (failed) console.log('%d/%d tests failed.', failed, len);
 
-  // // Tests currently failing.
-  // if (~failures.indexOf('def_blocks.text')) {
-  //   failed -= 1;
-  // }
-
   return !failed;
 }
 
