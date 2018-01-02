@@ -160,10 +160,10 @@ main:
   console.log('%d/%d tests completed successfully.', complete, len);
   if (failed) console.log('%d/%d tests failed.', failed, len);
 
-  // Tests currently failing.
-  if (~failures.indexOf('def_blocks.text')) {
-    failed -= 1;
-  }
+  // // Tests currently failing.
+  // if (~failures.indexOf('def_blocks.text')) {
+  //   failed -= 1;
+  // }
 
   return !failed;
 }
@@ -182,15 +182,15 @@ function bench(name, func) {
     // comparison to older benchmark times.
     fs.readdirSync(__dirname + '/new').forEach(function(name) {
       if (path.extname(name) === '.html') return;
-      if (name === 'main.text') return;
+      if (name === 'main.md') return;
       delete files[name];
     });
 
-    files['backslash_escapes.text'] = {
+    files['backslash_escapes.md'] = {
       text: 'hello world \\[how](are you) today'
     };
 
-    files['main.text'].text = files['main.text'].text.replace('* * *\n\n', '');
+    files['main.md'].text = files['main.md'].text.replace('* * *\n\n', '');
   }
 
   var start = Date.now()
@@ -342,7 +342,7 @@ function fix(options) {
   fs.readdirSync(path.resolve(__dirname, 'original')).forEach(function(file) {
     var nfile = file;
     if (file.indexOf('hard_wrapped_paragraphs_with_list_like_lines.') === 0) {
-      nfile = file.replace(/\.(text|html)$/, '.nogfm.$1');
+      nfile = file.replace(/([^.]+)$/, 'nogfm.$1');
     }
     fs.writeFileSync(path.resolve(__dirname, 'tests', nfile),
       fs.readFileSync(path.resolve(__dirname, 'original', file)));
