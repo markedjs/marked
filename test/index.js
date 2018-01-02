@@ -19,7 +19,7 @@ var fs = require('fs')
  */
 
 function load() {
-  var dir = __dirname + '/tests'
+  var dir = __dirname + '/compiled_tests'
     , files = {}
     , list
     , file
@@ -320,7 +320,7 @@ function time(options) {
  */
 
 function fix() {
-  ['tests', 'original', 'new'].forEach(function(dir) {
+  ['compiled_tests', 'original', 'new'].forEach(function(dir) {
     try {
       fs.mkdirSync(path.resolve(__dirname, dir), 0755);
     } catch (e) {
@@ -329,8 +329,8 @@ function fix() {
   });
 
   // rm -rf tests
-  fs.readdirSync(path.resolve(__dirname, 'tests')).forEach(function(file) {
-    fs.unlinkSync(path.resolve(__dirname, 'tests', file));
+  fs.readdirSync(path.resolve(__dirname, 'compiled_tests')).forEach(function(file) {
+    fs.unlinkSync(path.resolve(__dirname, 'compiled_tests', file));
   });
 
   // cp -r original tests
@@ -339,12 +339,12 @@ function fix() {
     if (file.indexOf('hard_wrapped_paragraphs_with_list_like_lines.') === 0) {
       nfile = file.replace(/([^.]+)$/, 'nogfm.$1');
     }
-    fs.writeFileSync(path.resolve(__dirname, 'tests', nfile),
+    fs.writeFileSync(path.resolve(__dirname, 'compiled_tests', nfile),
       fs.readFileSync(path.resolve(__dirname, 'original', file)));
   });
 
   // node fix.js
-  var dir = __dirname + '/tests';
+  var dir = __dirname + '/compiled_tests';
 
   fs.readdirSync(dir).filter(function(file) {
     return path.extname(file) === '.html';
@@ -400,7 +400,7 @@ function fix() {
 
   // cp new/* tests/
   fs.readdirSync(path.resolve(__dirname, 'new')).forEach(function(file) {
-    fs.writeFileSync(path.resolve(__dirname, 'tests', file),
+    fs.writeFileSync(path.resolve(__dirname, 'compiled_tests', file),
       fs.readFileSync(path.resolve(__dirname, 'new', file)));
   });
 }
