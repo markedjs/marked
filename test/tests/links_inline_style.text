@@ -13,3 +13,17 @@ Just a [URL](/url/).
 [URL and title]( /url/has space/ "url has space and title").
 
 [Empty]().
+
+Now some links with special link text.
+
+[hello \[ ok](http://abc.com)
+
+[hello [] with balanced brackets](http://abc.com)
+
+[hello! \[ \] with escaped balanced brackets](http://abc.com)
+
+[hello \ with a backslash](http://abc.com)
+
+[link w/ escaped back\\slash](http://abc.com)
+
+[link w/ back\\slash\\](http://abc.com)
