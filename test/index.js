@@ -300,6 +300,8 @@ function runBench(options) {
   } catch (e) {
     console.log('Could not bench markdown.js.');
   }
+
+  return true;
 }
 
 /**
