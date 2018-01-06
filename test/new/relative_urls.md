@@ -1,3 +1,6 @@
+---
+baseUrl: "http://example.com/base/"
+---
 # Absolutization of RFC 3986 URIs
 
 ## Absolute URI

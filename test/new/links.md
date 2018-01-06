@@ -1,3 +1,6 @@
+---
+sanitize: true
+---
 [URL](javascript:alert)
 
 [URL](vbscript:alert)
