@@ -46,7 +46,6 @@ function load() {
     file = path.join(dir, list[i]);
     content = fm(fs.readFileSync(file, 'utf8'));
 
-
     files[path.basename(file)] = {
       options: content.attributes,
       text: content.body,
@@ -418,6 +417,7 @@ function fix() {
 function parseArg(argv) {
   var argv = process.argv.slice(2)
     , options = {}
+    , opt = ""
     , orphans = []
     , arg;
 
@@ -477,7 +477,7 @@ function parseArg(argv) {
         break;
       default:
         if (arg.indexOf('--') === 0) {
-          var opt = camelize(arg.replace(/^--(no-)?/, ''));
+          opt = camelize(arg.replace(/^--(no-)?/, ''));
           if (!marked.defaults.hasOwnProperty(opt)) {
             continue;
           }
@@ -523,6 +523,7 @@ function main(argv) {
   }
 
   if (opt.fix) {
+    // only run fix
     return;
   }
 

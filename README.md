@@ -374,7 +374,7 @@ markdown.pl tests.
 In other words, if you have a test to add, add it to `test/new/`. If your test
 uses a certain feature, for example, maybe it assumes GFM is *not* enabled, you
 can add [front-matter](https://www.npmjs.com/package/front-matter) to the top of
-your .md file
+your `.md` file
 
 ``` yml
 ---
