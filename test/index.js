@@ -274,12 +274,32 @@ function runBench(options) {
     console.log('Could not bench showdown.');
   }
 
+  // markdown-it
+  try {
+    bench('markdown-it', (function() {
+      var MarkdownIt = require('markdown-it');
+      var md = new MarkdownIt();
+      return function(text) {
+        return md.render(text);
+      };
+    })());
+  } catch (e) {
+    console.log('Could not bench markdown-it.');
+  }
+
   // markdown.js
   try {
-    bench('markdown.js', require('markdown').parse);
+    bench('markdown.js', (function() {
+      var markdown = require('markdown').markdown;
+      return function(text) {
+        return markdown.toHTML(text);
+      };
+    })());
   } catch (e) {
     console.log('Could not bench markdown.js.');
   }
+
+  return true;
 }
 
 /**
