@@ -270,7 +270,7 @@ function runBench(options) {
       };
     })());
   } catch (e) {
-    console.log('Could not bench showdown.');
+    console.log('Could not bench showdown. (Error: %s)', e.message);
   }
 
   // markdown-it
@@ -283,7 +283,7 @@ function runBench(options) {
       };
     })());
   } catch (e) {
-    console.log('Could not bench markdown-it.');
+    console.log('Could not bench markdown-it. (Error: %s)', e.message);
   }
 
   // markdown.js
@@ -295,7 +295,7 @@ function runBench(options) {
       };
     })());
   } catch (e) {
-    console.log('Could not bench markdown.js.');
+    console.log('Could not bench markdown.js. (Error: %s)', e.message);
   }
 
   return true;
