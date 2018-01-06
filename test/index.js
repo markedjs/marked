@@ -323,7 +323,7 @@ function fix() {
     var text = fs.readFileSync(path.resolve(__dirname, 'original', file));
 
     if (file.indexOf('hard_wrapped_paragraphs_with_list_like_lines.md') === 0) {
-      text = "---\ngfm: false\n---\n" + text;
+      text = '---\ngfm: false\n---\n' + text;
     }
     fs.writeFileSync(path.resolve(__dirname, 'compiled_tests', file), text);
   });
