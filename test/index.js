@@ -50,7 +50,7 @@ function load(options) {
   l = list.length;
 
   for (i = 0; i < l; i++) {
-    name = path.basename(list[i]);
+    name = path.basename(list[i], ".md");
     if (el > 0) {
       skip = true;
       for (j = 0; j < el; j++) {
