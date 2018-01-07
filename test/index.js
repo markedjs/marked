@@ -29,16 +29,10 @@ function load(options) {
     , content
     , regex
     , skip
-    , enabled = options.enabled || []
+    , glob = g2r(options.glob || "*", { extended: true })
     , i
     , j
-    , l
-    , el = enabled.length;
-
-
-  for (i = 0; i < el; i++) {
-    enabled[i] = g2r(enabled[i]);
-  }
+    , l;
 
   list = fs
     .readdirSync(dir)
@@ -51,18 +45,7 @@ function load(options) {
 
   for (i = 0; i < l; i++) {
     name = path.basename(list[i], ".md");
-    if (el > 0) {
-      skip = true;
-      for (j = 0; j < el; j++) {
-        if (enabled[j].test(name)) {
-          skip = false;
-          break;
-        }
-      }
-    } else {
-      skip = false;
-    }
-    if (!skip) {
+    if (glob.test(name)) {
       file = path.join(dir, list[i]);
       content = fm(fs.readFileSync(file, 'utf8'));
 
@@ -75,7 +58,7 @@ function load(options) {
   }
 
   if (options.bench || options.time) {
-    if (!options.enabled || options.enabled.length === 0) {
+    if (!options.glob) {
       // Change certain tests to allow
       // comparison to older benchmark times.
       fs.readdirSync(__dirname + '/new').forEach(function(name) {
@@ -502,9 +485,10 @@ function parseArg(argv) {
       case '--time':
         options.time = true;
         break;
-      case '--':
-        options.enabled = argv;
-        argv = [];
+      case '-g':
+      case '--glob':
+        arg = argv.shift();
+        options.glob = arg.replace(/^=/, '');
         break;
       default:
         if (arg.indexOf('--') === 0) {
