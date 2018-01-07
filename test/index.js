@@ -13,20 +13,32 @@
 var fs = require('fs')
   , path = require('path')
   , fm = require('front-matter')
+  , g2r = require('glob-to-regexp')
   , marked = require('../');
 
 /**
  * Load Tests
  */
 
-function load() {
+function load(options) {
   var dir = __dirname + '/compiled_tests'
     , files = {}
     , list
     , file
+    , name
     , content
+    , regex
+    , skip
+    , enabled = options.enabled || []
     , i
-    , l;
+    , j
+    , l
+    , el = enabled.length;
+
+
+  for (i = 0; i < el; i++) {
+    enabled[i] = g2r(enabled[i]);
+  }
 
   list = fs
     .readdirSync(dir)
@@ -35,18 +47,53 @@ function load() {
     })
     .sort();
 
-  i = 0;
   l = list.length;
 
-  for (; i < l; i++) {
-    file = path.join(dir, list[i]);
-    content = fm(fs.readFileSync(file, 'utf8'));
+  for (i = 0; i < l; i++) {
+    name = path.basename(list[i]);
+    if (el > 0) {
+      skip = true;
+      for (j = 0; j < el; j++) {
+        if (enabled[j].test(name)) {
+          skip = false;
+          break;
+        }
+      }
+    } else {
+      skip = false;
+    }
+    if (!skip) {
+      file = path.join(dir, list[i]);
+      content = fm(fs.readFileSync(file, 'utf8'));
 
-    files[path.basename(file)] = {
-      options: content.attributes,
-      text: content.body,
-      html: fs.readFileSync(file.replace(/[^.]+$/, 'html'), 'utf8')
-    };
+      files[name] = {
+        options: content.attributes,
+        text: content.body,
+        html: fs.readFileSync(file.replace(/[^.]+$/, 'html'), 'utf8')
+      };
+    }
+  }
+
+  if (options.bench || options.time) {
+    if (!options.enabled || options.enabled.length === 0) {
+      // Change certain tests to allow
+      // comparison to older benchmark times.
+      fs.readdirSync(__dirname + '/new').forEach(function(name) {
+        if (path.extname(name) === '.html') return;
+        if (name === 'main.md') return;
+        delete files[name];
+      });
+    }
+
+    if (files['backslash_escapes.md']) {
+      files['backslash_escapes.md'] = {
+        text: 'hello world \\[how](are you) today'
+      };
+    }
+
+    if (files['main.md']) {
+      files['main.md'].text = files['main.md'].text.replace('* * *\n\n', '');
+    }
   }
 
   return files;
@@ -64,7 +111,7 @@ function runTests(engine, options) {
 
   var engine = engine || marked
     , options = options || {}
-    , files = options.files || load()
+    , files = options.files || load(options)
     , complete = 0
     , failed = 0
     , failures = []
@@ -160,27 +207,7 @@ main:
  * Benchmark a function
  */
 
-function bench(name, func) {
-  var files = bench.files || load();
-
-  if (!bench.files) {
-    bench.files = files;
-
-    // Change certain tests to allow
-    // comparison to older benchmark times.
-    fs.readdirSync(__dirname + '/new').forEach(function(name) {
-      if (path.extname(name) === '.html') return;
-      if (name === 'main.md') return;
-      delete files[name];
-    });
-
-    files['backslash_escapes.md'] = {
-      text: 'hello world \\[how](are you) today'
-    };
-
-    files['main.md'].text = files['main.md'].text.replace('* * *\n\n', '');
-  }
-
+function bench(name, files, func) {
   var start = Date.now()
     , times = 1000
     , keys = Object.keys(files)
@@ -205,7 +232,8 @@ function bench(name, func) {
  */
 
 function runBench(options) {
-  var options = options || {};
+  var options = options || {}
+    , files = load(options);
 
   // Non-GFM, Non-pedantic
   marked.setOptions({
@@ -219,7 +247,7 @@ function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  bench('marked', marked);
+  bench('marked', files, marked);
 
   // GFM
   marked.setOptions({
@@ -233,7 +261,7 @@ function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  bench('marked (gfm)', marked);
+  bench('marked (gfm)', files, marked);
 
   // Pedantic
   marked.setOptions({
@@ -247,18 +275,18 @@ function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  bench('marked (pedantic)', marked);
+  bench('marked (pedantic)', files, marked);
 
   // showdown
   try {
-    bench('showdown (reuse converter)', (function() {
+    bench('showdown (reuse converter)', files, (function() {
       var Showdown = require('showdown');
       var convert = new Showdown.Converter();
       return function(text) {
         return convert.makeHtml(text);
       };
     })());
-    bench('showdown (new converter)', (function() {
+    bench('showdown (new converter)', files, (function() {
       var Showdown = require('showdown');
       return function(text) {
         var convert = new Showdown.Converter();
@@ -271,7 +299,7 @@ function runBench(options) {
 
   // markdown-it
   try {
-    bench('markdown-it', (function() {
+    bench('markdown-it', files, (function() {
       var MarkdownIt = require('markdown-it');
       var md = new MarkdownIt();
       return function(text) {
@@ -284,7 +312,7 @@ function runBench(options) {
 
   // markdown.js
   try {
-    bench('markdown.js', (function() {
+    bench('markdown.js', files, (function() {
       var markdown = require('markdown').markdown;
       return function(text) {
         return markdown.toHTML(text);
@@ -302,11 +330,14 @@ function runBench(options) {
  */
 
 function time(options) {
-  var options = options || {};
+  var options = options || {}
+    , files = load(options);
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  bench('marked', marked);
+  bench('marked', files, marked);
+
+  return true;
 }
 
 /**
@@ -470,6 +501,10 @@ function parseArg(argv) {
       case '-t':
       case '--time':
         options.time = true;
+        break;
+      case '--':
+        options.enabled = argv;
+        argv = [];
         break;
       default:
         if (arg.indexOf('--') === 0) {
