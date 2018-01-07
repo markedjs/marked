@@ -33,11 +33,7 @@ function load() {
     .filter(function(file) {
       return path.extname(file) !== '.html';
     })
-    .sort(function(a, b) {
-      a = path.basename(a).toLowerCase().charCodeAt(0);
-      b = path.basename(b).toLowerCase().charCodeAt(0);
-      return a > b ? 1 : (a < b ? -1 : 0);
-    });
+    .sort();
 
   i = 0;
   l = list.length;
