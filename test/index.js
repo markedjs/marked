@@ -485,7 +485,6 @@ function parseArg(argv) {
       case '--time':
         options.time = true;
         break;
-      case '-g':
       case '--glob':
         arg = argv.shift();
         options.glob = arg.replace(/^=/, '');
