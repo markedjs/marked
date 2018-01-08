@@ -59,9 +59,13 @@ with blank line'
 
 ### Example 167
 
-[foo167]: /url\bar\*baz "foo\"bar\baz"
+	[foo167]: /url\bar\*baz "foo\"bar\baz"
 
-[foo167]
+	[foo167]
+
+	should render to
+
+	<p><a href="/url%5Cbar*baz" title="foo&quot;bar\baz">foo167</a></p>
 
 ### Example 168
 
