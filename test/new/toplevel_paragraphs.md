@@ -2,35 +2,35 @@
 gfm: true
 ---
 hello world
-    text after spaces
-    text after spaces
+    how are you
+    how are you
 
-paragraph before code
+hello world
 ```
-text inside block code
+how are you
 ```
 
-paragraph before hr
+hello world
 * * *
 
-paragraph before head with hash
+hello world
 # how are you
 
-paragraph before head with equals
+hello world
 how are you
 ===========
 
-paragraph before blockquote
-> text for blockquote
+hello world
+> how are you
 
-paragraph before list
-* text inside list
+hello world
+* how are you
 
-paragraph before div
-<div>text inside div</div>
+hello world
+<div>how are you</div>
 
-paragraph with span
-<span>text inside span</span>
+hello world
+<span>how are you</span>
 
 hello [world][how]
 
