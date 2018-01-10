@@ -23,9 +23,13 @@ function help() {
     customFds: [0, 1, 2]
   };
 
-  spawn('man',
-    [__dirname + '/../man/marked.1'],
-    options);
+  spawn('man', [__dirname + '/../man/marked.1'], options)
+    .on('error', function(err) {
+      fs.readFile(__dirname + '/../man/marked.1.txt', 'utf8', function(err, data) {
+        if (err) throw err;
+        console.log(data);
+      });
+    });
 }
 
 /**
