@@ -25,3 +25,11 @@ How about a code block with only an empty line?
 ```js
 
 ```
+
+With some trailing empty lines:
+
+```
+ciao
+
+
+```
