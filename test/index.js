@@ -94,6 +94,9 @@ function runTests(engine, options) {
 
   var engine = engine || marked
     , options = options || {}
+    , HtmlDiffer = require('html-differ').HtmlDiffer
+    , htmlDiffer = new HtmlDiffer()
+    , diffLogger = require('html-differ/lib/logger')
     , files = options.files || load(options)
     , complete = 0
     , failed = 0
@@ -107,7 +110,8 @@ function runTests(engine, options) {
     , text
     , html
     , j
-    , l;
+    , l
+    , diff;
 
   if (options.marked) {
     marked.setOptions(options.marked);
@@ -138,46 +142,24 @@ main:
     }
 
     try {
-      text = engine(file.text).replace(/\s/g, '');
-      html = file.html.replace(/\s/g, '');
+      text = engine(file.text);
+      html = file.html;
     } catch (e) {
       console.log('%s failed.', filename);
       throw e;
     }
 
-    j = 0;
-    l = html.length;
-
-    for (; j < l; j++) {
-      if (text[j] !== html[j]) {
-        failed++;
-        failures.push(filename);
-
-        text = text.substring(
-          Math.max(j - 30, 0),
-          Math.min(j + 30, text.length));
-
-        html = html.substring(
-          Math.max(j - 30, 0),
-          Math.min(j + 30, html.length));
-
-        console.log(
-          '\n#%d. %s failed at offset %d. Near: "%s".\n',
-          i + 1, filename, j, text);
-
-        console.log('\nGot:\n%s\n', text.trim() || text);
-        console.log('\nExpected:\n%s\n', html.trim() || html);
-
-        if (options.stop) {
-          break main;
-        }
-
-        continue main;
-      }
+    diff = htmlDiffer.diffHtml(text, html);
+    if (!htmlDiffer.isEqual(text, html)) {
+      failed++;
+      failures.push(filename);
+      console.log('#%d. %s failed.', i + 1, filename);
+      diffLogger.logDiffText(diff);
+      if (options.stop) break;
+    } else {
+      complete++;
+      console.log('#%d. %s completed.', i + 1, filename);
     }
-
-    complete++;
-    console.log('#%d. %s completed.', i + 1, filename);
   }
 
   console.log('%d/%d tests completed successfully.', complete, len);
