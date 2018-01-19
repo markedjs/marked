@@ -24,8 +24,8 @@
   ],
   "devDependencies": {
     "markdown": "0.x",
-    "showdown": "1.x",
     "markdown-it": "8.x",
+    "commonmark": "0.x",
     "front-matter": "^2.3.0",
     "glob-to-regexp": "0.3.0",
     "gulp": "^3.8.11",
