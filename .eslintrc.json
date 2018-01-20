@@ -5,6 +5,11 @@
   ],
   "rules": {
     "semi": "off",
+    "indent": ["warn", 2, {
+      "VariableDeclarator": { "var": 2 },
+      "SwitchCase": 1,
+      "outerIIFEBody": 0
+    }],
     "space-before-function-paren": "off",
     "operator-linebreak": ["error", "before", { "overrides": { "=": "after" } }],
     "no-cond-assign": "off",
