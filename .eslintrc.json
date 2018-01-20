@@ -4,6 +4,12 @@
     "standard"
   ],
   "rules": {
-    "semi": "off"
+    "semi": "off",
+    "space-before-function-paren": "off",
+    "operator-linebreak": ["error", "before", { "overrides": { "=": "after" } }],
+    "no-cond-assign": "off",
+    "no-useless-escape": "off",
+    "no-return-assign": "off",
+    "one-var": "off"
   }
 }
