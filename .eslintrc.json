@@ -16,5 +16,10 @@
     "no-useless-escape": "off",
     "no-return-assign": "off",
     "one-var": "off"
+  },
+  "env": {
+    "node": true,
+    "browser": true,
+    "amd": true
   }
 }
