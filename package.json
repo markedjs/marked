@@ -26,6 +26,10 @@
     "markdown": "*",
     "showdown": "*",
     "markdown-it": "*",
+    "eslint": "^4.15.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-standard": "^3.0.1",
     "front-matter": "^2.3.0",
     "glob-to-regexp": "0.3.0",
     "gulp": "^3.8.11",
@@ -34,6 +38,7 @@
   },
   "scripts": {
     "test": "node test",
-    "bench": "node test --bench"
+    "bench": "node test --bench",
+    "lint": "node_modules/.bin/eslint lib/marked.js"
   }
 }
