@@ -27,12 +27,14 @@ console.log(marked('I am using __markdown__.'));
 // Outputs: <p>I am using <strong>markdown</strong>.</p>
 ```
 
-Example setting options with default values:
+Create instance of `Renderer` only **after** you setting the necessary options.
+Do not pass `Renderer` at one time with other options, because its constructor
+should also get these options:
 
 ```js
 var marked = require('marked');
+
 marked.setOptions({
-  renderer: new marked.Renderer(),
   gfm: true,
   tables: true,
   breaks: false,
@@ -41,6 +43,8 @@ marked.setOptions({
   smartLists: true,
   smartypants: false
 });
+
+marked.setOptions({renderer: new marked.Renderer});
 
 console.log(marked('I am using __markdown__.'));
 ```
