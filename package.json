@@ -39,6 +39,6 @@
   "scripts": {
     "test": "node test",
     "bench": "node test --bench",
-    "lint": "node_modules/.bin/eslint lib/marked.js"
+    "lint": "node_modules/.bin/eslint --fix lib/marked.js"
   }
 }
