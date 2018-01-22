@@ -40,7 +40,8 @@ marked.setOptions({
   sanitize: false,
   smartLists: true,
   smartypants: false,
-  xhtml: false
+  xhtml: false,
+  linksInNewTab: false
 });
 
 console.log(marked('I am using __markdown__.'));
@@ -281,6 +282,13 @@ Type: `boolean`
 Default: `false`
 
 Self-close the tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.
+
+### linksInNewTab
+
+Type: `boolean`
+Default: `false`
+
+Opens links in new tabs.
 
 ## Access to lexer and parser
 
