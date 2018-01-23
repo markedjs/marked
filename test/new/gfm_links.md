@@ -1,11 +1,15 @@
 link with . http://example.com/hello-world.
+
 link with ! http://example.com/hello-world!
+
 link with : http://example.com/hello-world:
+
 link with , http://example.com/hello-world,
+
 link with ; http://example.com/hello-world;
-link with ' http://example.com/hello-world'
-link with " http://example.com/hello-world"
+
 link with ) http://example.com/hello-world)
+
 link with nothing http://example.com/hello-world
 
 ### Example 597
