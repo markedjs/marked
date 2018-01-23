@@ -351,7 +351,7 @@ function fix() {
   fs.readdirSync(path.resolve(__dirname, 'original')).forEach(function(file) {
     var text = fs.readFileSync(path.resolve(__dirname, 'original', file));
 
-    if (file === 'hard_wrapped_paragraphs_with_list_like_lines.md') {
+    if (path.extname(file) === '.md') {
       text = '---\ngfm: false\n---\n' + text;
     }
 
