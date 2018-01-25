@@ -37,7 +37,7 @@ function load(options) {
   list = fs
     .readdirSync(dir)
     .filter(function(file) {
-      return path.extname(file) !== '.html';
+      return path.extname(file) === '.md';
     })
     .sort();
 
