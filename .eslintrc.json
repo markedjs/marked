@@ -15,7 +15,8 @@
     "no-cond-assign": "off",
     "no-useless-escape": "off",
     "no-return-assign": "off",
-    "one-var": "off"
+    "one-var": "off",
+    "no-control-regex": "off"
   },
   "env": {
     "node": true,
