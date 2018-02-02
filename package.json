@@ -42,6 +42,6 @@
     "test": "node test",
     "bench": "node test --bench",
     "build": "gulp",
-    "lint": "eslint --fix lib/marked.js"
+    "lint": "eslint --fix lib/marked.js test/index.js"
   }
 }
