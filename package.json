@@ -41,7 +41,7 @@
   "scripts": {
     "test": "node test",
     "bench": "node test --bench",
-    "build": "node_modules/.bin/gulp",
-    "lint": "node_modules/.bin/eslint --fix lib/marked.js"
+    "build": "gulp",
+    "lint": "eslint --fix lib/marked.js"
   }
 }
