@@ -23,18 +23,20 @@
     "html"
   ],
   "devDependencies": {
-    "markdown": "*",
-    "showdown": "*",
-    "markdown-it": "*",
     "eslint": "^4.15.0",
     "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
     "front-matter": "^2.3.0",
     "glob-to-regexp": "0.3.0",
     "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
     "gulp-uglify": "^1.1.0",
-    "gulp-concat": "^2.5.2"
+    "markdown": "*",
+    "markdown-it": "*",
+    "showdown": "^1.8.6"
   },
   "scripts": {
     "test": "node test",
