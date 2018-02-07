@@ -1,5 +1,3 @@
-<p style="background: purple;">Hello, World!</p>
-
 # marked
 
 > A full-featured markdown parser and compiler, written in JavaScript. Built
