@@ -130,8 +130,7 @@ function runTests(engine, options) {
  */
 
 function testFile(engine, file, filename, index) {
-  var failures = [],
-      opts = Object.keys(file.options),
+  var opts = Object.keys(file.options),
       text,
       html,
       j,
@@ -167,15 +166,13 @@ function testFile(engine, file, filename, index) {
 
   for (j = 0; j < l; j++) {
     if (text[j] !== html[j]) {
-      failures.push(filename);
-
       text = text.substring(
         Math.max(j - 30, 0),
         Math.min(j + 30, text.length));
 
       html = html.substring(
         Math.max(j - 30, 0),
-        Math.min(j + 30, html.length));
+        Math.min(j + 30, l));
 
       console.log(
         '\n#%d. %s failed at offset %d. Near: "%s".\n',
