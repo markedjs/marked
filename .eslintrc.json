@@ -3,6 +3,7 @@
   "plugins": [
     "standard"
   ],
+  "parserOptions": { "ecmaVersion": 5 },
   "rules": {
     "semi": "off",
     "indent": ["warn", 2, {
