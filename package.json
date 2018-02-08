@@ -28,12 +28,11 @@
     "markdown-it": "*",
     "front-matter": "^2.3.0",
     "glob-to-regexp": "0.3.0",
-    "gulp": "^3.8.11",
-    "gulp-uglify": "^1.1.0",
-    "gulp-concat": "^2.5.2"
+    "uglify-js": "^3.3.10"
   },
   "scripts": {
     "test": "node test",
-    "bench": "node test --bench"
+    "bench": "node test --bench",
+    "build": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js"
   }
 }
