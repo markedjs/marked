@@ -31,17 +31,15 @@
     "eslint-plugin-standard": "^3.0.1",
     "front-matter": "^2.3.0",
     "glob-to-regexp": "0.3.0",
-    "gulp": "^3.8.11",
-    "gulp-concat": "^2.5.2",
-    "gulp-uglify": "^1.1.0",
     "markdown": "*",
     "markdown-it": "*",
-    "showdown": "*"
+    "showdown": "*",
+    "uglify-js": "^3.3.10"
   },
   "scripts": {
     "test": "node test",
     "bench": "node test --bench",
-    "build": "gulp",
-    "lint": "eslint --fix lib/marked.js test/index.js"
+    "lint": "eslint --fix lib/marked.js test/index.js",
+    "build": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js"
   }
 }

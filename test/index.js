@@ -14,7 +14,8 @@ var fs = require('fs'),
     path = require('path'),
     fm = require('front-matter'),
     g2r = require('glob-to-regexp'),
-    marked = require('../');
+    marked = require('../'),
+    markedMin = require('../marked.min.js');
 
 /**
  * Load Tests
@@ -488,6 +489,10 @@ function parseArg() {
       case '--time':
         options.time = true;
         break;
+      case '-m':
+      case '--minified':
+        options.minified = true;
+        break;
       case '--glob':
         arg = argv.shift();
         options.glob = arg.replace(/^=/, '');
@@ -552,6 +557,9 @@ function main(argv) {
     return time(opt);
   }
 
+  if (opt.minified) {
+    marked = markedMin;
+  }
   return runTests(opt);
 }
 
