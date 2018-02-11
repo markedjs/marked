@@ -41,5 +41,8 @@
     "bench": "node test --bench",
     "lint": "eslint --fix lib/marked.js test/index.js",
     "build": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js"
+  },
+  "engines": {
+    "node": ">=0.10.0"
   }
 }
