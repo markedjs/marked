@@ -1,10 +1,13 @@
-var fs = require('fs');
+var fs = require('fs'),
+    path = require('path');
 
-var testMod = require('../')
-  , load = testMod.load;
+var testMod = require('../'),
+    load = testMod.load;
 
-var express = require('express')
-  , app = express();
+var express = require('express'),
+    app = express();
+
+var files = load();
 
 app.use(function(req, res, next) {
   var setHeader = res.setHeader;
@@ -20,23 +23,17 @@ app.use(function(req, res, next) {
   next();
 });
 
-var dir = __dirname + '/../tests'
-  , files = {};
-
 app.get('/test.js', function(req, res, next) {
-  var test = fs.readFileSync(__dirname + '/test.js', 'utf8')
-    , files = load();
-
-
-  test = test.replace('__TESTS__', JSON.stringify(files))
+  var test = fs.readFileSync(path.join(__dirname, 'test.js'), 'utf8');
+  var testScript = test.replace('__TESTS__', JSON.stringify(files))
     .replace('__MAIN__', testMod.runTests + '')
     .replace('__LIBS__', testMod.testFile + '');
 
   res.contentType('.js');
-  res.send(test);
+  res.send(testScript);
 });
 
-app.use(express.static(__dirname + '/../../lib'));
+app.use(express.static(path.join(__dirname, '/../../lib')))  ;
 app.use(express.static(__dirname));
 
 app.listen(8080);
