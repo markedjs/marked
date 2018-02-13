@@ -22,6 +22,7 @@ var fs = require('fs'),
  */
 
 function load(options) {
+  options = options || {};
   var dir = path.join(__dirname, 'compiled_tests'),
       files = {},
       list,
@@ -574,6 +575,7 @@ if (!module.parent) {
   exports = main;
   exports.main = main;
   exports.runTests = runTests;
+  exports.testFile = testFile;
   exports.runBench = runBench;
   exports.load = load;
   exports.bench = bench;

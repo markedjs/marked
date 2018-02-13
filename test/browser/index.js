@@ -1,8 +1,7 @@
 var fs = require('fs');
 
-var test = require('../')
-  , runTests = test.runTests
-  , load = test.load;
+var testMod = require('../')
+  , load = testMod.load;
 
 var express = require('express')
   , app = express();
@@ -28,8 +27,10 @@ app.get('/test.js', function(req, res, next) {
   var test = fs.readFileSync(__dirname + '/test.js', 'utf8')
     , files = load();
 
-  test = test.replace('__TESTS__', JSON.stringify(files));
-  test = test.replace('__MAIN__', runTests + '');
+
+  test = test.replace('__TESTS__', JSON.stringify(files))
+    .replace('__MAIN__', testMod.runTests + '')
+    .replace('__LIBS__', testMod.testFile + '');
 
   res.contentType('.js');
   res.send(test);
