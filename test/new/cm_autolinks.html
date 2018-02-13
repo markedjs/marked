@@ -1,0 +1,91 @@
+<p>Here are some valid autolinks:</p>
+
+<h3 id="example-565">Example 565</h3>
+
+<p><a href="http://foo.bar.baz">http://foo.bar.baz</a></p>
+
+<h3 id="example-566">Example 566</h3>
+
+<p><a href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
+
+<h3 id="example-567">Example 567</h3>
+
+<p><a href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
+
+<h3 id="example-568">Example 568</h3>
+
+<p>Uppercase is also fine:</p>
+
+<p><a href="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
+
+<p>Note that many strings that count as absolute URIs for purposes of this spec are not valid URIs, because their schemes are not registered or because of other problems with their syntax:</p>
+
+<h3 id="example-569">Example 569</h3>
+
+<p><a href="a+b+c:d">a+b+c:d</a></p>
+
+<h3 id="example-570">Example 570</h3>
+
+<p><a href="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
+
+<h3 id="example-571">Example 571</h3>
+
+<p><a href="http://../">http://../</a></p>
+
+<h3 id="example-572">Example 572</h3>
+
+<p><a href="localhost:5001/foo">localhost:5001/foo</a></p>
+
+<h3 id="example-573">Example 573</h3>
+
+<p>Spaces are not allowed in autolinks:</p>
+
+<p>&lt;http://foo.bar/baz bim&gt;</p>
+
+<h3 id="example-574">Example 574</h3>
+
+<p>Backslash-escapes do not work inside autolinks:</p>
+
+<p><a href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
+
+<p>Examples of email autolinks:</p>
+
+<h3 id="example-575">Example 575</h3>
+
+<p><a href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
+
+<h3 id="example-576">Example 576</h3>
+
+<p><a href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
+
+<h3 id="example-577">Example 577</h3>
+
+<p>Backslash-escapes do not work inside email autolinks:</p>
+
+<p>&lt;foo+@bar.example.com&gt;</p>
+
+<p>These are not autolinks:</p>
+
+<h3 id="example-578">Example 578</h3>
+
+<p>&lt;&gt;</p>
+
+<h3 id="example-579">Example 579</h3>
+
+<p>&lt; http://foo.bar &gt;</p>
+
+<h3 id="example-580">Example 580</h3>
+
+<p>&lt;m:abc&gt;</p>
+
+<h3 id="example-581">Example 581</h3>
+
+<p>&lt;foo.bar.baz&gt;</p>
+
+<h3 id="example-582">Example 582</h3>
+
+<p>http://example.com</p>
+
+<h3 id="example-583">Example 583</h3>
+
+<p>foo@bar.example.com</p>
