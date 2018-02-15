@@ -330,17 +330,16 @@ features][gfmf].
 
 ## Benchmarks
 
-node v8.9.4
+node v8.1.3
 
 ``` bash
 $ npm run bench
-marked completed in 3408ms.
-marked (gfm) completed in 3465ms.
-marked (pedantic) completed in 3032ms.
-showdown (reuse converter) completed in 21444ms.
-showdown (new converter) completed in 23058ms.
-markdown-it completed in 3364ms.
-markdown.js completed in 12090ms.
+marked completed in 27497ms.
+marked (gfm) completed in 31378ms.
+marked (pedantic) completed in 25741ms.
+commonmark completed in 25736ms.
+markdown-it completed in 23816ms.
+markdown.js completed in 79779ms.
 ```
 
 ### Pro level
