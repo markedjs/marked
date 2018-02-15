@@ -6,10 +6,10 @@
   "main": "./lib/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
-  "repository": "git://github.com/chjj/marked.git",
-  "homepage": "https://github.com/chjj/marked",
+  "repository": "git://github.com/markedjs/marked.git",
+  "homepage": "https://github.com/markedjs/marked",
   "bugs": {
-    "url": "http://github.com/chjj/marked/issues"
+    "url": "http://github.com/markedjs/marked/issues"
   },
   "license": "MIT",
   "keywords": [
