@@ -17,7 +17,7 @@ We follow [semantic versioning](https://semver.org) where the following sequence
   - `$ npm test` (run tests)
   - `$ npm version [major|minor|patch]` (updates `package.json` and creates `min` file)
   - `$ npm publish` (publish to NPM)
-- [ ] Commit changes locally -> Submit PR to `origina/master` -> Merge PR
+- [ ] Commit changes locally -> Submit PR to `origin/master` -> Merge PR
 - [ ] Navigate to the "Releases" tab on the project main page -> "Draft new release"
   - Add version number matching the one in the `package.json` file after publishing the release
   - Make sure `master` is the branch from which the release will be made
