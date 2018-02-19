@@ -18,9 +18,9 @@ We follow [semantic versioning](https://semver.org) where the following sequence
 
 - [ ] Fork `markedjs/marked` -> clone the library locally -> Make sure you are on the `master` branch
 - [ ] Create release branch from `master` (`release-##.##.##`)
-- [ ] `$ npm test` (run tests)
-- [ ] `$ npm version [major|minor|patch]` (updates `package.json` and creates `min` file)
-- [ ] `$ npm publish` (publish to NPM)
+  - `$ npm test` (run tests)
+  - `$ npm version [major|minor|patch]` (updates `package.json` and creates `min` file)
+  - `$ npm publish` (publish to NPM)
 - [ ] Commit changes locally -> Submit PR to `origina/master` -> Merge PR
 - [ ] Navigate to the "Releases" tab on the project main page -> "Draft new release"
   - Add version number matching the one in the `package.json` file after publishing the release
