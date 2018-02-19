@@ -8,7 +8,7 @@
 <ul>
   <li><a href="#install">Installation</a></li>
   <li><a href="#usage">Usage</a></li>
-  <li><a href="#marked"><code>marked()</code></a></li>
+  <li><a href="#marked-call"><code>marked()</code></a></li>
   <li><a href="#options">Options</a></li>
   <li><a href="#extend">Extend</a></li>
   <li><a href="#cli">CLI</a></li>
@@ -99,7 +99,7 @@ console.log(marked('I am using __markdown__.'));
 </html>
 ```
 
-<h2 id="marked">marked(markdownString [,options] [,callback])</h2>
+<h2 id="marked-call">marked(markdownString [,options] [,callback])</h2>
 
 ### markdownString
 
