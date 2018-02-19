@@ -16,14 +16,12 @@ We follow [semantic versioning](https://semver.org) where the following sequence
 
 ### Release process
 
-- [ ] Fork `markedjs/marked` -> clone the library locally
-- [ ] Make sure you are on the `master` branch
+- [ ] Fork `markedjs/marked` -> clone the library locally -> Make sure you are on the `master` branch
 - [ ] Create release branch from `master` (`release-##.##.##`)
-- [ ] Run tests using NPM command: `$ npm test`
-- [ ] Run NPM command to update `package.json` version: `$ npm version [major|minor|patch]` (updates `package.json` and creates `min` file)
-- [ ] Publish pack to NPM: `$ npm publish`
-- [ ] Commit changes locally -> Submit PR to `origina/master`
-- [ ] Merge PR (only time where submitter should be "allowed" to merge his or her own)
+- [ ] `$ npm test` (run tests)
+- [ ] `$ npm version [major|minor|patch]` (updates `package.json` and creates `min` file)
+- [ ] `$ npm publish` (publish to NPM)
+- [ ] Commit changes locally -> Submit PR to `origina/master` -> Merge PR
 - [ ] Navigate to the "Releases" tab on the project main page -> "Draft new release"
   - Add version number matching the one in the `package.json` file after publishing the release
   - Make sure `master` is the branch from which the release will be made
