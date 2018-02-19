@@ -6,13 +6,13 @@
 [![NPM version](https://badge.fury.io/js/marked.svg)][badge]
 
 <ul>
+  <li><a href="#philosophy">Philosophy</a></li>
   <li><a href="#install">Installation</a></li>
   <li><a href="#usage">Usage</a></li>
   <li><a href="#marked-call"><code>marked()</code></a></li>
   <li><a href="#options">Options</a></li>
   <li><a href="#extend">Extend</a></li>
   <li><a href="#cli">CLI</a></li>
-  <li><a href="#philosophy">Philosophy</a></li>
   <li><a href="#benchmarks">Benchmarks</a></li>
   <li><a href="#contributing">Contributing</a></li>
   <li><a href="#license">License</a></li>
