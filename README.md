@@ -5,7 +5,40 @@
 
 [![NPM version](https://badge.fury.io/js/marked.svg)][badge]
 
-## Install
+<ul>
+  <li><a href="#install">Installation</a></li>
+  <li><a href="#usage">Usage</a></li>
+  <li><a href="#marked"><code>marked()</code></a></li>
+  <li><a href="#options">Options</a></li>
+  <li><a href="#extend">Extend</a></li>
+  <li><a href="#cli">CLI</a></li>
+  <li><a href="#philosophy">Philosophy</a></li>
+  <li><a href="#benchmarks">Benchmarks</a></li>
+  <li><a href="#contributing">Contributing</a></li>
+  <li><a href="#license">License</a></li>
+</ul>
+
+<h2 id="philosophy">Philosophy behind marked</h2>
+
+The point of marked was to create a markdown compiler where it was possible to
+frequently parse huge chunks of markdown without having to worry about
+caching the compiled output somehow...or blocking for an unnecessarily long time.
+
+marked is very concise and still implements all markdown features. It is also
+now fully compatible with the client-side.
+
+marked more or less passes the official markdown test suite in its
+entirety. This is important because a surprising number of markdown compilers
+cannot pass more than a few tests. It was very difficult to get marked as
+compliant as it is. It could have cut corners in several areas for the sake
+of performance, but did not in order to be exactly what you expect in terms
+of a markdown rendering. In fact, this is why marked could be considered at a
+disadvantage in the benchmarks.
+
+Along with implementing every markdown feature, marked also implements [GFM
+features][gfmf].
+
+<h2 id="installation">Install</h2>
 
 ``` bash
 npm install marked --save
@@ -17,7 +50,7 @@ or if you want to use the `marked` CLI tool (not necessary when using npm run-sc
 npm install -g marked
 ```
 
-## Usage
+<h2 id="usage">Usage</h2>
 
 Minimal usage:
 
@@ -66,7 +99,7 @@ console.log(marked('I am using __markdown__.'));
 </html>
 ```
 
-## marked(markdownString [,options] [,callback])
+<h2 id="marked">marked(markdownString [,options] [,callback])</h2>
 
 ### markdownString
 
@@ -89,7 +122,7 @@ Function called when the `markdownString` has been fully parsed when using
 async highlighting. If the `options` argument is omitted, this can be used as
 the second argument.
 
-## Options
+<h2 id="options">Options</h2>
 
 ### highlight
 
@@ -282,7 +315,7 @@ Default: `false`
 
 Self-close the tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.
 
-## Access to lexer and parser
+<h2 id="extend">Access to lexer and parser</h2>
 
 You also have direct access to the lexer and parser if you so desire.
 
@@ -298,7 +331,7 @@ console.log(tokens);
 console.log(lexer.rules);
 ```
 
-## CLI
+<h2 id="cli">CLI</h2>
 
 ``` bash
 $ marked -o hello.html
@@ -308,27 +341,7 @@ $ cat hello.html
 <p>hello world</p>
 ```
 
-## Philosophy behind marked
-
-The point of marked was to create a markdown compiler where it was possible to
-frequently parse huge chunks of markdown without having to worry about
-caching the compiled output somehow...or blocking for an unnecessarily long time.
-
-marked is very concise and still implements all markdown features. It is also
-now fully compatible with the client-side.
-
-marked more or less passes the official markdown test suite in its
-entirety. This is important because a surprising number of markdown compilers
-cannot pass more than a few tests. It was very difficult to get marked as
-compliant as it is. It could have cut corners in several areas for the sake
-of performance, but did not in order to be exactly what you expect in terms
-of a markdown rendering. In fact, this is why marked could be considered at a
-disadvantage in the benchmarks.
-
-Along with implementing every markdown feature, marked also implements [GFM
-features][gfmf].
-
-## Benchmarks
+<h2 id="benchmarks">Benchmarks</h2>
 
 node v8.9.4
 
@@ -369,10 +382,12 @@ $ node
   links: {} ]
 ```
 
-## Running Tests & Contributing
+<h2 id="contributing">Contributing</h2>
 
-If you want to submit a pull request, make sure your changes pass the test
-suite. If you're adding a new feature, be sure to add your own test.
+1. If the code in a pull request can have a test written for it, it should have it. (If the test already exists, please reference the test which should pass.)
+2. Do not merge your own. Mainly for collaborators and owners, please do not review and merge your own PRs.
+
+### Tests
 
 The marked test suite is set up slightly strangely: `test/new` is for all tests
 that are not part of the original markdown.pl test suite (this is where your
@@ -396,17 +411,39 @@ To run the tests:
 npm run test
 ```
 
-### Contribution and License Agreement
+### Contribution License Agreement
 
 If you contribute code to this project, you are implicitly allowing your code
 to be distributed under the MIT license. You are also implicitly verifying that
 all code is your original work. `</legalese>`
 
-## License
+<h2 id="releasing">Releasing</h2>
+
+**Master is alwasys shippable:** We try to merge PRs in such a way that `master` is the only branch to really be concerned about *and* `master` can always be released. This allows smoother flow between new fetures, bug fixes, and so on. (Almost a continuous deployment setup, without automation.)
+
+**Version naming:** relatively standard [major].[minor].[patch] where `major` releases represent known breaking changes to the previous release, `minor` represent additions of new funcitonality without breaking changes, and `patch` releases represent changes meant to fix previously released functionality with no new functionality. Note: When the major is a zero, it means the library is still in a beta state wherein the `major` does not get updated; therefore, `minor` releases may introduce breaking changes, and `patch` releases may contain new features.
+
+**Release process:**
+
+1. Check out library
+2. Make sure you are on the `master` branch
+3. Fork from `master` to create a release branch
+4. `$ npm run build` (builds minified version and whatnot)
+5. `$ npm version [major|minor|patch]` (updates `package.json`)
+6. `$ npm publish` (publishes package to NPM)
+7. Submit PR
+8. Merge PR (only time where submitter should be "allowed" to merge his or her own)
+9. Navigate to the "Releases" tab on the project main page -> "Draft new release"
+10. Add version number matching the one in the `package.json` file after publishing the release
+11. Make sure `master` is the branch from which the release will be made
+12. Add notes regarding what users should expect from the release
+13. Click "Publish release"
+
+<h2 id="license">License</h2>
 
 Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
 
-See LICENSE for more info.
+See [LICENSE](https://github.com/markedjs/marked/blob/master/LICENSE) for more details.
 
 [gfm]: https://help.github.com/articles/github-flavored-markdown
 [gfmf]: http://github.github.com/github-flavored-markdown/
