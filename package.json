@@ -34,6 +34,7 @@
     "test": "node test",
     "bench": "node test --bench",
     "build": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
-    "prepublishOnly": "npm run build && git commit -m 'minify' -- marked.min.js"
+    "prepack": "npm run build && git commit -m 'minify' -- marked.min.js",
+    "prepublishOnly": "npm run test && npm run pack"
   }
 }
