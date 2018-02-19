@@ -4,10 +4,10 @@
 
 ## Versioning
 
-We follow [semantic versioning](https://semver.org) where the following sequence is true `[major].[minor].[patch]` (further, while in beta you may see something like this `0.[major|minor].[minor|patch]`). Therefore, consider the following implications of the relase you are preparing:
+We follow [semantic versioning](https://semver.org) where the following sequence is true `[major].[minor].[patch]` (further, while in beta, you may see this `0.[major|minor].[minor|patch]`); therefore, consider the following implications of the release you are preparing:
 
-1. **Major:** There is at least one change that has been made which is not deemed as backward compatible. While in beta, the major will remain at zero; thereby, alterting consumers to the potentially volatile nature of the package.
-2. **Minor:** There is at least one new feature added to the release. While in beta, the minor will tend be more analagous to a `major` release. For example, we plan to release `0.4.0` once we have fixed most, if not all, known issues related to the CommonMark and GFM specifications because the architecture changes planned during `0.4.0` will most likely introduce breaking changes.
+1. **Major:** There is at least one change not deemed backward compatible. While in beta, the major will remain at zero; thereby, alerting consumers to the potentially volatile nature of the package.
+2. **Minor:** There is at least one new feature added to the release. While in beta, the minor will tend to be more analagous to a `major` release. For example, we plan to release `0.4.0` once we have fixed most, if not all, known issues related to the CommonMark and GFM specifications because the architecture changes planned during `0.4.0` will most likely introduce breaking changes.
 3. **Patch:** No breaking changes. Should fix a defect found in a feature. While in beta, the patch will tend to be more analagous to a `minor` release.
 
 ## Release process
