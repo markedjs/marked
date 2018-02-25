@@ -39,8 +39,8 @@ console.log(myMarked('I am using __markdown__.'));
 
 <h2 id="options">Options</h2>
 
-|Member     |Type      |Notes                                                                                                                        |
-|:---------:|:--------:|:---------------------------------------------------------------------------------------------------------------------------:|
+|:Member   :|:Type    :|:Notes                                                                                                                      :|
+|:----------|:---------|:----------------------------------------------------------------------------------------------------------------------------|
 |highlight  |`function`|A function to highlight code blocks.                                                                                         |
 |renderer   |`object`  |An object containing functions to render tokens to HTML. Default: `new Renderer()`                                           |
 |pedantic   |`boolean` |Conform to obscure parts of `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Default: `false`|
