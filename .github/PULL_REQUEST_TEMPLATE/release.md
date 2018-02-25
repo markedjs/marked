@@ -13,5 +13,5 @@
 - [ ] Version in `package.json` has been updated (see [RELEASE.md](https://github.com/markedjs/marked/blob/master/RELEASE.md)).
 - [ ] The `marked.min.js` has been updated; or,
 - [ ] release does not change library.
-- [ ] All tests pass (remove once CI is in place).
+- [ ] case_insensitive_refs is only failing test (remove once CI is in place and all tests pass).
 - [ ] All lint checks pass (remove once CI is in place).
