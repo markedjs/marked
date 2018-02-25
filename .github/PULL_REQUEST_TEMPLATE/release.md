@@ -2,7 +2,10 @@
 
 - [ ] `$ npm version` has been run.
 - [ ] Reviewer checklist is complete.
+- [ ] Merge PR.
+- [ ] Publish GitHub release using `master` with correct version number.
 - [ ] `$ npm publish` has been run.
+- [ ] Create draft GitHub release to prepare next release.
 
 ## Reviewer
 
