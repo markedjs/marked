@@ -74,7 +74,7 @@ By supporting the above Markdown flavors, it's possible that Marked can help you
 
 <h2 id="contributing">Contributing</h2>
 
-The marked community enjoys a spirit of collaboration and contribution from all comers. Whether you're just getting started with Markdown, JavaScript, and Marked or your a veteran with it all, we're here to help you improve as a professional software developer while helping to improve Marked itself. Please see our [contributing documentation](https://github.com/markedjs/marked/blob/master/CONTRIBUTING.md) for more details.
+The marked community enjoys a spirit of collaboration and contribution from all comers. Whether you're just getting started with Markdown, JavaScript, and Marked or you're a veteran with it all figured out, we're here to help you improve as a professionally while helping improve Marked technically. Please see our [contributing documentation](https://github.com/markedjs/marked/blob/master/CONTRIBUTING.md) for more details.
 
 For our Contribution License Agreement, see our [license](https://github.com/markedjs/marked/blob/master/LICENSE.md).
 
