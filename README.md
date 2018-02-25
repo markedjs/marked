@@ -8,7 +8,7 @@
   <li><a href="#license">License</a></li>
 </ul>
 
-<h2 id="marked">About</h2>
+<h2 id="marked">Marked</h2>
 
 Marked is 
 
