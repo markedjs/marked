@@ -1,7 +1,3 @@
-# marked
-
-[![NPM version](https://badge.fury.io/js/marked.svg)] [![NPM dependencies](https://david-dm.org/markedjs/marked.svg)]
-
 Marked is 
 
 1. built for speed.<sup>*</sup>
@@ -9,9 +5,9 @@ Marked is
 3. light-weight while implementing all markdown features from the supported flavors & specifications.<sup>***</sup>
 4. available as a command line interface (CLI) and running in client- or server-side JavaScript projects.
 
-- <small><sup>*</sup> Still working on metrics for comparative analysis and definition.</small>
-- <small><sup>**</sup> As few dependencies as possible.</small>
-- <small><sup>***</sup> Strict compliance could result in slower processing when running comparative benchmarking.</small>
+<small><sup>*</sup> Still working on metrics for comparative analysis and definition.</small>
+<small><sup>**</sup> As few dependencies as possible.</small>
+<small><sup>***</sup> Strict compliance could result in slower processing when running comparative benchmarking.</small>
 
 <ul>
   <li><a href="#install">Installation</a></li>
@@ -79,11 +75,15 @@ By supporting the above Markdown flavors, it's possible that Marked can help you
 
 The marked community enjoys a spirit of collaboration and contribution from all comers. Whether you're just getting started with Markdown, JavaScript, and Marked or your a veteran with it all, we're here to help you improve as a professional software developer while helping to improve Marked itself. Please see our [contributing documentation](https://github.com/markedjs/marked/blob/master/CONTRIBUTING.md) for more details.
 
-For our Contribution License Agreement, see our [license](https://github.com/markedjs/marked/blob/master/LICENSE).
+For our Contribution License Agreement, see our [license](https://github.com/markedjs/marked/blob/master/LICENSE.md).
+
+<h2 id="authors">Authors</h2>
+
+For list of credited authors and contributors, please see our [authors page](https://github.com/markedjs/marked/blob/master/AUTHORS.md).
 
 <h2 id="license">License</h2>
 
 Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
 
-See [license](https://github.com/markedjs/marked/blob/master/LICENSE) for more details.
+See [license](https://github.com/markedjs/marked/blob/master/LICENSE.md) for more details.
 
