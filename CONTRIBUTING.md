@@ -84,4 +84,4 @@ npm run build
 
 ## Releasing
 
-Create GitHub releases and publishing to NPM is limited to conributors and owners. If you would like more information, please see our [releasing documentation](https://github.com/markedjs/marked/blob/master/RELEASING.md).
+Creating GitHub releases and publishing to NPM is limited to conributors and owners. If you would like more information, please see our [releasing documentation](https://github.com/markedjs/marked/blob/master/RELEASING.md).
