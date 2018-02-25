@@ -11,7 +11,7 @@
 
 ## Versioning
 
-We follow [semantic versioning](https://semver.org) where the following sequence is true `[major].[minor].[patch]` (further, while in beta, you may see this `0.[major|minor].[minor|patch]`); therefore, consider the following implications of the release you are preparing:
+We follow [semantic versioning](https://semver.org) where the following sequence is true `[major].[minor].[patch]`; therefore, consider the following implications of the release you are preparing:
 
 1. **Major:** There is at least one change not deemed backward compatible. 
 2. **Minor:** There is at least one new feature added to the release. 
