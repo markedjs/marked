@@ -1,8 +1,9 @@
 # Releasing Marked
 
 - [ ] See [contributing](https://github.com/markedjs/marked/blob/master/CONTRIBUTING.md)
-- [ ] Create release branch from `master` (`release-##.##.##`) -> Submit PR
-- [ ] Complete PR checklist
+- [ ] Create release branch from `master` (`release-x.y.z`)
+- [ ] Submit PR with minimal name: Release x.y.z
+- [ ] Complete PR checklists
 
 ## Overall strategy
 
