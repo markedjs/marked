@@ -7,7 +7,7 @@ Marked is
 1. built for speed.<sup>*</sup>
 2. a low-level markdown compiler that allows frequent parsing of large chunks of markdown without caching or blocking for long periods of time.<sup>**</sup>
 3. light-weight while implementing all markdown features from the supported flavors & specifications.<sup>***</sup>
-4. available as a command line interface and running in client- or server-side JavaScript projects.
+4. available as a command line interface (CLI) and running in client- or server-side JavaScript projects.
 
 - <small><sup>*</sup> Still working on metrics for comparative analysis and definition.</small>
 - <small><sup>**</sup> As few dependencies as possible.</small>
@@ -26,48 +26,25 @@ Marked is
   <li><a href="#license">License</a></li>
 </ul>
 
-<h2 id="installation">Install</h2>
+<h2 id="installation">Installation</h2>
 
-``` bash
-npm install marked --save
-```
+**CLI:** `npm install -g marked`
 
-or if you want to use the `marked` CLI tool (not necessary when using npm run-scripts):
-
-``` bash
-npm install -g marked
-```
+**In-browser:** `npm install marked --save`
 
 <h2 id="usage">Usage</h2>
 
-Minimal usage:
+**CLI**
 
-```js
-var marked = require('marked');
-console.log(marked('I am using __markdown__.'));
-// Outputs: <p>I am using <strong>markdown</strong>.</p>
+``` bash
+$ marked -o hello.html
+hello world
+^D
+$ cat hello.html
+<p>hello world</p>
 ```
 
-Example setting options:
-
-```js
-var marked = require('marked');
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  tables: true,
-  breaks: false,
-  pedantic: false,
-  sanitize: false,
-  smartLists: true,
-  smartypants: false,
-  xhtml: false
-});
-
-console.log(marked('I am using __markdown__.'));
-```
-
-### Browser
+**Browser**
 
 ```html
 <!doctype html>
@@ -75,7 +52,7 @@ console.log(marked('I am using __markdown__.'));
 <head>
   <meta charset="utf-8"/>
   <title>Marked in the browser</title>
-  <script src="lib/marked.js"></script>
+  <script src="/path/to/marked.min.js"></script>
 </head>
 <body>
   <div id="content"></div>
@@ -87,221 +64,8 @@ console.log(marked('I am using __markdown__.'));
 </html>
 ```
 
-<h2 id="marked">marked(markdownString [,options] [,callback])</h2>
 
-### markdownString
-
-Type: `string`
-
-String of markdown source to be compiled.
-
-### options
-
-Type: `object`
-
-Hash of options. Can also be set using the `marked.setOptions` method as seen
-above.
-
-### callback
-
-Type: `function`
-
-Function called when the `markdownString` has been fully parsed when using
-async highlighting. If the `options` argument is omitted, this can be used as
-the second argument.
-
-<h2 id="options">Options</h2>
-
-### highlight
-
-Type: `function`
-
-A function to highlight code blocks. The first example below uses async highlighting with
-[node-pygmentize-bundled][pygmentize], and the second is a synchronous example using
-[highlight.js][highlight]:
-
-```js
-var marked = require('marked');
-
-var markdownString = '```js\n console.log("hello"); \n```';
-
-// Async highlighting with pygmentize-bundled
-marked.setOptions({
-  highlight: function (code, lang, callback) {
-    require('pygmentize-bundled')({ lang: lang, format: 'html' }, code, function (err, result) {
-      callback(err, result.toString());
-    });
-  }
-});
-
-// Using async version of marked
-marked(markdownString, function (err, content) {
-  if (err) throw err;
-  console.log(content);
-});
-
-// Synchronous highlighting with highlight.js
-marked.setOptions({
-  highlight: function (code) {
-    return require('highlight.js').highlightAuto(code).value;
-  }
-});
-
-console.log(marked(markdownString));
-```
-
-#### highlight arguments
-
-`code`
-
-Type: `string`
-
-The section of code to pass to the highlighter.
-
-`lang`
-
-Type: `string`
-
-The programming language specified in the code block.
-
-`callback`
-
-Type: `function`
-
-The callback function to call when using an async highlighter.
-
-### renderer
-
-Type: `object`
-Default: `new Renderer()`
-
-An object containing functions to render tokens to HTML.
-
-#### Overriding renderer methods
-
-The renderer option allows you to render tokens in a custom manner. Here is an
-example of overriding the default heading token rendering by adding an embedded anchor tag like on GitHub:
-
-```javascript
-var marked = require('marked');
-var renderer = new marked.Renderer();
-
-renderer.heading = function (text, level) {
-  var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-
-  return '<h' + level + '><a name="' +
-                escapedText +
-                 '" class="anchor" href="#' +
-                 escapedText +
-                 '"><span class="header-link"></span></a>' +
-                  text + '</h' + level + '>';
-};
-
-console.log(marked('# heading+', { renderer: renderer }));
-```
-This code will output the following HTML:
-```html
-<h1>
-  <a name="heading-" class="anchor" href="#heading-">
-    <span class="header-link"></span>
-  </a>
-  heading+
-</h1>
-```
-
-#### Block level renderer methods
-
-- code(*string* code, *string* language)
-- blockquote(*string* quote)
-- html(*string* html)
-- heading(*string* text, *number*  level)
-- hr()
-- list(*string* body, *boolean* ordered)
-- listitem(*string*  text)
-- paragraph(*string* text)
-- table(*string* header, *string* body)
-- tablerow(*string* content)
-- tablecell(*string* content, *object* flags)
-
-`flags` has the following properties:
-
-```js
-{
-    header: true || false,
-    align: 'center' || 'left' || 'right'
-}
-```
-
-#### Inline level renderer methods
-
-- strong(*string* text)
-- em(*string* text)
-- codespan(*string* code)
-- br()
-- del(*string* text)
-- link(*string* href, *string* title, *string* text)
-- image(*string* href, *string* title, *string* text)
-- text(*string* text)
-
-### gfm
-
-Type: `boolean`
-Default: `true`
-
-Enable [GitHub flavored markdown][gfm].
-
-### tables
-
-Type: `boolean`
-Default: `true`
-
-Enable GFM [tables][tables].
-This option requires the `gfm` option to be true.
-
-### breaks
-
-Type: `boolean`
-Default: `false`
-
-Enable GFM [line breaks][breaks].
-This option requires the `gfm` option to be true.
-
-### pedantic
-
-Type: `boolean`
-Default: `false`
-
-Conform to obscure parts of `markdown.pl` as much as possible. Don't fix any of
-the original markdown bugs or poor behavior.
-
-### sanitize
-
-Type: `boolean`
-Default: `false`
-
-Sanitize the output. Ignore any HTML that has been input.
-
-### smartLists
-
-Type: `boolean`
-Default: `true`
-
-Use smarter list behavior than the original markdown. May eventually be
-default with the old behavior moved into `pedantic`.
-
-### smartypants
-
-Type: `boolean`
-Default: `false`
-
-Use "smart" typographic punctuation for things like quotes and dashes.
-
-### xhtml
-
-Type: `boolean`
-Default: `false`
-
-Self-close the tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.
+Marked offers [advanced configurations](https://github.com/markedjs/marked/blob/master/USAGE_ADVANCED.md) and extensibility as well.
 
 <h2 id="extend">Access to lexer and parser</h2>
 
@@ -317,16 +81,6 @@ var lexer = new marked.Lexer(options);
 var tokens = lexer.lex(text);
 console.log(tokens);
 console.log(lexer.rules);
-```
-
-<h2 id="cli">CLI</h2>
-
-``` bash
-$ marked -o hello.html
-hello world
-^D
-$ cat hello.html
-<p>hello world</p>
 ```
 
 <h2 id="benchmarks">Benchmarks</h2>
