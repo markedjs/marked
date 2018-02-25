@@ -42,3 +42,4 @@ Describe what code combination got you there
 - [ ] Draft GitHub release notes have been updated.
 - [ ] case_insensitive_refs is only failing test (remove once CI is in place and all tests pass).
 - [ ] All lint checks pass (remove once CI is in place).
+- [ ] Merge PR
