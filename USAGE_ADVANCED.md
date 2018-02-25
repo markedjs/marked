@@ -5,7 +5,7 @@ marked(markdownString [,options] [,callback])
 ```
 
 |Argument              |Type         |Notes                                                                                                |
-|:--------------------:|:-----------:|:---------------------------------------------------------------------------------------------------:|
+|:---------------------|:------------|:----------------------------------------------------------------------------------------------------|
 |markdownString        |`string`     |String of markdown source to be compiled.                                                            |
 |<a href="#options">options</a>|`object`|Hash of options. Can also use `marked.setOptions`.                                                |
 |callback              |`function`   |Called when `markdownString` has been parsed. Can be used as second argument if no `options` present.|
@@ -39,7 +39,6 @@ console.log(myMarked('I am using __markdown__.'));
 
 <h2 id="options">Options</h2>
 
-|:---------:|:--------:|:---------------------------------------------------------------------------------------------------------------------------:|
 |Member     |Type      |Notes                                                                                                                        |
 |:----------|:---------|:----------------------------------------------------------------------------------------------------------------------------|
 |highlight  |`function`|A function to highlight code blocks.                                                                                         |
