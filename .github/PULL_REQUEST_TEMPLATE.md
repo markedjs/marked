@@ -1,10 +1,11 @@
 
 <!-- 
 
-	If release PR, please add ?template=release.md to the PR url to use the release PR template.
+	If release PR, add ?template=release.md to the PR url to use the release PR template.
 
 	Otherwise, you are stating the this PR fixes an issue that has been submitted; or,
 	describes the issue or proposal under considersation.
+
 -->
 
 ## Description
@@ -31,17 +32,10 @@ Describe what code combination got you there
 
 ### Submitter
 
-- Tests 
-  - [ ] Test(s) exist to ensure functionality works (if no new tests added, list which tests cover this functionality).
-  - [ ] No tests required for this PR.
-- [ ] Is release:
-  - [ ] Version in `package.json` has been updated (see [RELEASE.md](https://github.com/markedjs/marked/blob/master/RELEASE.md)).
-  - [ ] The `marked.min.js` has been updated; or,
-  - [ ] release does not change library.
-
+- [ ] Test(s) exist to ensure functionality works (if no new tests added, list which tests cover this functionality); or,
+- [ ] no tests required for this PR.
+  
 ### Reviewer
 
 - [ ] All tests pass (remove once CI is in place).
 - [ ] All lint checks pass (remove once CI is in place).
-
-??
