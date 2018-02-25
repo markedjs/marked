@@ -1,6 +1,6 @@
 ## Original developer
 
-Christopher Jeffrey
+Christopher Jeffrey @chjj
 
 ## Contribution credits
 
