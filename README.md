@@ -1,3 +1,15 @@
+<ul>
+  <li><a href="#marked">About</a></li>
+  <li><a href="#install">Installation</a></li>
+  <li><a href="#usage">Usage</a></li>
+  <li><a href="#specifications">Supported Markdown specifications</a></li>
+  <li><a href="#contributing">Contributing</a></li>
+  <li><a href="#authors">Authors</a></li>
+  <li><a href="#license">License</a></li>
+</ul>
+
+<h2 id="marked">About</h2>
+
 Marked is 
 
 1. built for speed.<sup>*</sup>
@@ -8,15 +20,6 @@ Marked is
 <p><small><sup>*</sup> Still working on metrics for comparative analysis and definition.</small><br>
 <small><sup>**</sup> As few dependencies as possible.</small><br>
 <small><sup>***</sup> Strict compliance could result in slower processing when running comparative benchmarking.</small></p>
-
-<ul>
-  <li><a href="#install">Installation</a></li>
-  <li><a href="#usage">Usage</a></li>
-  <li><a href="#specifications">Supported Markdown specifications</a></li>
-  <li><a href="#contributing">Contributing</a></li>
-  <li><a href="#authors">Authors</a></li>
-  <li><a href="#license">License</a></li>
-</ul>
 
 <h2 id="installation">Installation</h2>
 
