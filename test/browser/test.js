@@ -57,6 +57,8 @@ function escape(html, encode) {
     .replace(/'/g, '&#39;');
 }
 
+__LIBS__;
+
 (__MAIN__)();
 
 }).call(this);
