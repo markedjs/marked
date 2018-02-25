@@ -1,6 +1,7 @@
 ## Submitter
 
 - [ ] `$ npm version` has been run.
+- [ ] Release notes in [draft GitHub release](https://github.com/markedjs/marked/releases) are up to date
 - [ ] Reviewer checklist is complete.
 - [ ] Merge PR.
 - [ ] Publish GitHub release using `master` with correct version number.
