@@ -10,7 +10,7 @@ marked(markdownString [,options] [,callback])
 |<a href="#options">options</a>|`object`|Hash of options. Can also use `marked.setOptions`.                                                |
 |callback              |`function`   |Called when `markdownString` has been parsed. Can be used as second argument if no `options` present.|
 
-### Alternative
+### Alternative using reference
 
 ```js
 // Create reference instance
@@ -41,7 +41,7 @@ console.log(myMarked('I am using __markdown__.'));
 
 |Member     |Type      |Notes                                                                                                                        |
 |:----------|:---------|:----------------------------------------------------------------------------------------------------------------------------|
-|highlight  |`function`|A function to highlight code blocks.                                                                                         |
+|highlight  |`function`|A function to highlight code blocks. See also: <a href="#highlight">Asynchronous highlighting</a>.                           |
 |renderer   |`object`  |An object containing functions to render tokens to HTML. Default: `new Renderer()`                                           |
 |pedantic   |`boolean` |Conform to obscure parts of `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Default: `false`|
 |gfm        |`boolean` |Use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).                                 |
@@ -52,63 +52,23 @@ console.log(myMarked('I am using __markdown__.'));
 |smartypants|`boolean` |Use "smart" typographic punctuation for things like quotes and dashes.                                                       |
 |xhtml      |`boolean` |Self-close the tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML. Default: `false`    |
 
-### highlight
+<h2 id="highlight">Asynchronous highlighting</h2>
 
-Captured...??
-
- The first example below uses async highlighting with
-[node-pygmentize-bundled][pygmentize], and the second is a synchronous example using
-[highlight.js][highlight]:
+Unlike `highlight.js` the `pygmatize.js` library uses asynchronous highlighting. This example demonstrates that marked is agnostic when it comes to the highlighter you use.
 
 ```js
-var marked = require('marked');
-
-var markdownString = '```js\n console.log("hello"); \n```';
-
-// Async highlighting with pygmentize-bundled
-marked.setOptions({
-  highlight: function (code, lang, callback) {
+myMarked.setOption({
+  highlight: function(code, lang, callback) {
     require('pygmentize-bundled')({ lang: lang, format: 'html' }, code, function (err, result) {
       callback(err, result.toString());
     });
   }
 });
 
-// Using async version of marked
-marked(markdownString, function (err, content) {
-  if (err) throw err;
-  console.log(content);
-});
-
-// Synchronous highlighting with highlight.js
-marked.setOptions({
-  highlight: function (code) {
-    return require('highlight.js').highlightAuto(code).value;
-  }
-});
-
-console.log(marked(markdownString));
+console.log(myMarked(markdownString));
 ```
 
-#### highlight arguments
-
-`code`
-
-Type: `string`
-
-The section of code to pass to the highlighter.
-
-`lang`
-
-Type: `string`
-
-The programming language specified in the code block.
-
-`callback`
-
-Type: `function`
-
-The callback function to call when using an async highlighter.
+In both examples, `code` is a `string` representing the section of code to pass to the highlighter. In this example, `lang` is a `string` informing the highlighter what programming lnaguage to use for the `code` and `callback` is the `function` the asynchronous highlighter will call once complete.
 
 ### renderer
 
