@@ -14,6 +14,7 @@ Marked is
   <li><a href="#usage">Usage</a></li>
   <li><a href="#specifications">Supported Markdown specifications</a></li>
   <li><a href="#contributing">Contributing</a></li>
+  <li><a href="#authors">Authors</a></li>
   <li><a href="#license">License</a></li>
 </ul>
 
