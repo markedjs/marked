@@ -6,7 +6,7 @@ all code is your original work. `</legalese>`
 
 ## Marked
 
-Copyright (c) 2011-2014, Christopher Jeffrey (https://github.com/chjj/)
+Copyright (c) 2011-2018, Christopher Jeffrey (https://github.com/chjj/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

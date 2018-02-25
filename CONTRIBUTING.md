@@ -1,23 +1,36 @@
-The marked library tends to favor following the SOLID set of software design and development principles.
+## Design principles
+
+Marked tends to favor following the SOLID (mainly the [single responsibility](https://en.wikipedia.org/wiki/Single_responsibility_principle) and [open/closed principles](https://en.wikipedia.org/wiki/Open/closed_principle)) set of software design and development principles:
+
+- **Single responsibility:** Marked, and the components of Marked, have the single responsibility of converting Markdown strings into HTML.
+- **Open/closed:** Marked favors giving developers the means to easily extend the library and its components over changing Marked's behavior through configuration options.
 
 ## Priorities
 
-We think we have our priorities straight.
+We think we have our priorities straight for building quality in.
 
+The following table lists the ticket type labels we use when there is work to be done on the code either through an Issue or a PR; in priority order.
 
-1. If the code in a pull request can have a test written for it, it should have it. (If the test already exists, please reference the test which should pass.)
-2. Do not merge your own. Mainly for collaborators and owners, please do not review and merge your own PRs.
+|Ticket type label                  |Description                                                                                                                            |
+|:----------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|
+|L0 - security                      |A security vulnerability within the Marked library is discovered.                                                                      |
+|L1 - broken                        |Valid usage results in incorrect output compared to [supported specifications](https://github.com/markedjs/marked/blob/master/AUTHORS.md#specifications) OR causes marked to crash AND there is no known workaround for the issue.                                                                        |
+|L2 - annoying                      |Similar to L1 - borken only there is a known workaround avaialable for the issue.                                                      |
+|RR - refactor and re-engineer      |Results in an improvement to developers using Marked (improved readability) or end-users (faster performance) or both.                 |
+|NFS - new feature (spec related)   |A capability Marked does not currently provide but is in one of the [supported specifications](https://github.com/markedjs/marked/blob/master/AUTHORS.md#specifications)|
+|NFU - new feature (user requested) |A capability Marked does not currently provide but has been requested by users of Marked.                                              |
 
-### Tests
+## Test early, often, and everything
 
-The marked test suite is set up slightly strangely: `test/new` is for all tests
-that are not part of the original markdown.pl test suite (this is where your
-test should go if you make one). `test/original` is only for the original
-markdown.pl tests.
+We try to write test cases to validate output (writing tests based on the [supported specifications](https://github.com/markedjs/marked/blob/master/AUTHORS.md#specifications)) and minimize regression (writing tests for issues fixed). Therefore, if you would like to contribute, somethings you should regarding the test harness.
 
-In other words, if you have a test to add, add it to `test/new/`. If your test
-uses a certain feature, for example, maybe it assumes GFM is *not* enabled, you
-can add [front-matter](https://www.npmjs.com/package/front-matter) to the top of
+|Location      |Description                                         |
+|:-------------|:---------------------------------------------------|
+|/test/browser |For testing Marked in a client-side implementation. |
+|/test/new     |Tests not related to the original `markdown.pl`.    |
+|/test/original|Tests validating against the original `markdown.pl`.|
+
+If your test uses features or options, assuming `gfm` is set to `false`, for example, you can add [front-matter](https://www.npmjs.com/package/front-matter) to the top of
 your `.md` file
 
 ``` yml
@@ -26,30 +39,40 @@ gfm: false
 ---
 ```
 
+## Submitting PRs and Issues
+
+Marked provides templates for submitting both pull requests and issues. When you begin creating a new PR or issue, you will see instructions on using the template.
+
+The PR templates include checklists for both the submitter and the reviewer, which, in most cases, will not be the same person.
+
+## Scripts
+
+When it comes to NPM scripts, we try to use the native scripts provided by the NPM framework.
+
 To run the tests:
 
 ``` bash
-npm run test
+npm test
 ```
 
-<h2 id="releasing">Releasing</h2>
+To see time comparisons between Marked and other popular Markdown libraries:
 
-**Master is always shippable:** We try to merge PRs in such a way that `master` is the only branch to really be concerned about *and* `master` can always be released. This allows smoother flow between new fetures, bug fixes, and so on. (Almost a continuous deployment setup, without automation.)
+```bash
+npm run bench
+```
 
-**Version naming:** relatively standard [major].[minor].[patch] where `major` releases represent known breaking changes to the previous release, `minor` represent additions of new funcitonality without breaking changes, and `patch` releases represent changes meant to fix previously released functionality with no new functionality. Note: When the major is a zero, it means the library is still in a beta state wherein the `major` does not get updated; therefore, `minor` releases may introduce breaking changes, and `patch` releases may contain new features.
+To check for proper syntax (lint):
 
-**Release process:**
+```bash
+npm run lint
+```
 
-1. Check out library
-2. Make sure you are on the `master` branch
-3. Create release branch from `master`
-4. `$ npm run build` (builds minified version and whatnot)
-5. `$ npm version [major|minor|patch]` (updates `package.json`)
-6. `$ npm publish` (publishes package to NPM)
-7. Submit PR
-8. Merge PR (only time where submitter should be "allowed" to merge his or her own)
-9. Navigate to the "Releases" tab on the project main page -> "Draft new release"
-10. Add version number matching the one in the `package.json` file after publishing the release
-11. Make sure `master` is the branch from which the release will be made
-12. Add notes regarding what users should expect from the release
-13. Click "Publish release"
+To build your own minified version of Marked:
+
+```bash
+npm run build
+```
+
+## Releasing
+
+Create GitHub releases and publishing to NPM is limited to conributors and owners. If you would like more information, please see our [releasing documentation](https://github.com/markedjs/marked/blob/master/RELEASING.md).
