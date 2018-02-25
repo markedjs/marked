@@ -28,14 +28,12 @@ Describe what code combination got you there
 
 -->	
 
-## Review
-
-### Submitter
+## Submitter
 
 - [ ] Test(s) exist to ensure functionality works (if no new tests added, list which tests cover this functionality); or,
 - [ ] no tests required for this PR.
   
-### Reviewer
+## Reviewer
 
-- [ ] All tests pass (remove once CI is in place).
+- [ ] case_insensitive_refs is only failing test (remove once CI is in place and all tests pass).
 - [ ] All lint checks pass (remove once CI is in place).
