@@ -1,9 +1,17 @@
 # marked
 
-> A full-featured markdown parser and compiler, written in JavaScript. Built
-> for speed.
+[![NPM version](https://badge.fury.io/js/marked.svg)][badge] [![NPM dependencies](https://david-dm.org/markedjs/marked.svg)][badge]
 
-[![NPM version](https://badge.fury.io/js/marked.svg)][badge]
+Marked is 
+
+1. built for speed.<sup>*</sup>
+2. a low-level markdown compiler that allows frequent parsing of large chunks of markdown without caching or blocking for long periods of time.<sup>**</sup>
+3. light-weight while implementing all markdown features from the supported flavors & specifications.<sup>***</sup>
+4. available as a command line interface and running in client- or server-side JavaScript projects.
+
+- <small><sup>*</sup> Still working on metrics for comparative analysis and definition.</small>
+- <small><sup>**</sup> As few dependencies as possible.</small>
+- <small><sup>***</sup> Strict compliance could result in slower processing when running comparative benchmarking.</small>
 
 <ul>
   <li><a href="#install">Installation</a></li>
@@ -17,26 +25,6 @@
   <li><a href="#contributing">Contributing</a></li>
   <li><a href="#license">License</a></li>
 </ul>
-
-<h2 id="philosophy">Philosophy behind marked</h2>
-
-The point of marked was to create a markdown compiler where it was possible to
-frequently parse huge chunks of markdown without having to worry about
-caching the compiled output somehow...or blocking for an unnecessarily long time.
-
-marked is very concise and still implements all markdown features. It is also
-now fully compatible with the client-side.
-
-marked more or less passes the official markdown test suite in its
-entirety. This is important because a surprising number of markdown compilers
-cannot pass more than a few tests. It was very difficult to get marked as
-compliant as it is. It could have cut corners in several areas for the sake
-of performance, but did not in order to be exactly what you expect in terms
-of a markdown rendering. In fact, this is why marked could be considered at a
-disadvantage in the benchmarks.
-
-Along with implementing every markdown feature, marked also implements [GFM
-features][gfmf].
 
 <h2 id="installation">Install</h2>
 
