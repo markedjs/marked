@@ -1,28 +1,44 @@
-### renderer
+## Extending Marked
 
-#### Overriding renderer methods
+To champion the single-reponsibility and open/closed prinicples, we have tried to make it relatively painless to extend marked. If you are looking to add custom functionality, this is the place to start.
 
-The renderer option allows you to render tokens in a custom manner. Here is an
-example of overriding the default heading token rendering by adding an embedded anchor tag like on GitHub:
+<ul>
+	<li><a href="#renderer">The renderer</a></li>
+	<li><a href="#lexer">The lexer</a></li>
+	<li><a href="#parser">The parser</a></li>
+</ul>
 
-```javascript
-var marked = require('marked');
-var renderer = new marked.Renderer();
+<h2 id="rederer">The renderer</h2>
 
+The renderer is...
+
+**Example:** Overriding default heading token by adding an embedded anchor tag like on GitHub.
+
+```js
+// Create reference instance
+var myMarked = require('marked');
+
+// Get reference
+var renderer = new myMarked.Renderer();
+
+// Override function
 renderer.heading = function (text, level) {
   var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 
-  return '<h' + level + '><a name="' +
-                escapedText +
-                 '" class="anchor" href="#' +
-                 escapedText +
-                 '"><span class="header-link"></span></a>' +
-                  text + '</h' + level + '>';
+  return `<h${level}>
+  			<a name="'${escapedText}'" class="anchor" href="#${escapedText}">
+  				<span class="header-link"></span>
+  			</a>
+  			${text}
+		</h${level}>`;
 };
 
+// Run marked
 console.log(marked('# heading+', { renderer: renderer }));
 ```
-This code will output the following HTML:
+
+**Output:**
+
 ```html
 <h1>
   <a name="heading-" class="anchor" href="#heading-">
@@ -32,7 +48,7 @@ This code will output the following HTML:
 </h1>
 ```
 
-#### Block level renderer methods
+### Block level renderer methods
 
 - code(*string* code, *string* language)
 - blockquote(*string* quote)
@@ -55,7 +71,7 @@ This code will output the following HTML:
 }
 ```
 
-#### Inline level renderer methods
+### Inline level renderer methods
 
 - strong(*string* text)
 - em(*string* text)
@@ -65,6 +81,17 @@ This code will output the following HTML:
 - link(*string* href, *string* title, *string* text)
 - image(*string* href, *string* title, *string* text)
 - text(*string* text)
+
+<h2 id="lexer">The lexer</h2>
+
+The lexer is...
+
+
+<h2 id="parser">The parser</h2>
+
+The parser is...
+
+***
 
 <h2 id="extend">Access to lexer and parser</h2>
 
