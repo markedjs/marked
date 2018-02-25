@@ -1,3 +1,12 @@
+# Contributing to Marked
+
+- [ ] Fork `markedjs/marked`.
+- [ ] Clone the library locally using GitHub Desktop or the command line.
+- [ ] Make sure you are on the `master` branch.
+- [ ] Create a branch.
+- [ ] Make as small a change as possible.
+- [ ] Submit a PR.
+
 ## Design principles
 
 Marked tends to favor following the SOLID (mainly the [single responsibility](https://en.wikipedia.org/wiki/Single_responsibility_principle) and [open/closed principles](https://en.wikipedia.org/wiki/Open/closed_principle)) set of software design and development principles:

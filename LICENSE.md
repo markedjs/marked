@@ -1,3 +1,5 @@
+# License information
+
 ## Contribution License Agreement
 
 If you contribute code to this project, you are implicitly allowing your code

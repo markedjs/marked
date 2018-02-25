@@ -5,9 +5,9 @@ Marked is
 3. light-weight while implementing all markdown features from the supported flavors & specifications.<sup>***</sup>
 4. available as a command line interface (CLI) and running in client- or server-side JavaScript projects.
 
-<small><sup>*</sup> Still working on metrics for comparative analysis and definition.</small>
-<small><sup>**</sup> As few dependencies as possible.</small>
-<small><sup>***</sup> Strict compliance could result in slower processing when running comparative benchmarking.</small>
+<p><small><sup>*</sup> Still working on metrics for comparative analysis and definition.</small><br>
+<small><sup>**</sup> As few dependencies as possible.</small><br>
+<small><sup>***</sup> Strict compliance could result in slower processing when running comparative benchmarking.</small></p>
 
 <ul>
   <li><a href="#install">Installation</a></li>
