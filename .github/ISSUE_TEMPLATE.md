@@ -1,3 +1,7 @@
+**Marked version:**
+
+<!-- The NPM version or commit hash having the issue --> 
+
 ## Expectation
 
 <!-- Describe the output you are expecting from marked -->

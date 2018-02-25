@@ -8,6 +8,10 @@
 
 -->
 
+**Marked version:**
+
+<!-- The NPM version or commit hash having the issue --> 
+
 ## Description
 
 - Fixes #### (if fixing a known issue; otherwise, describe issue using the following format)
