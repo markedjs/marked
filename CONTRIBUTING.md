@@ -9,7 +9,7 @@
 
 ## Design principles
 
-Marked tends to favor following the SOLID (mainly the [single responsibility](https://en.wikipedia.org/wiki/Single_responsibility_principle) and [open/closed principles](https://en.wikipedia.org/wiki/Open/closed_principle)) set of software design and development principles:
+Marked tends to favor following the SOLID set of software design and development principles; mainly the [single responsibility](https://en.wikipedia.org/wiki/Single_responsibility_principle) and [open/closed principles](https://en.wikipedia.org/wiki/Open/closed_principle):
 
 - **Single responsibility:** Marked, and the components of Marked, have the single responsibility of converting Markdown strings into HTML.
 - **Open/closed:** Marked favors giving developers the means to easily extend the library and its components over changing Marked's behavior through configuration options.
