@@ -110,13 +110,8 @@ function runTests(engine, options) {
   for (i = 0; i < len; i++) {
     filename = filenames[i];
     file = files[filename];
-
-    var before = process.hrtime();
-    success = testFile(engine, file, filename, i + 1); // TODO Can't testFile throw?
-    var elapsed = process.hrtime(before);
-    var tookLessThanOneSec = (elapsed[0] === 0);
-
-    if (success && tookLessThanOneSec) {
+    success = testFile(engine, file, filename, i + 1);
+    if (success) {
       succeeded++;
     } else {
       failed++;
@@ -141,16 +136,16 @@ function testFile(engine, file, filename, index) {
       text,
       html,
       j,
-      l;
+      l,
+      before,
+      elapsed;
 
   if (marked._original) {
     marked.defaults = marked._original;
     delete marked._original;
   }
 
-  console.log('#%d. Test %s.', index, filename);
-
-  var before = process.hrtime();
+  console.log('#%d. Test %s', index, filename);
 
   if (opts.length) {
     marked._original = marked.defaults;
@@ -165,24 +160,17 @@ function testFile(engine, file, filename, index) {
     });
   }
 
-  var threw = false;
-  var exceptionToThrow = null;
+  before = process.hrtime();
   try {
     text = engine(file.text).replace(/\s/g, '');
     html = file.html.replace(/\s/g, '');
   } catch (e) {
-    threw = true;
-    exceptionToThrow = e;
+    elapsed = process.hrtime(before);
+    console.log('    failed in %dms', prettyElapsedTime(elapsed));
+    throw e;
   }
-  var elapsed = process.hrtime(before);
 
-  var prettyElapsed = 'in ' + prettyElapsedTime(elapsed) + ' seconds';
-
-  // TODO Why do we throw this?
-  if (threw) {
-    console.log('    failed ' + prettyElapsed);
-    throw exceptionToThrow;
-  }
+  elapsed = process.hrtime(before);
 
   l = html.length;
 
@@ -196,9 +184,7 @@ function testFile(engine, file, filename, index) {
         Math.max(j - 30, 0),
         Math.min(j + 30, l));
 
-      console.log(
-        '\n#%d. %s failed at offset %d ' + prettyElapsed + '. Near: "%s".\n',
-        index, filename, j, text);
+      console.log('    failed in %dms at offset %d. Near: "%s".\n', prettyElapsedTime(elapsed), j, text);
 
       console.log('\nGot:\n%s\n', text.trim() || text);
       console.log('\nExpected:\n%s\n', html.trim() || html);
@@ -207,7 +193,7 @@ function testFile(engine, file, filename, index) {
     }
   }
 
-  console.log('    passed ' + prettyElapsed);
+  console.log('    passed in %dms', prettyElapsedTime(elapsed));
   return true;
 }
 
@@ -605,6 +591,6 @@ if (!module.parent) {
 // returns time to millisecond granularity
 function prettyElapsedTime(hrtimeElapsed) {
   var seconds = hrtimeElapsed[0];
-  var fracInMs = Math.round(hrtimeElapsed[1] / 1e6);
-  return seconds + '.' + fracInMs;
+  var frac = Math.round(hrtimeElapsed[1] / 1e3) / 1e3;
+  return seconds * 1e3 + frac;
 }
