@@ -110,8 +110,13 @@ function runTests(engine, options) {
   for (i = 0; i < len; i++) {
     filename = filenames[i];
     file = files[filename];
+
+    var before = process.hrtime();
     success = testFile(engine, file, filename, i + 1);
-    if (success) {
+    var elapsed = process.hrtime(before);
+    var tookLessThanOneSec = (elapsed[0] === 0);
+
+    if (success && tookLessThanOneSec) {
       succeeded++;
     } else {
       failed++;
