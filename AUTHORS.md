@@ -13,7 +13,7 @@ To be listed here, just make a contribution and, if it has significant impact, t
 
 ## Committers
 
-Committers are contributors who also have the responsibility, privilege, some might even say burden of being able to review and merge contributions (just usually not they're own).
+Committers are contributors who also have the responsibility, privilege, some might even say burden of being able to review and merge contributions (just usually not their own).
 
 - Tony Brix @UziTech - really good at the test harness and environment setup
 - Federico Soave @Feder1co5oave - really good at the regex things
