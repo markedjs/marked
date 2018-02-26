@@ -16,7 +16,7 @@ Marked tends to favor following the SOLID set of software design and development
 
 ## Priorities
 
-We think we have our priorities straight for building quality in.
+We think we have our priorities sorted to build quality in.
 
 The following table lists the ticket type labels we use when there is work to be done on the code either through an Issue or a PR; in priority order.
 

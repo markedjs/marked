@@ -8,7 +8,7 @@ To champion the single-reponsibility and open/closed prinicples, we have tried t
 	<li><a href="#parser">The parser</a></li>
 </ul>
 
-<h2 id="rederer">The renderer</h2>
+<h2 id="renderer">The renderer</h2>
 
 The renderer is...
 
