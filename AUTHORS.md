@@ -15,8 +15,8 @@ To be listed here, just make a contribution and, if it has significant impact, t
 
 Committers are contributors who also have the responsibility, privilege, some might even say burden of being able to review and merge contributions (just usually not they're own).
 
-- Tony Brix @UziTech
-- Federico Soave @Feder1co5oave
+- Tony Brix @UziTech - really good at the test harness and environment setup
+- Federico Soave @Feder1co5oave - really good at the regex things
 - Steven @styfle
 
 Committers are usually selected from contributors who enter the discussions regarding the future direction of Marked (maybe even doing informal reviews of contributions despite not being able to merge them yourself).
