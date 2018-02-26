@@ -8,7 +8,7 @@ Contributors are users who submit a PR, Issue, or collaborates in making Marked 
 
 To be listed here, just make a contribution and, if it has significant impact, the committers and publishers may be able to add you here. If you're name is here, and you would rather it not be, just let us know.
 
-- Jamie Davis @davisjam - Thank you for the DOS contribution!
+- Jamie Davis @davisjam - Thank you for the security-related contributions!
 - Костя Третяк @KostyaTretyak
 
 ## Committers
