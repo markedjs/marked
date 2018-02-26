@@ -9,7 +9,7 @@ script: |
     sed -i s/0o755/0755/ test/index.js;
     npm test;
   else
-    npm run lint && npm test;
+    npm run test:lint && npm test;
   fi
 cache:
   directories:
