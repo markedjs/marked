@@ -5,7 +5,7 @@
 - [ ] Make sure you are on the `master` branch.
 - [ ] Create a branch.
 - [ ] Make as small a change as possible.
-- [ ] Run `npm run test`, fix any broken things (for linting, you can run `npm run lint` to have the linter fix them for you).
+- [ ] Run `npm test`, fix any broken things (for linting, you can run `npm run lint` to have the linter fix them for you).
 - [ ] Submit a PR.
 
 ## Design principles
