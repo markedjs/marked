@@ -36,6 +36,7 @@ Describe what code combination got you there
 
 - [ ] Test(s) exist to ensure functionality and minimize regresstion (if no tests added, list tests covering this PR); or,
 - [ ] no tests required for this PR.
+- [ ] If submitting new feature, it has been documented in the appropriate places.
   
 ## Reviewer
 
