@@ -150,7 +150,7 @@ function testFile(engine, file, filename, index) {
 
   console.log('#%d. Test %s.', index, filename);
 
-	var before = process.hrtime();
+  var before = process.hrtime();
 
   if (opts.length) {
     marked._original = marked.defaults;
@@ -179,10 +179,10 @@ function testFile(engine, file, filename, index) {
   var prettyElapsed = 'in ' + prettyElapsedTime(elapsed) + ' seconds';
 
   // TODO Why do we throw this?
-	if (threw) {
+  if (threw) {
     console.log('    failed ' + prettyElapsed);
-		throw exceptionToThrow;
-	}
+    throw exceptionToThrow;
+  }
 
   l = html.length;
 
