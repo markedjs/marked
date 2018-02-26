@@ -31,7 +31,7 @@ The following table lists the ticket type labels we use when there is work to be
 
 ## Test early, often, and everything
 
-We try to write test cases to validate output (writing tests based on the [supported specifications](https://github.com/markedjs/marked/blob/master/AUTHORS.md#specifications)) and minimize regression (writing tests for issues fixed). Therefore, if you would like to contribute, somethings you should regarding the test harness.
+We try to write test cases to validate output (writing tests based on the [supported specifications](https://github.com/markedjs/marked/blob/master/AUTHORS.md#specifications)) and minimize regression (writing tests for issues fixed). Therefore, if you would like to contribute, some things you should know regarding the test harness.
 
 |Location      |Description                                         |
 |:-------------|:---------------------------------------------------|
