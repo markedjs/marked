@@ -27,7 +27,7 @@ Admins are committers who also have the responsibility, privilege, and burden of
 
 ## Publishers
 
-Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPMJS and performing outreach and external stakeholder communications. (Admins are focused primarily on the internal workings of the project, Publishers are focused on internal *and* external issues.) 
+Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPMJS and performing outreach and external stakeholder communications. Also, when stuff goes pear-shaped, we're the ones who take the most heat. (Admins are focused primarily on the internal workings of the project, Publishers are focused on internal *and* external issues.) 
 
 - Josh Bruce @joshbruce
 
