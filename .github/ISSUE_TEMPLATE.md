@@ -4,7 +4,7 @@
 
 <!-- 
 
-	If submitting a something other than a defect with marked itself, please use the following:
+	If submitting something other than a defect with Marked itself, please use the following:
 
 **Proposal type:** new feature | project operations | other
 
@@ -25,3 +25,10 @@
 ## What was attempted
 
 <!-- Describe what code combination got you there -->
+
+<!-- 
+	If error is thrown add the following:
+
+## Call stack & console log
+
+-->
