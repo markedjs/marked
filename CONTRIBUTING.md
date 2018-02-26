@@ -65,13 +65,19 @@ To run the tests:
 npm test
 ```
 
+To test whether you are using the standard syntax rules for the project:
+
+```bash
+npm run test:lint
+```
+
 To see time comparisons between Marked and other popular Markdown libraries:
 
 ```bash
 npm run bench
 ```
 
-To check for proper syntax (lint):
+To check for (and fix) standardized syntax (lint):
 
 ```bash
 npm run lint
