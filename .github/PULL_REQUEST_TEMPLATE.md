@@ -34,7 +34,7 @@ Describe what code combination got you there
 
 ## Submitter
 
-- [ ] Test(s) exist to ensure functionality works (if no new tests added, list which tests cover this functionality); or,
+- [ ] Test(s) exist to ensure functionality and minimize regresstion (if no tests added, list tests covering this PR); or,
 - [ ] no tests required for this PR.
   
 ## Reviewer
