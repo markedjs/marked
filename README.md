@@ -3,6 +3,7 @@
   <li><a href="#install">Installation</a></li>
   <li><a href="#usage">Usage</a></li>
   <li><a href="#specifications">Supported Markdown specifications</a></li>
+  <li><a href="#security">Security</a></li>
   <li><a href="#contributing">Contributing</a></li>
   <li><a href="#authors">Authors</a></li>
   <li><a href="#license">License</a></li>
@@ -74,6 +75,9 @@ We actively support the features of the following [Markdown flavors](https://git
 
 By supporting the above Markdown flavors, it's possible that Marked can help you use other flavors as well; however, these are not actively supported by the community.
 
+<h2 id="security">Security</h2>
+
+The only completely secure system is the one that doesn't exist in the first place. Having said that, we take the security of Marked very seriously; however, none of us are necessarily security experts, so to speak. Therefore, if you find something, [say something](https://github.com/markedjs/marked/issues).
 
 <h2 id="contributing">Contributing</h2>
 
