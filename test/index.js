@@ -110,8 +110,13 @@ function runTests(engine, options) {
   for (i = 0; i < len; i++) {
     filename = filenames[i];
     file = files[filename];
-    success = testFile(engine, file, filename, i + 1);
-    if (success) {
+
+    var before = process.hrtime();
+    success = testFile(engine, file, filename, i + 1); // TODO Can't testFile throw?
+    var elapsed = process.hrtime(before);
+    var tookLessThanOneSec = (elapsed[0] === 0);
+
+    if (success && tookLessThanOneSec) {
       succeeded++;
     } else {
       failed++;
@@ -143,6 +148,10 @@ function testFile(engine, file, filename, index) {
     delete marked._original;
   }
 
+  console.log('#%d. Test %s.', index, filename);
+
+	var before = process.hrtime();
+
   if (opts.length) {
     marked._original = marked.defaults;
     marked.defaults = {};
@@ -156,13 +165,24 @@ function testFile(engine, file, filename, index) {
     });
   }
 
+  var threw = false;
+  var exceptionToThrow = null;
   try {
     text = engine(file.text).replace(/\s/g, '');
     html = file.html.replace(/\s/g, '');
   } catch (e) {
-    console.log('%s failed.', filename);
-    throw e;
+    threw = true;
+    exceptionToThrow = e;
   }
+  var elapsed = process.hrtime(before);
+
+  var prettyElapsed = 'in ' + prettyElapsedTime(elapsed) + ' seconds';
+
+  // TODO Why do we throw this?
+	if (threw) {
+    console.log('    failed ' + prettyElapsed);
+		throw exceptionToThrow;
+	}
 
   l = html.length;
 
@@ -177,7 +197,7 @@ function testFile(engine, file, filename, index) {
         Math.min(j + 30, l));
 
       console.log(
-        '\n#%d. %s failed at offset %d. Near: "%s".\n',
+        '\n#%d. %s failed at offset %d ' + prettyElapsed + '. Near: "%s".\n',
         index, filename, j, text);
 
       console.log('\nGot:\n%s\n', text.trim() || text);
@@ -187,8 +207,8 @@ function testFile(engine, file, filename, index) {
     }
   }
 
-  console.log('#%d. %s completed.', index, filename);
-  return true
+  console.log('    passed ' + prettyElapsed);
+  return true;
 }
 
 /**
@@ -580,4 +600,11 @@ if (!module.parent) {
   exports.load = load;
   exports.bench = bench;
   module.exports = exports;
+}
+
+// returns time to millisecond granularity
+function prettyElapsedTime(hrtimeElapsed) {
+  var seconds = hrtimeElapsed[0];
+  var fracInMs = Math.round(hrtimeElapsed[1] / 1e6);
+  return seconds + '.' + fracInMs;
 }
