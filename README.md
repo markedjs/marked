@@ -79,7 +79,7 @@ By supporting the above Markdown flavors, it's possible that Marked can help you
 
 The only completely secure system is the one that doesn't exist in the first place. Having said that, we take the security of Marked very seriously.
 
-Therefore, please disclose potential security issues by email to the project [committers](https://github.com/markedjs/marked/blob/master/AUTHORS.md). We will provide an initial assessment of security reports within 48 hours and should apply patches within 2 weeks (also, feel free to contribute a fix for the issue).
+Therefore, please disclose potential security issues by email to the project [committers](https://github.com/markedjs/marked/blob/master/AUTHORS.md) as well as the [listed owners within NPM](https://docs.npmjs.com/cli/owner). We will provide an initial assessment of security reports within 48 hours and should apply patches within 2 weeks (also, feel free to contribute a fix for the issue).
 
 <h2 id="contributing">Contributing</h2>
 
