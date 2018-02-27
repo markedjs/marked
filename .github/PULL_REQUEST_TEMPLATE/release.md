@@ -10,7 +10,7 @@
 
 Note: If merges to `master` occur after submitting this PR and before running `$ npm pubish` you should be able to
 
-1. pull from `upstream/master` into the branch holding this version,
+1. pull from `upstream/master` (`git pull upstream master`) into the branch holding this version,
 2. run `$ npm run build` to regenerate the `min` file, and
 3. commit and push the updated changes.
 
