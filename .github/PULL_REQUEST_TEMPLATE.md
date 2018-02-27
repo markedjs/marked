@@ -1,25 +1,49 @@
+
+<!-- 
+
+	If release PR, add ?template=release.md to the PR url to use the release PR template.
+
+	Otherwise, you are stating the this PR fixes an issue that has been submitted; or,
+	describes the issue or proposal under considersation.
+
+-->
+
+**Marked version:**
+
+<!-- The NPM version or commit hash having the issue --> 
+
 ## Description
 
-<!-- describe what the PR does -->
+- Fixes #### (if fixing a known issue; otherwise, describe issue using the following format)
 
-- Fixes ####
-- Fixes list issues fixed by this PR
-- Fixes will automatically close them once merged
+<!--
 
-## Review
+## Expectation
 
-### Submitter
+Describe the output you are expecting from marked
 
-- [ ] All tests pass (CI should take care of this, once in place).
-- [ ] All lint checks pass (CI should take care of this, once in place).
-- Tests 
-  - [ ] Test(s) exist to ensure functionality works (if no new tests added, list which tests cover this functionality).
-  - [ ] No tests required for this PR.
-- [ ] Is release:
-  - [ ] Version in `package.json` has been updated (see [RELEASE.md](https://github.com/markedjs/marked/blob/master/RELEASE.md)).
-  - [ ] The `marked.min.js` has been updated; or,
-  - [ ] release does not change library.
+## Result
 
-### Reviewer
+Describe the output you received from marked
 
-??
+## What was attempted
+
+Describe what code combination got you there 
+
+-->	
+
+## Contributor
+
+- [ ] Test(s) exist to ensure functionality and minimize regresstion (if no tests added, list tests covering this PR); or,
+- [ ] no tests required for this PR.
+- [ ] If submitting new feature, it has been documented in the appropriate places.
+  
+## Committer
+
+In most cases, this should be a different person than the contributor.
+
+- [ ] Draft GitHub release notes have been updated.
+- [ ] cm_autolinks is the only failing test (remove once CI is in place and all tests pass).
+- [ ] All lint checks pass (remove once CI is in place).
+- [ ] CI is green (no forced merge required).
+- [ ] Merge PR

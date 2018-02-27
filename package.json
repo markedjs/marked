@@ -2,7 +2,7 @@
   "name": "marked",
   "description": "A markdown parser built for speed",
   "author": "Christopher Jeffrey",
-  "version": "0.3.15",
+  "version": "0.3.17",
   "main": "./lib/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
@@ -42,7 +42,7 @@
     "bench": "node test --bench",
     "lint": "eslint --fix lib/marked.js test/index.js",
     "build": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
-    "preversion": "npm run build"
+    "preversion": "npm run build && (git diff --quiet || git commit -am 'minify')"
   },
   "engines": {
     "node": ">=0.10.0"

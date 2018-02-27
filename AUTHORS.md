@@ -12,6 +12,7 @@ Contributors are users who submit a [PR](https://github.com/markedjs/marked/pull
 
 To be listed here, just make a contribution and, if it has significant impact, the committers may be able to add you here. If you're name is here, and you would rather it not be, just let us know.
 
+- Karen Yavine @karenyavine - Thank you for helping keep us out of the security penalyt box!
 - Jamie Davis @davisjam - Thank you for the security-related contributions!
 - Костя Третяк @KostyaTretyak
 
