@@ -1,6 +1,6 @@
 ## Users
 
-Users are anyone using Marked in some fashion. If you use Marked and would like to be added to a list of users, please do so.
+Users are anyone using Marked in some fashion. If you use Marked and would like to be added to a list of users, please reach out and let us know and maybe we can add you here or elsewhere.
 
 ## Contributors
 
