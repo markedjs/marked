@@ -38,6 +38,7 @@
   },
   "scripts": {
     "test": "node test",
+    "test:lint": "eslint lib/marked.js test/index.js",
     "bench": "node test --bench",
     "lint": "eslint --fix lib/marked.js test/index.js",
     "build": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
