@@ -27,11 +27,13 @@ Committers are usually selected from contributors who enter the discussions rega
 
 ## Admins
 
-Admins are committers who also have the responsibility, privilege, and burden of selecting committers and making sure the project itself runs smoothly, which includes community maintenance, governance, dispute resolution, and so on. (Letting the contributors easily enter into the project and begin contributing, with minimal friction.)
+Admins are committers who also have the responsibility, privilege, and burden of selecting committers and making sure the project itself runs smoothly, which includes community maintenance, governance, dispute resolution, and so on. (Letting the contributors easily enter into, and work within, the project to begin contributing, with as little friction as possible.)
 
 ## Publishers
 
-Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPMJS and performing outreach and external stakeholder communications. Also, when stuff goes pear-shaped, we're the ones who take the most heat. (Admins are focused primarily on the internal workings of the project, Publishers are focused on internal *and* external issues.) 
+Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPMJS and performing outreach and external stakeholder communications. Further, when things goes pear-shaped, they're the ones taking most of the heat. Finally, when things go well, they're the primary ones praising the contributors who made it possible.
+
+(In other words, while admins are focused primarily on the internal workings of the project, Publishers are focused on internal *and* external concerns.) 
 
 - Josh Bruce @joshbruce
 
