@@ -40,7 +40,10 @@ Describe what code combination got you there
   
 ## Committer
 
+In most cases, this should be a different person than the contributor.
+
 - [ ] Draft GitHub release notes have been updated.
-- [ ] case_insensitive_refs is only failing test (remove once CI is in place and all tests pass).
+- [ ] cm_autolinks is the only failing test (remove once CI is in place and all tests pass).
 - [ ] All lint checks pass (remove once CI is in place).
+- [ ] CI is green (no forced merge required).
 - [ ] Merge PR

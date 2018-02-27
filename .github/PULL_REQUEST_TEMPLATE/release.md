@@ -16,8 +16,11 @@ Note: If merges to `master` occur after submitting this PR and before running `$
 
 ## Committer
 
+In most cases, this should be someone different than the publisher.
+
 - [ ] Version in `package.json` has been updated (see [RELEASE.md](https://github.com/markedjs/marked/blob/master/RELEASE.md)).
 - [ ] The `marked.min.js` has been updated; or,
 - [ ] release does not change library.
-- [ ] cm_autolinks is only failing test (remove once CI is in place and all tests pass).
+- [ ] cm_autolinks is the only failing test (remove once CI is in place and all tests pass).
 - [ ] All lint checks pass (remove once CI is in place).
+- [ ] CI is green (no forced merge required).
