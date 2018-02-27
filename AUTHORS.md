@@ -1,3 +1,7 @@
+# Authors
+
+Marked takes an encompassing approach to its community. As such, you can think of these as [concentric circles](https://medium.com/the-node-js-collection/healthy-open-source-967fa8be7951), where each subsequent group is enveloped by the previous one.
+
 ## Users
 
 Users are anyone using Marked in some fashion. If you use Marked and would like to be added to a list of users, please reach out and let us know and maybe we can add you here or elsewhere.
@@ -6,7 +10,7 @@ Users are anyone using Marked in some fashion. If you use Marked and would like 
 
 Contributors are users who submit a PR, Issue, or collaborate in making Marked a better product and experience for all the users.
 
-To be listed here, just make a contribution and, if it has significant impact, the committers and publishers may be able to add you here. If you're name is here, and you would rather it not be, just let us know.
+To be listed here, just make a contribution and, if it has significant impact, the committers may be able to add you here. If you're name is here, and you would rather it not be, just let us know.
 
 - Jamie Davis @davisjam - Thank you for the security-related contributions!
 - Костя Третяк @KostyaTretyak
