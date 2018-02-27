@@ -3,6 +3,7 @@
 - [ ] Fork `markedjs/marked`.
 - [ ] Clone the library locally using GitHub Desktop or the command line.
 - [ ] Make sure you are on the `master` branch.
+- [ ] Be sure to run `npm install` or `npm update`.
 - [ ] Create a branch.
 - [ ] Make as small a change as possible.
 - [ ] Run `npm test`, fix any broken things (for linting, you can run `npm run lint` to have the linter fix them for you).
