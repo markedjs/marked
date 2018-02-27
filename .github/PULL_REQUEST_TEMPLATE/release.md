@@ -1,4 +1,4 @@
-## Submitter
+## Publisher
 
 - [ ] `$ npm version` has been run.
 - [ ] Release notes in [draft GitHub release](https://github.com/markedjs/marked/releases) are up to date
@@ -14,7 +14,7 @@ Note: If merges to `master` occur after submitting this PR and before running `$
 2. run `$ npm run build` to regenerate the `min` file, and
 3. commit and push the updated changes.
 
-## Reviewer
+## Committer
 
 - [ ] Version in `package.json` has been updated (see [RELEASE.md](https://github.com/markedjs/marked/blob/master/RELEASE.md)).
 - [ ] The `marked.min.js` has been updated; or,

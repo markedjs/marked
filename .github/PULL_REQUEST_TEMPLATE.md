@@ -32,13 +32,13 @@ Describe what code combination got you there
 
 -->	
 
-## Submitter
+## Contributor
 
 - [ ] Test(s) exist to ensure functionality and minimize regresstion (if no tests added, list tests covering this PR); or,
 - [ ] no tests required for this PR.
 - [ ] If submitting new feature, it has been documented in the appropriate places.
   
-## Reviewer
+## Committer
 
 - [ ] Draft GitHub release notes have been updated.
 - [ ] case_insensitive_refs is only failing test (remove once CI is in place and all tests pass).
