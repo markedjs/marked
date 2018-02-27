@@ -4,7 +4,7 @@ Users are anyone using Marked in some fashion. If you use Marked and would like 
 
 ## Contributors
 
-Contributors are users who submit a PR, Issue, or collaborates in making Marked a better product and experience for all the users.
+Contributors are users who submit a PR, Issue, or collaborate in making Marked a better product and experience for all the users.
 
 To be listed here, just make a contribution and, if it has significant impact, the committers and publishers may be able to add you here. If you're name is here, and you would rather it not be, just let us know.
 
