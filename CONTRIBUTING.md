@@ -56,9 +56,6 @@ Marked provides templates for submitting both pull requests and issues. When you
 
 The PR templates include checklists for both the submitter and the reviewer, which, in most cases, will not be the same person.
 
-## Submitting PRs continued
-
-
 ## Scripts
 
 When it comes to NPM commands, we try to use the native scripts provided by the NPM framework.
