@@ -35,7 +35,7 @@ A note on "decision making authority". This is related to submitting PRs and the
 |:--------------|:--------------|:------------------------------------------------------------------------|
 |Tony Brix      |@UziTech       |Titan of the test harness and Dr. DevOps                                 |
 |Steven         |@styfle        |Open source, of course and GitHub Guru                                   |
-|Jamie Davis    |@davisjam      |Sultan of Security                                                       |
+|Jamie Davis    |@davisjam      |Seeker of Security                                                       |
 |??             |??             |Eye for the CLI, Markdown Maestro, Regent of the Regex, Master of Marked |
 
 To be listed: Committers are usually selected from contributors who enter the discussions regarding the future direction of Marked (maybe even doing informal reviews of contributions despite not being able to merge them yourself).
@@ -48,7 +48,7 @@ Admins are committers who also have the responsibility, privilege, and burden of
 
 To be listed: Admins are usually selected from the pool of committers who demonstrate good understanding of the marked culture, operations, and do their best to help new contributors get up to speed on how to contribute effectively to the project.
 
-To removed: You can remove yourself through the [GitHub UI](https://help.github.com/articles/removing-yourself-from-a-collaborator-s-repository/).
+To be removed: You can remove yourself through the [GitHub UI](https://help.github.com/articles/removing-yourself-from-a-collaborator-s-repository/).
 
 ## Publishers
 
