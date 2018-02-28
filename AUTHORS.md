@@ -39,7 +39,7 @@ Admins are usually selected from the pool of committers who demonstrate good und
 
 ## Publishers
 
-Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPMJS and performing outreach and external stakeholder communications. Further, when things goes pear-shaped, they're the ones taking most of the heat. Finally, when things go well, they're the primary ones praising the contributors who made it possible.
+Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPMJS and performing outreach and external stakeholder communications. Further, when things go pear-shaped, they're the ones taking most of the heat. Finally, when things go well, they're the primary ones praising the contributors who made it possible.
 
 (In other words, while admins are focused primarily on the internal workings of the project, Publishers are focused on internal *and* external concerns.) 
 
