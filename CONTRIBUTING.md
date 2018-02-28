@@ -58,7 +58,13 @@ The PR templates include checklists for both the submitter and the reviewer, whi
 
 ## Submitting PRs continued
 
+### Release 0.x.x
 
+1. **JavaScript ES5:** until a suitable transpiling option is discovered.
+2. **Browsers we need to support:**
+  - ??
+3. **Node versions we need to support:**
+  - ??
 
 ## Scripts
 
