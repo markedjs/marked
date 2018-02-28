@@ -95,7 +95,7 @@ However, marked has also been around for several years and is still one of the m
 
 ## The marked architecture
 
-### Release 0.x.x
+### Release 0.x.x+
 
 Entry point:
 
