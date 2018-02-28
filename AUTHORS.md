@@ -24,11 +24,13 @@ To be listed here, just make a contribution and, if it has significant impact, t
 
 Committers are contributors who also have the responsibility, privilege, some might even say burden of being able to review and merge contributions (just usually not their own).
 
-|Name           |GiHub handle   |Area(s) of decision making authority and knowledge |
-|:--------------|:--------------|:--------------------------------------------------|
-|Tony Brix      |@UziTech       |Titan of the test harness and Dr. DevOps           |
-|Steven         |@styfle        |Open source, of course and GitHub Guru             |
-|??             |??             |Eye for the CLI, Markdown Maestro                  |
+A note on "decision making authority". This is related to submitting PRs and the [advice process](http://www.reinventingorganizationswiki.com/Decision_Making). The person marked as having decision making authority over a certain area should be sought for advice in that area before committing to a course of action.
+
+|Name           |GiHub handle   |Area(s) of decision making authority and knowledge     |
+|:--------------|:--------------|:------------------------------------------------------|
+|Tony Brix      |@UziTech       |Titan of the test harness and Dr. DevOps               |
+|Steven         |@styfle        |Open source, of course and GitHub Guru                 |
+|??             |??             |Eye for the CLI, Markdown Maestro, Regent of the Regex |
 
 Committers are usually selected from contributors who enter the discussions regarding the future direction of Marked (maybe even doing informal reviews of contributions despite not being able to merge them yourself).
 
@@ -44,9 +46,9 @@ Publishers are admins who also have the responsibility, privilege, and burden of
 
 (In other words, while admins are focused primarily on the internal workings of the project, Publishers are focused on internal *and* external concerns.) 
 
-|Name       | GitHub handle |Area(s) of decision making authority and knowledge       |
-|:----------|:--------------|:--------------------------------------------------------|
-|Josh Bruce |@joshbruce     |Humaning Helper, Heckler of Hypertext, and Product Owner |
+|Name       | GitHub handle |Area(s) of decision making authority and knowledge          |
+|:----------|:--------------|:-----------------------------------------------------------|
+|Josh Bruce |@joshbruce     |Humaning Helper, Heckler of Hypertext, and Release Wrangler |
 
 ## Original author
 
