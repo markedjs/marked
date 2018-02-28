@@ -119,11 +119,11 @@ Functions:
 
 Objects (the following are in procedural order):
 
-1. `Lexer`: ...
-5. `Parser`: ...
-2. `InlineLexer`: ...
-3. `Renderer`: ...
-4. `TextRenderer`: ...
+1. `Lexer`: Source from `marked()` is turned into tokens (??)
+5. `Parser`: Tokens are parsed for inline elements (??)
+2. `InlineLexer`: Tokens from Parser are converted to inline tokens (??)
+3. `Renderer`: All tokens are turned into block-level HTML element strings (??)
+4. `TextRenderer`: All Renderer tokens are turned into inline-level HTML element strings(??)
 
 
 ### Release 2.0+
