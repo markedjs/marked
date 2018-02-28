@@ -17,7 +17,7 @@ To be listed here, just make a contribution and, if it has significant impact, t
 |Karen Yavine        |@karenyavine     |Snyk's Security Saint (helps keep us out of the security penalty box) |
 |Jamie Davis         |@davisjam        |Sultan of security                                                    |
 |Federico Soave      |@Feder1co5oave   |Regent of the Regex                                                   |
-|Brandon der Blätter |@intcreator      |Curious Contributor (new contributor asking questions and suggesting things) |
+|Brandon der Blätter |@intcreator      |Curious Contributor (new contributor asking questions and suggesting things resulting in positive movement) |
 |Костя Третяк        |@KostyaTretyak   |--                                                                    |
 
 ## Committers
