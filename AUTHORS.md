@@ -12,11 +12,13 @@ Contributors are users who submit a [PR](https://github.com/markedjs/marked/pull
 
 To be listed here, just make a contribution and, if it has significant impact, the committers may be able to add you here. If you're name is here, and you would rather it not be, just let us know.
 
-|Name         |GitHub handle  |Title and knowledge                                                   |
-|:------------|:--------------|:---------------------------------------------------------------------|
-|Karen Yavine |@karenyavine   |Snyk's Security Saint (helps keep us out of the security penalty box) |
-|Jamie Davis  |@davisjam      |Sultan of security                                                    |
-|Костя Третяк |@KostyaTretyak |--                                                                    |
+|Name                |GitHub handle    |Title and knowledge                                                   |
+|:-------------------|:----------------|:---------------------------------------------------------------------|
+|Karen Yavine        |@karenyavine     |Snyk's Security Saint (helps keep us out of the security penalty box) |
+|Jamie Davis         |@davisjam        |Sultan of security                                                    |
+|Federico Soave      |@Feder1co5oave   |Regent of the Regex                                                   |
+|Brandon der Blätter |@intcreator      |Curious Contributor (new contributor asking questions and suggesting things) |
+|Костя Третяк        |@KostyaTretyak   |--                                                                    |
 
 ## Committers
 
@@ -24,10 +26,9 @@ Committers are contributors who also have the responsibility, privilege, some mi
 
 |Name           |GiHub handle   |Area(s) of decision making authority and knowledge |
 |:--------------|:--------------|:--------------------------------------------------|
-|Federico Soave |@Feder1co5oave |Regent of the Regex                                |
-|Tony Brix      |@UziTech       |Titan of the test harness                          |
+|Tony Brix      |@UziTech       |Titan of the test harness and Dr. DevOps           |
 |Steven         |@styfle        |Open source, of course and GitHub Guru             |
-|??             |??             |Eye for the CLI, Dr. DevOps, Markdown Maestro      |
+|??             |??             |Eye for the CLI, Markdown Maestro                  |
 
 Committers are usually selected from contributors who enter the discussions regarding the future direction of Marked (maybe even doing informal reviews of contributions despite not being able to merge them yourself).
 
