@@ -12,25 +12,22 @@ Contributors are users who submit a [PR](https://github.com/markedjs/marked/pull
 
 To be listed here, just make a contribution and, if it has significant impact, the committers may be able to add you here. If you're name is here, and you would rather it not be, just let us know.
 
-|Name         |GitHub handle  |Title                                                                 |
+|Name         |GitHub handle  |Title and knowledge                                                   |
 |:------------|:--------------|:---------------------------------------------------------------------|
 |Karen Yavine |@karenyavine   |Snyk's Security Saint (helps keep us out of the security penalty box) |
 |Jamie Davis  |@davisjam      |Sultan of security                                                    |
 |Костя Третяк |@KostyaTretyak |--                                                                    |
 
--   - Thank you for the security-related contributions!
--  
-
 ## Committers
 
 Committers are contributors who also have the responsibility, privilege, some might even say burden of being able to review and merge contributions (just usually not their own).
 
-|Name           |GiHub handle   |Area(s) of decision making authority   |
-|:--------------|:--------------|:--------------------------------------|
-|Federico Soave |@Feder1co5oave |Regent of the Regex                    |
-|Tony Brix      |@UziTech       |Titan of the test harness              |
-|Steven         |@styfle        |Open source, of course and GitHub Guru |
-|??             |??             |Eye for the CLI, Dr. DevOps            |
+|Name           |GiHub handle   |Area(s) of decision making authority and knowledge |
+|:--------------|:--------------|:--------------------------------------------------|
+|Federico Soave |@Feder1co5oave |Regent of the Regex                                |
+|Tony Brix      |@UziTech       |Titan of the test harness                          |
+|Steven         |@styfle        |Open source, of course and GitHub Guru             |
+|??             |??             |Eye for the CLI, Dr. DevOps                        |
 
 Committers are usually selected from contributors who enter the discussions regarding the future direction of Marked (maybe even doing informal reviews of contributions despite not being able to merge them yourself).
 
@@ -38,15 +35,17 @@ Committers are usually selected from contributors who enter the discussions rega
 
 Admins are committers who also have the responsibility, privilege, and burden of selecting committers and making sure the project itself runs smoothly, which includes community maintenance, governance, dispute resolution, and so on. (Letting the contributors easily enter into, and work within, the project to begin contributing, with as little friction as possible.)
 
+Admins are usually selected from the pool of committers who demonstrate good understanding of the marked culture, operations, and do they're best to help new contributors up to speed on how to contribute effectively to the project.
+
 ## Publishers
 
 Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPMJS and performing outreach and external stakeholder communications. Further, when things goes pear-shaped, they're the ones taking most of the heat. Finally, when things go well, they're the primary ones praising the contributors who made it possible.
 
 (In other words, while admins are focused primarily on the internal workings of the project, Publishers are focused on internal *and* external concerns.) 
 
-|Name       | GitHub handle |Area(s) of decision making authority |
-|:----------|:--------------|:------------------------------------|
-|Josh Bruce |@joshbruce     |Humaning Helper                      |
+|Name       | GitHub handle |Area(s) of decision making authority and knowledge |
+|:----------|:--------------|:--------------------------------------------------|
+|Josh Bruce |@joshbruce     |Humaning Helper and Product Owner                  |
 
 ## Original author
 
