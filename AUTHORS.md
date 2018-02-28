@@ -15,7 +15,6 @@ To be listed here, just make a contribution and, if it has significant impact, t
 |Name                |GitHub handle    |Title and knowledge                                                   |
 |:-------------------|:----------------|:---------------------------------------------------------------------|
 |Karen Yavine        |@karenyavine     |Snyk's Security Saint (helps keep us out of the security penalty box) |
-|Jamie Davis         |@davisjam        |Sultan of security                                                    |
 |Federico Soave      |@Feder1co5oave   |Regent of the Regex                                                   |
 |Brandon der Blätter |@intcreator      |Curious Contributor (new contributor asking questions and suggesting things resulting in positive movement) |
 |Костя Третяк        |@KostyaTretyak   |--                                                                    |
@@ -30,6 +29,7 @@ A note on "decision making authority". This is related to submitting PRs and the
 |:--------------|:--------------|:------------------------------------------------------|
 |Tony Brix      |@UziTech       |Titan of the test harness and Dr. DevOps               |
 |Steven         |@styfle        |Open source, of course and GitHub Guru                 |
+|Jamie Davis    |@davisjam      |Sultan of security                                     |
 |??             |??             |Eye for the CLI, Markdown Maestro, Regent of the Regex |
 
 Committers are usually selected from contributors who enter the discussions regarding the future direction of Marked (maybe even doing informal reviews of contributions despite not being able to merge them yourself).
