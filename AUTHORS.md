@@ -38,7 +38,7 @@ Committers are usually selected from contributors who enter the discussions rega
 
 Admins are committers who also have the responsibility, privilege, and burden of selecting committers and making sure the project itself runs smoothly, which includes community maintenance, governance, dispute resolution, and so on. (Letting the contributors easily enter into, and work within, the project to begin contributing, with as little friction as possible.)
 
-Admins are usually selected from the pool of committers who demonstrate good understanding of the marked culture, operations, and do they're best to help new contributors up to speed on how to contribute effectively to the project.
+Admins are usually selected from the pool of committers who demonstrate good understanding of the marked culture, operations, and do their best to help new contributors up to speed on how to contribute effectively to the project.
 
 ## Publishers
 
