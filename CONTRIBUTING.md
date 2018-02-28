@@ -78,8 +78,9 @@ However, marked has also been around for several years and is still one of the m
 
 1. **JavaScript:** Same as 0.x.x.
 2. **Browsers we need to support:** Same as 0.x.x.
-3. Flag features for deprecation to alert users of what breaking changes to expect in 2.0.
-4. Begin moving toward 2.0 architecture where possible.
+3. **Node versions we need to support:** Same as 0.x.x.
+4. Flag features for deprecation to alert users of what breaking changes to expect in 2.0.
+5. Begin moving toward 2.0 architecture where possible.
 
 ### Release 2.0 (remove deprecated features and modernized)
 
@@ -88,7 +89,9 @@ However, marked has also been around for several years and is still one of the m
 	- IE11 (possibly, depends on how many people still use it by then),
 	- Microsoft Edge, and the
 	- latest versions of Safari, Chrome, and Firefox.
-3. Respond to contributors while maintaining tight reins on scope of marked. (Marked is maintained by volunteers, the more it does, the more code we have to maintain.)
+3. **Node versions we need to support:**
+  - ??
+4. Respond to contributors while maintaining tight reins on scope of marked. (Marked is maintained by volunteers, the more it does, the more code we have to maintain.)
 
 ## The marked architecture
 
