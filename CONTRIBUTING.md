@@ -59,7 +59,6 @@ The PR templates include checklists for both the submitter and the reviewer, whi
 ## Submitting PRs continued
 
 
-
 ## Scripts
 
 When it comes to NPM commands, we try to use the native scripts provided by the NPM framework.
