@@ -2,6 +2,7 @@
 
 - [ ] `$ npm version` has been run.
 - [ ] Release notes in [draft GitHub release](https://github.com/markedjs/marked/releases) are up to date
+- [ ] Release notes include which flavors and versions of Markdown are supported by this release
 - [ ] Reviewer checklist is complete.
 - [ ] Merge PR.
 - [ ] Publish GitHub release using `master` with correct version number.
