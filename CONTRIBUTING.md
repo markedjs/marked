@@ -68,9 +68,9 @@ However, marked has also been around for several years and is still one of the m
 
 1. **JavaScript:** ES5 - unless or until a suitable transpiling option is discovered.
 2. **Browsers we need to support:**
-  - ??
+  - IE8 (ca. 2009)
 3. **Node versions we need to support:**
-  - ??
+  - 0.10
 4. Fix compliance issues against supported specifications.
 5. Possibly fix defects reported against user-requested features.
 
