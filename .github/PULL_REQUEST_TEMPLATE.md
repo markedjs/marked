@@ -3,7 +3,7 @@
 
 	If release PR, add ?template=release.md to the PR url to use the release PR template.
 
-	If related to badging, add ?template=badges.md to the PR url to use the badges PR template.
+	If badging PR, add ?template=badges.md to the PR url to use the badges PR template.
 
 	Otherwise, you are stating this PR fixes an issue that has been submitted; or,
 	describes the issue or proposal under considersation.
