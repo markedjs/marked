@@ -25,6 +25,8 @@ To be listed: make a contribution and, if it has significant impact, the committ
 
 To be removed: please let us know or submit a PR.
 
+[Details on badges](#badges)
+
 ## Committers
 
 Committers are contributors who also have the responsibility, privilege, some might even say burden of being able to review and merge contributions (just usually not their own).
@@ -41,6 +43,8 @@ To be listed: Committers are usually selected from contributors who enter the di
 
 To be removed: You can remove yourself through the [GitHub UI](https://help.github.com/articles/removing-yourself-from-a-collaborator-s-repository/).
 
+[Details on badges](#badges)
+
 ## Admins
 
 Admins are committers who also have the responsibility, privilege, and burden of selecting committers and making sure the project itself runs smoothly, which includes community maintenance, governance, dispute resolution, and so on. (Letting the contributors easily enter into, and work within, the project to begin contributing, with as little friction as possible.)
@@ -48,6 +52,8 @@ Admins are committers who also have the responsibility, privilege, and burden of
 To be listed: Admins are usually selected from the pool of committers who demonstrate good understanding of the marked culture, operations, and do their best to help new contributors get up to speed on how to contribute effectively to the project.
 
 To be removed: You can remove yourself through the [GitHub UI](https://help.github.com/articles/removing-yourself-from-a-collaborator-s-repository/).
+
+[Details on badges](#badges)
 
 ## Publishers
 
@@ -59,11 +65,13 @@ Publishers are admins who also have the responsibility, privilege, and burden of
 |:----------|:--------------|:------------------------|:-------------------------------------|
 |Josh Bruce |@joshbruce     |Release Wrangler         |Humaning Helper, Heckler of Hypertext |
 
+[Details on badges](#badges)
+
 ## Original author
 
 The original author is the publisher who started it all.
 
-|Christopher Jeffrey @chjj
+Christopher Jeffrey @chjj
 
 <h2 id="badges">Badges</h2>
 
