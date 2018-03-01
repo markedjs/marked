@@ -108,7 +108,7 @@ Badges at play:
 	<dt>Markdown Maestro</dt>
 	<dd>You know that person who knows about way too many different flavors of Markdown? The one who maybe seems a little too obsessed with the possibilities of Markdown beyond HTML? Come on. You know who they are. Or, at least you could, if you give them this badge.</dd>
 	<dt>Master of Marked</dt>
-	<dd>Someone who demonstrates knows the ins and outs of the codebase for Marked.</dd>
+	<dd>Someone who demonstrates they know the ins and outs of the codebase for Marked.</dd>
 	<dt>Open source, of course</dt>
 	<dd>Someone who advocates for and has a proven understanding of how to operate within open source communities.</dd>
 	<dt>Regent of the Regex</dt>
