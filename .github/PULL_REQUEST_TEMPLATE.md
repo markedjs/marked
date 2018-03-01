@@ -6,7 +6,7 @@
 	If badging PR, add ?template=badges.md to the PR url to use the badges PR template.
 
 	Otherwise, you are stating this PR fixes an issue that has been submitted; or,
-	describes the issue or proposal under considersation.
+	describes the issue or proposal under considersation and contains the project-related code to implement.
 
 -->
 
