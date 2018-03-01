@@ -79,7 +79,7 @@ Badges? You don't *need* no stinkin' badges.
 
 Movie references aside. (It was either that or, "Let's play a game", but that would have been creepy&hellip;that's why it will most likely come later.)
 
-If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dramatic paus&hellip;why not two?&hellip; how they can be taken away).
+If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dramatic pause&hellip;why not two dramatic pauses for emphasis?&hellip; how they can be taken away).
 
 1. Adding the appropriate badge to the desired contributor in the desired column, even if they're not listed here yet.
 2. Submit a PR (we're big on PRs around here, if you haven't noticed, help us help you).
