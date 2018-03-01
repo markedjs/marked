@@ -20,6 +20,8 @@
 
 <!--
 
+	I no issue exists that you're aware of. The maintainers should be able to figure out if it's a duplicate.
+
 ## Expectation
 
 Describe the output you are expecting from marked
