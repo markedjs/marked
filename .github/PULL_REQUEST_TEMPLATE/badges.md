@@ -32,6 +32,12 @@ If you're the one mentioned in this PR:
 
 	Anyway, you get the idea. This isn't about good or bad...it's just about giving the community a simple game mechanic by which to publicly say, "Thank you" or "Here's what my status is" in the community or "Hey, I think something's wrong here" in a civil manner.
 
+	Why would you want to remove someone's badge? Loads of reasons...
+
+	1. Maybe they have decision making authority on something. You asked for their advice. And, you ended up waiting almost a month before receiving a response.
+	2. Maybe it was relevant at the time (Master of Marked) but you think they've lost their former level of skill (fell out of practice, for example). They could always get it back.
+	3. Maybe to signal to them that, "Hey, you seem to have forgotten about us. Are you still around (or alive)?"
+
 -->
 
 Note: All committers must approve via review before mergining.
