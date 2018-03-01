@@ -81,7 +81,7 @@ Movie references aside. (It was either that or, "Let's play a game", but that wo
 
 If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dramatic pause&hellip;why not two dramatic pauses for emphasis?&hellip; how they can be taken away).
 
-1. Adding the appropriate badge to the desired contributor in the desired column, even if they're not listed here yet.
+1. Add the appropriate badge to the desired contributor in the desired column, even if they're not listed here yet.
 2. Submit a PR (we're big on PRs around here, if you haven't noticed, help us help you).
 3. Follow the instructions for submitting a badge PR. (There are more details to find within.)
 
