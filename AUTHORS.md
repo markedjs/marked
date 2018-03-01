@@ -75,7 +75,9 @@ Christopher Jeffrey @chjj
 
 <h2 id="badges">Badges</h2>
 
-Badges? You don't *need* no stinkin' badges. Movie references aside. (It was either that or, "Let's play a game", but that would have been creepy&hellip;that's why it will most likely come later.)
+Badges? You don't *need* no stinkin' badges. 
+
+Movie references aside. (It was either that or, "Let's play a game", but that would have been creepy&hellip;that's why it will most likely come later.)
 
 If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dramatic paus&hellip;why not two?&hellip; how they can be taken away).
 
