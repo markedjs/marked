@@ -102,7 +102,7 @@ Badges at play:
 	<dt>GitHub Guru</dt>
 	<dd>Someone who always seems to be able to tell you easier ways to do things with GitHub.</dd>
 	<dt>Humaning Helper</dt>
-	<dd>Someone who goes out of their way to help contributors feel welcomed and valued. Further, someone who take the extra steps(s) necessary to help new contributors get up to speped. Finally, they maintain composure even in times of disagreement and dispute settlement.</dd>
+	<dd>Someone who goes out of their way to help contributors feel welcomed and valued. Further, someone who takes the extra steps(s) necessary to help new contributors get up to speed. Finally, they maintain composure even in times of disagreement and dispute resolution.</dd>
 	<dt>Heckler of Hypertext</dt>
 	<dd>Someone who demonstrates an esoteric level of knowledge when it comes to HTML. In other words, someone who says things like, "Did you know most Markdown flavors don't have a way to render a description list (`dl`)? All the more reason Markdown `!==` HTML."</dd>
 	<dt>Markdown Maestro</dt>
