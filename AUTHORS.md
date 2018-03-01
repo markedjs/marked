@@ -83,7 +83,7 @@ If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dramatic p
 
 - [ ] Add the appropriate badge to the desired contributor in the desired column, even if they're not listed here yet.
 - [ ] Submit a PR (we're big on PRs around here, if you haven't noticed, help us help you).
-- [ ] Follow the instructions for submitting a badge PR. (There are more details to find within. Come on. Everybody likes surprise right? Actually, we just try to put documentation where it belongs, closer to the code and part of the sequence of events.)
+- [ ] Follow the instructions for submitting a badge PR. (There are more details to find within. Come on. Everybody likes surprises, right? No? Actually, we just try to put documentation where it belongs, closer to the code and part of the sequence of events.)
 
 Badges at play:
 
