@@ -1,16 +1,92 @@
-# Marked code of coduct
+# Contributor Covenant Code of Conduct
 
-## Values
+## North star
 
-- ...
+The Community Principle: If I create it, or acquire it, I help maintain it.
 
-## Principles
+When you buy a car, you implicitly acknowledge that you will have to take various actions to maintain and ensure its smooth running. We believe the same should be true within the open source community and projects.
 
-- ...
+## Our Pledge
 
-## Practices
+In the interest of fostering an open and welcoming environment, we as
+contributors and maintainers pledge to making participation in our project and
+our community a harassment-free experience for everyone, regardless of age, body
+size, disability, ethnicity, gender identity and expression, level of experience,
+nationality, personal appearance, race, religion, or sexual identity and
+orientation.
 
-- **Final doesn't exist:** It is assumed that each of us is working to the best of their ability to make Marked better using the knowledge and skills we each have at the time.
-- **Perfection is the unattainable goal:** The longer we wait to make something perfect, the longer our users have to wait for the features and functionality they want and need to be delighted with Marked. Having said that, we will always strive to continuously improve in all areas.
-- **Make it about the work, not the person:** Again, all contributors are doing the best they can with what they have. Atttacking or bashing the person doesn't help resolve whatever issue is on the table, even if the issue is with a person.
-- ...
+## Our Standards
+
+Examples of behavior that contributes to creating a positive environment
+include:
+
+* Using welcoming and inclusive language
+* Being respectful of differing viewpoints and experiences
+* Gracefully accepting constructive criticism
+* Focusing on what is best for the community
+* Showing empathy towards other community members
+
+Examples of unacceptable behavior by participants include:
+
+* The use of sexualized language or imagery and unwelcome sexual attention or
+advances
+* Trolling, insulting/derogatory comments, and personal or political attacks
+* Public or private harassment
+* Publishing others' private information, such as a physical or electronic
+  address, without explicit permission
+* Other conduct which could reasonably be considered inappropriate in a
+  professional setting
+
+## Our Responsibilities
+
+Project maintainers are responsible for clarifying the standards of acceptable
+behavior and are expected to take appropriate and fair corrective action in
+response to any instances of unacceptable behavior.
+
+Project maintainers have the right and responsibility to remove, edit, or
+reject comments, commits, code, wiki edits, issues, and other contributions
+that are not aligned to this Code of Conduct, or to block temporarily or
+permanently any contributor for other behaviors that they deem inappropriate,
+threatening, offensive, or harmful.
+
+## Scope
+
+This Code of Conduct applies both within project spaces and in public spaces
+when an individual is representing the project or its community. Examples of
+representing a project or community include using an official project e-mail
+address, posting via an official social media account, or acting as an appointed
+representative at an online or offline event. Representation of a project may be
+further defined and clarified by project maintainers.
+
+## Enforcement
+
+Instances of abusive, harassing, or otherwise unacceptable behavior may be
+reported by contacting the project team at report@nodejs.org. All
+complaints will be reviewed and investigated and will result in a response that
+is deemed necessary and appropriate to the circumstances. The project team is
+obligated to maintain confidentiality with regard to the reporter of an incident.
+Further details of specific enforcement policies may be posted separately.
+
+Project maintainers who do not follow or enforce the Code of Conduct in good
+faith may face temporary or permanent repercussions as determined by other
+members of the project's leadership.
+
+To learn more about the process of how moderators enforce the Code of Conduct, 
+review the [Moderation Policy] and [Requesting Moderation].
+
+[Moderation Policy]: https://github.com/nodejs/admin/blob/master/Moderation-Policy.md#moderation-policy
+[Requesting Moderation]: https://github.com/nodejs/admin/blob/master/Moderation-Policy.md#requesting-moderation
+
+## Attribution
+
+This Code of Conduct is adapted from the [Contributor Covenant][homepage],
+version 1.4, available at [http://contributor-covenant.org/version/1/4][version]
+
+## Appendix A: The report@nodejs.org Alias
+
+*Note*: At the current time, all email sent to the `report@nodejs.org` email
+alias is copied to all members of the [Node.js Moderation Team][].
+
+[homepage]: http://contributor-covenant.org
+[version]: http://contributor-covenant.org/version/1/4/
+[Node.js Moderation Team]: https://github.com/nodejs/admin/blob/master/Moderation-Policy.md#current-members
