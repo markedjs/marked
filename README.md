@@ -24,7 +24,7 @@ Not too long ago we introduced our [AUTHORS](https://github.com/markedjs/marked/
 
 We're introducing a new, limited badge: Defibrilator.
 
-One of these will be given to anyone who submits a PR testing an example not already covered by other PRs or our test suite. It's pretty simple (maybe), just following [this example](https://github.com/markedjs/marked/pull/1104).
+One of these will be given to anyone who submits a PR testing an example not already covered by other PRs or our test suite. It's pretty simple (maybe), just follow [this example](https://github.com/markedjs/marked/pull/1104).
 
 1. Follow our [CONTRIBUTING](https://github.com/markedjs/marked/blob/master/CONTRIBUTING.md) guidelines.
 2. The test files must following the naming convention of cm_example_## (where `cm` indicates that it is the CommonMark Specification, `example` just means example, and the `##` should be replaced of the example number from the specification).
