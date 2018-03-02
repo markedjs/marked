@@ -20,7 +20,7 @@
 
 <!--
 
-	I no issue exists that you're aware of. The maintainers should be able to figure out if it's a duplicate.
+	If no issue exists that you're aware of. The maintainers should be able to figure out if it's a duplicate.
 
 ## Expectation
 

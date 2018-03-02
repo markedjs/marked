@@ -57,7 +57,7 @@ To be removed: You can remove yourself through the [GitHub UI](https://help.gith
 
 ## Publishers
 
-Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPMJS and performing outreach and external stakeholder communications. Further, when things go pear-shaped, they're the ones taking most of the heat. Finally, when things go well, they're the primary ones praising the contributors who made it possible.
+Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPM and performing outreach and external stakeholder communications. Further, when things go pear-shaped, they're the ones taking most of the heat. Finally, when things go well, they're the primary ones praising the contributors who made it possible.
 
 (In other words, while Admins are focused primarily on the internal workings of the project, Publishers are focused on internal *and* external concerns.) 
 
@@ -94,7 +94,7 @@ Badges at play:
 	<dd>
 		<p>Someone who understands and contributes to improving the developer experience and flow of Marked into the world.</p> 
 		<blockquote>
-			"The main characteristic of the DevOps movement is to strongly advocate automation and monitoring at all steps of software construction, from integration, testing, releasing to deployment and infrastructure management. DevOps aims at shorter development cycles, increased deployment frequency, more dependable releases, in close alignment with business objectives." ~[Wikipedia](https://en.wikipedia.org/wiki/DevOps)
+			"The main characteristic of the DevOps movement is to strongly advocate automation and monitoring at all steps of software construction, from integration, testing, releasing to deployment and infrastructure management. DevOps aims at shorter development cycles, increased deployment frequency, more dependable releases, in close alignment with business objectives." ~ [Wikipedia](https://en.wikipedia.org/wiki/DevOps)
 		</blockquote>
 	</dd>
 	<dt>Eye for the CLI</dt>
