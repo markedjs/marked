@@ -27,7 +27,7 @@ We're introducing a new, limited badge: Defibrilator.
 One of these will be given to anyone who submits a PR testing a single example not already covered by other PRs or our test suite. It's pretty simple (maybe), just follow [this example](https://github.com/markedjs/marked/pull/1104).
 
 1. Follow our [CONTRIBUTING](https://github.com/markedjs/marked/blob/master/CONTRIBUTING.md) guidelines.
-2. The test files must following the naming convention of cm_example_## (where `cm` indicates that it is the CommonMark Specification, `example` just means example, and the `##` should be replaced of the example number from the specification).
+2. The test files must follow the naming convention of cm_example_## (where `cm` indicates that it is the CommonMark Specification, `example` just means example, and the `##` should be replaced of the example number from the specification).
 3. Must include a both the Markdown and the HTML from the exammple.
 4. If the PR passes our continuous integration build, then we (and you) know that Marked can do the thing, and we can merge it in almost immediately; otherwise,
 5. if the PR fails our continuous integration build, then we (and you) know that Marked cannot do the thing, and you can either let it sit (you'll still get the badge); or, if you can fix it, great! update the PR and we'll review the solution before merging.
