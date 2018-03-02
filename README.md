@@ -8,7 +8,7 @@ There are four of us on the core team and we have one curious contributor helpin
 
 We've stirred the tanks a bit and, Houston, we have a problem. ([Apollo 13](https://youtu.be/Bti9_deF5gs). No? Where have y'all been!? Seriously, we haven't talked in a while, where have you been? Oh, right, better question, where has the *marked* community been? Again, mostly dead&hellip;)
 
-After careful analysis and consideration we have determined the marked test suite to be&hellip;ummmmm&hellip;incomplete. We run about 63 tests during our continuous integration cycle. We say we support the [CommonMark specification](http://spec.commonmark.org/0.28/). The CommonMark specification has roughly 625 testable scenarios. We're prioritizing spec comliance before going to a 1.0 release.
+After careful analysis and consideration we have determined the marked test suite to be&hellip;ummmmm&hellip;incomplete. We run about 63 tests during our continuous integration cycle. We say we support the [CommonMark specification](http://spec.commonmark.org/0.28/). The CommonMark specification has roughly 625 testable scenarios. We're prioritizing spec compliance before going to a 1.0 release.
 
 So, yeah, that's a thing.
 
