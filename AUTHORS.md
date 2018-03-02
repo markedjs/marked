@@ -122,6 +122,13 @@ Badges at play:
 	<dd>Someone who demonstrates high-levels of understanding regarding Marked's test harness.</dd>
 </dl>
 
+Limited time or number badges:
+
+<dl>
+	<dt>Defibrillator</dt>
+	<dd>This badge indicates you helped us make our test suite more complete regarding the CommonMark specification.</dd>
+</dl>
+
 Special badges that come with the job:
 
 <dl>

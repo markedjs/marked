@@ -1,3 +1,41 @@
+## Marked wants you!
+
+In case you haven't noticed, and judging by attendance you haven't&hellip; (Movie. Major League. No? Anyway.)
+
+In case you haven't noticed, after years of [being mostly dead](https://github.com/markedjs/marked/issues/1106) (not to be confused with stable), Marked is trying to come back to life. We're about at the "You just wiggled your finger" stage ([The Princess Bride](https://youtu.be/yokQ0_8__ts). No? Come on!)
+
+There are four of us on the core team and we have one curious contributor helping us make moves (see [AUTHORS](https://github.com/markedjs/marked/blob/master/AUTHORS.md) page).
+
+We've stirred the tanks a bit and, Houston, we have a problem. ([Apollo 13](https://youtu.be/Bti9_deF5gs). No? Where have y'all been!? Seriously, we haven't talked in a while, where have you been? Oh, right, better question, where has the *marked* community been? Again, mostly dead&hellip;)
+
+After careful analysis and consideration we have determined the marked test suite to be&hellip;ummmmm&hellip;incomplete. We run about 63 tests during our continuous integration cycle. We say we support the [CommonMark specification](http://spec.commonmark.org/0.28/). The CommonMark specification has roughly 625 testable scenarios. We're prioritizing spec comliance before going to a 1.0 release.
+
+So, yeah, that's a thing.
+
+It will take the four or five of us god only knows how long to write the tests, before even considering what to do to fix them. 
+
+That's where you come in.
+
+We're introducing **the Marked Defibrillator Challenge**.
+
+### Defib. Details
+
+Not too long ago we introduced our [AUTHORS](https://github.com/markedjs/marked/blob/master/AUTHORS.md) page. We also brought in badges to help identify who does or has done what.
+
+We're introducing a new, limited badge: Defibrilator.
+
+One of these will be given to anyone who submits a PR testing an example not already covered by other PRs or our test suite. It's pretty simple (maybe), just following [this example](https://github.com/markedjs/marked/pull/1104).
+
+1. Follow our [CONTRIBUTING](https://github.com/markedjs/marked/blob/master/CONTRIBUTING.md) guidelines.
+2. The test files must following the naming convention of cm_example_## (where `cm` indicates that it is the CommonMark Specification, `example` just means example, and the `##` should be replaced of the example number from the specification).
+3. Must include a both the Markdown and the HTML from the exammple.
+4. If the PR passes our continuous integration build, then we (and you) know that Marked can do the thing, and we can merge it in almost immediately; otherwise,
+5. if the PR fails our continuous integration build, then we (and you) know that Marked cannot do the thing, and you can either let it sit (you'll still get the badge); or, if you can fix it, great! update the PR and we'll review the solution before merging.
+
+Note: The failing PRs will take us longer to merge; so, it may take longer to get the badge and have your GitHub handle listed on the [AUTHORS](https://github.com/markedjs/marked/blob/master/AUTHORS.md) page; but those failing ones are bit more valuable to us in order to improve marked for our users.
+
+## Read me
+
 <ul>
   <li><a href="#marked">About</a></li>
   <li><a href="#install">Installation</a></li>
