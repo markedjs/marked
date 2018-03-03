@@ -45,6 +45,12 @@ To be listed: Committers are usually selected (or they volunteer, using the same
 
 To be removed: You can remove yourself through the [GitHub UI](https://help.github.com/articles/removing-yourself-from-a-collaborator-s-repository/).
 
+A note on volunteering:
+
+1. Please do not volunteer unless you believe you can demonstrate to your peers you can do the work required.
+2. Please do not overcommit yourself; we count on those committed to the project to be responsive. Really consider, with all you have going on, wehther you able to really commit to it.
+3. Don't let the previous frighten you away, it can always be changed later by you or your peers.
+
 [Details on badges](#badges)
 
 ## Admins
