@@ -12,6 +12,5 @@ charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
-translate_tabs_to_spaces = true
 indent_style = tab
 indent_size = 4
