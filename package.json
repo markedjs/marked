@@ -31,6 +31,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "front-matter": "^2.3.0",
     "glob-to-regexp": "0.3.0",
+    "jasmine": "^3.1.0",
     "markdown": "*",
     "markdown-it": "*",
     "showdown": "*",
