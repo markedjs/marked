@@ -1,14 +1,14 @@
 language: node_js
 
-node_js:
-  - v0.10
-  - v4
-  - lts/*
-  - node
-
 jobs:
   include:
-    - stage: lint
+    - stage: spec tests 👩🏽‍💻
+      node_js: v0.10
+    - node_js: v4
+    - node_js: lts/*
+    - node_js: node
+
+    - stage: lint ✨
       node_js: lts/*
       script: npm run test:lint
 
