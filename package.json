@@ -38,7 +38,9 @@
     "uglify-js": "^3.3.10"
   },
   "scripts": {
-    "test": "node test",
+    "test": "npm run test:unit && npm run test:spec",
+    "test:unit": "jasmine --config=jasmine.json",
+    "test:spec": "node test",
     "test:lint": "eslint lib/marked.js test/index.js",
     "bench": "node test --bench",
     "lint": "eslint --fix lib/marked.js test/index.js",
