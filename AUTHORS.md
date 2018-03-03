@@ -120,6 +120,8 @@ Badges at play:
 	<dd>Someone who has demonstrated a high degree of expertise or authority when it comes to software security.</dd>
 	<dt>Titan of the Test Harness</dt>
 	<dd>Someone who demonstrates high-levels of understanding regarding Marked's test harness.</dd>
+	<dt>Totally Tron</dt>
+	<dd>Someone who demonstrates they are willing and able to "fight for the users", both developers dependent on marked to do their jobs as well as end-users interacting with the output (particularly in the realm of those with the disabilities).</dd>
 </dl>
 
 Special badges that come with the job:
