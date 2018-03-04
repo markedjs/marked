@@ -3,7 +3,7 @@
 /**
  * marked tests
  * Copyright (c) 2011-2013, Christopher Jeffrey. (MIT Licensed)
- * https://github.com/chjj/marked
+ * https://github.com/markedjs/marked
  */
 
 /**
