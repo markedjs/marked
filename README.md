@@ -61,7 +61,7 @@ $ cat hello.html
 ```
 
 
-Marked offers [advanced configurations](https://github.com/markedjs/marked/blob/master/USAGE_ADVANCED.md) and [extensibility](https://github.com/markedjs/marked/blob/master/USAGE_EXTENSIBILITY.md) as well.
+Marked offers [advanced configurations](https://github.com/markedjs/marked/blob/master/USING_ADVANCED.md) and [extensibility](https://github.com/markedjs/marked/blob/master/USING_PRO.md) as well.
 
 <h2 id="specifications">Supported Markdown specifications</h2>
 
