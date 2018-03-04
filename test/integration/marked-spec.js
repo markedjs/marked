@@ -7,21 +7,21 @@ describe('integration suite', function () {
 
   describe('inline html', function () {
     it('should permit inline html', function () {
-      var inlineHtmlExamples = [{'md': '<div>foo</div>', 'html': '<div>foo</div>'},
-                                {'md': '<div>outer <div>inner</div> </div>', 'html': '<div>outer <div>inner</div> </div>'},
-                                {'md': '<!-- Comment -->', 'html': '<!-- Comment -->'},
-                                {'md': '<!-- \nMultiline\nComment\n-->', 'html': '<!-- \nMultiline\nComment\n-->'},
-                                {'md': '<hr>', 'html': '<hr>'},
-                                {'md': '<hr/>', 'html': '<hr/>'},
-                                {'md': '<hr/>', 'html': '<hr/>'},
-                                {'md': '<hr />', 'html': '<hr />'},
-                                {'md': '<hr class="foo" id="bar" />', 'html': '<hr class="foo" id="bar" />'},
-                                {'md': '<hr class="foo" id="bar"/>', 'html': '<hr class="foo" id="bar"/>'},
-                                {'md': '<hr class="foo" id="bar" >', 'html': '<hr class="foo" id="bar" >'},
-                               ];
+      var samples = [{'md': '<div>foo</div>',                     'html': '<div>foo</div>'},
+                     {'md': '<div>outer <div>inner</div> </div>', 'html': '<div>outer <div>inner</div> </div>'},
+                     {'md': '<!-- Comment -->',                   'html': '<!-- Comment -->'},
+                     {'md': '<!-- \nMultiline\nComment\n-->',     'html': '<!-- \nMultiline\nComment\n-->'},
+                     {'md': '<hr>',                               'html': '<hr>'},
+                     {'md': '<hr/>',                              'html': '<hr/>'},
+                     {'md': '<hr/>',                              'html': '<hr/>'},
+                     {'md': '<hr />',                             'html': '<hr />'},
+                     {'md': '<hr class="foo" id="bar" />',        'html': '<hr class="foo" id="bar" />'},
+                     {'md': '<hr class="foo" id="bar"/>',         'html': '<hr class="foo" id="bar"/>'},
+                     {'md': '<hr class="foo" id="bar" >',         'html': '<hr class="foo" id="bar" >'},
+                    ];
 
-      inlineHtmlExamples.forEach(function(example) {
-        expect(marked(example.md)).toBe(example.html);
+      samples.forEach(function(sample) {
+        expect(marked(sample.md)).toBe(sample.html);
       });
 
     });
@@ -30,53 +30,26 @@ describe('integration suite', function () {
   describe('links inline style', function () {
 
     it('should handle regular links', function () {
-      var descs = [{'text': 'simpleString',
-                    'link': 'simpleString'},
-                   {'text': 'string with spaces',
-                    'link': 'http://github.com'},
-                   {'text': 'string with \[backslash \] brackets',
-                    'link': 'http://github.com'},
-                   {'text': 'string with [inline brackets]',
-                    'link': 'http://github.com'},
-                   {'text': 'url has space',
-                    'link': '/url has space'},
-                   {'text': 'empty',
-                    'link': ''},
-                  ];
-      descs.forEach(function(desc) {
-        expect(marked(`[${desc.text}](${desc.link})`)).toBe(`<p><a href="${desc.link}">${desc.text}</a></p>\n`);
+      var samples = [{'md': '[simpleString](url)',                        'html': '<p><a href="url">simpleString</a></p>\n'},
+                     {'md': '[text with spaces](http://github.com)',      'html': '<p><a href="http://github.com">text with spaces</a></p>\n'},
+                     {'md': '[text with \\[backslash \\] brackets](url)', 'html': '<p><a href="url">text with [backslash ] brackets</a></p>\n'},
+                     {'md': '[text with [inline brackets]](url)',         'html': '<p><a href="url">text with [inline brackets]</a></p>\n'},
+                     {'md': '[text](url has space)',                      'html': '<p><a href="url has space">text</a></p>\n'},
+                    ];
+      samples.forEach(function(sample) {
+        expect(marked(sample.md)).toBe(sample.html);
       });
     });
 
     it('should handle links with titles', function () {
-      var descs = [{'text': 'simpleString',
-                    'link': 'simpleString',
-                    'title': 'simpleTitle',
-                    'beforeTitle': ' ',
-                    'afterTitle': ''},
-                   {'text': 'url and title',
-                    'link': 'simpleString',
-                    'title': 'title preceded by two spaces',
-                    'beforeTitle': '  ',
-                    'afterTitle': ''},
-                   {'text': 'url and title',
-                    'link': 'simpleString',
-                    'title': 'title preceded by a tab',
-                    'beforeTitle': '	',
-                    'afterTitle': ''},
-                   {'text': 'url and title',
-                    'link': 'simpleString',
-                    'title': 'title has spaces afterward',
-                    'beforeTitle': ' ',
-                    'afterTitle': '  '},
-                   {'text': 'url and title',
-                    'link': '/url/has space/',
-                    'title': 'url has space and title',
-                    'beforeTitle': ' ',
-                    'afterTitle': ''},
-                  ];
-      descs.forEach(function(desc) {
-        expect(marked(`[${desc.text}](${desc.link}${desc.beforeTitle}"${desc.title}"${desc.afterTitle})`)).toBe(`<p><a href="${desc.link}" title="${desc.title}">${desc.text}</a></p>\n`);
+      var samples = [{'md': '[text](url "title")',                             'html': '<p><a href="url" title="title">text</a></p>\n'},
+                     {'md': '[text](url  "2 leading spaces")',                 'html': '<p><a href="url" title="2 leading spaces">text</a></p>\n'},
+                     {'md': '[text](/foo/	"leading tab")',                     'html': '<p><a href="/foo/" title="leading tab">text</a></p>\n'},
+                     {'md': '[text](http://github.com "2 trailing spaces"  )', 'html': '<p><a href="http://github.com" title="2 trailing spaces">text</a></p>\n'},
+                     {'md': '[text](/url has/ space/ "title")',                'html': '<p><a href="/url has/ space/" title="title">text</a></p>\n'},
+                    ];
+      samples.forEach(function(sample) {
+        expect(marked(sample.md)).toBe(sample.html);
       });
     });
 
