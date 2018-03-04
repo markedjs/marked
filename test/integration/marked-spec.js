@@ -5,6 +5,28 @@ describe('integration suite', function () {
     expect(marked('Hello World!')).toBe('<p>Hello World!</p>\n');
   });
 
+  describe('inline html', function () {
+    it('should permit inline html', function () {
+      var inlineHtmlExamples = [{'md': '<div>foo</div>', 'html': '<div>foo</div>'},
+                                {'md': '<div>outer <div>inner</div> </div>', 'html': '<div>outer <div>inner</div> </div>'},
+                                {'md': '<!-- Comment -->', 'html': '<!-- Comment -->'},
+                                {'md': '<!-- \nMultiline\nComment\n-->', 'html': '<!-- \nMultiline\nComment\n-->'},
+                                {'md': '<hr>', 'html': '<hr>'},
+                                {'md': '<hr/>', 'html': '<hr/>'},
+                                {'md': '<hr/>', 'html': '<hr/>'},
+                                {'md': '<hr />', 'html': '<hr />'},
+                                {'md': '<hr class="foo" id="bar" />', 'html': '<hr class="foo" id="bar" />'},
+                                {'md': '<hr class="foo" id="bar"/>', 'html': '<hr class="foo" id="bar"/>'},
+                                {'md': '<hr class="foo" id="bar" >', 'html': '<hr class="foo" id="bar" >'},
+                               ];
+
+      inlineHtmlExamples.forEach(function(example) {
+        expect(marked(example.md)).toBe(example.html);
+      });
+
+    });
+  });
+
   describe('links inline style', function () {
 
     it('should handle regular links', function () {
