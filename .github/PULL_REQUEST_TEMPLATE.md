@@ -14,6 +14,8 @@
 
 <!-- The NPM version or commit hash having the issue -->
 
+**Markdown flavor:** Markdown.pl|CommonMark|GitHub Flavored Markdown|n/a
+
 ## Description
 
 - Fixes #### (if fixing a known issue; otherwise, describe issue using the following format)
