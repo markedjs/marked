@@ -25,7 +25,7 @@ describe('integration suite', function () {
       });
 
     });
-  });
+  }); // inline html
 
   describe('links inline style', function () {
 
@@ -53,7 +53,7 @@ describe('integration suite', function () {
       });
     });
 
-  });
+  }); // links inline style
 
   describe('auto links', function () {
     it('should handle auto-linking', function() {
@@ -101,5 +101,5 @@ describe('integration suite', function () {
       });
     });
 
-  });
+  }); // auto links
 });
