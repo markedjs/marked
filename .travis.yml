@@ -3,14 +3,23 @@ language: node_js
 jobs:
   include:
     - stage: spec tests 👩🏽‍💻
+      script: npm run test:specs
+      node_js: lts/*
+
+    - stage: unit tests 👩🏽‍💻
+      script: npm run test:unit
+      node_js: lts/*
+
+    - stage: integration tests 👩🏽‍💻
+      script: npm run test:integration
       node_js: v0.10
     - node_js: v4
     - node_js: lts/*
     - node_js: node
 
     - stage: lint ✨
-      node_js: lts/*
       script: npm run test:lint
+      node_js: lts/*
 
 cache:
   directories:
