@@ -54,4 +54,52 @@ describe('integration suite', function () {
     });
 
   });
+
+  describe('auto links', function () {
+    it('should handle auto-linking', function() {
+      var samples = [
+                     // Auto-linking.
+                     {'md': 'Link: <http://example.com/>.',  'html': '<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>\n'},
+                     {'md': 'With an ampersand: <http://example.com/?foo=1&bar=2>',  'html': '<p>With an ampersand: <a href="http://example.com/?foo=1&amp;bar=2">http://example.com/?foo=1&amp;bar=2</a></p>\n'},
+                     {'md': '* In a list?\n' +
+                            '* <http://example.com/>\n' +
+                            '* It should.\n',
+                      'html': '<ul>\n' +
+                              '<li>In a list?</li>\n' +
+                              '<li><a href="http://example.com/">http://example.com/</a></li>\n' +
+                              '<li>It should.</li>\n' +
+                              '</ul>\n'
+
+                     },
+                     {'md': '> Blockquoted: <http://example.com/>',
+                      'html': '<blockquote>\n' + 
+                              '<p>Blockquoted: <a href="http://example.com/">http://example.com/</a></p>\n' +
+                              '</blockquote>\n'
+                     },
+                    ];
+      samples.forEach(function(sample) {
+        expect(marked(sample.md)).toBe(sample.html);
+      });
+    });
+
+    it('should not auto-link when indented', function() {
+      var samples = [{'md': '	indented: <http://example.com/>',
+                      'html': '<pre><code>indented: &lt;http://example.com/&gt;\n' +
+                              '</code></pre>' // TODO Why doesn't this end in a newline?
+                     },
+                    ];
+      samples.forEach(function(sample) {
+        expect(marked(sample.md)).toBe(sample.html);
+      });
+    });
+
+    it('should not auto-link in code', function() {
+      var samples = [{'md': 'Code: `<http://example.com/>`', 'html': '<p>Code: <code>&lt;http://example.com/&gt;</code></p>\n'},
+                    ];
+      samples.forEach(function(sample) {
+        expect(marked(sample.md)).toBe(sample.html);
+      });
+    });
+
+  });
 });
