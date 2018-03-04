@@ -136,6 +136,13 @@ Badges at play:
 	<dd>Someone who demonstrates they are willing and able to "fight for the users", both developers dependent on marked to do their jobs as well as end-users interacting with the output (particularly in the realm of those with the disabilities).</dd>
 </dl>
 
+Limited time or number badges:
+
+<dl>
+	<dt>Defibrillator</dt>
+	<dd>This badge indicates you helped us make our test suite more complete regarding the CommonMark specification.</dd>
+</dl>
+
 Special badges that come with the job:
 
 <dl>
