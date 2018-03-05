@@ -106,9 +106,11 @@ However, if you have ANY unbalanced parentheses, you need to escape or use the <
 
 [link] (/uri)
 
-### Example 483
+### Example 4830
 
-[link [foo [bar]]](/uri)
+The link text may contain ONE LEVEL of balanced brackets, but not unbalanced ones, unless they are escaped:
+
+[link [foo4830]](/uri)
 
 ### Example 484
 
