@@ -39,9 +39,11 @@ bar>)
 
 [link](\(foo\))
 
-### Example 468
+### Example 4680
 
-[link](foo(and(bar)))
+ONE LEVEL of parentheses are allowed without escaping, as long as they are balanced:
+
+[link](foo(bar))
 
 ### Example 469
 
