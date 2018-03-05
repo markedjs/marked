@@ -89,10 +89,6 @@ However, if you have ANY unbalanced parentheses, you need to escape or use the <
 
 [link](/url "title \"&quot;")
 
-### Example 478
-
-[link](/url "title")
-
 ### Example 479
 
 [link](/url "title "and" title")
