@@ -163,13 +163,6 @@ p {color:blue;}
 </style>
 okay
 
-### Example 140
-
-<style
-  type="text/css">
-
-foo
-
 ### Example 141
 
 > <div>
@@ -309,3 +302,11 @@ Hi
 
 </table>
 
+### Example 140
+
+If there is no matching end tag, the block will end at the end of the document (or the enclosing block quote or list item):
+
+<style
+  type="text/css">
+
+foo
