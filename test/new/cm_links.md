@@ -51,6 +51,8 @@ ONE LEVEL of parentheses are allowed without escaping, as long as they are balan
 
 ### Example 470
 
+However, if you have ANY unbalanced parentheses, you need to escape or use the <...> form:
+
 [link](<foo(and(bar)>)
 
 ### Example 471
