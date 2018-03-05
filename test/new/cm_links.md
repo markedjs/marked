@@ -71,7 +71,7 @@ However, if you have ANY unbalanced parentheses, you need to escape or use the <
 
 [link](foo\bar)
 
-### Example 474
+### Example 4740
 
 [link](foo%20b&auml;)
 
