@@ -5,6 +5,34 @@ describe('integration suite', function () {
     expect(marked('Hello World!')).toBe('<p>Hello World!</p>\n');
   });
 
+  describe('special characters', function () {
+    it('should handle ampersands', function () {
+      var samples = [{'md': 'AT&T has an ampersand in their name', 'html': '<p>AT&amp;T has an ampersand in their name</p>\n'},
+                     {'md': 'AT&amp;T is another way to write it', 'html': '<p>AT&amp;T is another way to write it</p>\n'},
+                     {'md': 'This & that', 'html': '<p>This &amp; that</p>\n'},
+                     {'md': 'Inline [link](/script?foo=1&bar=2) with ampersands', 'html': '<p>Inline <a href="/script?foo=1&amp;bar=2">link</a> with ampersands</p>\n'},
+                     {'md': '[link with ampersands](http://example.com/?foo=1&bar=)', 'html': '<p><a href="http://example.com/?foo=1&amp;bar=">link with ampersands</a></p>\n'},
+                     {'md': '[link title with ampersands](http://att.com "AT&T")', 'html': '<p><a href="http://att.com" title="AT&amp;T">link title with ampersands</a></p>\n'},
+                    ];
+
+      samples.forEach(function(sample) {
+        expect(marked(sample.md)).toBe(sample.html);
+      });
+
+    });
+
+    it('should handle angle brackets', function () {
+      var samples = [{'md': '4 < 5', 'html': '<p>4 &lt; 5</p>\n'},
+                     {'md': '6 > 5', 'html': '<p>6 &gt; 5</p>\n'}, // This disagrees with amps_and_angles_encoding.html. Flaky original test?
+                    ];
+
+      samples.forEach(function(sample) {
+        expect(marked(sample.md)).toBe(sample.html);
+      });
+
+    });
+  }); // special characters
+
   describe('inline html', function () {
     it('should permit inline html', function () {
       var samples = [{'md': '<div>foo</div>',                     'html': '<div>foo</div>'},
