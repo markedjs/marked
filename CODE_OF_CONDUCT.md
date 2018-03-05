@@ -1,11 +1,5 @@
 # Contributor Covenant Code of Conduct
 
-## North star
-
-The Community Principle: If I create it, or acquire it, I help maintain it.
-
-When you buy a car, you implicitly acknowledge that you will have to take various actions to maintain and ensure its smooth running. We believe the same should be true within the open source community and projects.
-
 ## Our Pledge
 
 In the interest of fostering an open and welcoming environment, we as
