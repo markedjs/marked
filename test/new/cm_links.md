@@ -186,33 +186,9 @@ The link text may contain ONE LEVEL of balanced brackets, but not unbalanced one
 
 [ref504]: /uri
 
-### Example 505
-
-*[foo*][ref]
-
-[ref]: /uri
-
 ### Example 506
 
 [foo *bar][ref]
-
-[ref]: /uri
-
-### Example 507
-
-[foo <bar attr="][ref]">
-
-[ref]: /uri
-
-### Example 508
-
-[foo`][ref]`
-
-[ref]: /uri
-
-### Example 509
-
-[foo<http://example.com/?search=][ref]>
 
 [ref]: /uri
 
