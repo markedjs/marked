@@ -136,18 +136,6 @@ The link text may contain ONE LEVEL of balanced brackets, but not unbalanced one
 
 [![moon](moon.jpg)](/uri)
 
-### Example 489
-
-[foo [bar](/uri)](/uri)
-
-### Example 490
-
-[foo *[bar [baz](/uri)](/uri)*](/uri)
-
-### Example 491
-
-![[[foo](uri1)](uri2)](uri3)
-
 ### Example 492
 
 *[foo*](/uri)
