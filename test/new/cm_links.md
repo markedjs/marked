@@ -358,45 +358,45 @@ The link text may contain ONE LEVEL of balanced brackets, but not unbalanced one
 
 ### Example 537
 
-[foo][]
+[foo537][]
 
-[foo]: /url1
+[foo537]: /url1
 
 ### Example 538
 
-[foo]()
+[foo538]()
 
-[foo]: /url1
+[foo538]: /url1
 
 ### Example 539
 
-[foo](not a link)
+[foo539](not a link)
 
-[foo]: /url1
+[foo539]: /url1
 
 ### Example 540
 
-[foo][bar][baz]
+[foo540][bar540][baz540]
 
-[baz]: /url
+[baz540]: /url
 
 ### Example 541
 
-[foo][bar][baz]
+[foo541][bar541][baz541]
 
-[baz]: /url1
-[bar]: /url2
+[baz541]: /url1
+[bar541]: /url2
 
 ### Example 542
 
-[foo][bar][baz]
+[foo542][bar542][baz542]
 
-[baz]: /url1
-[foo]: /url2
+[baz542]: /url1
+[foo542]: /url2
 
 ### Example 543
 
-![foo](/url "title")
+![foo543](/url "title")
 
 ### Example 544
 
@@ -442,15 +442,15 @@ My ![foo bar](/path/to/train.jpg  "title"   )
 
 ### Example 553
 
-![foo][bar]
+![foo][bar553]
 
-[bar]: /url
+[bar553]: /url
 
 ### Example 554
 
-![foo][bar]
+![foo][bar554]
 
-[BAR]: /url
+[BAR554]: /url
 
 ### Example 555
 
@@ -491,9 +491,9 @@ My ![foo bar](/path/to/train.jpg  "title"   )
 
 ### Example 561
 
-![[foo]]
+![[foo561]]
 
-[[foo]]: /url "title"
+[[foo561]]: /url "title"
 
 ### Example 562
 
