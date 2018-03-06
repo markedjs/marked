@@ -219,42 +219,42 @@ The link text may contain ONE LEVEL of balanced brackets, but not unbalanced one
 
 ### Example 514
 
-[foo]
-[bar]
+[foo514]
+[bar514]
 
-[bar]: /url "title"
+[bar514]: /url "title"
 
 ### Example 515
 
-[foo]: /url1
+[foo515]: /url1
 
-[foo]: /url2
+[foo515]: /url2
 
-[bar][foo]
+[bar][foo515]
 
 ### Example 516
 
-[bar][foo\!]
+[bar][foo\!516]
 
-[foo!]: /url
+[foo!516]: /url
 
 ### Example 517
 
-[foo][ref[]
+[foo517][ref[517]
 
-[ref[]: /uri
+[ref[517]: /uri
 
 ### Example 518
 
-[foo][ref[bar]]
+[foo518][ref[bar518]518]
 
-[ref[bar]]: /uri
+[ref[bar518]518]: /uri
 
 ### Example 519
 
-[[[foo]]]
+[[[foo519]]]
 
-[[[foo]]]: /url
+[[[foo519]]]: /url
 
 ### Example 520
 
