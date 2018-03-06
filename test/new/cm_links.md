@@ -349,12 +349,6 @@ The link text may contain ONE LEVEL of balanced brackets, but not unbalanced one
 
 [foo534]: /url "title"
 
-### Example 535
-
-[foo*]: /url
-
-*[foo*]
-
 ### Example 536
 
 [foo536][bar536]
