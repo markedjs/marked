@@ -213,9 +213,9 @@ The link text may contain ONE LEVEL of balanced brackets, but not unbalanced one
 
 ### Example 513
 
-[foo] [bar]
+[foo513] [bar513]
 
-[bar]: /url "title"
+[bar513]: /url "title"
 
 ### Example 514
 
