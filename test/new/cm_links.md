@@ -327,9 +327,9 @@ The link text may contain ONE LEVEL of balanced brackets, but not unbalanced one
 
 ### Example 531
 
-[[bar [foo]
+[[bar [foo531]
 
-[foo]: /url
+[foo531]: /url
 
 ### Example 532
 
@@ -339,15 +339,15 @@ The link text may contain ONE LEVEL of balanced brackets, but not unbalanced one
 
 ### Example 533
 
-[foo] bar
+[foo533] bar
 
-[foo]: /url
+[foo533]: /url
 
 ### Example 534
 
 \[foo]
 
-[foo]: /url "title"
+[foo534]: /url "title"
 
 ### Example 535
 
@@ -357,10 +357,10 @@ The link text may contain ONE LEVEL of balanced brackets, but not unbalanced one
 
 ### Example 536
 
-[foo][bar]
+[foo536][bar536]
 
-[foo]: /url1
-[bar]: /url2
+[foo536]: /url1
+[bar536]: /url2
 
 ### Example 537
 
