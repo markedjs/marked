@@ -174,17 +174,17 @@ The link text may contain ONE LEVEL of balanced brackets, but not unbalanced one
 
 [ref]: /uri
 
-### Example 503
+### Example 5030
 
-[foo [bar](/uri)][ref]
+[foo [bar](/uri)][ref503]
 
-[ref]: /uri
+[ref503]: /uri
 
 ### Example 504
 
-[foo *bar [baz][ref]*][ref]
+[foo *bar [baz][ref504]*][ref504]
 
-[ref]: /uri
+[ref504]: /uri
 
 ### Example 505
 
