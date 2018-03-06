@@ -150,11 +150,11 @@ The link text may contain ONE LEVEL of balanced brackets, but not unbalanced one
 
 [bar]: /url "title"
 
-### Example 499
+### Example 4990
 
-[link [foo [bar]]][ref]
+[link [foo499]][ref499]
 
-[ref]: /uri
+[ref499]: /uri
 
 ### Example 500
 
