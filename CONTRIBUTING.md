@@ -56,6 +56,80 @@ Marked provides templates for submitting both pull requests and issues. When you
 
 The PR templates include checklists for both the submitter and the reviewer, which, in most cases, will not be the same person.
 
+## Submitting PRs continued
+
+Marked is in an odd place right now. We're still a zero-major release, which, according to [semver](https://semver.org) means:
+
+> Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable.
+
+However, marked has also been around for several years and is still one of the most popular Markdown parsers we're aware of. Therefore, we can't ethically just change everything out from under our users before making things right.
+
+### Release 0.x.x (no known issues)
+
+1. **JavaScript:** ES5 - unless or until a suitable transpiling option is discovered.
+2. **Browsers we need to support:**
+  - IE8 (ca. 2009)
+3. **Node versions we need to support:**
+  - 0.10
+4. Fix compliance issues against supported specifications.
+5. Possibly fix defects reported against user-requested features.
+
+### Release 1.0 (promises covered, changes to come)
+
+1. **JavaScript:** Same as 0.x.x.
+2. **Browsers we need to support:** Same as 0.x.x.
+3. **Node versions we need to support:** Same as 0.x.x.
+4. Flag features for deprecation to alert users of what breaking changes to expect in 2.0.
+5. Begin moving toward 2.0 architecture where possible.
+
+### Release 2.0 (remove deprecated features and modernized)
+
+1. **JavaScript:** ES6
+2. **Browsers we need to support:** 
+	- IE11 (possibly, depends on how many people still use it by then),
+	- Microsoft Edge, and the
+	- latest versions of Safari, Chrome, and Firefox.
+3. **Node versions we need to support:**
+  - ??
+4. Respond to contributors while maintaining tight reins on scope of marked. (Marked is maintained by volunteers, the more it does, the more code we have to maintain.)
+
+## The marked architecture
+
+### Release 0.x.x+
+
+Entry point:
+
+1. `marked()`:
+
+Variables:
+
+1. `var block`: Regex grammar for block-level HTML elements.
+2. `var inline`: Regex grammar for inline-level HTML elements.
+3. `var baseUrls`: ...
+4. `var originIndependentUrl`: ...
+
+Functions:
+
+1. `escape()`: ...
+2. `unescape()`: ...
+3. `edit()`: ...
+4. `resolveUrl()`: ...
+5. `noop()`: ...
+6. `merge():` Merges one or more objects to create a new object. (Why not use Object.assign??)
+
+Objects (the following are in procedural order):
+
+1. `Lexer`: Source from `marked()` is turned into tokens (??)
+5. `Parser`: Tokens are parsed for block elements (??)
+2. `InlineLexer`: Tokens from Parser are converted to inline tokens (??)
+3. `Renderer`: All tokens are turned into block-level HTML element strings (??)
+4. `TextRenderer`: All Renderer tokens are turned into inline-level HTML element strings(??)
+
+
+### Release 2.0+
+
+Still under discussion.
+
 ## Scripts
 
 When it comes to NPM commands, we try to use the native scripts provided by the NPM framework.
