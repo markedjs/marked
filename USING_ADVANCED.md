@@ -43,7 +43,7 @@ console.log(myMarked('I am using __markdown__.'));
 |:----------|:---------|:----------------------------------------------------------------------------------------------------------------------------|
 |highlight  |`function`|A function to highlight code blocks. See also: <a href="#highlight">Asynchronous highlighting</a>.                           |
 |renderer   |`object`  |An object containing functions to render tokens to HTML. See [extensibility](https://github.com/markedjs/marked/blob/master/USAGE_EXTENSIBILITY.md) for more details. Default: `new Renderer()`|
-|pedantic   |`boolean` |Conform to obscure parts of `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Default: `false`|
+|pedantic   |`boolean` |Conform to obscure parts of `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`. Default: `false`|
 |gfm        |`boolean` |Use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).                                 |
 |tables     |`boolean` |Use [GFM Tables extension](https://github.github.com/gfm/#tables-extension-). Requires `gfm` be `true`.                      |
 |breaks     |`boolean` |Use GFM [hard](https://github.github.com/gfm/#hard-line-breaks) and [soft](https://github.github.com/gfm/#soft-line-breaks) line breaks. Requires `gfm` be `true`. Default: `false`|
