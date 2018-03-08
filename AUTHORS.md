@@ -20,6 +20,7 @@ Contributors are users who submit a [PR](https://github.com/markedjs/marked/pull
 |Federico Soave      |@Feder1co5oave   |Regent of the Regex, Master of Marked |
 |Brandon der Blätter |@intcreator      |Curious Contributor                   |
 |Костя Третяк        |@KostyaTretyak   |--                                    |
+|Carlos Valle        |@carlosvalle     |Maker of the marked mark 2018+        |
 
 To be listed: make a contribution and, if it has significant impact, the committers may be able to add you here.
 
@@ -141,6 +142,8 @@ Special badges that come with the job:
 <dl>
 	<dt>Release Wrangler</dt>
 	<dd>This is a badge given to all Publishers.</dd>
+	<dt>Maker of the marked mark</dt>
+	<dd>This is a badge given to whomever creates the marked logo for the specified years.</dd>
 	<dt>Snyk's Security Saint</dt>
 	<dd>This is a badge given to whomever primarily reaches out from Snyk to let us know about security issues.</dd>
 </dl>
