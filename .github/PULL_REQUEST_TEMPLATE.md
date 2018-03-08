@@ -1,25 +1,53 @@
+
+<!--
+
+	If release PR, add ?template=release.md to the PR url to use the release PR template.
+
+	If badging PR, add ?template=badges.md to the PR url to use the badges PR template.
+
+	Otherwise, you are stating this PR fixes an issue that has been submitted; or,
+	describes the issue or proposal under considersation and contains the project-related code to implement.
+
+-->
+
+**Marked version:**
+
+<!-- The NPM version or commit hash having the issue -->
+
+**Markdown flavor:** Markdown.pl|CommonMark|GitHub Flavored Markdown|n/a
+
 ## Description
 
-<!-- describe what the PR does -->
+- Fixes #### (if fixing a known issue; otherwise, describe issue using the following format)
 
-- Fixes ####
-- Fixes list issues fixed by this PR
-- Fixes will automatically close them once merged
+<!--
 
-## Review
+	If no issue exists that you're aware of. The maintainers should be able to figure out if it's a duplicate.
 
-### Submitter
+## Expectation
 
-- [ ] All tests pass (CI should take care of this, once in place).
-- [ ] All lint checks pass (CI should take care of this, once in place).
-- Tests 
-  - [ ] Test(s) exist to ensure functionality works (if no new tests added, list which tests cover this functionality).
-  - [ ] No tests required for this PR.
-- [ ] Is release:
-  - [ ] Version in `package.json` has been updated (see [RELEASE.md](https://github.com/markedjs/marked/blob/master/RELEASE.md)).
-  - [ ] The `marked.min.js` has been updated; or,
-  - [ ] release does not change library.
+Describe the output you are expecting from marked
 
-### Reviewer
+## Result
 
-??
+Describe the output you received from marked
+
+## What was attempted
+
+Describe what code combination got you there
+
+-->
+
+## Contributor
+
+- [ ] Test(s) exist to ensure functionality and minimize regresstion (if no tests added, list tests covering this PR); or,
+- [ ] no tests required for this PR.
+- [ ] If submitting new feature, it has been documented in the appropriate places.
+
+## Committer
+
+In most cases, this should be a different person than the contributor.
+
+- [ ] Draft GitHub release notes have been updated.
+- [ ] CI is green (no forced merge required).
+- [ ] Merge PR

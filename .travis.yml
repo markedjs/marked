@@ -1,16 +1,17 @@
 language: node_js
-node_js:
-  - "0.10"
-  - "4"
-  - "lts/*"
-  - "node"
-script: |
-  if [ `node --version | cut -d . -f 1,2` = "v0.10" ]; then
-    sed -i s/0o755/0755/ test/index.js;
-    npm test;
-  else
-    npm run lint && npm test;
-  fi
+
+jobs:
+  include:
+    - stage: spec tests 👩🏽‍💻
+      node_js: v0.10
+    - node_js: v4
+    - node_js: lts/*
+    - node_js: node
+
+    - stage: lint ✨
+      node_js: lts/*
+      script: npm run test:lint
+
 cache:
   directories:
     - node_modules
