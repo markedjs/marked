@@ -19,7 +19,7 @@ Note: If merges to `master` occur after submitting this PR and before running `$
 
 In most cases, this should be someone different than the publisher.
 
-- [ ] Version in `package.json` has been updated (see [RELEASE.md](https://github.com/markedjs/marked/blob/master/RELEASE.md)).
+- [ ] Version in `package.json` has been updated (see [RELEASE.md](https://github.com/markedjs/marked/blob/master/docs/RELEASE.md)).
 - [ ] The `marked.min.js` has been updated; or,
 - [ ] release does not change library.
 - [ ] cm_autolinks is the only failing test (remove once CI is in place and all tests pass).
