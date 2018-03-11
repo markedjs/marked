@@ -48,7 +48,7 @@ $ cat hello.html
 <head>
   <meta charset="utf-8"/>
   <title>Marked in the browser</title>
-  <script src="/path/to/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
   <div id="content"></div>
