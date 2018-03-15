@@ -129,3 +129,17 @@ This was an error in Markdown 1.0.1:
 	*	sub
 
 	that
+
+Ordered lists start from initial number:
+
+3. Three
+1. Four
+
+Ordered lists continue with initial number:
+
+3. First
+4. Second:
+	* Fee
+	* Fie
+	* Foe
+5. Third
