@@ -140,7 +140,7 @@ Badges? If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dr
 
 <dl>
 	<dt>Maker of the Marked mark</dt>
-	<dd>This badge is given to the person or oganization credited with creating the logo (or logotype) used in Marked communications for a given period of time. **Marked mark maker from 2017 to present**, for example.</dd>
+	<dd>This badge is given to the person or oganization credited with creating the logo (or logotype) used in Marked communications for a given period of time. **Maker of the Marked mark from 2017 to present**, for example.</dd>
 	<dt>Release Wrangler</dt>
 	<dd>This is a badge given to all Publishers.</dd>
 	<dt>Snyk's Security Saint</dt>
