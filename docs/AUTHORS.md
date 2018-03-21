@@ -97,7 +97,7 @@ Badges? If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dr
 - [ ] Submit a PR (we're big on PRs around here, if you haven't noticed, help us help you).
 - [ ] Follow the instructions for submitting a badge PR. (There are more details to find within. Come on. Everybody likes surprises, right? No? Actually, we just try to put documentation where it belongs, closer to the code and part of the sequence of events.)
 
-Badges at play:
+### Badges at play:
 
 <dl>
 	<dt>Curious Contributor</dt>
@@ -136,9 +136,11 @@ Badges at play:
 	<dd>Someone who demonstrates they are willing and able to "fight for the users", both developers dependent on marked to do their jobs as well as end-users interacting with the output (particularly in the realm of those with the disabilities).</dd>
 </dl>
 
-Special badges that come with the job:
+### Special badges that come with the job:
 
 <dl>
+	<dt>Maker of the Marked mark</dt>
+	<dd>This badge is given to the person or oganization credited with creating the logo (or logotype) used in Marked communications for a given period of time. **Maker of the Marked mark from 2017 to present**, for example.</dd>
 	<dt>Release Wrangler</dt>
 	<dd>This is a badge given to all Publishers.</dd>
 	<dt>Snyk's Security Saint</dt>
