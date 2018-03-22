@@ -2,12 +2,12 @@
   "name": "marked",
   "description": "A markdown parser built for speed",
   "author": "Christopher Jeffrey",
-  "version": "0.3.17",
+  "version": "0.3.18",
   "main": "./lib/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
   "repository": "git://github.com/markedjs/marked.git",
-  "homepage": "https://github.com/markedjs/marked",
+  "homepage": "https://marked.js.org",
   "bugs": {
     "url": "http://github.com/markedjs/marked/issues"
   },
