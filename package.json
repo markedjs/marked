@@ -7,7 +7,7 @@
   "bin": "./bin/marked",
   "man": "./man/marked.1",
   "repository": "git://github.com/markedjs/marked.git",
-  "homepage": "https://github.com/markedjs/marked",
+  "homepage": "https://marked.js.org",
   "bugs": {
     "url": "http://github.com/markedjs/marked/issues"
   },
