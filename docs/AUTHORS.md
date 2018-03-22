@@ -58,6 +58,10 @@ A note on volunteering:
 
 Admins are committers who also have the responsibility, privilege, and burden of selecting committers and making sure the project itself runs smoothly, which includes community maintenance, governance, dispute resolution, and so on. (Letting the contributors easily enter into, and work within, the project to begin contributing, with as little friction as possible.)
 
+|Name           |GiHub handle   |Decision making                          |Badges of honor (tag for questions) |
+|:--------------|:--------------|:----------------------------------------|------------------------------------|
+|Steven         |@styfle        |Open source, of course and GitHub Guru   |Humaning Helper                     |
+
 **Should not exceed 3:** When there are too many people with the ability to reolves disputes, the dispute itself can quickly turn into a dispute amongst the admins themselves; therefore, we want this group to be small enough to commit to action and large enough to not put too much burden on one person. (Should ensure faster resolution and responsiveness.)
 
 To be listed: Admins are usually selected from the pool of committers (or they volunteer, using the same process) who demonstrate good understanding of the marked culture, operations, and do their best to help new contributors get up to speed on how to contribute effectively to the project.
