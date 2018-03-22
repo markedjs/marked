@@ -73,7 +73,7 @@
 <body>
     <div id="container">
         <header>
-            <a href="/">
+            <a href="README.md">
                 <img src="img/logo-black.svg" height="64px" width="64px" />
             </a>
             <h1>Marked.js Documentation</h1>
@@ -92,14 +92,15 @@
         var content = document.querySelector('#content');
         var body = document.querySelector('html');
 
-        content.addEventListener('click', function (e) {
-            var a = e.target;
-            if (a.tagName.toLowerCase() === 'a' && a.href.indexOf(location.origin) === 0) {
+        body.addEventListener('click', function (e) {
+            var a = e.target.closest('a');
+            if (a && a.href.indexOf(location.origin) === 0) {
                 var page = a.href.slice(location.origin.length + location.pathname.length);
                 if (page.slice(-3) === '.md') {
                     e.preventDefault();
                     fetchPage(page);
                 }
+                history.replaceState("", document.title, "/");
             }
         }, false);
 
