@@ -12,6 +12,7 @@
         }
 
         #container {
+            position: relative;
             max-width: 800px;
             margin: auto;
             padding: 10px;
@@ -60,6 +61,13 @@
             background-color: rgba(27,31,35,0.05);
             border-radius: 3px;
         }
+
+        .github-ribbon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            border: 0;
+        }
     </style>
 </head>
 <body>
@@ -70,6 +78,10 @@
             </a>
             <h1>Marked.js Documentation</h1>
         </header>
+
+        <a href="https://github.com/markedjs/marked">
+            <img class="github-ribbon" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+        </a>
 
         <div id="content"></div>
     </div>
@@ -102,7 +114,7 @@
                         + '<p>' + e.message + '</p>';
                 });
         }
-        
+
         fetchPage('README.md');
     </script>
 </body>
