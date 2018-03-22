@@ -88,7 +88,7 @@ Multiple paragraphs:
 
 	Item 2. graf two. The quick brown fox jumped over the lazy dog's
 	back.
-	
+
 2.	Item 2.
 
 3.	Item 3.
@@ -129,3 +129,13 @@ This was an error in Markdown 1.0.1:
 	*	sub
 
 	that
+
+Ordered lists start from initial number:
+
+3. Three
+1. Four
+
+Ordered lists start from initial zero:
+
+0. Zero
+1. One
