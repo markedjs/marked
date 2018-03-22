@@ -17,7 +17,7 @@
 ## As the one mentioned, I would like to:
 
 - [ ] accept the recommendation; or,
-- [ ] gracefully decline; or,
+- [ ] graciously decline; or,
 - [ ] dispute the recommendation
 
 within 30 days (silence is consent at this point, can't have the pull requests page filled with PRs related to badges forever).
