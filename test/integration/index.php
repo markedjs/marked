@@ -22,11 +22,11 @@ if (in_array($section,$ignore)) {
 
 
 
-echo '// cm_'. str_replace(' ', '_', strtolower($example->section)) .'.js'."\n";
-echo 'it(\'should pass cm example '. $example->example .'\', function() {'."\n";
+echo "// cm_". str_replace(' ', '_', strtolower($example->section)) .".js"."\n";
+echo "it('should pass cm example ". $example->example ."', function() {"."\n";
 echo "  var result = marked('". getWhiteSpacedString($example->markdown) ."');"."\n";
-echo '  var expected = \''. getWhiteSpacedString($example->html) .'\';'."\n\n";
-echo '  expected(result).toBe(expected);'."\n";
+echo "  var expected = '". getWhiteSpacedString($example->html) ."';"."\n\n";
+echo "  expected(result).toBe(expected);"."\n";
 echo "}"."\n\n";
 }
 
