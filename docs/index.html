@@ -12,6 +12,7 @@
         }
 
         #container {
+            position: relative;
             max-width: 800px;
             margin: auto;
             padding: 10px;
@@ -60,15 +61,28 @@
             background-color: rgba(27,31,35,0.05);
             border-radius: 3px;
         }
+
+        .github-ribbon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            border: 0;
+        }
     </style>
 </head>
 <body>
     <div id="container">
         <header>
-            <img src="img/logo-black.svg" height="64px" width="64px" />
+            <a href="README.md">
+                <img src="img/logo-black.svg" height="64px" width="64px" />
+            </a>
             <h1>Marked.js Documentation</h1>
         </header>
-        
+
+        <a href="https://github.com/markedjs/marked">
+            <img class="github-ribbon" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+        </a>
+
         <div id="content"></div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -78,14 +92,15 @@
         var content = document.querySelector('#content');
         var body = document.querySelector('html');
 
-        content.addEventListener('click', function (e) {
-            var a = e.target;
-            if (a.tagName.toLowerCase() === 'a' && a.href.indexOf(location.origin) === 0) {
+        body.addEventListener('click', function (e) {
+            var a = e.target.closest('a');
+            if (a && a.href.indexOf(location.origin) === 0) {
                 var page = a.href.slice(location.origin.length + location.pathname.length);
                 if (page.slice(-3) === '.md') {
                     e.preventDefault();
                     fetchPage(page);
                 }
+                history.replaceState("", document.title, "/");
             }
         }, false);
 
@@ -100,7 +115,7 @@
                         + '<p>' + e.message + '</p>';
                 });
         }
-        
+
         fetchPage('README.md');
     </script>
 </body>
