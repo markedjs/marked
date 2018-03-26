@@ -89,6 +89,29 @@
     <script src="https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/unfetch/dist/unfetch.umd.js"></script>
     <script>
+        if (!window.Promise) {
+          window.Promise = ES6Promise;
+        }
+        if (!window.fetch) {
+          window.fetch = unfetch;
+        }
+        if (!Element.prototype.matches) {
+            Element.prototype.matches = Element.prototype.msMatchesSelector ||
+                                        Element.prototype.webkitMatchesSelector;
+        }
+
+        if (!Element.prototype.closest) {
+            Element.prototype.closest = function(s) {
+                var el = this;
+                if (!document.documentElement.contains(el)) return null;
+                do {
+                    if (el.matches(s)) return el;
+                    el = el.parentElement || el.parentNode;
+                } while (el !== null && el.nodeType === 1);
+                return null;
+            };
+        }
+
         var content = document.querySelector('#content');
         var body = document.querySelector('html');
 
@@ -106,11 +129,11 @@
 
         function fetchPage(page) {
             fetch(page)
-                .then(res => res.text())
-                .then(text => {
+                .then(function (res) { return res.text(); })
+                .then(function (text) {
                     content.innerHTML = marked(text);
                     body.scrollTop = 0;
-                }).catch(e => {
+                }).catch(function (e) {
                     content.innerHTML = '<p>Oops! There was a problem rendering the page.</p>'
                         + '<p>' + e.message + '</p>';
                 });
