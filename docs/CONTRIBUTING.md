@@ -56,6 +56,8 @@ Marked provides templates for submitting both pull requests and issues. When you
 
 The PR templates include checklists for both the submitter and the reviewer, which, in most cases, will not be the same person.
 
+It may also be beneficial to look at the roadmap captured as [GitHub milestones](https://github.com/markedjs/marked/milestones).
+
 ## Marked makeup
 
 ### Entry point
@@ -118,6 +120,12 @@ To build your own minified version of Marked:
 
 ```bash
 npm run build
+```
+
+To minify library when modifying package version number (run automatically):
+
+```bash
+npm run preversion
 ```
 
 ## Publishing
