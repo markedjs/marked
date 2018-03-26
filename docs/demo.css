@@ -13,10 +13,8 @@ textarea {
 }
 
 #header {
-	margin: 0;
-	padding: 0.4em 0 0 0;
+	margin-top: 1em;
 	text-align: center;
-	color: #002;
 }
 
 #header > h1 {
@@ -27,7 +25,7 @@ textarea {
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	margin-top: 2.4em;
+	margin-top: 5em;
 	width: 100%;
 }
 
@@ -55,25 +53,7 @@ textarea {
 }
 
 .label {
-	margin: 0;
-	padding: 0;
-	position: relative;
-	width: 100%;
-	display: block;
-}
-
-.label * {
-	position: relative;
-	font-weight: 900;
-}
-
-.label span {
-	color: #444;
-}
-
-#outputType {
-	display: block;
-	margin-left: auto;
+	float: none !important;
 }
 
 .pane {
@@ -135,3 +115,10 @@ textarea {
 	font-size: 1.3em;
 }
 
+.github-ribbon {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: 0;
+	z-index: 1000;
+}
