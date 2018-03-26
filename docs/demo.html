@@ -1,14 +1,19 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!doctype html>
+<html lang="en">
 <head>
-	<title>Marked Demo Page</title>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-	<script type="text/javascript" src="../lib/marked.js"></script>
-	<script type="text/javascript" src="demo.js"></script>
+	<title>Marked Demo</title>
 	<link rel="stylesheet" href="demo.css" type="text/css" />
 </head>
 <body>
+    <a href="https://github.com/markedjs/marked">
+        <img class="github-ribbon" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+    
 	<div id="header">
-		<h1>Demo Page for <a href="https://github.com/chjj/marked/">Marked</a></h1>
+        <a href="/">
+            <img src="img/logo-black.svg" height="64px" width="64px" />
+        </a>
+		<h1>Marked Demo</h1>
 	</div>
 
 	<div id="bothContainers">
@@ -50,7 +55,7 @@ It's easy.  It's not overly bloated, unlike HTML.  Also, as the creator of [mark
 Ready to start writing?  Either start changing stuff on the left or
 [clear everything](?blank=1) with a simple click.
 
-[Marked]: https://github.com/chjj/marked/
+[Marked]: https://github.com/markedjs/marked/
 [Markdown]: http://daringfireball.net/projects/markdown/
 </textarea>
 		</div>
@@ -239,6 +244,8 @@ If markdown is too limiting, you can just insert your own <strike>crazy</strike>
     It is a pity, but markdown does **not** work in here for most markdown parsers.  [Marked] handles it pretty well.
 </div>
 </textarea></div>
-		</div>
+        </div>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+	    <script type="text/javascript" src="demo.js"></script>
 	</body>
 </html>
