@@ -21,6 +21,10 @@ textarea {
 	margin-top: 0;
 }
 
+#header img {
+	float: left;
+}
+
 #bothContainers {
 	position: absolute;
 	top: 0;
