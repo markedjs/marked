@@ -56,6 +56,36 @@ Marked provides templates for submitting both pull requests and issues. When you
 
 The PR templates include checklists for both the submitter and the reviewer, which, in most cases, will not be the same person.
 
+## Marked makeup
+
+### Entry point
+
+1. marked():
+
+### Variables
+
+1. var block: Regex grammar for block-level HTML elements.
+2. var inline: Regex grammar for inline-level HTML elements.
+3. var baseUrls: ...
+4. var originIndependentUrl: ...
+
+### Functions
+
+1. escape(): ...
+2. unescape(): ...
+3. edit(): ...
+4. resolveUrl(): ...
+5. noop(): ...
+6. merge(): Merges one or more objects to create a new object. (Replace with  Object.assign when using ES6+)
+
+### Objects (in procedural order)
+
+1. Lexer: Source from marked() is turned into tokens (??).
+2. Parser: Tokens are parsed for block elements (??).
+3. InlineLexer: Tokens from Parser are converted to inline tokens (??).
+4. Renderer: All tokens are turned into block-level HTML element strings (??).
+5. TextRenderer: All Renderer tokens are turned into inline-level HTML element strings (??).
+
 ## Scripts
 
 When it comes to NPM commands, we try to use the native scripts provided by the NPM framework.
