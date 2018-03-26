@@ -70,32 +70,26 @@
 			inputDirty = false;
 			var startTime = new Date();
 
-			// Save scroll position
 			var scrollPercent = getScrollPercent();
 
-			// Convert
 			var lexed = marked.lexer($inputElem.value);
-
-			// Grab lexed output and convert to a string before the parser
-			// destroys the data
+			
 			var lexedList = [];
 
 			for (var i = 0; i < lexed.length; i ++) {
 				var lexedLine = [];
 				for (var j in lexed[i]) {
-					lexedLine.push(j + ":" + jsonString(lexed[i][j]));
+					lexedLine.push(j + ':' + jsonString(lexed[i][j]));
 				}
-				lexedList.push("{" + lexedLine.join(", ") + "}");
+				lexedList.push('{' + lexedLine.join(', ') + '}');
 			}
 
 			var parsed = marked.parser(lexed);
 
-			// Assign
 			$previewElem.innerHTML = (parsed);
 			$htmlElem.value = (parsed);
-			$lexerElem.value = (lexedList.join("\n"));
+			$lexerElem.value = (lexedList.join('\n'));
 
-			// Set the scroll percent
 			setScrollPercent(scrollPercent);
 
 			var endTime = new Date();
