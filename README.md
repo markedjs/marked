@@ -33,10 +33,10 @@ $ cat hello.html
 <head>
   <meta charset="utf-8"/>
   <title>Marked in the browser</title>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
   <div id="content"></div>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     document.getElementById('content').innerHTML =
       marked('# Marked in the browser\n\nRendered by **marked**.');
