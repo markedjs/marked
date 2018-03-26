@@ -89,28 +89,59 @@
     <script src="https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/unfetch/dist/unfetch.umd.js"></script>
     <script>
+        if (!window.Promise) {
+          window.Promise = ES6Promise;
+        }
+        if (!window.fetch) {
+          window.fetch = unfetch;
+        }
+
+        if (!Element.prototype.closest) {
+
+            if (!Element.prototype.matches) {
+                Element.prototype.matches = Element.prototype.msMatchesSelector ||
+                                            Element.prototype.webkitMatchesSelector;
+            }
+
+            Element.prototype.closest = function(s) {
+                var el = this;
+                if (!document.documentElement.contains(el)) return null;
+                do {
+                    if (el.matches(s)) return el;
+                    el = el.parentElement || el.parentNode;
+                } while (el !== null && el.nodeType === 1);
+                return null;
+            };
+        }
+
         var content = document.querySelector('#content');
         var body = document.querySelector('html');
 
         body.addEventListener('click', function (e) {
             var a = e.target.closest('a');
             if (a && a.href.indexOf(location.origin) === 0) {
-                var page = a.href.slice(location.origin.length + location.pathname.length);
-                if (page.slice(-3) === '.md') {
+                var uri = a.href.slice(location.origin.length + location.pathname.length).split('#');
+
+                if (uri[0].match('.md$')) {
                     e.preventDefault();
-                    fetchPage(page);
+                    fetchPage(uri[0])
+                        .then(function () {
+                            if (uri.length > 1) {
+                                location.hash = uri[1];
+                            }
+                        });
                 }
                 history.replaceState("", document.title, "/");
             }
         }, false);
 
         function fetchPage(page) {
-            fetch(page)
-                .then(res => res.text())
-                .then(text => {
+            return fetch(page)
+                .then(function (res) { return res.text(); })
+                .then(function (text) {
                     content.innerHTML = marked(text);
                     body.scrollTop = 0;
-                }).catch(e => {
+                }).catch(function (e) {
                     content.innerHTML = '<p>Oops! There was a problem rendering the page.</p>'
                         + '<p>' + e.message + '</p>';
                 });
