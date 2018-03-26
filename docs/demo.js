@@ -1,30 +1,39 @@
-$(function () {
-	var $inputElem = $('#input');
-	var $outputTypeElem = $('#outputType');
-	var $previewElem = $('#preview');
-	var $htmlElem = $('#html');
-	var $lexerElem = $('#lexer');
-	var $syntaxElem = $('#syntax');
+(function () {
+	var $inputElem = document.querySelector('#input');
+	var $outputTypeElem = document.querySelector('#outputType');
+	var $previewElem = document.querySelector('#preview');
+	var $htmlElem = document.querySelector('#html');
+	var $lexerElem = document.querySelector('#lexer');
+	var $syntaxElem = document.querySelector('#syntax');
+	var $pane = document.querySelector('#rightContainer .pane');
 	var inputDirty = true;
 	var $activeElem = null;
 
 	if (top.document.location.href.match(/\?blank=1$/)) {
-		$inputElem.val('');
+		$inputElem.value = '';
 	}
 
-	$outputTypeElem.change(function () {
-		$('#rightContainer .pane').hide();
-		$activeElem = $('#' + $outputTypeElem.val()).show();
-	}).change();
+	var handleChange = function () {
+		var panes = document.querySelectorAll('#rightContainer .pane');
+		for (var i = 0; i < panes.length; i++) {
+			panes[i].style.display = 'none';
+		}
+		$activeElem = document.querySelector('#' + $outputTypeElem.value);
+		$activeElem.style.display = 'block';
+	};
 
-	var noticeChange = function () {
+	$outputTypeElem.addEventListener('change', handleChange, false);
+	handleChange();
+
+
+	var handleInput = function () {
 		inputDirty = true;
 	};
-	$inputElem.
-		change(noticeChange).
-		keyup(noticeChange).
-		keypress(noticeChange).
-		keydown(noticeChange);
+
+	$inputElem.addEventListener('change', handleInput, false);
+	$inputElem.addEventListener('keyup', handleInput, false);
+	$inputElem.addEventListener('keypress', handleInput, false);
+	$inputElem.addEventListener('keydown', handleInput, false);
 
 	var jsonString = function (input) {
 		var output = (input + '').
@@ -38,7 +47,7 @@ $(function () {
 	};
 
 	var getScrollSize = function () {
-		var e = $activeElem[0];
+		var e = $activeElem;
 
 		return e.scrollHeight - e.clientHeight;
 	};
@@ -49,10 +58,10 @@ $(function () {
 			return 1;
 		}
 
-		return $activeElem.scrollTop() / size;
+		return $activeElem.scrollTop / size;
 	};
 	var setScrollPercent = function (percent) {
-		$activeElem.scrollTop(percent * getScrollSize());
+		$activeElem.scrollTop = percent * getScrollSize();
 	};
 
 	var delayTime = 1;
@@ -65,8 +74,7 @@ $(function () {
 			var scrollPercent = getScrollPercent();
 
 			// Convert
-			var markdown = $inputElem.val();
-			var lexed = marked.lexer(markdown);
+			var lexed = marked.lexer($inputElem.value);
 
 			// Grab lexed output and convert to a string before the parser
 			// destroys the data
@@ -83,9 +91,9 @@ $(function () {
 			var parsed = marked.parser(lexed);
 
 			// Assign
-			$previewElem.html(parsed);
-			$htmlElem.val(parsed);
-			$lexerElem.val(lexedList.join("\n"));
+			$previewElem.innerHTML = (parsed);
+			$htmlElem.value = (parsed);
+			$lexerElem.value = (lexedList.join("\n"));
 
 			// Set the scroll percent
 			setScrollPercent(scrollPercent);
@@ -102,4 +110,4 @@ $(function () {
 	};
 	checkForChanges();
 	setScrollPercent(0);
-});
+})();
