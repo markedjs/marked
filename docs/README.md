@@ -1,5 +1,6 @@
 <ul>
   <li><a href="#marked">About</a></li>
+  <li><a href="#demo">Demo</a></li>
   <li><a href="#installation">Installation</a></li>
   <li><a href="#usage">Usage</a></li>
   <li><a href="#specifications">Supported Markdown specifications</a></li>
@@ -21,6 +22,14 @@ Marked is
 <p><small><sup>*</sup> Still working on metrics for comparative analysis and definition.</small><br>
 <small><sup>**</sup> As few dependencies as possible.</small><br>
 <small><sup>***</sup> Strict compliance could result in slower processing when running comparative benchmarking.</small></p>
+
+
+<h2 id="demo">Demo</h2>
+
+Checkout the [demo page](https://marked.js.org/demo.html) to see marked in action ⛹️
+
+These documentation pages are also rendered using marked 💯
+
 
 <h2 id="installation">Installation</h2>
 

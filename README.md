@@ -7,6 +7,12 @@ Marked is
 3. light-weight while implementing all markdown features from the supported flavors & specifications.
 4. available as a command line interface (CLI) and running in client- or server-side JavaScript projects.
 
+## Demo
+
+Checkout the [demo page](https://marked.js.org/demo.html) to see marked in action ⛹️
+
+Our [documentation pages](https://marked.js.org) are also rendered using marked 💯
+
 ## Installation
 
 **CLI:** `npm install -g marked`
@@ -44,8 +50,6 @@ $ cat hello.html
 </body>
 </html>
 ```
-
-
 
 ## License
 
