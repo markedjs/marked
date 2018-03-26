@@ -26,7 +26,7 @@ Marked is
 
 <h2 id="demo">Demo</h2>
 
-Checkout the [demo page](https://marked.js.org/demo.html) to see marked in action ⛹️
+Checkout the [demo page](./demo/) to see marked in action ⛹️
 
 These documentation pages are also rendered using marked 💯
 
