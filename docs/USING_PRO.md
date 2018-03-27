@@ -119,3 +119,39 @@ $ node
   { type: 'blockquote_end' },
   links: {} ]
 ```
+
+The Lexers build an array of tokens, which will be passed to their respective
+Parsers. The Parsers process each token in the token arrays,
+which are removed from the array of tokens:
+
+``` js
+const marked = require('marked');
+
+const md = `
+  # heading
+
+  [link][1]
+
+  [1]: #heading "heading"
+`;
+
+const tokens = marked.lexer(md);
+console.log(tokens);
+
+const html = marked.parser(tokens);
+console.log(html);
+
+console.log(tokens);
+```
+
+``` bash
+[ { type: 'heading', depth: 1, text: 'heading' },
+  { type: 'paragraph', text: '  [link][1]' },
+  { type: 'space' },
+  links: { '1': { href: '#heading', title: 'heading' } } ]
+
+<h1 id="heading">heading</h1>
+<p>  <a href="#heading" title="heading">link</a></p>
+
+[ links: { '1': { href: '#heading', title: 'heading' } } ]
+```
