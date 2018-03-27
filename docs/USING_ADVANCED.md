@@ -54,7 +54,7 @@ console.log(myMarked('I am using __markdown__.'));
 
 <h2 id="highlight">Asynchronous highlighting</h2>
 
-Unlike `highlight.js` the `pygmatize.js` library uses asynchronous highlighting. This example demonstrates that marked is agnostic when it comes to the highlighter you use.
+Unlike `highlight.js` the `pygmentize.js` library uses asynchronous highlighting. This example demonstrates that marked is agnostic when it comes to the highlighter you use.
 
 ```js
 myMarked.setOptions({
