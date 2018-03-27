@@ -9,7 +9,7 @@ Marked is
 
 ## Demo
 
-Checkout the [demo page](https://marked.js.org/demo.html) to see marked in action ⛹️
+Checkout the [demo page](https://marked.js.org/demo/) to see marked in action ⛹️
 
 Our [documentation pages](https://marked.js.org) are also rendered using marked 💯
 
