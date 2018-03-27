@@ -19,9 +19,9 @@ var myMarked = require('marked');
 // Set options
 // `highlight` example uses `highlight.js`
 myMarked.setOptions({
-  renderer: new marked.Renderer(),
+  renderer: new myMarked.Renderer(),
   highlight: function(code) {
-  	return require('highlight.js').highlightAuto(code).value;
+    return require('highlight.js').highlightAuto(code).value;
   },
   pedantic: false,
   gfm: true,
