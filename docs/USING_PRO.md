@@ -25,8 +25,9 @@ var renderer = new myMarked.Renderer();
 renderer.heading = function (text, level) {
   var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 
-  return `<h${level}>
-            <a name="'${escapedText}'" class="anchor" href="#${escapedText}">
+  return `
+          <h${level}>
+            <a name="${escapedText}" class="anchor" href="#${escapedText}">
               <span class="header-link"></span>
             </a>
             ${text}
@@ -34,7 +35,7 @@ renderer.heading = function (text, level) {
 };
 
 // Run marked
-console.log(marked('# heading+', { renderer: renderer }));
+console.log(myMarked('# heading+', { renderer: renderer }));
 ```
 
 **Output:**
