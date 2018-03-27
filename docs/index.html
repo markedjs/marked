@@ -98,10 +98,11 @@
 
         var content = document.querySelector('#content');
         var body = document.querySelector('html');
-        var currentPage = '';
+        var currentPage = 'README.md';
         var currentHash = '';
+        var renderedPage = '';
 
-        function hashChange(e) {
+        function hashChange() {
             var hash = location.hash.slice(1);
             if (!hash) {
                 hash = 'README.md';
@@ -116,29 +117,36 @@
                 } else {
                     currentHash = '';
                 }
-                e && e.preventDefault();
-                fetchPage(uri[0])
-                    .then(function () {
-                        if(currentHash) {
-                            var hashElement = document.getElementById(currentHash);
-                            if (hashElement) {
-                                hashElement.scrollIntoView();
-                            }
-                        }
-                    });
             } else {
                 currentHash = uri[0];
             }
 
+            fetchPage(currentPage)
+                .then(function () {
+                    if(currentHash) {
+                        var hashElement = document.getElementById(currentHash);
+                        if (hashElement) {
+                            hashElement.scrollIntoView();
+                        }
+                    }
+                });
+
             history.replaceState('', document.title, '#' + currentPage + (currentHash ? '#' + currentHash : ''));
         }
 
-        window.addEventListener('hashchange', hashChange);
+        window.addEventListener('hashchange', function (e) {
+            e.preventDefault();
+            hashChange();
+        });
 
         function fetchPage(page) {
+            if (page === renderedPage) {
+                return Promise.resolve();
+            }
             return fetch(page)
                 .then(function (res) { return res.text(); })
                 .then(function (text) {
+                    renderedPage = page;
                     content.innerHTML = marked(text);
                     body.scrollTop = 0;
                 }).catch(function (e) {
