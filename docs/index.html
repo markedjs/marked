@@ -73,7 +73,7 @@
 <body>
     <div id="container">
         <header>
-            <a href="README.md">
+            <a href="#/README.md">
                 <img src="img/logo-black.svg" height="64px" width="64px" />
             </a>
             <h1>Marked.js Documentation</h1>
@@ -96,49 +96,62 @@
           window.fetch = unfetch;
         }
 
-        if (!Element.prototype.closest) {
-
-            if (!Element.prototype.matches) {
-                Element.prototype.matches = Element.prototype.msMatchesSelector ||
-                                            Element.prototype.webkitMatchesSelector;
-            }
-
-            Element.prototype.closest = function(s) {
-                var el = this;
-                if (!document.documentElement.contains(el)) return null;
-                do {
-                    if (el.matches(s)) return el;
-                    el = el.parentElement || el.parentNode;
-                } while (el !== null && el.nodeType === 1);
-                return null;
-            };
-        }
-
         var content = document.querySelector('#content');
         var body = document.querySelector('html');
+        var currentPage = 'README.md';
+        var currentHash = '';
+        var renderedPage = '';
 
-        body.addEventListener('click', function (e) {
-            var a = e.target.closest('a');
-            if (a && a.href.indexOf(location.origin) === 0) {
-                var uri = a.href.slice(location.origin.length + location.pathname.length).split('#');
-
-                if (uri[0].match('.md$')) {
-                    e.preventDefault();
-                    fetchPage(uri[0])
-                        .then(function () {
-                            if (uri.length > 1) {
-                                location.hash = uri[1];
-                            }
-                        });
-                }
-                history.replaceState("", document.title, "/");
+        function hashChange() {
+            var hash = location.hash.slice(1);
+            if (!hash) {
+                hash = 'README.md';
             }
-        }, false);
+
+            var uri = hash.split('#');
+
+            if (uri[0].match(/^\//)) {
+                currentPage = uri[0].slice(1);
+                if (uri.length > 1) {
+                    currentHash = uri[1];
+                } else {
+                    currentHash = '';
+                }
+            } else {
+                currentHash = uri[0];
+            }
+
+            fetchPage(currentPage).then(function () {
+                fetchAnchor(currentHash)
+            });
+
+            history.replaceState('', document.title, '#/' + currentPage + (currentHash ? '#' + currentHash : ''));
+        }
+
+        function fetchAnchor(anchor) {
+            if (!anchor) {
+                return;
+            }
+
+            var hashElement = document.getElementById(anchor);
+            if (hashElement) {
+                hashElement.scrollIntoView();
+            }
+        }
 
         function fetchPage(page) {
+            if (page === renderedPage) {
+                return Promise.resolve();
+            }
             return fetch(page)
-                .then(function (res) { return res.text(); })
+                .then(function (res) {
+                    if (!res.ok) {
+                        throw new Error('Error ' + res.status + ': ' + res.statusText);
+                    }
+                    return res.text();
+                })
                 .then(function (text) {
+                    renderedPage = page;
                     content.innerHTML = marked(text);
                     body.scrollTop = 0;
                 }).catch(function (e) {
@@ -147,7 +160,12 @@
                 });
         }
 
-        fetchPage('README.md');
+        window.addEventListener('hashchange', function (e) {
+            e.preventDefault();
+            hashChange();
+        });
+
+        hashChange();
     </script>
 </body>
 </html>
