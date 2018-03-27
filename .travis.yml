@@ -4,7 +4,6 @@ jobs:
   include:
     - stage: spec tests 👩🏽‍💻
       node_js: v0.10
-    - node_js: v4
     - node_js: lts/*
     - node_js: node
 
