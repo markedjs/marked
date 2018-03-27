@@ -3,7 +3,7 @@
 - [ ] `$ npm version` has been run.
 - [ ] Release notes in [draft GitHub release](https://github.com/markedjs/marked/releases) are up to date
 - [ ] Release notes include which flavors and versions of Markdown are supported by this release
-- [ ] Reviewer checklist is complete.
+- [ ] Committer checklist is complete.
 - [ ] Merge PR.
 - [ ] Publish GitHub release using `master` with correct version number.
 - [ ] `$ npm publish` has been run.
@@ -19,9 +19,7 @@ Note: If merges to `master` occur after submitting this PR and before running `$
 
 In most cases, this should be someone different than the publisher.
 
-- [ ] Version in `package.json` has been updated (see [RELEASE.md](https://github.com/markedjs/marked/blob/master/docs/RELEASE.md)).
+- [ ] Version in `package.json` has been updated (see [PUBLISHING.md](https://github.com/markedjs/marked/blob/master/docs/PUBLISHING.md)).
 - [ ] The `marked.min.js` has been updated; or,
 - [ ] release does not change library.
-- [ ] cm_autolinks is the only failing test (remove once CI is in place and all tests pass).
-- [ ] All lint checks pass (remove once CI is in place).
 - [ ] CI is green (no forced merge required).

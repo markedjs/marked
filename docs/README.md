@@ -1,6 +1,6 @@
 <ul>
   <li><a href="#marked">About</a></li>
-  <li><a href="#install">Installation</a></li>
+  <li><a href="#installation">Installation</a></li>
   <li><a href="#usage">Usage</a></li>
   <li><a href="#specifications">Supported Markdown specifications</a></li>
   <li><a href="#security">Security</a></li>
@@ -11,7 +11,7 @@
 
 <h2 id="marked">Marked</h2>
 
-Marked is 
+Marked is
 
 1. built for speed.<sup>*</sup>
 2. a low-level markdown compiler that allows frequent parsing of large chunks of markdown without caching or blocking for long periods of time.<sup>**</sup>
@@ -96,4 +96,3 @@ For list of credited authors and contributors, please see our [authors page](AUT
 Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
 
 See [license](https://github.com/markedjs/marked/blob/master/LICENSE.md) for more details.
-
