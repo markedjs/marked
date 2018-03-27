@@ -144,7 +144,12 @@
                 return Promise.resolve();
             }
             return fetch(page)
-                .then(function (res) { return res.text(); })
+                .then(function (res) {
+                    if (!res.ok) {
+                        throw new Error('Error ' + res.status + ': ' + res.statusText);
+                    }
+                    return res.text();
+                })
                 .then(function (text) {
                     renderedPage = page;
                     content.innerHTML = marked(text);
