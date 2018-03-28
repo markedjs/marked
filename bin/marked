@@ -120,11 +120,11 @@ function main(argv, callback) {
   }
 
   function getData(callback) {
-    if (string) {
-      return callback(null, string);
-    }
     if (!input) {
       if (files.length <= 2) {
+        if (string) {
+          return callback(null, string);
+        }
         return getStdin(callback);
       }
       input = files.pop();
