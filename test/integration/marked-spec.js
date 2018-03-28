@@ -1,12 +1,13 @@
-var marked = require('../../marked.min.js');
+var sut = require('../../marked.min.js');
 var cmSpec = require('./commonmark.json');
 
 describe('CommonMark 0.28', function() {
 	cmSpec.forEach(function(example) {
 		var consoleString = 'should pass example ' + example.example;
+		// sut.setOptions({xhtml:true});
 		it(consoleString, function() {
 			expect(
-				marked(example.markdown)
+				sut(example.markdown)
 			).toBe(example.html);
 		});
 	});
