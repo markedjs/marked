@@ -10,6 +10,8 @@ if (!window.fetch) {
 var $inputElem = document.querySelector('#input');
 var $outputTypeElem = document.querySelector('#outputType');
 var $previewElem = document.querySelector('#preview');
+var $permalinkElem = document.querySelector('#permalink');
+var $clearElem = document.querySelector('#clear');
 var $htmlElem = document.querySelector('#html');
 var $lexerElem = document.querySelector('#lexer');
 var $panes = document.querySelectorAll('.pane');
@@ -17,7 +19,10 @@ var inputDirty = true;
 var $activeElem = null;
 var changeTimeout = null;
 
-if (!top.document.location.href.match(/[?&]blank=1$/)) {
+var match = location.search.match(/[?&]text=([^&]*)$/);
+if (match) {
+  $inputElem.value = decodeURIComponent(match[1]);
+} else {
   unfetch('./initial.md')
     .then(function (res) { return res.text(); })
     .then(function (text) {
@@ -57,6 +62,11 @@ $inputElem.addEventListener('keyup', handleInput, false);
 $inputElem.addEventListener('keypress', handleInput, false);
 $inputElem.addEventListener('keydown', handleInput, false);
 
+$clearElem.addEventListener('click', function () {
+  $inputElem.value = '';
+  handleInput();
+}, false);
+
 function jsonString(input) {
   var output = (input + '')
     .replace(/\n/g, '\\n')
@@ -90,6 +100,10 @@ var delayTime = 1;
 function checkForChanges() {
   if (inputDirty) {
     inputDirty = false;
+
+    $permalinkElem.href = '?text=' + encodeURIComponent($inputElem.value);
+    history.replaceState('', document.title, $permalinkElem.href);
+
     var startTime = new Date();
 
     var scrollPercent = getScrollPercent();
