@@ -4,11 +4,14 @@ var cmSpec = require('./commonmark.json');
 describe('CommonMark 0.28', function() {
 	cmSpec.forEach(function(example) {
 		var consoleString = 'should pass example ' + example.example;
+		var expected = example.html.replace(' />', '>');
+		var result = example.markdown;
+
 		// sut.setOptions({xhtml:true});
 		it(consoleString, function() {
 			expect(
-				sut(example.markdown)
-			).toBe(example.html);
+				sut(result)
+			).toBe(expected);
 		});
 	});
 });
