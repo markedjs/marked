@@ -5,7 +5,6 @@ var since = require('jasmine2-custom-message');
 
 describe('CommonMark 0.28', function() {
 	var htmlDiffer = new HtmlDiffer();
-	var failures = [];
 	cmSpec.forEach(function(spec) {
 		var consoleString = 'should pass example ' + spec.example;
 
