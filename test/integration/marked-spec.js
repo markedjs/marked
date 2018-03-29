@@ -5,6 +5,7 @@ var since = require('jasmine2-custom-message');
 
 describe('CommonMark 0.28', function() {
 	var htmlDiffer = new HtmlDiffer();
+	var failures = [];
 	cmSpec.forEach(function(example) {
 		var consoleString = 'should pass example ' + example.example;
 
@@ -15,9 +16,11 @@ describe('CommonMark 0.28', function() {
 
 		var message = 'CommonMark:\n' + expected + '\n------\n\nMarked:\n' + actual;
 
+		var diff = htmlDiffer.isEqual(expected, actual);
+
 		it(consoleString, function() {
 			since(message).expect(
-				htmlDiffer.isEqual(expected, actual)				
+				diff
 			).toEqual(true);
 		});
 	});
