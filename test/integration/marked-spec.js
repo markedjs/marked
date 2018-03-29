@@ -13,7 +13,10 @@ describe('CommonMark 0.28', function() {
 
 		var actual = sut(spec.markdown);
 
-		var message = 'CommonMark:\n' + expected + '\n------\n\nMarked:\n' + actual;
+		var message = 'CommonMark (' + spec.section + '):\n' 
+			+ spec.markdown 
+			+ '\n------\n\nExpected:\n' + expected 
+			+ '\n------\n\nMarked:\n' + actual;
 
 		var diff = htmlDiffer.isEqual(expected, actual);
 
