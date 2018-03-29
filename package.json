@@ -43,9 +43,9 @@
     "test:specs": "npm test -- test/specs/**/*-spec.js",
     "test:integration": "npm test -- test/integration/**/*-spec.js",
     "test:old": "node test",
-    "test:lint": "eslint lib/marked.js test/index.js",
+    "test:lint": "eslint bin/marked .",
     "bench": "node test --bench",
-    "lint": "eslint --fix lib/marked.js test/index.js",
+    "lint": "eslint --fix bin/marked .",
     "build": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
     "preversion": "npm run build && (git diff --quiet || git commit -am 'minify')"
   },
