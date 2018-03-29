@@ -23,7 +23,7 @@ var match = location.search.match(/[?&]text=([^&]*)$/);
 if (match) {
   $inputElem.value = decodeURIComponent(match[1]);
 } else {
-  unfetch('./initial.md')
+  fetch('./initial.md')
     .then(function (res) { return res.text(); })
     .then(function (text) {
       if ($inputElem.value === '') {
