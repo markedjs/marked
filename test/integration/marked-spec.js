@@ -20,14 +20,15 @@ it('indents code within an explicitly-started ordered list', function () {
   toBe("<ol start=\"10\">\n<li><p>foo</p>\n<pre><code>bar\n</code></pre></li>\n</ol>\n");
 });
 
-it('should be able to change options', function() {
-	marked.setOptions({ xhtml: true });
-	expect(marked.options.xhtml).toBe(true);
-});
+// it('should be able to change options', function() {
+// 	marked.setOptions({ headerIds: false });
+// 	since(JSON.stringify(marked.options)).expect(marked.options.headerIds).toBe(false);
+// });
 
 it('should add header ID by default', function () {
-  var markdown = '# hello';
+  marked.setOptions({ headerIds: true });
 
+  var markdown = '# hello';
   var expected = '<h1 id="hello">hello</h1>';
   var actual = marked(markdown);
   
