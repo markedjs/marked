@@ -24,7 +24,7 @@ function help() {
   };
 
   spawn('man', [path.resolve(__dirname, '/../man/marked.1')], options)
-    .on('error', function(err) { // eslint-disable-line handle-callback-err
+    .on('error', function() {
       fs.readFile(path.resolve(__dirname, '/../man/marked.1.txt'), 'utf8', function(err, data) {
         if (err) throw err;
         console.log(data);
