@@ -58,7 +58,6 @@ console.log(myMarked('I am using __markdown__.'));
 |smartypants |`boolean` |Use "smart" typographic punctuation for things like quotes and dashes.                                                       |
 |tables      |`boolean` |Use [GFM Tables extension](https://github.github.com/gfm/#tables-extension-). Requires `gfm` be `true`.                      |
 |xhtml       |`boolean` |Self-close the tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML. Default: `false`    |
- the highlighter. In this example, `lang` is a `string` informing the highlighter what programming lnaguage to use for the `code` and `callback` is the `function` the asynchronous highlighter will call once complete.
 
 <h2 id="highlight">Asynchronous highlighting</h2>
 
