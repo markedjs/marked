@@ -25,8 +25,9 @@ var renderer = new myMarked.Renderer();
 renderer.heading = function (text, level) {
   var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 
-  return `<h${level}>
-            <a name="'${escapedText}'" class="anchor" href="#${escapedText}">
+  return `
+          <h${level}>
+            <a name="${escapedText}" class="anchor" href="#${escapedText}">
               <span class="header-link"></span>
             </a>
             ${text}
@@ -34,7 +35,7 @@ renderer.heading = function (text, level) {
 };
 
 // Run marked
-console.log(marked('# heading+', { renderer: renderer }));
+console.log(myMarked('# heading+', { renderer: renderer }));
 ```
 
 **Output:**
@@ -109,22 +110,6 @@ console.log(tokens);
 console.log(lexer.rules);
 ```
 
-### Pro level
-
-You also have direct access to the lexer and parser if you so desire.
-
-``` js
-var tokens = marked.lexer(text, options);
-console.log(marked.parser(tokens));
-```
-
-``` js
-var lexer = new marked.Lexer(options);
-var tokens = lexer.lex(text);
-console.log(tokens);
-console.log(lexer.rules);
-```
-
 ``` bash
 $ node
 > require('marked').lexer('> i am using marked.')
@@ -133,4 +118,40 @@ $ node
     text: 'i am using marked.' },
   { type: 'blockquote_end' },
   links: {} ]
+```
+
+The Lexers build an array of tokens, which will be passed to their respective
+Parsers. The Parsers process each token in the token arrays,
+which are removed from the array of tokens:
+
+``` js
+const marked = require('marked');
+
+const md = `
+  # heading
+
+  [link][1]
+
+  [1]: #heading "heading"
+`;
+
+const tokens = marked.lexer(md);
+console.log(tokens);
+
+const html = marked.parser(tokens);
+console.log(html);
+
+console.log(tokens);
+```
+
+``` bash
+[ { type: 'heading', depth: 1, text: 'heading' },
+  { type: 'paragraph', text: '  [link][1]' },
+  { type: 'space' },
+  links: { '1': { href: '#heading', title: 'heading' } } ]
+
+<h1 id="heading">heading</h1>
+<p>  <a href="#heading" title="heading">link</a></p>
+
+[ links: { '1': { href: '#heading', title: 'heading' } } ]
 ```

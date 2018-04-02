@@ -6,7 +6,7 @@
 	If badging PR, add ?template=badges.md to the PR url to use the badges PR template.
 
 	Otherwise, you are stating this PR fixes an issue that has been submitted; or,
-	describes the issue or proposal under considersation and contains the project-related code to implement.
+	describes the issue or proposal under consideration and contains the project-related code to implement.
 
 -->
 
@@ -40,7 +40,7 @@ Describe what code combination got you there
 
 ## Contributor
 
-- [ ] Test(s) exist to ensure functionality and minimize regresstion (if no tests added, list tests covering this PR); or,
+- [ ] Test(s) exist to ensure functionality and minimize regression (if no tests added, list tests covering this PR); or,
 - [ ] no tests required for this PR.
 - [ ] If submitting new feature, it has been documented in the appropriate places.
 
