@@ -39,33 +39,23 @@ console.log(myMarked('I am using __markdown__.'));
 
 <h2 id="options">Options</h2>
 
-|Member     |Type      |Notes                                                                                                                        |
-|:----------|:---------|:----------------------------------------------------------------------------------------------------------------------------|
-|highlight  |`function`|A function to highlight code blocks. See also: <a href="#highlight">Asynchronous highlighting</a>.                           |
-|renderer   |`object`  |An object containing functions to render tokens to HTML. See [extensibility](https://github.com/markedjs/marked/blob/master/docs/USING_PRO.md) for more details. Default: `new Renderer()`|
-|pedantic   |`boolean` |Conform to obscure parts of `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Default: `false`|
-|gfm        |`boolean` |Use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).                                 |
-|tables     |`boolean` |Use [GFM Tables extension](https://github.github.com/gfm/#tables-extension-). Requires `gfm` be `true`.                      |
-|breaks     |`boolean` |Use GFM [hard](https://github.github.com/gfm/#hard-line-breaks) and [soft](https://github.github.com/gfm/#soft-line-breaks) line breaks. Requires `gfm` be `true`. Default: `false`|
-|sanitize   |`boolean` |Ignore HTML passed into `markdownString` (sanitize the input). Default: `false`                                              |
-|smartlists |`boolean` |Use smarter list behavior than those found in `markdown.pl`. Default: `true`                                                 |
-|smartypants|`boolean` |Use "smart" typographic punctuation for things like quotes and dashes.                                                       |
-|xhtml      |`boolean` |Self-close the tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML. Default: `false`    |
-
-<h2 id="highlight">Asynchronous highlighting</h2>
-
-Unlike `highlight.js` the `pygmatize.js` library uses asynchronous highlighting. This example demonstrates that marked is agnostic when it comes to the highlighter you use.
-
-```js
-myMarked.setOptions({
-  highlight: function(code, lang, callback) {
-    require('pygmentize-bundled') ({ lang: lang, format: 'html' }, code, function (err, result) {
-      callback(err, result.toString());
-    });
-  }
-});
-
-console.log(myMarked(markdownString));
-```
-
-In both examples, `code` is a `string` representing the section of code to pass to the highlighter. In this example, `lang` is a `string` informing the highlighter what programming lnaguage to use for the `code` and `callback` is the `function` the asynchronous highlighter will call once complete.
+|Member      |Type      |Notes                                                                                                                        |
+|:-----------|:---------|:----------------------------------------------------------------------------------------------------------------------------|
+|baseUrl     |`??`      |--                                                                                                                           |  
+|breaks      |`boolean` |Use GFM [hard](https://github.github.com/gfm/#hard-line-breaks) and [soft](https://github.github.com/gfm/#soft-line-breaks) line breaks. Requires `gfm` be `true`. Default: `false`|
+|gfm         |`boolean` |Use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).                                 |
+|headerIds   |`boolean` |Whether to add an `id` attribute to headers. Default: `true`                                                                 |
+|headerPrefix|`string`  |A short string to add as a prefix to the `id` attributes added to headers by default. Default: `empty string`                |
+|highlight   |`function`|A function to highlight code blocks. See also: <a href="#highlight">Asynchronous highlighting</a>.                           |
+|langPrefix  |`??`      |--
+|mangle      |`boolean` |--
+|pedantic    |`boolean` |Conform to obscure parts of `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Default: `false`|
+|renderer    |`object`  |An object containing functions to render tokens to HTML. See [extensibility](https://github.com/markedjs/marked/blob/master/docs/USING_PRO.md) for more details. Default: `new Renderer()`|
+|sanitize    |`boolean` |Ignore HTML passed into `markdownString` (sanitize the input). Default: `false`                                              |
+|sanitizer   |`??`      |--
+|silent      |`boolean` |--
+|smartlists  |`boolean` |Use smarter list behavior than those found in `markdown.pl`. Default: `true`                                                 |
+|smartypants |`boolean` |Use "smart" typographic punctuation for things like quotes and dashes.                                                       |
+|tables      |`boolean` |Use [GFM Tables extension](https://github.github.com/gfm/#tables-extension-). Requires `gfm` be `true`.                      |
+|xhtml       |`boolean` |Self-close the tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML. Default: `false`    |
+ the highlighter. In this example, `lang` is a `string` informing the highlighter what programming lnaguage to use for the `code` and `callback` is the `function` the asynchronous highlighter will call once complete.
