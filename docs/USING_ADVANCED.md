@@ -19,9 +19,9 @@ var myMarked = require('marked');
 // Set options
 // `highlight` example uses `highlight.js`
 myMarked.setOptions({
-  renderer: new marked.Renderer(),
+  renderer: new myMarked.Renderer(),
   highlight: function(code) {
-  	return require('highlight.js').highlightAuto(code).value;
+    return require('highlight.js').highlightAuto(code).value;
   },
   pedantic: false,
   gfm: true,
@@ -41,19 +41,19 @@ console.log(myMarked('I am using __markdown__.'));
 
 |Member      |Type      |Notes                                                                                                                        |
 |:-----------|:---------|:----------------------------------------------------------------------------------------------------------------------------|
-|baseUrl     |`??`      |--                                                                                                                           |  
+|baseUrl     |`??`      |Default is `null`                                                                                                            |  
 |breaks      |`boolean` |Use GFM [hard](https://github.github.com/gfm/#hard-line-breaks) and [soft](https://github.github.com/gfm/#soft-line-breaks) line breaks. Requires `gfm` be `true`. Default: `false`|
 |gfm         |`boolean` |Use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).                                 |
 |headerIds   |`boolean` |Whether to add an `id` attribute to headers. Default: `true`                                                                 |
 |headerPrefix|`string`  |A short string to add as a prefix to the `id` attributes added to headers by default. Default: `empty string`                |
 |highlight   |`function`|A function to highlight code blocks. See also: <a href="#highlight">Asynchronous highlighting</a>.                           |
-|langPrefix  |`??`      |--
-|mangle      |`boolean` |--
+|langPrefix  |`??`      |Default is `lang-`
+|mangle      |`boolean` |Default is `true`
 |pedantic    |`boolean` |Conform to obscure parts of `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Default: `false`|
 |renderer    |`object`  |An object containing functions to render tokens to HTML. See [extensibility](https://github.com/markedjs/marked/blob/master/docs/USING_PRO.md) for more details. Default: `new Renderer()`|
 |sanitize    |`boolean` |Ignore HTML passed into `markdownString` (sanitize the input). Default: `false`                                              |
-|sanitizer   |`??`      |--
-|silent      |`boolean` |--
+|sanitizer   |`??`      |Default is `null`                                                                                                            |
+|silent      |`boolean` |Default is `false`                                                                                                           |
 |smartlists  |`boolean` |Use smarter list behavior than those found in `markdown.pl`. Default: `true`                                                 |
 |smartypants |`boolean` |Use "smart" typographic punctuation for things like quotes and dashes.                                                       |
 |tables      |`boolean` |Use [GFM Tables extension](https://github.github.com/gfm/#tables-extension-). Requires `gfm` be `true`.                      |
@@ -61,7 +61,7 @@ console.log(myMarked('I am using __markdown__.'));
 
 <h2 id="highlight">Asynchronous highlighting</h2>
 
-Unlike `highlight.js` the `pygmatize.js` library uses asynchronous highlighting. This example demonstrates that marked is agnostic when it comes to the highlighter you use.
+Unlike `highlight.js` the `pygmentize.js` library uses asynchronous highlighting. This example demonstrates that marked is agnostic when it comes to the highlighter you use.
 
 ```js
 myMarked.setOptions({
