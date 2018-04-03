@@ -23,19 +23,19 @@
     "html"
   ],
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.10.0",
+    "eslint": "^4.15.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^5.2.1",
-    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
     "front-matter": "^2.3.0",
     "glob-to-regexp": "0.3.0",
     "jasmine": "^3.1.0",
     "markdown": "*",
-    "markdown-it": "^8.4.1",
-    "showdown": "^1.8.6",
-    "uglify-js": "^3.3.18"
+    "markdown-it": "*",
+    "showdown": "*",
+    "uglify-js": "^3.3.10"
   },
   "scripts": {
     "test": "jasmine --config=jasmine.json",
