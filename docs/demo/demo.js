@@ -20,7 +20,7 @@ var $activeElem = null;
 var changeTimeout = null;
 var search = searchToObject();
 
-if (search.text) {
+if ('text' in search) {
   $inputElem.value = search.text;
 } else {
   fetch('./initial.md')
