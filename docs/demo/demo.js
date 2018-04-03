@@ -18,10 +18,10 @@ var $panes = document.querySelectorAll('.pane');
 var inputDirty = true;
 var $activeElem = null;
 var changeTimeout = null;
+var search = searchToObject();
 
-var match = location.search.match(/[?&]text=([^&]*)$/);
-if (match) {
-  $inputElem.value = decodeURIComponent(match[1]);
+if (search.text) {
+  $inputElem.value = search.text;
 } else {
   fetch('./initial.md')
     .then(function (res) { return res.text(); })
@@ -36,6 +36,10 @@ if (match) {
     });
 }
 
+if (search.outputType) {
+  $outputTypeElem.value = search.outputType;
+}
+
 fetch('./quickref.md')
   .then(function (res) { return res.text(); })
   .then(function (text) {
@@ -48,6 +52,8 @@ function handleChange() {
   }
   $activeElem = document.querySelector('#' + $outputTypeElem.value);
   $activeElem.style.display = 'block';
+
+  updateLink();
 };
 
 $outputTypeElem.addEventListener('change', handleChange, false);
@@ -66,6 +72,24 @@ $clearElem.addEventListener('click', function () {
   $inputElem.value = '';
   handleInput();
 }, false);
+
+function searchToObject() {
+  // modified from https://stackoverflow.com/a/7090123/806777
+  var pairs = location.search.slice(1).split('&');
+  var obj = {};
+
+  for (var i = 0; i < pairs.length; i++) {
+    if (pairs[i] === '') {
+      continue;
+    }
+
+    var pair = pairs[i].split('=');
+
+    obj[decodeURIComponent(pair.shift())] = decodeURIComponent(pair.join('='));
+  }
+
+  return obj;
+}
 
 function jsonString(input) {
   var output = (input + '')
@@ -96,13 +120,22 @@ function setScrollPercent(percent) {
   $activeElem.scrollTop = percent * getScrollSize();
 };
 
+function updateLink() {
+  var outputType = '';
+  if ($outputTypeElem.value !== 'preview') {
+    outputType = 'outputType=' + $outputTypeElem.value + '&';
+  }
+
+  $permalinkElem.href = '?' + outputType + 'text=' + encodeURIComponent($inputElem.value);
+  history.replaceState('', document.title, $permalinkElem.href);
+}
+
 var delayTime = 1;
 function checkForChanges() {
   if (inputDirty) {
     inputDirty = false;
 
-    $permalinkElem.href = '?text=' + encodeURIComponent($inputElem.value);
-    history.replaceState('', document.title, $permalinkElem.href);
+    updateLink();
 
     var startTime = new Date();
 
