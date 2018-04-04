@@ -12,7 +12,7 @@ describe('CommonMark 0.28', function() {
 		var expected = spec.html.replace(' />', '>');
 
 		// marked.setOptions({ headerIds: false });
-		var renderer = new marked.Renderer({ headerIds: false });
+		marked.Renderer({ headerIds: false });
 		var actual = marked(spec.markdown);
 
 		var message = 'CommonMark (' + spec.section + '):\n' 
