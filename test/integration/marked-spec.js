@@ -3,6 +3,31 @@ var cmSpec = require('./commonmark.json');
 var HtmlDiffer = require('html-differ').HtmlDiffer;
 var since = require('jasmine2-custom-message');
 
+/*
+|Section                     |Count    |Percent   |
+|:---------------------------|:-------:|---------:|
+|Tabs                        |7 of 11  |63%       |
+|Thematic breaks             |16 of 19 |84%       |
+|ATX headings                |13 of 18 |72%       |
+|Setext headings             |20 of 26 |77%       |
+|Indented code blocks        |11 of 12 |92%       |
+|Fenced code blocks          |17 of 28 |61%       |
+|HTML blocks                 |12 of 43 |28%       |
+|Link reference definitions  |21 of 23 |91%       |
+|Paragraphs                  |6 of 8   |75%       |
+|Block quotes                |21 of 25 |84%       |
+|List items                  |32 of 48 |67%       |
+|Lists                       |10 of 24 |42%       |
+|Backslash escapes           |4 of 13  |31%       |
+|Entity and numeric character references|8 of 12|67%|
+|Code spans                  |10 of 17 |59%       |
+|Emphasis and strong emphasis|62 of 128|48%       |
+|Links                       |46 of 84 |55%       |
+|Images                      |13 of 22 |59%       |
+|Autolinks                   |14 of 19 |74%       |
+|Hard line breaks            |32 of 36 |89%       |
+|Soft line breaks            |1 of 2   |50%       |
+*/
 describe('CommonMark 0.28', function() {
 	cmSpec.forEach(function(spec) {
 		var shouldPassButFails = [];
@@ -60,7 +85,7 @@ describe('CommonMark 0.28', function() {
 
 		if (shouldPassButFails.indexOf(spec.example) < 0) {
 			marked.setOptions({ headerIds: false });
-			
+
 			var htmlDiffer = new HtmlDiffer();
 
 			var consoleString = 'should pass example ' + spec.example;
