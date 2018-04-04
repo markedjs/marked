@@ -5,9 +5,9 @@
  * Copyright (c) 2011-2013, Christopher Jeffrey (MIT License)
  */
 
-var fs = require('fs')
-  , util = require('util')
-  , marked = require('../');
+var fs = require('fs'),
+    path = require('path'),
+    marked = require('../');
 
 /**
  * Man Page
@@ -23,9 +23,9 @@ function help() {
     customFds: [0, 1, 2]
   };
 
-  spawn('man', [__dirname + '/../man/marked.1'], options)
-    .on('error', function(err) {
-      fs.readFile(__dirname + '/../man/marked.1.txt', 'utf8', function(err, data) {
+  spawn('man', [path.resolve(__dirname, '/../man/marked.1')], options)
+    .on('error', function() {
+      fs.readFile(path.resolve(__dirname, '/../man/marked.1.txt'), 'utf8', function(err, data) {
         if (err) throw err;
         console.log(data);
       });
@@ -37,13 +37,13 @@ function help() {
  */
 
 function main(argv, callback) {
-  var files = []
-    , options = {}
-    , input
-    , output
-    , arg
-    , tokens
-    , opt;
+  var files = [],
+      options = {},
+      input,
+      output,
+      arg,
+      tokens,
+      opt;
 
   function getarg() {
     var arg = argv.shift();
@@ -146,8 +146,8 @@ function main(argv, callback) {
  */
 
 function getStdin(callback) {
-  var stdin = process.stdin
-    , buff = '';
+  var stdin = process.stdin,
+      buff = '';
 
   stdin.setEncoding('utf8');
 
