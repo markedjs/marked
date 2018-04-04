@@ -84,8 +84,6 @@ describe('CommonMark 0.28', function() {
 
 
 		if (shouldPassButFails.indexOf(spec.example) < 0) {
-			marked.setOptions({ headerIds: false });
-
 			var htmlDiffer = new HtmlDiffer();
 
 			var consoleString = 'should pass example ' + spec.example;
@@ -94,7 +92,7 @@ describe('CommonMark 0.28', function() {
 			var expected = spec.html.replace(' />', '>');
 
 			// marked.Renderer({ headerIds: false });
-			var actual = marked(spec.markdown);
+			var actual = marked(spec.markdown, { headerIds: false });
 
 			var message = 'CommonMark (' + spec.section + '):\n' 
 				+ spec.markdown 
