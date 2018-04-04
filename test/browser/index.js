@@ -33,7 +33,7 @@ app.get('/test.js', function(req, res, next) {
   res.send(testScript);
 });
 
-app.use(express.static(path.join(__dirname, '/../../lib')))  ;
+app.use(express.static(path.join(__dirname, '/../../lib')));
 app.use(express.static(__dirname));
 
 app.listen(8080);
