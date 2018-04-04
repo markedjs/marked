@@ -18,9 +18,15 @@
 
 ## Expectation
 
+**CommonMark Demo:** [demo](https://spec.commonmark.org/dingus/)
+<!-- You can replace the link above with a permalink from: https://spec.commonmark.org/dingus/ -->
+
 <!-- Describe the output you are expecting from marked -->
 
 ## Result
+
+**Marked Demo:** [demo](https://marked.js.org/demo/)
+<!-- You can replace the link above with a permalink from: https://marked.js.org/demo/ -->
 
 <!-- Describe the output you received from marked -->
 
