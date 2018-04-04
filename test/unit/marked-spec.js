@@ -29,8 +29,13 @@ describe('Test options', function() {
     expect(marked.options.headerIds).toBe(true);
   });
 
-  it('can change headerIds option to false', function() {
+  it('can change headerIds option to false via defaults', function() {
     marked.defaults.headerIds = false;
     expect(marked.defaults.headerIds).toBe(false);
+  });
+
+  it('can change headerIds option to false via setOptions', function() {
+    marked.setOptions({ headerIds: false });
+    expect(marked.options.headerIds).toBe(false);
   });
 });
