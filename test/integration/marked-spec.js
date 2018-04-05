@@ -56,8 +56,8 @@ describe('CommonMark 0.28 Tabs', function() {
 
   // These examples probably should pass but don't for some reason.
   // This is the easiest way to demonstrate limitations  or defects
-  // within Marked. Toggle comments for nex two lines to see which examples
-  // are known failures. Note: If all array are empty, it means Marked is
+  // within Marked. Toggle comments for next two lines to see which examples
+  // are known failures. Note: If all arrays are empty, it means Marked is
   // 100% compliant with that section of the given specification.
   //
   // var shouldPassButFails = [];
@@ -79,6 +79,7 @@ describe('CommonMark 0.28 Tabs', function() {
 
 describe('CommonMark 0.28 Precedence', function() {
   var section = 'Precedence';
+  
   // var shouldPassButFails = [];
   var shouldPassButFails = [];
 
