@@ -79,7 +79,7 @@ describe('CommonMark 0.28 Tabs', function() {
 
 describe('CommonMark 0.28 Precedence', function() {
   var section = 'Precedence';
-  
+
   // var shouldPassButFails = [];
   var shouldPassButFails = [];
 
