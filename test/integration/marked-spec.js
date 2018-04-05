@@ -12,11 +12,10 @@ Messenger.prototype.message = function(spec, expected, actual) {
 
 Messenger.prototype.test = function(spec, section, ignore) {
   if (spec.section === section && ignore.indexOf(spec.example) < 0) {
-    var expected = spec.html;
-
-    var actual = marked(spec.markdown, { headerIds: false, xhtml: true });
-
     it('should pass example ' + spec.example, function() {
+      var expected = spec.html;
+
+      var actual = marked(spec.markdown, { headerIds: false, xhtml: true });
       since(messenger.message(spec, expected, actual)).expect(
         htmlDiffer.isEqual(expected, actual)
       ).toEqual(true);
