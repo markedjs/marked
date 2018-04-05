@@ -41,6 +41,7 @@ function main(argv, callback) {
       options = {},
       input,
       output,
+      string,
       arg,
       tokens,
       opt;
@@ -86,6 +87,10 @@ function main(argv, callback) {
       case '--input':
         input = argv.shift();
         break;
+      case '-s':
+      case '--string':
+        string = argv.shift();
+        break;
       case '-t':
       case '--tokens':
         tokens = true;
@@ -118,6 +123,9 @@ function main(argv, callback) {
   function getData(callback) {
     if (!input) {
       if (files.length <= 2) {
+        if (string) {
+          return callback(null, string);
+        }
         return getStdin(callback);
       }
       input = files.pop();
