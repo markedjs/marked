@@ -1,13 +1,13 @@
 root = true
 
-[*, *.json, *.js]
+[*{json,js}]
 charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 indent_style = space
 indent_size = 2
 
-[*.md, !test/*md]
+[*.md, !test/*.md]
 charset = utf-8
 end_of_line = lf
 insert_final_newline = true
