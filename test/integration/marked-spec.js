@@ -13,6 +13,7 @@ Messenger.prototype.message = function(spec, expected, actual) {
 Messenger.prototype.test = function(spec, section, ignore) {
   if (spec.section === section && ignore.indexOf(spec.example) < 0) {
     it('should pass example ' + spec.example, function() {
+      
       var expected = spec.html;
 
       var actual = marked(spec.markdown, { headerIds: false, xhtml: true });
