@@ -41,6 +41,7 @@ function main(argv, callback) {
       options = {},
       input,
       output,
+      string,
       arg,
       tokens,
       opt;
