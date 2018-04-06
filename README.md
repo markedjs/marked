@@ -7,7 +7,7 @@
 - ⚡ built for speed
 - ⬇️ low-level markdown compiler for parsing without caching or blocking for long periods of time
 - ⚖️ light-weight while implementing all markdown features from the supported flavors & specifications
-- 🌐 works in the browser, on the server, or on the command line interface (CLI)
+- 🌐 works in the browser, on the server, or from the command line interface (CLI)
 
 ## Demo
 
