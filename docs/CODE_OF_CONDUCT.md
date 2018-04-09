@@ -55,7 +55,7 @@ further defined and clarified by project maintainers.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team by submitting a PR with changes to the [AUTHORS](https://github.com/markedjs/marked/blob/master/AUTHORS.md) page (or emailing josh@8fold.com). All
+reported by contacting the project team by submitting a PR with changes to the [AUTHORS](#/AUTHORS.md) page (or emailing josh@8fold.com). All
 complaints will be reviewed and investigated and will result in a response that
 is deemed necessary and appropriate to the circumstances. The project team is
 obligated to maintain confidentiality with regard to the reporter of an incident.
@@ -68,4 +68,7 @@ members of the project's leadership.
 ## Attribution
 
 This Code of Conduct is adapted from the [Contributor Covenant][homepage],
-version 1.4, available at [http://contributor-covenant.org/version/1/4][version]
+version [1.4][version].
+
+[homepage]: https://www.contributor-covenant.org/
+[version]: https://www.contributor-covenant.org/version/1/4/code-of-conduct.html

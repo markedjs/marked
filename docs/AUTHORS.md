@@ -36,7 +36,6 @@ A note on "decision making authority". This is related to submitting PRs and the
 |Name           |GiHub handle   |Decision making                          |Badges of honor (tag for questions) |
 |:--------------|:--------------|:----------------------------------------|------------------------------------|
 |Tony Brix      |@UziTech       |Titan of the test harness and Dr. DevOps |                                    |
-|Steven         |@styfle        |Open source, of course and GitHub Guru   |                                    |
 |Jamie Davis    |@davisjam      |Seeker of Security                       |                                    |
 
 **Should not exceed 5:** For larger PRs affecting more of the codebase and, most likely, review by more people, we try to keep this pool small and responsive and let those with decision making authority have final say without negative repercussions from the other committers.
@@ -56,6 +55,10 @@ A note on volunteering:
 ## Admins
 
 Admins are committers who also have the responsibility, privilege, and burden of selecting committers and making sure the project itself runs smoothly, which includes community maintenance, governance, dispute resolution, and so on. (Letting the contributors easily enter into, and work within, the project to begin contributing, with as little friction as possible.)
+
+|Name           |GiHub handle   |Decision making                          |Badges of honor (tag for questions) |
+|:--------------|:--------------|:----------------------------------------|------------------------------------|
+|Steven         |@styfle        |Open source, of course and GitHub Guru   |Humaning Helper                     |
 
 **Should not exceed 3:** When there are too many people with the ability to reolves disputes, the dispute itself can quickly turn into a dispute amongst the admins themselves; therefore, we want this group to be small enough to commit to action and large enough to not put too much burden on one person. (Should ensure faster resolution and responsiveness.)
 
@@ -97,7 +100,7 @@ Badges? If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dr
 - [ ] Submit a PR (we're big on PRs around here, if you haven't noticed, help us help you).
 - [ ] Follow the instructions for submitting a badge PR. (There are more details to find within. Come on. Everybody likes surprises, right? No? Actually, we just try to put documentation where it belongs, closer to the code and part of the sequence of events.)
 
-Badges at play:
+### Badges at play:
 
 <dl>
 	<dt>Curious Contributor</dt>
@@ -136,9 +139,11 @@ Badges at play:
 	<dd>Someone who demonstrates they are willing and able to "fight for the users", both developers dependent on marked to do their jobs as well as end-users interacting with the output (particularly in the realm of those with the disabilities).</dd>
 </dl>
 
-Special badges that come with the job:
+### Special badges that come with the job:
 
 <dl>
+	<dt>Maker of the Marked mark</dt>
+	<dd>This badge is given to the person or oganization credited with creating the logo (or logotype) used in Marked communications for a given period of time. **Maker of the Marked mark from 2017 to present**, for example.</dd>
 	<dt>Release Wrangler</dt>
 	<dd>This is a badge given to all Publishers.</dd>
 	<dt>Snyk's Security Saint</dt>
