@@ -1,15 +1,19 @@
+<a href="https://marked.js.org">
+  <img width="60px" height="60px" src="https://marked.js.org/img/logo-black.svg" align="right" />
+</a>
+
 # Marked
 
-Marked is 
-
-1. built for speed.
-2. a low-level markdown compiler for parsing markdown without caching or blocking for long periods of time.
-3. light-weight while implementing all markdown features from the supported flavors & specifications.
-4. available as a command line interface (CLI) and running in client- or server-side JavaScript projects.
+- ⚡ built for speed
+- ⬇️ low-level compiler for parsing markdown without caching or blocking for long periods of time
+- ⚖️ light-weight while implementing all markdown features from the supported flavors & specifications
+- 🌐 works in a browser, on a server, or from a command line interface (CLI)
 
 ## Demo
 
 Checkout the [demo page](https://marked.js.org/demo/) to see marked in action ⛹️
+
+## Docs
 
 Our [documentation pages](https://marked.js.org) are also rendered using marked 💯
 
