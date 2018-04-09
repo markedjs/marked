@@ -14,7 +14,7 @@
   {
     "section": "Tables",
     "html": "<table>\n<thead>\n<tr>\n<th>f|oo</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>b <code>|</code> az</td>\n</tr>\n<tr>\n<td>b <strong>|</strong> im</td>\n</tr></tbody></table>",
-    "markdown": "| f\|oo  |\n| ------ |\n| b `\|` az |\n| b **\|** im |",
+    "markdown": "| f\\|oo  |\n| ------ |\n| b `\\|` az |\n| b **\\|** im |",
     "example": 193
   },
   {

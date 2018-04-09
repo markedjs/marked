@@ -1,5 +1,6 @@
 var marked = require('../../lib/marked.js');
 var cmSpec = require('./commonmark.json');
+var gfmSpec = require('./github_flavored_markdown.json')
 var HtmlDiffer = require('html-differ').HtmlDiffer,
     htmlDiffer = new HtmlDiffer();
 var since = require('jasmine2-custom-message');
@@ -446,6 +447,77 @@ describe('CommonMark 0.28 Textual content', function() {
   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
   cmSpec.forEach(function(spec) {
+    messenger.test(spec, section, ignore);
+  });
+});
+
+describe('GFM 0.28 Tables', function() {
+  var section = 'Tables';
+
+  // TODO: Verify exmaple 193 is valid and passing
+  var shouldPassButFails = [192, 193, 195, 196, 197];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  gfmSpec.forEach(function(spec) {
+    messenger.test(spec, section, ignore);
+  });
+});
+
+describe('GFM 0.28 Task list items', function() {
+  var section = 'Task list items';
+
+  var shouldPassButFails = [272, 273];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  gfmSpec.forEach(function(spec) {
+    messenger.test(spec, section, ignore);
+  });
+});
+
+describe('GFM 0.28 Strikethrough', function() {
+  var section = 'Strikethrough';
+
+  var shouldPassButFails = [469, 470];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  gfmSpec.forEach(function(spec) {
+    messenger.test(spec, section, ignore);
+  });
+});
+
+describe('GFM 0.28 Autolinks', function() {
+  var section = 'Autolinks';
+
+  var shouldPassButFails = [607];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  gfmSpec.forEach(function(spec) {
+    messenger.test(spec, section, ignore);
+  });
+});
+
+describe('GFM 0.28 Disallowed Raw HTML', function() {
+  var section = 'Disallowed Raw HTML';
+
+  var shouldPassButFails = [629];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  gfmSpec.forEach(function(spec) {
     messenger.test(spec, section, ignore);
   });
 });
