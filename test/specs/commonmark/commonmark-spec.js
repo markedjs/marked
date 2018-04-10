@@ -33,20 +33,19 @@ var messenger = new Messenger();
 |Setext headings                         | 21 of  26 |     81%|
 |Indented code blocks                    | 11 of  12 |     92%|
 |Fenced code blocks                      | 17 of  28 |     61%|
-|HTML blocks                             | 12 of  43 |     28%|
-|Link reference definitions              | 21 of  23 |     91%|
+|Link reference definitions              | 22 of  23 |     96%|
 |Paragraphs                              |  6 of   8 |     75%|
 |Block quotes                            | 21 of  25 |     84%|
 |List items                              | 32 of  48 |     67%|
 |Lists                                   | 10 of  24 |     42%|
-|Backslash escapes                       |  4 of  13 |     31%|
-|Entity and numeric character references |  8 of  12 |     67%|
-|Code spans                              | 10 of  17 |     59%|
+|Backslash escapes                       |  8 of  13 |     62%|
+|Entity and numeric character references |  9 of  12 |     75%|
+|Code spans                              | 11 of  17 |     65%|
 |Emphasis and strong emphasis            | 71 of 128 |     55%|
-|Links                                   | 45 of  84 |     54%|
-|Images                                  | 13 of  22 |     59%|
-|Autolinks                               | 14 of  19 |     74%|
-|Raw HTML                                | 13 of  21 |     62%|
+|Links                                   | 64 of  84 |     76%|
+|Images                                  | 15 of  22 |     68%|
+|Autolinks                               | 15 of  19 |     79%|
+|Raw HTML                                | 19 of  21 |     90%|
 |Hard line breaks                        | 32 of  36 |     89%|
 |Soft line breaks                        |  1 of   2 |     50%|
 */
@@ -350,7 +349,7 @@ describe('CommonMark 0.28 Links', function() {
   var section = 'Links';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [468, 474, 478, 483, 489, 490, 491, 492, 495, 496, 497, 499, 503, 504, 505, 507, 508, 509, 523, 535]
+  var shouldPassButFails = [468, 474, 478, 483, 489, 490, 491, 492, 495, 496, 497, 499, 503, 504, 505, 507, 508, 509, 523, 535];
 
   var willNotBeAttemptedByCoreTeam = [];
 
