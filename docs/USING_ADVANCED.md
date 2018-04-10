@@ -49,7 +49,7 @@ console.log(myMarked('I am using __markdown__.'));
 |highlight   |`function`|A function to highlight code blocks. See also: <a href="#highlight">Asynchronous highlighting</a>.                           |
 |langPrefix  |`??`      |Default is `lang-`
 |mangle      |`boolean` |Default is `true`
-|pedantic    |`boolean` |Conform to obscure parts of `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Default: `false`|
+|pedantic    |`boolean` |Conform to obscure parts of `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`. Default: `false`|
 |renderer    |`object`  |An object containing functions to render tokens to HTML. See [extensibility](https://github.com/markedjs/marked/blob/master/docs/USING_PRO.md) for more details. Default: `new Renderer()`|
 |sanitize    |`boolean` |Ignore HTML passed into `markdownString` (sanitize the input). Default: `false`                                              |
 |sanitizer   |`??`      |Default is `null`                                                                                                            |

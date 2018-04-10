@@ -33,20 +33,19 @@ var messenger = new Messenger();
 |Setext headings                         | 21 of  26 |     81%|
 |Indented code blocks                    | 11 of  12 |     92%|
 |Fenced code blocks                      | 17 of  28 |     61%|
-|HTML blocks                             | 12 of  43 |     28%|
-|Link reference definitions              | 21 of  23 |     91%|
+|Link reference definitions              | 22 of  23 |     96%|
 |Paragraphs                              |  6 of   8 |     75%|
 |Block quotes                            | 21 of  25 |     84%|
 |List items                              | 32 of  48 |     67%|
 |Lists                                   | 10 of  24 |     42%|
-|Backslash escapes                       |  4 of  13 |     31%|
-|Entity and numeric character references |  8 of  12 |     67%|
-|Code spans                              | 10 of  17 |     59%|
+|Backslash escapes                       |  8 of  13 |     62%|
+|Entity and numeric character references |  9 of  12 |     75%|
+|Code spans                              | 11 of  17 |     65%|
 |Emphasis and strong emphasis            | 71 of 128 |     55%|
-|Links                                   | 45 of  84 |     54%|
-|Images                                  | 13 of  22 |     59%|
-|Autolinks                               | 14 of  19 |     74%|
-|Raw HTML                                | 13 of  21 |     62%|
+|Links                                   | 64 of  84 |     76%|
+|Images                                  | 15 of  22 |     68%|
+|Autolinks                               | 15 of  19 |     79%|
+|Raw HTML                                | 19 of  21 |     90%|
 |Hard line breaks                        | 32 of  36 |     89%|
 |Soft line breaks                        |  1 of   2 |     50%|
 */
@@ -170,8 +169,7 @@ describe('CommonMark 0.28 Fenced code blocks', function() {
 describe('CommonMark 0.28 HTML blocks', function() {
   var section = 'HTML blocks';
 
-  // var shouldPassButFails = [];
-  var shouldPassButFails = [132, 126, 147, 124, 120, 153, 133, 119, 127, 118, 141, 116, 158, 123, 143, 130, 137, 140, 125, 134, 131, 144, 145, 148, 139, 149, 129, 156, 135, 138, 155];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -186,7 +184,7 @@ describe('CommonMark 0.28 Link reference definitions', function() {
   var section = 'Link reference definitions';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [167, 171];
+  var shouldPassButFails = [167];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -291,7 +289,7 @@ describe('CommonMark 0.28 Backslash escapes', function() {
   var section = 'Backslash escapes';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [290, 291, 289, 293, 297, 301, 299, 298, 300];
+  var shouldPassButFails = [290, 291, 293, 300, 301];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -306,7 +304,7 @@ describe('CommonMark 0.28 Entity and numeric character references', function() {
   var section = 'Entity and numeric character references';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [311, 309, 310, 308];
+  var shouldPassButFails = [311, 309, 310];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -321,7 +319,7 @@ describe('CommonMark 0.28 Code spans', function() {
   var section = 'Code spans';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [330, 316, 327, 328, 320, 323, 322];
+  var shouldPassButFails = [330, 316, 328, 320, 323, 322];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -351,7 +349,7 @@ describe('CommonMark 0.28 Links', function() {
   var section = 'Links';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [499, 489, 471, 484, 466, 483, 535, 476, 474, 508, 468, 523, 527, 475, 467, 509, 539, 464, 497, 473, 507, 463, 492, 478, 504, 514, 479, 491, 512, 477, 503, 513, 496, 470, 495, 505, 490, 469, 465];
+  var shouldPassButFails = [468, 474, 478, 483, 489, 490, 491, 492, 495, 496, 497, 499, 503, 504, 505, 507, 508, 509, 523, 535];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -366,7 +364,7 @@ describe('CommonMark 0.28 Images', function() {
   var section = 'Images';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [556, 465, 548, 545, 544, 546, 558, 547, 560];
+  var shouldPassButFails = [544, 545, 546, 547, 548, 556, 560];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -381,7 +379,7 @@ describe('CommonMark 0.28 Autolinks', function() {
   var section = 'Autolinks';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [582, 574, 573, 579, 583];
+  var shouldPassButFails = [582, 573, 579, 583];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -396,7 +394,7 @@ describe('CommonMark 0.28 Raw HTML', function() {
   var section = 'Raw HTML';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [590, 595, 597, 598, 599, 600, 601, 604];
+  var shouldPassButFails = [597, 598];
 
   var willNotBeAttemptedByCoreTeam = [];
 

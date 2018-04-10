@@ -1,3 +1,7 @@
+---
+pedantic: true
+---
+
 Foo [bar] [1].
 
 Foo [bar][1].
