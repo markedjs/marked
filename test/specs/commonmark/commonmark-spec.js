@@ -320,7 +320,7 @@ describe('CommonMark 0.28 Code spans', function() {
   var section = 'Code spans';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [330, 316, 327, 328, 320, 323, 322];
+  var shouldPassButFails = [330, 316, 328, 320, 323, 322];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -380,7 +380,7 @@ describe('CommonMark 0.28 Autolinks', function() {
   var section = 'Autolinks';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [582, 574, 573, 579, 583];
+  var shouldPassButFails = [582, 573, 579, 583];
 
   var willNotBeAttemptedByCoreTeam = [];
 
