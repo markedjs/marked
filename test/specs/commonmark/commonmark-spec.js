@@ -1,5 +1,5 @@
-var marked = require('../../lib/marked.js');
-var cmSpec = require('./commonmark.json');
+var marked = require('../../../lib/marked.js');
+var cmSpec = require('./commonmark.0.28.json');
 var HtmlDiffer = require('html-differ').HtmlDiffer,
     htmlDiffer = new HtmlDiffer();
 var since = require('jasmine2-custom-message');
@@ -11,13 +11,14 @@ Messenger.prototype.message = function(spec, expected, actual) {
 }
 
 Messenger.prototype.test = function(spec, section, ignore) {
-  if (spec.section === section && ignore.indexOf(spec.example) < 0) {
-    it('should pass example ' + spec.example, function() {
+  if (spec.section === section) {
+    var shouldFail = ~ignore.indexOf(spec.example);
+    it('should ' + (shouldFail ? 'fail' : 'pass') + ' example ' + spec.example, function() {
       var expected = spec.html;
       var actual = marked(spec.markdown, { headerIds: false, xhtml: true });
       since(messenger.message(spec, expected, actual)).expect(
         htmlDiffer.isEqual(expected, actual)
-      ).toEqual(true);
+      ).toEqual(!shouldFail);
     });
   }
 }
