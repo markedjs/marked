@@ -50,12 +50,6 @@ var messenger = new Messenger();
 |Soft line breaks            |1 of 2   |50%       |
 */
 
-beforeEach(function () {
-  marked.setOptions({
-    sanitize: false
-  });
-});
-
 describe('CommonMark 0.28 Tabs', function() {
   var section = 'Tabs';
 
