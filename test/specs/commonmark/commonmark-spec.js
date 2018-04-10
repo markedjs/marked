@@ -170,7 +170,7 @@ describe('CommonMark 0.28 HTML blocks', function() {
   var section = 'HTML blocks';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [132, 126, 147, 121, 124, 120, 153, 133, 119, 127, 117, 118, 141, 116, 158, 122, 123, 128, 143, 130, 136, 137, 140, 125, 134, 131, 144, 145, 146, 148, 139, 149, 129, 156, 135, 138, 142, 150, 151, 152, 154, 155, 157];
+  var shouldPassButFails = [132, 126, 147, 124, 120, 153, 133, 119, 127, 118, 141, 116, 158, 123, 143, 130, 137, 140, 125, 134, 131, 144, 145, 148, 139, 149, 129, 156, 135, 138, 155];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -260,7 +260,7 @@ describe('CommonMark 0.28 Lists', function() {
   var section = 'Lists';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [282, 270, 280, 278, 271, 272, 273, 275, 274, 264, 277, 265, 276, 279, 267, 269];
+  var shouldPassButFails = [282, 270, 280, 278, 273, 275, 274, 264, 277, 265, 276, 279, 267, 269];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -320,7 +320,7 @@ describe('CommonMark 0.28 Code spans', function() {
   var section = 'Code spans';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [330, 316, 325, 327, 328, 320, 323, 322];
+  var shouldPassButFails = [330, 316, 327, 328, 320, 323, 322];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -395,7 +395,7 @@ describe('CommonMark 0.28 Raw HTML', function() {
   var section = 'Raw HTML';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [584, 585, 586, 587, 588, 590, 594, 595, 596, 597, 598, 599, 600, 601, 602, 603, 604];
+  var shouldPassButFails = [590, 595, 597, 598, 599, 600, 601, 604];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -410,7 +410,7 @@ describe('CommonMark 0.28 Hard line breaks', function() {
   var section = 'Hard line breaks';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [611, 606, 609, 613, 614, 615];
+  var shouldPassButFails = [611, 606, 609, 613];
 
   var willNotBeAttemptedByCoreTeam = [];
 
