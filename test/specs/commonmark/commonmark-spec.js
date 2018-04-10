@@ -1,5 +1,5 @@
-var marked = require('../../lib/marked.js');
-var cmSpec = require('./commonmark.json');
+var marked = require('../../../lib/marked.js');
+var cmSpec = require('./commonmark.0.28.json');
 var HtmlDiffer = require('html-differ').HtmlDiffer,
     htmlDiffer = new HtmlDiffer();
 var since = require('jasmine2-custom-message');
@@ -11,42 +11,44 @@ Messenger.prototype.message = function(spec, expected, actual) {
 }
 
 Messenger.prototype.test = function(spec, section, ignore) {
-  if (spec.section === section && ignore.indexOf(spec.example) < 0) {
-    it('should pass example ' + spec.example, function() {
+  if (spec.section === section) {
+    var shouldFail = ~ignore.indexOf(spec.example);
+    it('should ' + (shouldFail ? 'fail' : 'pass') + ' example ' + spec.example, function() {
       var expected = spec.html;
       var actual = marked(spec.markdown, { headerIds: false, xhtml: true });
       since(messenger.message(spec, expected, actual)).expect(
         htmlDiffer.isEqual(expected, actual)
-      ).toEqual(true);
+      ).toEqual(!shouldFail);
     });
   }
 }
 
 var messenger = new Messenger();
 /*
-|Section                     |Count    |Percent   |
-|:---------------------------|:-------:|---------:|
-|Tabs                        |7 of 11  |63%       |
-|Thematic breaks             |16 of 19 |84%       |
-|ATX headings                |13 of 18 |72%       |
-|Setext headings             |20 of 26 |77%       |
-|Indented code blocks        |11 of 12 |92%       |
-|Fenced code blocks          |17 of 28 |61%       |
-|HTML blocks                 |12 of 43 |28%       |
-|Link reference definitions  |21 of 23 |91%       |
-|Paragraphs                  |6 of 8   |75%       |
-|Block quotes                |21 of 25 |84%       |
-|List items                  |32 of 48 |67%       |
-|Lists                       |10 of 24 |42%       |
-|Backslash escapes           |4 of 13  |31%       |
-|Entity and numeric character references|8 of 12|67%|
-|Code spans                  |10 of 17 |59%       |
-|Emphasis and strong emphasis|62 of 128|48%       |
-|Links                       |46 of 84 |55%       |
-|Images                      |13 of 22 |59%       |
-|Autolinks                   |14 of 19 |74%       |
-|Hard line breaks            |32 of 36 |89%       |
-|Soft line breaks            |1 of 2   |50%       |
+|Section                                 |Count      |Percent |
+|:---------------------------------------|:---------:|-------:|
+|Tabs                                    |  7 of  11 |     64%|
+|Thematic breaks                         | 18 of  19 |     95%|
+|ATX headings                            | 14 of  18 |     78%|
+|Setext headings                         | 21 of  26 |     81%|
+|Indented code blocks                    | 11 of  12 |     92%|
+|Fenced code blocks                      | 17 of  28 |     61%|
+|HTML blocks                             | 12 of  43 |     28%|
+|Link reference definitions              | 21 of  23 |     91%|
+|Paragraphs                              |  6 of   8 |     75%|
+|Block quotes                            | 21 of  25 |     84%|
+|List items                              | 32 of  48 |     67%|
+|Lists                                   | 10 of  24 |     42%|
+|Backslash escapes                       |  4 of  13 |     31%|
+|Entity and numeric character references |  8 of  12 |     67%|
+|Code spans                              | 10 of  17 |     59%|
+|Emphasis and strong emphasis            | 71 of 128 |     55%|
+|Links                                   | 45 of  84 |     54%|
+|Images                                  | 13 of  22 |     59%|
+|Autolinks                               | 14 of  19 |     74%|
+|Raw HTML                                | 13 of  21 |     62%|
+|Hard line breaks                        | 32 of  36 |     89%|
+|Soft line breaks                        |  1 of   2 |     50%|
 */
 
 describe('CommonMark 0.28 Tabs', function() {
@@ -258,7 +260,7 @@ describe('CommonMark 0.28 Lists', function() {
   var section = 'Lists';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [282, 270, 280, 278, 271, 272, 273, 275, 274, 264, 277, 265, 276, 279, 267, 269];
+  var shouldPassButFails = [282, 270, 280, 278, 273, 275, 274, 264, 277, 265, 276, 279, 267, 269];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -318,7 +320,7 @@ describe('CommonMark 0.28 Code spans', function() {
   var section = 'Code spans';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [330, 316, 325, 327, 328, 320, 323, 322];
+  var shouldPassButFails = [330, 316, 327, 328, 320, 323, 322];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -408,7 +410,7 @@ describe('CommonMark 0.28 Hard line breaks', function() {
   var section = 'Hard line breaks';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [611, 606, 609, 613, 614, 615];
+  var shouldPassButFails = [611, 606, 609, 613];
 
   var willNotBeAttemptedByCoreTeam = [];
 
