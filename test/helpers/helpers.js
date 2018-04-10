@@ -1,5 +1,5 @@
 var marked = require('../../lib/marked.js');
 
 beforeEach(function () {
-  marked.setOptions(marked.origDefaults);
+  marked.setOptions(marked.getDefaults());
 });
