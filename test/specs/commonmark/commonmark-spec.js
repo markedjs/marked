@@ -25,29 +25,30 @@ Messenger.prototype.test = function(spec, section, ignore) {
 
 var messenger = new Messenger();
 /*
-|Section                     |Count    |Percent   |
-|:---------------------------|:-------:|---------:|
-|Tabs                        |7 of 11  |63%       |
-|Thematic breaks             |16 of 19 |84%       |
-|ATX headings                |13 of 18 |72%       |
-|Setext headings             |20 of 26 |77%       |
-|Indented code blocks        |11 of 12 |92%       |
-|Fenced code blocks          |17 of 28 |61%       |
-|HTML blocks                 |12 of 43 |28%       |
-|Link reference definitions  |21 of 23 |91%       |
-|Paragraphs                  |6 of 8   |75%       |
-|Block quotes                |21 of 25 |84%       |
-|List items                  |32 of 48 |67%       |
-|Lists                       |10 of 24 |42%       |
-|Backslash escapes           |4 of 13  |31%       |
-|Entity and numeric character references|8 of 12|67%|
-|Code spans                  |10 of 17 |59%       |
-|Emphasis and strong emphasis|62 of 128|48%       |
-|Links                       |46 of 84 |55%       |
-|Images                      |13 of 22 |59%       |
-|Autolinks                   |14 of 19 |74%       |
-|Hard line breaks            |32 of 36 |89%       |
-|Soft line breaks            |1 of 2   |50%       |
+|Section                                 |Count      |Percent |
+|:---------------------------------------|:---------:|-------:|
+|Tabs                                    |  7 of  11 |     64%|
+|Thematic breaks                         | 18 of  19 |     95%|
+|ATX headings                            | 14 of  18 |     78%|
+|Setext headings                         | 21 of  26 |     81%|
+|Indented code blocks                    | 11 of  12 |     92%|
+|Fenced code blocks                      | 17 of  28 |     61%|
+|HTML blocks                             | 12 of  43 |     28%|
+|Link reference definitions              | 21 of  23 |     91%|
+|Paragraphs                              |  6 of   8 |     75%|
+|Block quotes                            | 21 of  25 |     84%|
+|List items                              | 32 of  48 |     67%|
+|Lists                                   | 10 of  24 |     42%|
+|Backslash escapes                       |  4 of  13 |     31%|
+|Entity and numeric character references |  8 of  12 |     67%|
+|Code spans                              | 10 of  17 |     59%|
+|Emphasis and strong emphasis            | 71 of 128 |     55%|
+|Links                                   | 45 of  84 |     54%|
+|Images                                  | 13 of  22 |     59%|
+|Autolinks                               | 14 of  19 |     74%|
+|Raw HTML                                | 13 of  21 |     62%|
+|Hard line breaks                        | 32 of  36 |     89%|
+|Soft line breaks                        |  1 of   2 |     50%|
 */
 
 describe('CommonMark 0.28 Tabs', function() {
