@@ -25,7 +25,7 @@ jobs:
           git config --global user.name "Travis-CI"
           git config credential.helper "store --file=.git/credentials"
           echo "https://${GITHUB_TOKEN}:@github.com" > .git/credentials
-          git commit -am 'minify [skip ci]'
+          git commit -am '🗜️ minify [skip ci]'
           git push origin HEAD:${TRAVIS_BRANCH}
         fi
       node_js: lts/*
