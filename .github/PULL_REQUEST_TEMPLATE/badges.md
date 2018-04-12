@@ -20,7 +20,10 @@
 - [ ] graciously decline; or,
 - [ ] dispute the recommendation
 
-within 30 days (silence is consent at this point, can't have the pull requests page filled with PRs related to badges forever).
+within 30 days, if you have not indicated which option you are taking one of the following will happen:
+
+1. If adding a badge, we will assume you are graciously declining.
+2. If removing a badge, we will assume you do not want to dispute the recommendation; therefore, the badge will be removed.
 
 <!--
 
