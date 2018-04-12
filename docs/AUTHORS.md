@@ -17,7 +17,6 @@ Contributors are users who submit a [PR](https://github.com/markedjs/marked/pull
 |Name                |GitHub handle    |Badge of honor                        |
 |:-------------------|:----------------|:-------------------------------------|
 |Karen Yavine        |@karenyavine     |Snyk's Security Saint                 |
-|Federico Soave      |@Feder1co5oave   |Regent of the Regex, Master of Marked |
 |Brandon der Blätter |@intcreator      |Curious Contributor                   |
 |Костя Третяк        |@KostyaTretyak   |--                                    |
 
@@ -35,6 +34,7 @@ A note on "decision making authority". This is related to submitting PRs and the
 
 |Name           |GiHub handle   |Decision making                          |Badges of honor (tag for questions) |
 |:--------------|:--------------|:----------------------------------------|------------------------------------|
+|Federico Soave |@Feder1co5oave |Regent of the Regex, Master of Marked    |                                    |
 |Tony Brix      |@UziTech       |Titan of the test harness and Dr. DevOps |                                    |
 |Jamie Davis    |@davisjam      |Seeker of Security                       |                                    |
 
