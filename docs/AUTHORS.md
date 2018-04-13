@@ -37,7 +37,6 @@ A note on "decision making authority". This is related to submitting PRs and the
 |Name           |GiHub handle   |Decision making                          |Badges of honor (tag for questions) |
 |:--------------|:--------------|:----------------------------------------|------------------------------------|
 |Jamie Davis    |@davisjam      |Seeker of Security                       |                                    |
-|Steven         |@styfle        |Open source, of course and GitHub Guru   |                                    |
 |Tony Brix      |@UziTech       |Titan of the test harness and Dr. DevOps |                                    |
 
 **Should not exceed 5:** For larger PRs affecting more of the codebase and, most likely, review by more people, we try to keep this pool small and responsive and let those with decision making authority have final say without negative repercussions from the other committers.
