@@ -3,14 +3,13 @@
  * when we come across use cases that are not defined in a given specification.
  * Therefore, we will put use cases together to illustrate those instances to
  * consumers of marked.
- * 
+ *
  */
 var marked = require('../../../lib/marked.js');
 var markedSpec = require('./marked.json');
 var HtmlDiffer = require('html-differ').HtmlDiffer,
     htmlDiffer = new HtmlDiffer();
 var since = require('jasmine2-custom-message');
-
 
 var Messenger = function() {}
 
