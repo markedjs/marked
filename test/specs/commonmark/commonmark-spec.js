@@ -230,35 +230,35 @@ describe('CommonMark 0.28 Lists', function() {
   });
 });
 
-// describe('CommonMark 0.28 Inlines', function() {
-//   var section = 'Inlines';
+describe('CommonMark 0.28 Inlines', function() {
+  var section = 'Inlines';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
-// describe('CommonMark 0.28 Backslash escapes', function() {
-//   var section = 'Backslash escapes';
+describe('CommonMark 0.28 Backslash escapes', function() {
+  var section = 'Backslash escapes';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [290, 291, 293, 300, 301];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [290, 291, 293, 296, 300, 301];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
 // describe('CommonMark 0.28 Entity and numeric character references', function() {
 //   var section = 'Entity and numeric character references';
