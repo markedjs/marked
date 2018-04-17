@@ -17,8 +17,8 @@ describe('CommonMark 0.28 Tabs', function() {
   // are known failures. Note: If all arrays are empty, it means Marked is
   // 100% compliant with that section of the given specification.
   //
-  var shouldPassButFails = [];
-  // var shouldPassButFails = [1, 2, 3, 7];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [1, 2, 3, 7];
 
   // Identifies examples that the Marked core team has determined beyond
   // the ability or desire to correct; thereby, implicitly requesting
