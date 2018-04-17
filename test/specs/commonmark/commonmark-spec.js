@@ -5,7 +5,8 @@ var testOptions = {
   gfm: false,
   pedantic: false,
   headerIds: false,
-  xhtml: true
+  xhtml: true,
+  langPrefix: 'language-'
 }
 
 describe('CommonMark 0.28 Tabs', function() {
@@ -94,35 +95,35 @@ describe('CommonMark 0.28 Setext headings', function() {
   });
 });
 
-// describe('CommonMark 0.28 Indented code blocks', function() {
-//   var section = 'Indented code blocks';
+describe('CommonMark 0.28 Indented code blocks', function() {
+  var section = 'Indented code blocks';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [82];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [82];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
-// describe('CommonMark 0.28 Fenced code blocks', function() {
-//   var section = 'Fenced code blocks';
+describe('CommonMark 0.28 Fenced code blocks', function() {
+  var section = 'Fenced code blocks';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [93, 95, 96, 97, 101, 102, 106, 108, 111, 112, 113];
+  var shouldPassButFails = [];
+  var shouldPassButFails = [88, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 104, 105, 106, 108, 109, 110, 111, 112, 113, 115];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
 // describe('CommonMark 0.28 HTML blocks', function() {
 //   var section = 'HTML blocks';
