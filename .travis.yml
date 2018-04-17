@@ -13,7 +13,7 @@ jobs:
     - node_js: lts/*
     - node_js: node
 
-    - stage: security scan
+    - stage: security scan 🔐
       script: npm run test:redos
       node_js: lts/*
 
