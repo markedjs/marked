@@ -195,7 +195,7 @@ function testFile(engine, file, filename, index) {
     }
   }
 
-  if (elapsed[0] !== 0) {
+  if (elapsed[0] > 0) {
     console.log('    failed because it took too long.\n\n    passed in %dms', prettyElapsedTime(elapsed));
     return false;
   }
