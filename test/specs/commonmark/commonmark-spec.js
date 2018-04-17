@@ -34,50 +34,50 @@ describe('CommonMark 0.28 Tabs', function() {
   });
 });
 
-// describe('CommonMark 0.28 Precedence', function() {
-//   var section = 'Precedence';
+describe('CommonMark 0.28 Precedence', function() {
+  var section = 'Precedence';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
-// describe('CommonMark 0.28 Thematic breaks', function() {
-//   var section = 'Thematic breaks';
+describe('CommonMark 0.28 Thematic breaks', function() {
+  var section = 'Thematic breaks';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [19];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [19];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
-// describe('CommonMark 0.28 ATX headings', function() {
-//   var section = 'ATX headings';
+describe('CommonMark 0.28 ATX headings', function() {
+  var section = 'ATX headings';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [40, 45, 46, 49];
+  var shouldPassButFails = [];
+  var shouldPassButFails = [33, 34, 40, 45, 46, 49];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
 // describe('CommonMark 0.28 Setext headings', function() {
 //   var section = 'Setext headings';
