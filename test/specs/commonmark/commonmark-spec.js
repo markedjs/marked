@@ -79,20 +79,20 @@ describe('CommonMark 0.28 ATX headings', function() {
   });
 });
 
-// describe('CommonMark 0.28 Setext headings', function() {
-//   var section = 'Setext headings';
+describe('CommonMark 0.28 Setext headings', function() {
+  var section = 'Setext headings';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [51, 52, 56, 62, 64];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [51, 52, 56, 62, 64];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
 // describe('CommonMark 0.28 Indented code blocks', function() {
 //   var section = 'Indented code blocks';
