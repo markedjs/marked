@@ -3,6 +3,7 @@
     "section": "Code spans",
     "markdown": "`someone@example.com`",
     "html": "<p><code>someone@exmaple.com</code></p>\n",
-    "example": 1
+    "example": 1218,
+    "issue-number": 1218
   }
 ]

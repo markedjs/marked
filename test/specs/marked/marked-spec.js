@@ -6,43 +6,20 @@
  *
  */
 var marked = require('../../../lib/marked.js');
+var tester = require('../marked-tester.js');
 var markedSpec = require('./marked.json');
-var HtmlDiffer = require('html-differ').HtmlDiffer,
-    htmlDiffer = new HtmlDiffer();
-var since = require('jasmine2-custom-message');
 
-var Messenger = function() {}
-
-Messenger.prototype.message = function(spec, expected, actual) {
-  return 'CommonMark (' + spec.section + '):\n' + spec.markdown + '\n------\n\nExpected:\n' + expected + '\n------\n\nMarked:\n' + actual;
-}
-
-Messenger.prototype.test = function(spec, section, ignore) {
-  if (spec.section === section) {
-    var shouldFail = ~ignore.indexOf(spec.example);
-    it('should ' + (shouldFail ? 'fail' : 'pass') + ' example ' + spec.example, function() {
-      var expected = spec.html;
-      var actual = marked(spec.markdown, { headerIds: false, xhtml: true });
-      since(messenger.message(spec, expected, actual)).expect(
-        htmlDiffer.isEqual(expected, actual)
-      ).toEqual(!shouldFail);
-    });
-  }
-}
-
-var messenger = new Messenger();
-
-describe('Marked Code spans', function() {
+describe('Marked Issues & PRs', function() {
   var section = 'Code spans';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [1];
+  var shouldPassButFails = [1218];
 
   var willNotBeAttemptedByCoreTeam = [];
 
   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
   markedSpec.forEach(function(spec) {
-    messenger.test(spec, section, ignore);
+    tester.test(spec, section, ignore, { gfm: false, pedantic: false });
   });
 });
