@@ -1,6 +1,6 @@
 const marked = require('../../lib/marked.js');
 const HtmlDiffer = require('html-differ').HtmlDiffer,
-    htmlDiffer = new HtmlDiffer();
+  htmlDiffer = new HtmlDiffer();
 const since = require('jasmine2-custom-message');
 
 const MarkedTester = module.exports = {};

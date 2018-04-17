@@ -69,7 +69,7 @@ describe('CommonMark 0.28 Thematic breaks', function() {
 describe('CommonMark 0.28 ATX headings', function() {
   var section = 'ATX headings';
 
-  var shouldPassButFails = [];
+  // var shouldPassButFails = [];
   var shouldPassButFails = [33, 34, 40, 45, 46, 49];
 
   var willNotBeAttemptedByCoreTeam = [];
@@ -114,7 +114,7 @@ describe('CommonMark 0.28 Indented code blocks', function() {
 describe('CommonMark 0.28 Fenced code blocks', function() {
   var section = 'Fenced code blocks';
 
-  var shouldPassButFails = [];
+  // var shouldPassButFails = [];
   var shouldPassButFails = [88, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 104, 105, 106, 108, 109, 110, 111, 112, 113, 115];
 
   var willNotBeAttemptedByCoreTeam = [];

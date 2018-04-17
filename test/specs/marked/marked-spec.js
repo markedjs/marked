@@ -5,7 +5,6 @@
  * consumers of marked.
  *
  */
-var marked = require('../../../lib/marked.js');
 var tester = require('../marked-tester.js');
 var markedSpec = require('./marked.json');
 
