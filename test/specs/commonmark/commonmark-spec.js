@@ -260,95 +260,95 @@ describe('CommonMark 0.28 Backslash escapes', function() {
   });
 });
 
-// describe('CommonMark 0.28 Entity and numeric character references', function() {
-//   var section = 'Entity and numeric character references';
+describe('CommonMark 0.28 Entity and numeric character references', function() {
+  var section = 'Entity and numeric character references';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [311, 309, 310];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [311, 309, 310];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
-// describe('CommonMark 0.28 Code spans', function() {
-//   var section = 'Code spans';
+describe('CommonMark 0.28 Code spans', function() {
+  var section = 'Code spans';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [330, 316, 328, 320, 323, 322];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [316, 320, 322, 323, 328, 330];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
-// describe('CommonMark 0.28 Emphasis and strong emphasis', function() {
-//   var section = 'Emphasis and strong emphasis';
+describe('CommonMark 0.28 Emphasis and strong emphasis', function() {
+  var section = 'Emphasis and strong emphasis';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [333, 334, 342, 348, 349, 352, 353, 354, 355, 356, 360, 368, 369, 371, 372, 378, 380, 381, 382, 387, 388, 392, 393, 394, 395, 396, 402, 403, 409, 416, 419, 420, 421, 422, 423, 424, 428, 431, 432, 433, 434, 435, 436, 443, 444, 445, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [333, 334, 342, 348, 349, 352, 353, 354, 355, 356, 360, 368, 369, 371, 372, 378, 380, 381, 382, 387, 388, 392, 393, 394, 395, 396, 402, 403, 409, 416, 419, 420, 421, 422, 423, 424, 428, 431, 432, 433, 434, 435, 436, 443, 444, 445, 448, 449, 450, 451, 452, 453, 454, 455, 456, 457, 458];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
-// describe('CommonMark 0.28 Links', function() {
-//   var section = 'Links';
+describe('CommonMark 0.28 Links', function() {
+  var section = 'Links';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [468, 474, 478, 483, 489, 490, 491, 492, 495, 496, 497, 499, 503, 504, 505, 507, 508, 509, 523, 535];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [468, 474, 478, 483, 489, 490, 491, 492, 495, 496, 497, 499, 503, 504, 505, 507, 508, 509, 523, 535];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
-// describe('CommonMark 0.28 Images', function() {
-//   var section = 'Images';
+describe('CommonMark 0.28 Images', function() {
+  var section = 'Images';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [544, 545, 546, 547, 548, 556, 560];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [544, 545, 546, 547, 548, 556, 560];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
-// describe('CommonMark 0.28 Autolinks', function() {
-//   var section = 'Autolinks';
+describe('CommonMark 0.28 Autolinks', function() {
+  var section = 'Autolinks';
 
-//   // var shouldPassButFails = [];
-//   var shouldPassButFails = [582, 573, 579, 583];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [];
 
-//   var willNotBeAttemptedByCoreTeam = [];
+  var willNotBeAttemptedByCoreTeam = [];
 
-//   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
-//   cmSpec.forEach(function(spec) {
-//     messenger.test(spec, section, ignore);
-//   });
-// });
+  cmSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, testOptions);
+  });
+});
 
 // describe('CommonMark 0.28 Raw HTML', function() {
 //   var section = 'Raw HTML';
