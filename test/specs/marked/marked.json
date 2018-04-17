@@ -5,5 +5,11 @@
     "html": "<p><code>someone@exmaple.com</code></p>\n",
     "example": 1218,
     "issue-number": 1218
+  },
+  {
+    "section": "Blockquotes",
+    "markdown": "> hi there\nbud",
+    "html": "<blockquote>\n<p>hi there\nbud</p>\n</blockquote>",
+    "example": 1
   }
 ]

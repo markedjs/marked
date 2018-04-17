@@ -22,3 +22,18 @@ describe('Marked Issues & PRs', function() {
     tester.test(spec, section, ignore, { gfm: false, pedantic: false });
   });
 });
+
+describe('Marked Issues & PRs', function() {
+  var section = 'Blockquotes';
+
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [1218];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  markedSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, { gfm: false, pedantic: false });
+  });
+});
