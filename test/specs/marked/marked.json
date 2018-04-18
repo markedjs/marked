@@ -93,16 +93,28 @@
     "section": "Emphasis and strong emphasis",
     "markdown": "_1__",
     "html": "<p><em>1_</em></p>",
-    "example": 41,
+    "example": 42,
     "issue-number": 1178
   },
   {
     "section": "Emphasis and strong emphasis",
     "markdown": "*1**",
     "html": "<p><em>1*</em></p>",
-    "example": 41,
+    "example": 43,
     "issue-number": 1178
   },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "*test **test** test*",
+    "html": "<p><em>test <strong>test</strong> test</em></p>",
+    "example": 44
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "_test __test__ test_",
+    "html": "<p><em>test <strong>test</strong> test</em></p>",
+    "example": 45
+  },  
   {
     "section": "Heading IDs",
     "markdown": "### Heading with a [link](http://github.com/)",
