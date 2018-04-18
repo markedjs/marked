@@ -12,7 +12,7 @@ describe('Marked Issues & PRs', function() {
   var section = 'Code spans';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [1218];
+  var shouldPassButFails = [1];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -37,6 +37,23 @@ describe('Marked Issues & PRs', function() {
     tester.test(spec, section, ignore, { gfm: false, pedantic: false });
   });
 });
+
+describe('Marked Issues & PRs', function() {
+  var section = 'Emphasis and strong emphasis';
+
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  markedSpec.forEach(function(spec) {
+    // GFM true required for strikethrough example
+    tester.test(spec, section, ignore, { gfm: false, pedantic: false });
+  });
+});
+
 
 describe('Marked Issues & PRs', function() {
   var section = 'Heading IDs';

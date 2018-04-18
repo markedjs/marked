@@ -3,14 +3,105 @@
     "section": "Code spans",
     "markdown": "`someone@example.com`",
     "html": "<p><code>someone@exmaple.com</code></p>\n",
-    "example": 1218,
+    "example": 1,
     "issue-number": 1218
   },
   {
     "section": "Blockquotes",
     "markdown": "> hi there\nbud",
     "html": "<blockquote>\n<p>hi there\nbud</p>\n</blockquote>",
-    "example": 1
+    "example": 2
+  },  
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "_123_",
+    "html": "<p><em>123</em></p>",
+    "example": 31,
+    "issue-number": 1178
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "*123*",
+    "html": "<p><em>123</em></p>",
+    "example": 32,
+    "issue-number": 1178
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "_12_",
+    "html": "<p><em>12</em></p>",
+    "example": 33,
+    "issue-number": 1178
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "*12*",
+    "html": "<p><em>12</em></p>",
+    "example": 34,
+    "issue-number": 1178
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "_1_",
+    "html": "<p><em>1</em></p>",
+    "example": 35,
+    "issue-number": 1178
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "*1*",
+    "html": "<p><em>1</em></p>",
+    "example": 36,
+    "issue-number": 1178
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "__",
+    "html": "<p>__</p>",
+    "example": 37,
+    "issue-number": 1178
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "**",
+    "html": "<p>**</p>",
+    "example": 38,
+    "issue-number": 1178
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "_123 _",
+    "html": "<p>_123 _</p>",
+    "example": 39,
+    "issue-number": 1178
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "*123 *",
+    "html": "<p>*123 *</p>",
+    "example": 40,
+    "issue-number": 1178
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "_ 123_",
+    "html": "<p>_ 123_</p>",
+    "example": 41,
+    "issue-number": 1178
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "_1__",
+    "html": "<p><em>1_</em></p>",
+    "example": 41,
+    "issue-number": 1178
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "*1**",
+    "html": "<p><em>1*</em></p>",
+    "example": 41,
+    "issue-number": 1178
   },
   {
     "section": "Heading IDs",
