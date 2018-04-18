@@ -19,6 +19,30 @@
     "example": 3
   },  
   {
+    "section": "Smart punctuation",
+    "markdown": "Quoth the Raven, \"Nevermore\"",
+    "html": "<p>Quoth the Raven, “Nevermore”</p>",
+    "example": 4
+  }, 
+  {
+    "section": "Smart punctuation",
+    "markdown": "From The Raven by E.A. Poe, 'Quoth the Raven, \"Nevermore\"'",
+    "html": "<p>From The Raven by E.A. Poe, ‘Quoth the Raven, “Nevermore”’</p>",
+    "example": 5
+  },
+  {
+    "section": "Smart punctuation",
+    "markdown": "This seems a poor way -- to do dashes --- but I'm sure they did the best they could.",
+    "html": "<p>This seems a poor way – to do dashes – but I’m sure they did the best they could.</p>",
+    "example": 6
+  },
+  {
+    "section": "Smart punctuation",
+    "markdown": "Then, like in poetry, I go dot dot dot...",
+    "html": "<p>Then, like in poetry, I go dot dot dot…</p>",
+    "example": 7
+  }, 
+  {
     "section": "Emphasis and strong emphasis",
     "markdown": "_123_",
     "html": "<p><em>123</em></p>",

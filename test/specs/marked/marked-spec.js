@@ -71,6 +71,23 @@ describe('Marked Issues & PRs', function() {
 });
 
 describe('Marked Issues & PRs', function() {
+  var section = 'Smart punctuation';
+
+  // var shouldPassButFails = [];
+  // TODO: Figure out why 5 & 6 fails. Visually seems correct.
+  var shouldPassButFails = [5, 6];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  markedSpec.forEach(function(spec) {
+    // GFM true required for strikethrough example
+    tester.test(spec, section, ignore, { gfm: false, pedantic: false, smartypants: true });
+  });
+});
+
+describe('Marked Issues & PRs', function() {
   var section = 'Heading IDs';
 
   // var shouldPassButFails = [];
