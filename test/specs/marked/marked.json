@@ -156,20 +156,59 @@
     "markdown": "## And a ref [link][destination]\n\n[destination]: /some/url \"link to nowhere\"",
     "html": "<h2 id=\"and-a-ref-link\">And a ref <a href=\"/some/url\" title=\"link to nowhere\">link</a></h2>",
     "example": 26
+  },
+  {
+    "section": "Relative paths",
+    "markdown": "[![section 4.3](http://example.com/logo)](http://example.com/)",
+    "html": "<p><a href=\"http://example.com/\"><img src=\"http://example.com/logo\" alt=\"section 4.3\"></a></p>",
+    "example": 50
+  },  
+  {
+    "section": "Relative paths",
+    "markdown": "[![section 4.2](//example.com/logo)](//example.com/)",
+    "html": "<p><a href=\"http://example.com/\"><img src=\"http://example.com/logo\" alt=\"section 4.2\"></a></p>",
+    "example": 51
+  },  
+  {
+    "section": "Relative paths",
+    "markdown": "[![section 4.2](/path/to/img)](/path/to/content)",
+    "html": "<p><a href=\"http://example.com/path/to/content\"><img src=\"http://example.com/path/to/img\" alt=\"section 4.2\"></a></p>",
+    "example": 52
+  },  
+  {
+    "section": "Relative paths",
+    "markdown": "[![section 4.2](img)](content)",
+    "html": "<p><a href=\"http://example.com/base/content\"><img src=\"http://example.com/base/img\" alt=\"section 4.2\"></a></p>",
+    "example": 53
+  },  
+  {
+    "section": "Relative paths",
+    "markdown": "[![section 3.3](./img)](./content)",
+    "html": "<p><a href=\"http://example.com/base/./content\"><img src=\"http://example.com/base/./img\" alt=\"section 3.3\"></a></p>",
+    "example": 54
+  },  
+  {
+    "section": "Relative paths",
+    "markdown": "[![section 3.3](../img)](../content)",
+    "html": "<p><a href=\"http://example.com/base/../content\"><img src=\"http://example.com/base/../img\" alt=\"section 3.3\"></a></p>",
+    "example": 55
+  }, 
+  {
+    "section": "Relative paths",
+    "markdown": "[![section 4.4](?type=image)](?)",
+    "html": "<p><a href=\"?\"><img src=\"?type=image\" alt=\"section 4.4\"></a></p>",
+    "example": 56
+  }, 
+  {
+    "section": "Relative paths",
+    "markdown": "[![section 4.4](#img)](#)",
+    "html": "<p><a href=\"#\"><img src=\"#img\" alt=\"section 4.4\"></a></p>",
+    "example": 57
+  }, 
+  {
+    "section": "Relative paths",
+    "markdown": "[section 4.2]()",
+    "html": "<p><a href=\"\">section 4.2</a></p>",
+    "example": 58
   }
 ]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

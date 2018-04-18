@@ -85,3 +85,19 @@ describe('Marked Issues & PRs', function() {
     tester.test(spec, section, ignore, { gfm: true, pedantic: false });
   });
 });
+
+describe('Marked Issues & PRs', function() {
+  var section = 'Relative paths';
+
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  markedSpec.forEach(function(spec) {
+    // GFM true required for strikethrough example
+    tester.test(spec, section, ignore, { gfm: false, pedantic: false, baseUrl: "http://example.com/base/" });
+  });
+});
