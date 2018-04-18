@@ -11,6 +11,12 @@
     "markdown": "> hi there\nbud",
     "html": "<blockquote>\n<p>hi there\nbud</p>\n</blockquote>",
     "example": 2
+  },
+  {
+    "section": "Strikethrough",
+    "markdown": "Hello, ~~Hi,~~ World!",
+    "html": "<p>Hello, <del>Hi,</del> World!</p>",
+    "example": 3
   },  
   {
     "section": "Emphasis and strong emphasis",

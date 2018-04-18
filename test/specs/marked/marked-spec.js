@@ -39,6 +39,22 @@ describe('Marked Issues & PRs', function() {
 });
 
 describe('Marked Issues & PRs', function() {
+  var section = 'Strikethrough';
+
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  markedSpec.forEach(function(spec) {
+    // GFM true required for strikethroughs
+    tester.test(spec, section, ignore, { gfm: true, pedantic: false });
+  });
+});
+
+describe('Marked Issues & PRs', function() {
   var section = 'Emphasis and strong emphasis';
 
   // var shouldPassButFails = [];
