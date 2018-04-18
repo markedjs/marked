@@ -110,7 +110,7 @@ describe('CommonMark 0.28 ATX headings', function() {
   var section = 'ATX headings';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [40, 45, 46, 49];
+  var shouldPassButFails = [40];
 
   var willNotBeAttemptedByCoreTeam = [];
 
