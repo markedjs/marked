@@ -11,5 +11,56 @@
     "markdown": "> hi there\nbud",
     "html": "<blockquote>\n<p>hi there\nbud</p>\n</blockquote>",
     "example": 1
+  },
+  {
+    "section": "Heading IDs",
+    "markdown": "### Heading with a [link](http://github.com/)",
+    "html": "<h3 id=\"heading-with-a-link\">Heading with a <a href=\"http://github.com/\">link</a></h3>",
+    "example": 21
+  },
+  {
+    "section": "Heading IDs",
+    "markdown": "### Heading with some _italic text_",
+    "html": "<h3 id=\"heading-with-some-italic-text\">Heading with some <em>italic text</em></h3>",
+    "example": 22
+  },
+  {
+    "section": "Heading IDs",
+    "markdown": "### Or some **strong**",
+    "html": "<h3 id=\"or-some-strong\">Or some <strong>strong</strong></h3>",
+    "example": 23
+  },
+  {
+    "section": "Heading IDs",
+    "markdown": "### Or even `code`",
+    "html": "<h3 id=\"or-even-code\">Or even <code>code</code></h3>",
+    "example": 24
+  },
+  {
+    "section": "Heading IDs",
+    "markdown": "### What about ~~strikethrough~~",
+    "html": "<h3 id=\"what-about-strikethrough\">What about <del>strikethrough</del></h3>",
+    "example": 25
+  },
+  {
+    "section": "Heading IDs",
+    "markdown": "## And a ref [link][destination]\n\n[destination]: /some/url \"link to nowhere\"",
+    "html": "<h2 id=\"and-a-ref-link\">And a ref <a href=\"/some/url\" title=\"link to nowhere\">link</a></h2>",
+    "example": 26
   }
 ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
