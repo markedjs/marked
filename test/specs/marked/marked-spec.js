@@ -70,7 +70,6 @@ describe('Marked Issues & PRs', function() {
   });
 });
 
-
 describe('Marked Issues & PRs', function() {
   var section = 'Heading IDs';
 
