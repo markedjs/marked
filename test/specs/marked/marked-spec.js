@@ -49,6 +49,7 @@ describe('Marked Issues & PRs', function() {
   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
   markedSpec.forEach(function(spec) {
-    tester.test(spec, section, ignore, { gfm: true, pedantic: false });
+    // GFM true required for strikethrough example
+    tester.test(spec, section, ignore, { gfm: false, pedantic: false });
   });
 });

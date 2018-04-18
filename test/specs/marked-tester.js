@@ -22,6 +22,7 @@ MarkedTester.test = function(spec, section, ignore, options) {
     var example = spec.example;
     it('should ' + (shouldFail ? 'fail' : 'pass') + ' example ' + example, function() {
       var expected = spec.html;
+      // TODO: Might be nice if JSON could set its own options
       var actual = marked(spec.markdown, options);
       since(MarkedTester.message(spec, ignore, expected, actual)).expect(
         htmlDiffer.isEqual(expected, actual)
