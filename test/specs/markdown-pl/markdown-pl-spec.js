@@ -8,6 +8,11 @@
 var tester = require('../marked-tester.js');
 var markedPlSpec = require('./markdown-pl.json');
 
+var options = {
+  gfm: false,
+  pedantic: true
+}
+
 describe('Marked.pl', function() {
   var section = 'Emphasis and strong emphasis';
 
@@ -19,6 +24,6 @@ describe('Marked.pl', function() {
   var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
 
   markedPlSpec.forEach(function(spec) {
-    tester.test(spec, section, ignore, { gfm: false, pedantic: true });
+    tester.test(spec, section, ignore, options);
   });
 });
