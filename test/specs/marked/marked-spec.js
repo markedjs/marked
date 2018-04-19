@@ -118,3 +118,19 @@ describe('Marked Issues & PRs', function() {
     tester.test(spec, section, ignore, { gfm: false, pedantic: false, baseUrl: "http://example.com/base/" });
   });
 });
+
+describe('Marked Issues & PRs', function() {
+  var section = 'Sanitizer';
+
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  markedSpec.forEach(function(spec) {
+    // GFM true required for strikethrough example
+    tester.test(spec, section, ignore, { gfm: false, pedantic: false, sanitize: true });
+  });
+});

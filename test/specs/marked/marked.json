@@ -234,5 +234,11 @@
     "markdown": "[section 4.2]()",
     "html": "<p><a href=\"\">section 4.2</a></p>",
     "example": 58
-  }
+  },
+  {
+    "section": "Sanitizer",
+    "markdown": "lower[click me](javascript&#x3a;...)lower\nupper[click me](javascript&#X3a;...)upper",
+    "html": "<p>lowerclickmelower\nupperclickmeupper</p>",
+    "example": 60
+  }  
 ]
