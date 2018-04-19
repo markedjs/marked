@@ -8,7 +8,7 @@ Users are anyone using Marked in some fashion, without them, there's no reason f
 
 |Name           |GiHub handle   |Decision making                                      |Badges of honor (tag for questions) |
 |:--------------|:--------------|:----------------------------------------------------|------------------------------------|
-|Marti Martz    |@Martii        |@OpenUserJS.org Co-Owner / Project Active Maintainer |Grateful users of this fine project |
+|Marti Martz    |@Martii        |@OpenUserJS.org Co-Owner / Project Active Maintainer |Open source, of course              |
 
 To be listed: please let us know or submit a PR.
 
