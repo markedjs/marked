@@ -14,6 +14,8 @@ To be listed: please let us know or submit a PR.
 
 To be removed: please let us know or submit a PR.
 
+[Details on badges](#badges)
+
 ## Contributors
 
 Contributors are users who submit a [PR](https://github.com/markedjs/marked/pulls), [Issue](https://github.com/markedjs/marked/issues), or collaborate in making Marked a better product and experience for all the users.
