@@ -27,3 +27,18 @@ describe('Marked.pl', function() {
     tester.test(spec, section, ignore, options);
   });
 });
+
+describe('Marked.pl', function() {
+  var section = 'Link reference definitions';
+
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  markedPlSpec.forEach(function(spec) {
+    tester.test(spec, section, ignore, options);
+  });
+});

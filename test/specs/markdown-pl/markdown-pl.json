@@ -10,5 +10,23 @@
     "markdown": "___strong and em___",
     "html": "<p><strong><em>strong and em</em></strong></p>",
     "example": 2
+  },
+  {
+    "section": "Link reference definitions",
+    "markdown": "This is the [simple case].\n\n[simple case]: /simple",
+    "html": "<p>This is the <a href=\"/simple\">simple case</a>.</p>",
+    "example": 3
+  },
+  {
+    "section": "Link reference definitions",
+    "markdown": "This one has a [line\nbreak].\n\nThis one has a [line \nbreak] with a line-ending space.\n\n[line break]: /foo",
+    "html": "<p>This one has a <a href=\"/foo\">line\nbreak</a>.</p>\n\n<p>This one has a <a href=\"/foo\">line \nbreak</a> with a line-ending space.</p>",
+    "example": 4
+  },
+  {
+    "section": "Link reference definitions",
+    "markdown": "[this] [that] and the [other]\n\n[this]: /this\n[that]: /that\n[other]: /other",
+    "html": "<p><a href=\"/that\">this</a> and the <a href=\"/other\">other</a></p>",
+    "example": 4
   }
 ]
