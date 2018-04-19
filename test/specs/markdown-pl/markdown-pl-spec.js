@@ -12,7 +12,7 @@ describe('Marked.pl', function() {
   var section = 'Emphasis and strong emphasis';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [1];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
