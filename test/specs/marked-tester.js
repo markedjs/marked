@@ -7,7 +7,7 @@ const MarkedTester = module.exports = {};
 
 MarkedTester.message = function(spec, ignore, expected, actual) {
   var spacer = '\n------\n\n';
-  var title = 'CommonMark (' + spec.section + ')';
+  var title = 'Section: ' + spec.section;
   var ignoreString = 'ignore: ' + ignore;
   var markdown = 'Markdown:\n\n' + spec.markdown;
   var html = 'Expected:\n\n' + expected;

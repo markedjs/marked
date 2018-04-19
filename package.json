@@ -45,6 +45,7 @@
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",
     "test:cm": "npm test -- test/specs/commonmark/**/*-spec.js",
+    "test:md-pl": "npm test -- test/specs/markdown-pl/**/*-spec.js",
     "test:gfm": "npm test -- test/specs/gfm/**/*-spec.js",
     "test:marked": "npm test -- test/specs/marked/**/*-spec.js",
     "test:old": "node test",

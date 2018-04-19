@@ -1,0 +1,14 @@
+[
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "***strong and em***",
+    "html": "<p><strong><em>strong and em</em></strong></p>",
+    "example": 1
+  },
+  {
+    "section": "Emphasis and strong emphasis",
+    "markdown": "___strong and em___",
+    "html": "<p><strong><em>strong and em</em></strong></p>",
+    "example": 2
+  }
+]
