@@ -117,7 +117,7 @@ Badges? If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dr
 	<dd>
 		<p>Someone who understands and contributes to improving the developer experience and flow of Marked into the world.</p>
 		<blockquote>
-			"The main characteristic of the DevOps movement is to strongly advocate automation and monitoring at all steps of software construction, from integration, testing, releasing to deployment and infrastructure management. DevOps aims at shorter development cycles, increased deployment frequency, more dependable releases, in close alignment with business objectives." ~ <a href="https://en.wikipedia.org/wiki/DevOps">Wikipedia</a>
+			"The main characteristic of the DevOps movement is to strongly advocate automation and monitoring at all steps of software construction, from integration, testing, releasing to deployment and infrastructure management. DevOps aims at shorter development cycles, increased deployment frequency, more dependable releases, in close alignment with business objectives." ~ <a href="https://www.wikipedia.org/wiki/DevOps">Wikipedia</a>
 		</blockquote>
 	</dd>
 	<dt>Eye for the CLI</dt>
