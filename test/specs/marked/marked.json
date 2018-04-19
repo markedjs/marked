@@ -238,7 +238,13 @@
   {
     "section": "Sanitizer",
     "markdown": "lower[click me](javascript&#x3a;...)lower\nupper[click me](javascript&#X3a;...)upper",
-    "html": "<p>lowerclickmelower\nupperclickmeupper</p>",
+    "html": "<p>lowerclick melower\nupperclick meupper</p>",
     "example": 60
+  },
+  {
+    "section": "Sanitizer",
+    "markdown": "[URL](javascript:alert)\n\n[URL](vbscript:alert)\n\n[URL](javascript&colon;alert&#40;1&#41;)\n\n[URL](javascript&#58document;alert&#40;1&#41;)\n\n[URL](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)",
+    "html": "<p>URL</p>\n<p>URL</p>\n<p>URL</p>\n<p>URL</p>\n<p>URL</p>",
+    "example": 61
   }  
 ]
