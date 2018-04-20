@@ -6,6 +6,10 @@ Marked takes an encompassing approach to its community. As such, you can think o
 
 Users are anyone using Marked in some fashion, without them, there's no reason for us to exist.
 
+|Individual or Organization                  |Website                    |Project                                          |Submitted by                                                |
+|:-------------------------------------------|:--------------------------|:------------------------------------------------|:-----------------------------------------------------------|
+|[OpenUserJS](https://github.com/OpenUserJS) |https://openuserjs.org     |[OpenUserJS.org](https://github.com/OpenUserJS/OpenUserJS.org)     | Marti Martz (@Martii) Co-Owner / Active Maintainer |
+
 To be listed: please let us know or submit a PR.
 
 To be removed: please let us know or submit a PR.
@@ -92,7 +96,7 @@ Christopher Jeffrey @chjj
 
 <h2 id="badges">Badges</h2>
 
-Badges? You don't *need* no stinkin' badges. 
+Badges? You don't *need* no stinkin' badges.
 
 Movie references aside. (It was either that or, "Let's play a game", but that would have been creepy&hellip;that's why it will most likely come later.)
 
@@ -109,9 +113,9 @@ Badges? If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dr
 	<dd>A contributor with less than one year on this page who is actively engaged in submitting PRs, Issues, making recommendations, sharing thoughts&hellip;without being too annoying about it (let's be clear, submitting 100 Issues recommending the Marked Committers send everyone candy is trying for the badge, not honestly earning it).</dd>
 	<dt>Dr. DevOps</dt>
 	<dd>
-		<p>Someone who understands and contributes to improving the developer experience and flow of Marked into the world.</p> 
+		<p>Someone who understands and contributes to improving the developer experience and flow of Marked into the world.</p>
 		<blockquote>
-			"The main characteristic of the DevOps movement is to strongly advocate automation and monitoring at all steps of software construction, from integration, testing, releasing to deployment and infrastructure management. DevOps aims at shorter development cycles, increased deployment frequency, more dependable releases, in close alignment with business objectives." ~ <a href="https://en.wikipedia.org/wiki/DevOps">Wikipedia</a>
+			"The main characteristic of the DevOps movement is to strongly advocate automation and monitoring at all steps of software construction, from integration, testing, releasing to deployment and infrastructure management. DevOps aims at shorter development cycles, increased deployment frequency, more dependable releases, in close alignment with business objectives." ~ <a href="https://www.wikipedia.org/wiki/DevOps">Wikipedia</a>
 		</blockquote>
 	</dd>
 	<dt>Eye for the CLI</dt>
