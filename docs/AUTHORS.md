@@ -6,9 +6,9 @@ Marked takes an encompassing approach to its community. As such, you can think o
 
 Users are anyone using Marked in some fashion, without them, there's no reason for us to exist.
 
-|Name           |GiHub handle   |Decision making                                      |Badges of honor (tag for questions) |
-|:--------------|:--------------|:----------------------------------------------------|------------------------------------|
-|Marti Martz    |@Martii        |OpenUserJS.org Co-Owner / Project Active Maintainer |Open source, of course              |
+|Individual or Organization     |Website                    |Submitted by                                                |
+|:------------------------------|:--------------------------|:-----------------------------------------------------------|
+|@OpenUserJS                    |https://openuserjs.org     | Marti Martz (@Martii) Co-Owner / Project Active Maintainer |
 
 To be listed: please let us know or submit a PR.
 
