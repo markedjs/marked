@@ -6,9 +6,9 @@ Marked takes an encompassing approach to its community. As such, you can think o
 
 Users are anyone using Marked in some fashion, without them, there's no reason for us to exist.
 
-|Individual or Organization                  |Website                    |Project                                          |Submitted by                                                |
-|:-------------------------------------------|:--------------------------|:------------------------------------------------|:-----------------------------------------------------------|
-|[OpenUserJS](https://github.com/OpenUserJS) |https://openuserjs.org     |[OpenUserJS.org](https://github.com/OpenUserJS/OpenUserJS.org)     | Marti Martz (@Martii) Co-Owner / Active Maintainer |
+|Individual or Organization |Website                |GitHub project                                                 |Submitted by                                        |
+|:--------------------------|:----------------------|:--------------------------------------------------------------|:---------------------------------------------------|
+|OpenUserJS                 |https://openuserjs.org |[OpenUserJS.org](https://github.com/OpenUserJS/OpenUserJS.org) | Marti Martz (@Martii) Co-Owner / Active Maintainer |
 
 To be listed: please let us know or submit a PR.
 
@@ -41,7 +41,6 @@ A note on "decision making authority". This is related to submitting PRs and the
 |Name           |GiHub handle   |Decision making                          |Badges of honor (tag for questions) |
 |:--------------|:--------------|:----------------------------------------|------------------------------------|
 |Jamie Davis    |@davisjam      |Seeker of Security                       |                                    |
-|Steven         |@styfle        |Open source, of course and GitHub Guru   |                                    |
 |Tony Brix      |@UziTech       |Titan of the test harness and Dr. DevOps |                                    |
 
 **Should not exceed 5:** For larger PRs affecting more of the codebase and, most likely, review by more people, we try to keep this pool small and responsive and let those with decision making authority have final say without negative repercussions from the other committers.
@@ -148,6 +147,8 @@ Badges? If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dr
 ### Special badges that come with the job:
 
 <dl>
+	<dt>Defibrillator</dt>
+	<dd>A contributor who stepped up to help bring Marked back to life by contriuting solutions to help Marked pass when compared against the CommonMark and GitHub Flavored Markdown specifications.</dd>
 	<dt>Maker of the Marked mark</dt>
 	<dd>This badge is given to the person or oganization credited with creating the logo (or logotype) used in Marked communications for a given period of time. **Maker of the Marked mark from 2017 to present**, for example.</dd>
 	<dt>Release Wrangler</dt>
