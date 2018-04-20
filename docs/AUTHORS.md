@@ -148,7 +148,7 @@ Badges? If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dr
 
 <dl>
 	<dt>Defibrillator</dt>
-	<dd>A contributor who stepped to help bring Marked back to life by contriuting solutions to help Marked pass when compared against the CommonMark and GitHub Flavored Markdown specifications.</dd>
+	<dd>A contributor who stepped up to help bring Marked back to life by contriuting solutions to help Marked pass when compared against the CommonMark and GitHub Flavored Markdown specifications.</dd>
 	<dt>Maker of the Marked mark</dt>
 	<dd>This badge is given to the person or oganization credited with creating the logo (or logotype) used in Marked communications for a given period of time. **Maker of the Marked mark from 2017 to present**, for example.</dd>
 	<dt>Release Wrangler</dt>
