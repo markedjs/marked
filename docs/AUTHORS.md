@@ -6,9 +6,9 @@ Marked takes an encompassing approach to its community. As such, you can think o
 
 Users are anyone using Marked in some fashion, without them, there's no reason for us to exist.
 
-|Individual or Organization     |Project                    |Website                    |Submitted by                                                |
-|:------------------------------|:--------------------------|:--------------------------|:-----------------------------------------------------------|
-|@OpenUserJS                    |OpenUserJS.org             |https://openuserjs.org     | Marti Martz (@Martii) Co-Owner / Project Active Maintainer |
+|Individual or Organization     |Website                    |Project                                          |Submitted by                                                |
+|:------------------------------|:--------------------------|:------------------------------------------------|:-----------------------------------------------------------|
+|[OpenUserJS](/OpenUserJS)      |https://openuserjs.org     |[OpenUserJS.org](/OpenUserJS/OpenUserJS.org)     | Marti Martz (@Martii) Co-Owner / Project Active Maintainer |
 
 To be listed: please let us know or submit a PR.
 
