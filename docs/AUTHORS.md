@@ -6,12 +6,18 @@ Marked takes an encompassing approach to its community. As such, you can think o
 
 Users are anyone using Marked in some fashion, without them, there's no reason for us to exist.
 
-|Individual or Organization |Website                |GitHub project                                                 |Submitted by                                        |
-|:--------------------------|:----------------------|:--------------------------------------------------------------|:---------------------------------------------------|
+|Individual or Organization |Website                 |Project                              |Submitted by                                        |
+|:--------------------------|:-----------------------|:------------------------------------|:---------------------------------------------------|
+|MarkedJS                   |https://marked.js.org   |https://github.com/markedjs/marked   |The marked committers                               |
 
-To be listed: please let us know or submit a PR.
+To be listed: All fields are optional. Contact any of the committers or, more timely, submit a pull request with the following (using the first row as an example):
 
-To be removed: please let us know or submit a PR.
+- **Individual or Organization:** The name you would like associated with the record.
+- **Website:** A URL to a standalone website for the project.
+- **Project:** A URL for the repository of the project using marked.
+- **Submitted by:** The name and optional honorifics for the person adding the listing.
+
+To be removed: Same as above.
 
 ## Contributors
 
