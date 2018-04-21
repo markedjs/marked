@@ -115,7 +115,7 @@ describe('Marked Issues & PRs', function() {
 
   markedSpec.forEach(function(spec) {
     // GFM true required for strikethrough example
-    tester.test(spec, section, ignore, { gfm: false, pedantic: false, baseUrl: "http://example.com/base/" });
+    tester.test(spec, section, ignore, { gfm: false, pedantic: false, baseUrl: 'http://example.com/base/' });
   });
 });
 
