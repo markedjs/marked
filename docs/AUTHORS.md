@@ -17,7 +17,7 @@ To be listed: All fields are optional. Contact any of the committers or, more ti
 - **Project:** A URL for the repository of the project using marked.
 - **Submitted by:** The name and optional honorifics for the person adding the listing.
 
-To be removed: Same as above. Only instead of requesting addition requestion deletion or delete the row yourself.
+To be removed: Same as above. Only instead of requesting addition request deletion or delete the row yourself.
 
 ## Contributors
 
