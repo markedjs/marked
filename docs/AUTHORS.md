@@ -6,12 +6,18 @@ Marked takes an encompassing approach to its community. As such, you can think o
 
 Users are anyone using Marked in some fashion, without them, there's no reason for us to exist.
 
-|Individual or Organization |Website                |GitHub project                                                 |Submitted by                                        |
-|:--------------------------|:----------------------|:--------------------------------------------------------------|:---------------------------------------------------|
+|Individual or Organization |Website                 |Project                              |Submitted by                                        |
+|:--------------------------|:-----------------------|:------------------------------------|:---------------------------------------------------|
+|MarkedJS                   |https://marked.js.org   |https://github.com/markedjs/marked   |The marked committers                               |
 
-To be listed: please let us know or submit a PR.
+To be listed: All fields are optional. Contact any of the committers or, more timely, submit a pull request with the following (using the first row as an example):
 
-To be removed: please let us know or submit a PR.
+- **Individual or Organization:** The name you would like associated with the record.
+- **Website:** A URL to a standalone website for the project.
+- **Project:** A URL for the repository of the project using marked.
+- **Submitted by:** The name and optional honorifics for the person adding the listing.
+
+To be removed: Same as above. Only instead of requesting addition request deletion or delete the row yourself.
 
 ## Contributors
 
@@ -37,10 +43,10 @@ Committers are contributors who also have the responsibility, privilege, some mi
 
 A note on "decision making authority". This is related to submitting PRs and the [advice process](http://www.reinventingorganizationswiki.com/Decision_Making). The person marked as having decision making authority over a certain area should be sought for advice in that area before committing to a course of action.
 
-|Name           |GiHub handle   |Decision making                          |Badges of honor (tag for questions) |
-|:--------------|:--------------|:----------------------------------------|------------------------------------|
-|Jamie Davis    |@davisjam      |Seeker of Security                       |                                    |
-|Tony Brix      |@UziTech       |Titan of the test harness and Dr. DevOps |                                    |
+|Name           |GitHub handle   |Decision making                          |Badges of honor (tag for questions)  |
+|:--------------|:---------------|:----------------------------------------|:------------------------------------|
+|Jamie Davis    |@davisjam       |Seeker of Security                       |                                     |
+|Tony Brix      |@UziTech        |Titan of the test harness and Dr. DevOps |                                     |
 
 **Should not exceed 5:** For larger PRs affecting more of the codebase and, most likely, review by more people, we try to keep this pool small and responsive and let those with decision making authority have final say without negative repercussions from the other committers.
 
@@ -60,9 +66,9 @@ A note on volunteering:
 
 Admins are committers who also have the responsibility, privilege, and burden of selecting committers and making sure the project itself runs smoothly, which includes community maintenance, governance, dispute resolution, and so on. (Letting the contributors easily enter into, and work within, the project to begin contributing, with as little friction as possible.)
 
-|Name           |GiHub handle   |Decision making                          |Badges of honor (tag for questions) |
-|:--------------|:--------------|:----------------------------------------|------------------------------------|
-|Steven         |@styfle        |Open source, of course and GitHub Guru   |Humaning Helper                     |
+|Name           |GitHub handle   |Decision making                          |Badges of honor (tag for questions)  |
+|:--------------|:---------------|:----------------------------------------|:------------------------------------|
+|Steven         |@styfle         |Open source, of course and GitHub Guru   |Humaning Helper                      |
 
 **Should not exceed 3:** When there are too many people with the ability to reolves disputes, the dispute itself can quickly turn into a dispute amongst the admins themselves; therefore, we want this group to be small enough to commit to action and large enough to not put too much burden on one person. (Should ensure faster resolution and responsiveness.)
 
