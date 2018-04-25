@@ -7,6 +7,8 @@ if (!window.fetch) {
   window.fetch = unfetch;
 }
 
+var $version = document.querySelector('#version');
+
 var $inputElem = document.querySelector('#input');
 var $outputTypeElem = document.querySelector('#outputType');
 var $previewElem = document.querySelector('#preview');
@@ -15,6 +17,11 @@ var $clearElem = document.querySelector('#clear');
 var $htmlElem = document.querySelector('#html');
 var $lexerElem = document.querySelector('#lexer');
 var $panes = document.querySelectorAll('.pane');
+var $specUrls = document.querySelectorAll('.spec-url');
+
+var $spec = document.querySelector('#spec');
+var $smartypants = document.querySelector('#smartypants');
+
 var inputDirty = true;
 var $activeElem = null;
 var changeTimeout = null;
@@ -40,13 +47,27 @@ if (search.outputType) {
   $outputTypeElem.value = search.outputType;
 }
 
+if (search.spec) {
+  $spec.value = search.spec;
+}
+
+if (search.smartypants) {
+  $smartypants.checked = true;
+}
+
 fetch('./quickref.md')
   .then(function (res) { return res.text(); })
   .then(function (text) {
     document.querySelector('#quickref').value = text;
   });
 
-function handleChange() {
+fetch('https://cdn.jsdelivr.net/npm/marked/package.json')
+  .then(function (res) { return res.json(); })
+  .then(function (json) {
+    $version.textContent = 'v' + json.version;
+  });
+
+function handleOutputTypeChange() {
   for (var i = 0; i < $panes.length; i++) {
     $panes[i].style.display = 'none';
   }
@@ -56,13 +77,28 @@ function handleChange() {
   updateLink();
 };
 
-$outputTypeElem.addEventListener('change', handleChange, false);
-handleChange();
+$outputTypeElem.addEventListener('change', handleOutputTypeChange, false);
+handleOutputTypeChange();
+
+function handleSpecChange() {
+  for (var i = 0; i < $specUrls.length; i++) {
+    $specUrls[i].style.display = 'none';
+  }
+  var $activeSpec = document.querySelector('#' + $spec.value + '-spec-url');
+  $activeSpec.style.display = 'inline';
+}
 
 function handleInput() {
   inputDirty = true;
 };
 
+$spec.addEventListener('change', function () {
+  handleSpecChange();
+  handleInput();
+}, false);
+handleSpecChange();
+
+$smartypants.addEventListener('change', handleInput, false);
 $inputElem.addEventListener('change', handleInput, false);
 $inputElem.addEventListener('keyup', handleInput, false);
 $inputElem.addEventListener('keypress', handleInput, false);
@@ -121,12 +157,20 @@ function setScrollPercent(percent) {
 };
 
 function updateLink() {
-  var outputType = '';
+  var href = '';
   if ($outputTypeElem.value !== 'preview') {
-    outputType = 'outputType=' + $outputTypeElem.value + '&';
+    href += 'outputType=' + $outputTypeElem.value + '&';
   }
 
-  $permalinkElem.href = '?' + outputType + 'text=' + encodeURIComponent($inputElem.value);
+  if ($spec.value) {
+    href += 'spec=' + $spec.value + '&';
+  }
+
+  if ($smartypants.checked) {
+    href += 'smartypants=1&';
+  }
+
+  $permalinkElem.href = '?' + href + 'text=' + encodeURIComponent($inputElem.value);
   history.replaceState('', document.title, $permalinkElem.href);
 }
 
@@ -136,6 +180,12 @@ function checkForChanges() {
     inputDirty = false;
 
     updateLink();
+
+    marked.setOptions({
+      pedantic: $spec.value === 'pedantic',
+      gfm: $spec.value === 'gfm',
+      smartypants: $smartypants.checked
+    });
 
     var startTime = new Date();
 

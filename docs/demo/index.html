@@ -15,15 +15,30 @@
       <a href="../">
       <img src="../img/logo-black.svg" height="64px" width="64px" />
     </a>
-      <h1>Marked Demo</h1>
+      <h1>Marked Demo <span id="version"></span></h1>
     </header>
 
     <div class="containers">
       <div class="container">
         <div class="label">
-          <span>Input</span> ·
-          <a id="permalink">Permalink</a> ·
+          <span>Input:</span>
+          <a id="permalink">Permalink</a>
+          ·
           <button id="clear">Clear</button>
+          ·
+          <select id="spec" title="Specification">
+            <option value="cm">CommonMark</option>
+            <option value="gfm">GFM</option>
+            <option value="pedantic">Pedantic</option>
+          </select>
+          <a href="https://spec.commonmark.org/0.28/" id="cm-spec-url" class="spec-url" title="CommonMark Specs">?</a>
+          <a href="https://github.github.com/gfm/" id="gfm-spec-url" class="spec-url" title="GitHub Flavored Markdown Specs">?</a>
+          <a href="https://daringfireball.net/projects/markdown/syntax" id="pedantic-spec-url" class="spec-url" title="Original Specs">?</a>
+          ·
+          <label>
+            <input type="checkbox" id="smartypants" title="SmartyPants" />SmartyPants
+            <a href="https://daringfireball.net/projects/smartypants/" title="What is SmartyPants?">?</a>
+          </label>
         </div>
         <textarea id="input"></textarea>
       </div>
