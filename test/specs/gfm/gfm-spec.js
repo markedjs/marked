@@ -12,9 +12,8 @@ var testOptions = {
 describe('GFM 0.28 Tables', function() {
   var section = 'Tables';
 
-  // TODO: Verify exmaple 193 is valid and passing
   // var shouldPassButFails = [];
-  var shouldPassButFails = [192, 193, 195, 196, 197];
+  var shouldPassButFails = [192, 195, 196, 197];
 
   var willNotBeAttemptedByCoreTeam = [];
 
