@@ -30,6 +30,7 @@ Contributors are users who submit a [PR](https://github.com/markedjs/marked/pull
 |Federico Soave      |@Feder1co5oave   |Regent of the Regex, Master of Marked         |
 |Karen Yavine        |@karenyavine     |Snyk's Security Saint                         |
 |Костя Третяк        |@KostyaTretyak   |--                                            |
+|Tom Theisen         |@tomtheisen      |Defibrillator                                 |
 
 To be listed: make a contribution and, if it has significant impact, the committers may be able to add you here.
 
