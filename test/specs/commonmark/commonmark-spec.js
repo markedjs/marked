@@ -94,8 +94,7 @@ describe('CommonMark 0.28 Precedence', function() {
 describe('CommonMark 0.28 Thematic breaks', function() {
   var section = 'Thematic breaks';
 
-  // var shouldPassButFails = [];
-  var shouldPassButFails = [19];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -109,8 +108,7 @@ describe('CommonMark 0.28 Thematic breaks', function() {
 describe('CommonMark 0.28 ATX headings', function() {
   var section = 'ATX headings';
 
-  // var shouldPassButFails = [];
-  var shouldPassButFails = [40];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -139,8 +137,7 @@ describe('CommonMark 0.28 Setext headings', function() {
 describe('CommonMark 0.28 Indented code blocks', function() {
   var section = 'Indented code blocks';
 
-  // var shouldPassButFails = [];
-  var shouldPassButFails = [82];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -198,8 +195,7 @@ describe('CommonMark 0.28 Link reference definitions', function() {
 describe('CommonMark 0.28 Paragraphs', function() {
   var section = 'Paragraphs';
 
-  // var shouldPassButFails = [];
-  var shouldPassButFails = [185, 186];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -319,7 +315,7 @@ describe('CommonMark 0.28 Code spans', function() {
   var section = 'Code spans';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [330, 316, 328, 320, 323, 322];
+  var shouldPassButFails = [330, 316, 318, 328, 320, 323, 322];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -349,7 +345,7 @@ describe('CommonMark 0.28 Links', function() {
   var section = 'Links';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [468, 474, 478, 483, 489, 490, 491, 492, 495, 496, 497, 499, 503, 504, 505, 507, 508, 509, 523, 535];
+  var shouldPassButFails = [468, 474, 478, 483, 489, 490, 491, 492, 495, 496, 497, 499, 503, 504, 505, 507, 508, 509, 535];
 
   var willNotBeAttemptedByCoreTeam = [];
 
