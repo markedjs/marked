@@ -2,6 +2,10 @@
   <img width="60px" height="60px" src="https://marked.js.org/img/logo-black.svg" align="right" />
 </a>
 
+# Fork Purpose
+
+The original source was forked in hopes of creating a browser specific version which generates DOM elements instead of an HTML string to avoid XSS vulnerabilities. The core logic of lexing and parsing has not changed.
+
 # Marked
 
 [![npm](https://img.shields.io/npm/v/marked.svg)](https://www.npmjs.com/package/marked)
@@ -13,7 +17,7 @@
 - ⚡ built for speed
 - ⬇️ low-level compiler for parsing markdown without caching or blocking for long periods of time
 - ⚖️ light-weight while implementing all markdown features from the supported flavors & specifications
-- 🌐 works in a browser, on a server, or from a command line interface (CLI)
+- 🌐 works ONLY in a browser
 
 ## Demo
 
@@ -25,21 +29,9 @@ Our [documentation pages](https://marked.js.org) are also rendered using marked 
 
 ## Installation
 
-**CLI:** `npm install -g marked`
-
 **In-browser:** `npm install marked --save`
 
-## Usage 
-
-**CLI**
-
-``` bash
-$ marked -o hello.html
-hello world
-^D
-$ cat hello.html
-<p>hello world</p>
-```
+## Usage
 
 **Browser**
 
@@ -54,8 +46,7 @@ $ cat hello.html
   <div id="content"></div>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
-    document.getElementById('content').innerHTML =
-      marked('# Marked in the browser\n\nRendered by **marked**.');
+    document.getElementById('content').appendChild(marked('# Marked in the browser\n\nRendered by **marked**.'));
   </script>
 </body>
 </html>
