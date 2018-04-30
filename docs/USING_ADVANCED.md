@@ -47,7 +47,7 @@ console.log(myMarked('I am using __markdown__.'));
 |headerIds   |`boolean` |Whether to add an `id` attribute to headers. Default: `true`. Added in 0.4.0           |
 |headerPrefix|`string`  |A short string to add as a prefix to the `id` attributes added to headers by default. Default: `empty string`                |
 |highlight   |`function`|A function to highlight code blocks. See also: <a href="#highlight">Asynchronous highlighting</a>.                           |
-|langPrefix  |`??`      |Default is `lang-`
+|langPrefix  |`string`  |A string to prefix the className in a `<code>` block. Useful for syntax highlighting. Default is `lang-`
 |mangle      |`boolean` |Default is `true`
 |pedantic    |`boolean` |Conform to obscure parts of `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`. Default: `false`|
 |renderer    |`object`  |An object containing functions to render tokens to HTML. See [extensibility](https://github.com/markedjs/marked/blob/master/docs/USING_PRO.md) for more details. Default: `new Renderer()`|
