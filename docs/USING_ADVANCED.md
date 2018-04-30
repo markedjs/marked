@@ -41,10 +41,10 @@ console.log(myMarked('I am using __markdown__.'));
 
 |Member      |Type      |Notes                                                                                                                        |
 |:-----------|:---------|:----------------------------------------------------------------------------------------------------------------------------|
-|baseUrl     |`??`      |Default is `null`                                                                                                            |  
+|baseUrl     |`string`  |A prefix url for any relative link.  Default is `null`               |  
 |breaks      |`boolean` |Use GFM [hard](https://github.github.com/gfm/#hard-line-breaks) and [soft](https://github.github.com/gfm/#soft-line-breaks) line breaks. Requires `gfm` be `true`. Default: `false`|
 |gfm         |`boolean` |Use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).                                 |
-|headerIds   |`boolean` |Whether to add an `id` attribute to headers. Default: `true`                                                                 |
+|headerIds   |`boolean` |Whether to add an `id` attribute to headers. Default: `true`. Added in 0.4.0           |
 |headerPrefix|`string`  |A short string to add as a prefix to the `id` attributes added to headers by default. Default: `empty string`                |
 |highlight   |`function`|A function to highlight code blocks. See also: <a href="#highlight">Asynchronous highlighting</a>.                           |
 |langPrefix  |`??`      |Default is `lang-`
@@ -52,7 +52,7 @@ console.log(myMarked('I am using __markdown__.'));
 |pedantic    |`boolean` |Conform to obscure parts of `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`. Default: `false`|
 |renderer    |`object`  |An object containing functions to render tokens to HTML. See [extensibility](https://github.com/markedjs/marked/blob/master/docs/USING_PRO.md) for more details. Default: `new Renderer()`|
 |sanitize    |`boolean` |Ignore HTML passed into `markdownString` (sanitize the input). Default: `false`                                              |
-|sanitizer   |`??`      |Default is `null`                                                                                                            |
+|sanitizer   |`function`|A function to sanitize html. Default is `null`        |
 |silent      |`boolean` |Default is `false`                                                                                                           |
 |smartlists  |`boolean` |Use smarter list behavior than those found in `markdown.pl`. Default: `true`                                                 |
 |smartypants |`boolean` |Use "smart" typographic punctuation for things like quotes and dashes.                                                       |
