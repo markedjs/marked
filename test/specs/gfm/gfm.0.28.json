@@ -45,7 +45,7 @@
     "section": "Tables",
     "html": "<table>\n<thead>\n<tr>\n<th>abc</th>\n<th>def</th>\n</tr>\n</thead></table>",
     "markdown": "| abc | def |\n| --- | --- |",
-    "example": 197
+    "example": 198
   },
   {
     "section": "Task list items",

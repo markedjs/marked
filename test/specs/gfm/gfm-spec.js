@@ -28,7 +28,7 @@ var messenger = new Messenger();
 describe('GFM 0.28 Tables', function() {
   var section = 'Tables';
 
-  var shouldPassButFails = [192, 195, 196, 197];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
