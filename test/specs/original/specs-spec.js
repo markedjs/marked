@@ -1,5 +1,4 @@
-var marked = require('../../../lib/marked.js');
-var specTests = require('../../index.js');
+var specTests = require('../../');
 
 it('should run spec tests', function () {
   // hide output
@@ -10,14 +9,4 @@ it('should run spec tests', function () {
     specTests();
     fail();
   }
-});
-
-it('should use the correct paragraph type', function () {
-  const md = 'A Paragraph.\n\n> A blockquote\n\n- list item\n';
-
-  const tokens = marked.lexer(md);
-
-  expect(tokens[0].type).toBe('paragraph');
-  expect(tokens[3].type).toBe('paragraph');
-  expect(tokens[7].type).toBe('text');
 });
