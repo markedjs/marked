@@ -13,14 +13,7 @@ it('should run spec tests', function () {
 });
 
 it('should use the correct paragraph type', function () {
-  const md = `
-A Paragraph.
-
-> A blockquote
-
-- list item
-
-`;
+  const md = 'A Paragraph.\n\n> A blockquote\n\n- list item\n';
 
   const tokens = marked.lexer(md);
 
