@@ -39,25 +39,25 @@ console.log(myMarked('I am using __markdown__.'));
 
 <h2 id="options">Options</h2>
 
-|Member      |Type      |Notes                                                                                                                        |
-|:-----------|:---------|:----------------------------------------------------------------------------------------------------------------------------|
-|baseUrl     |`??`      |Default is `null`                                                                                                            |  
-|breaks      |`boolean` |Use GFM [hard](https://github.github.com/gfm/#hard-line-breaks) and [soft](https://github.github.com/gfm/#soft-line-breaks) line breaks. Requires `gfm` be `true`. Default: `false`|
-|gfm         |`boolean` |Use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).                                 |
-|headerIds   |`boolean` |Whether to add an `id` attribute to headers. Default: `true`                                                                 |
-|headerPrefix|`string`  |A short string to add as a prefix to the `id` attributes added to headers by default. Default: `empty string`                |
-|highlight   |`function`|A function to highlight code blocks. See also: <a href="#highlight">Asynchronous highlighting</a>.                           |
-|langPrefix  |`??`      |Default is `lang-`
-|mangle      |`boolean` |Default is `true`
-|pedantic    |`boolean` |Conform to obscure parts of `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`. Default: `false`|
-|renderer    |`object`  |An object containing functions to render tokens to HTML. See [extensibility](https://github.com/markedjs/marked/blob/master/docs/USING_PRO.md) for more details. Default: `new Renderer()`|
-|sanitize    |`boolean` |Ignore HTML passed into `markdownString` (sanitize the input). Default: `false`                                              |
-|sanitizer   |`??`      |Default is `null`                                                                                                            |
-|silent      |`boolean` |Default is `false`                                                                                                           |
-|smartlists  |`boolean` |Use smarter list behavior than those found in `markdown.pl`. Default: `true`                                                 |
-|smartypants |`boolean` |Use "smart" typographic punctuation for things like quotes and dashes.                                                       |
-|tables      |`boolean` |Use [GFM Tables extension](https://github.github.com/gfm/#tables-extension-). Requires `gfm` be `true`.                      |
-|xhtml       |`boolean` |Self-close the tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML. Default: `false`    |
+|Member      |Type      |Default  |Since    |Notes         |
+|:-----------|:---------|:--------|:--------|:-------------|
+|baseUrl     |`string`  |`null`   |???      |A prefix url for any relative link. |  
+|breaks      |`boolean` |`false`  |???      |If true, use GFM [hard](https://github.github.com/gfm/#hard-line-breaks) and [soft](https://github.github.com/gfm/#soft-line-breaks) line breaks. Requires `gfm` be `true`.|
+|gfm         |`boolean` |`true`   |???      |If trie. use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).|
+|headerIds   |`boolean` |`true`   |v0.4.0   |If true, include an `id` attribute when emitting headings (h1, h2, h3, etc).|
+|headerPrefix|`string`  |`''`     |???      |A string to prefix the `id` attribute when emitting headings (h1, h2, h3, etc).|
+|highlight   |`function`|`null`   |???      |A function to highlight code blocks, see <a href="#highlight">Asynchronous highlighting</a>.|
+|langPrefix  |`string`  |`'lang-'`|???      |A string to prefix the className in a `<code>` block. Useful for syntax highlighting.|
+|mangle      |`boolean` |`true`   |???      |???     |
+|pedantic    |`boolean` |`false`  |???      |If true, conform to the original `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`.|
+|renderer    |`object`  |`new Renderer()`|???|An object containing functions to render tokens to HTML. See [extensibility](USING_PRO.md) for more details.|
+|sanitize    |`boolean` |`false`  |???      |If true, sanitize the HTML passed into `markdownString` with the `sanitizer` function.|
+|sanitizer   |`function`|`null`   |???      |A function to sanitize the HTML passed into `markdownString`.|
+|silent      |`boolean` |`false`  |???      |???  |
+|smartlists  |`boolean` |`false`  |???      |If true, use smarter list behavior than those found in `markdown.pl`.|
+|smartypants |`boolean` |`false`  |???      |If true, use "smart" typographic punctuation for things like quotes and dashes.|
+|tables      |`boolean` |`true`   |???      |If true and `gfm` is true, use [GFM Tables extension](https://github.github.com/gfm/#tables-extension-).|
+|xhtml       |`boolean` |`false`  |???      |If true, emit self-closing HTML tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.|
 
 <h2 id="highlight">Asynchronous highlighting</h2>
 
