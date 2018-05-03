@@ -15,7 +15,8 @@ Messenger.prototype.test = function(spec, section, ignore) {
     var shouldFail = ~ignore.indexOf(spec.example);
     it('should ' + (shouldFail ? 'fail' : 'pass') + ' example ' + spec.example, function() {
       var expected = spec.html;
-      var actual = marked(spec.markdown, { headerIds: false, xhtml: true });
+      var usexhtml = typeof spec.xhtml === 'boolean' ? spec.xhtml : true;
+      var actual = marked(spec.markdown, { headerIds: false, xhtml: usexhtml });
       since(messenger.message(spec, expected, actual)).expect(
         htmlDiffer.isEqual(expected, actual)
       ).toEqual(!shouldFail);
@@ -42,7 +43,7 @@ describe('GFM 0.28 Tables', function() {
 describe('GFM 0.28 Task list items', function() {
   var section = 'Task list items';
 
-  var shouldPassButFails = [272, 273];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
