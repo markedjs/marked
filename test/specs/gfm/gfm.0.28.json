@@ -51,15 +51,13 @@
     "section": "Task list items",
     "html": "<ul>\n<li><input disabled=\"\" type=\"checkbox\"> foo</li>\n<li><input checked=\"\" disabled=\"\" type=\"checkbox\"> bar</li>\n</ul>",
     "markdown": "- [ ] foo\n- [x] bar",
-    "example": 272,
-    "xhtml": false
+    "example": 272
   },
   {
     "section": "Task list items",
     "html": "<ul>\n<li><input checked=\"\" disabled=\"\" type=\"checkbox\"> foo\n<ul>\n<li><input disabled=\"\" type=\"checkbox\"> bar</li>\n<li><input checked=\"\" disabled=\"\" type=\"checkbox\"> baz</li>\n</ul>\n</li>\n<li><input disabled=\"\" type=\"checkbox\"> bim</li>\n</ul>",
     "markdown": "- [x] foo\n  - [ ] bar\n  - [x] baz\n- [ ] bim",
-    "example": 273,
-    "xhtml": false
+    "example": 273
   },
   {
     "section": "Strikethrough",

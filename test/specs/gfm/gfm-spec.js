@@ -15,8 +15,7 @@ Messenger.prototype.test = function(spec, section, ignore) {
     var shouldFail = ~ignore.indexOf(spec.example);
     it('should ' + (shouldFail ? 'fail' : 'pass') + ' example ' + spec.example, function() {
       var expected = spec.html;
-      var usexhtml = typeof spec.xhtml === 'boolean' ? spec.xhtml : true;
-      var actual = marked(spec.markdown, { headerIds: false, xhtml: usexhtml });
+      var actual = marked(spec.markdown, { headerIds: false, xhtml: false });
       since(messenger.message(spec, expected, actual)).expect(
         htmlDiffer.isEqual(expected, actual)
       ).toEqual(!shouldFail);
