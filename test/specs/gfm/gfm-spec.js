@@ -56,7 +56,7 @@ describe('GFM 0.28 Task list items', function() {
 describe('GFM 0.28 Strikethrough', function() {
   var section = 'Strikethrough';
 
-  var shouldPassButFails = [469, 470];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
