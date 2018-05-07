@@ -43,7 +43,7 @@ console.log(myMarked('I am using __markdown__.'));
 |:-----------|:---------|:--------|:--------|:-------------|
 |baseUrl     |`string`  |`null`   |???      |A prefix url for any relative link. |  
 |breaks      |`boolean` |`false`  |???      |If true, use GFM [hard](https://github.github.com/gfm/#hard-line-breaks) and [soft](https://github.github.com/gfm/#soft-line-breaks) line breaks. Requires `gfm` be `true`.|
-|gfm         |`boolean` |`true`   |???      |If trie. use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).|
+|gfm         |`boolean` |`true`   |???      |If true, use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).|
 |headerIds   |`boolean` |`true`   |v0.4.0   |If true, include an `id` attribute when emitting headings (h1, h2, h3, etc).|
 |headerPrefix|`string`  |`''`     |???      |A string to prefix the `id` attribute when emitting headings (h1, h2, h3, etc).|
 |highlight   |`function`|`null`   |???      |A function to highlight code blocks, see <a href="#highlight">Asynchronous highlighting</a>.|
