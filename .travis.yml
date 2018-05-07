@@ -1,6 +1,9 @@
 language: node_js
 
 jobs:
+  allow_failures:
+    - stage: security scan 🔐
+
   include:
     - stage: unit tests 👩🏽‍💻
       script: npm run test:unit
