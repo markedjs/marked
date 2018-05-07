@@ -1,0 +1,83 @@
+<p>link with . <a href="http://example.com/hello-world">http://example.com/hello-world</a>.</p>
+
+<p>link with ! <a href="http://example.com/hello-world">http://example.com/hello-world</a>!</p>
+
+<p>link with : <a href="http://example.com/hello-world">http://example.com/hello-world</a>:</p>
+
+<p>link with , <a href="http://example.com/hello-world">http://example.com/hello-world</a>,</p>
+
+<p>link with ; <a href="http://example.com/hello-world">http://example.com/hello-world</a>;</p>
+
+<p>link with ) <a href="http://example.com/hello-world">http://example.com/hello-world</a>)</p>
+
+<p>link with nothing <a href="http://example.com/hello-world">http://example.com/hello-world</a></p>
+
+<h3 id="example-597">Example 597</h3>
+
+<p>The scheme http will be inserted automatically:</p>
+
+<p><a href="http://www.commonmark.org">www.commonmark.org</a></p>
+<h3 id="example-598">Example 598</h3>
+
+<p>After a valid domain, zero or more non-space non-&lt; characters may follow:</p>
+
+<p>Visit <a href="http://www.commonmark.org/help">www.commonmark.org/help</a> for more information.</p>
+
+<h3 id="example-599">Example 599</h3>
+
+<p>Trailing punctuation (specifically, ?, !, ., ,, :, *, _, and ~) will not be considered part of the autolink, though they may be included in the interior of the link:</p>
+
+<p>Visit <a href="http://www.commonmark.org">www.commonmark.org</a>.</p>
+
+<p>Visit <a href="http://www.commonmark.org/a.b">www.commonmark.org/a.b</a>.</p>
+
+<h3 id="example-600">Example 600</h3>
+
+<p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
+
+<p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>)</p>
+
+<h3 id="example-601">Example 601</h3>
+
+<p><a href="http://www.google.com/search?q=(business))+ok">www.google.com/search?q=(business))+ok</a></p>
+
+<h3 id="example-602">Example 602</h3>
+
+<p><a href="http://www.google.com/search?q=commonmark&amp;hl=en">www.google.com/search?q=commonmark&amp;hl=en</a></p>
+
+<p><a href="http://www.google.com/search?q=commonmark">www.google.com/search?q=commonmark</a>&amp;</p>
+
+<h3 id="example-603">Example 603</h3>
+
+<p>&lt; immediately ends an autolink.</p>
+
+<p><a href="http://www.commonmark.org/he">www.commonmark.org/he</a>&lt;lp</p>
+
+<h3 id="example-604">Example 604</h3>
+
+<p><a href="http://commonmark.org">http://commonmark.org</a></p>
+
+<p>(Visit <a href="https://encrypted.google.com/search?q=Markup+(business)">https://encrypted.google.com/search?q=Markup+(business)</a>)</p>
+
+<p>Anonymous FTP is available at <a href="ftp://foo.bar.baz">ftp://foo.bar.baz</a>.</p>
+
+<p>Extended email autolinks:</p>
+
+<h3 id="example-605">Example 605</h3>
+
+<p><a href="mailto:foo@bar.baz">foo@bar.baz</a></p>
+
+<h3 id="example-606">Example 606</h3>
+
+<p>hello@mail+xyz.example isn&#39;t valid, but <a href="mailto:hello+xyz@mail.example">hello+xyz@mail.example</a> is.</p>
+
+<h3 id="example-607">Example 607</h3>
+
+<p><a href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a></p>
+
+<p><a href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a>.</p>
+
+<p>a.b-c_d@a.b-</p>
+
+<pre><code>a.b-c_d@a.b_
+</code></pre>

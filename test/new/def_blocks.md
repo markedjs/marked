@@ -17,5 +17,5 @@
 
 > foo
 > bar
-[1]: foo
+[5]: foo
 > bar

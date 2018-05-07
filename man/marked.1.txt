@@ -22,7 +22,7 @@ EXAMPLES
 
        echo "hello *world*" | marked
 
-       marked -o out.html in.md --gfm
+       marked -o out.html -i in.md --gfm
 
        marked --output="hello world.html" -i in.md --no-breaks
 
