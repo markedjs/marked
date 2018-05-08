@@ -1,6 +1,10 @@
 language: node_js
 
 jobs:
+  fast_finish: true
+  allow_failures:
+    - stage: security scan 🔐
+
   include:
     - stage: unit tests 👩🏽‍💻
       script: npm run test:unit
@@ -12,10 +16,6 @@ jobs:
     - node_js: v4
     - node_js: lts/*
     - node_js: node
-
-    - stage: security scan 🔐
-      script: npm run test:redos
-      node_js: lts/*
 
     - stage: lint ✨
       script: npm run test:lint
@@ -34,6 +34,10 @@ jobs:
         fi
       node_js: lts/*
       if: branch = master AND type = push
+
+    - stage: security scan 🔐
+      script: npm run test:redos
+      node_js: lts/*
 
 cache:
   directories:
