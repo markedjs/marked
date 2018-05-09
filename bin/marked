@@ -20,7 +20,7 @@ function help() {
     cwd: process.cwd(),
     env: process.env,
     setsid: false,
-    customFds: [0, 1, 2]
+    stdio: 'inherit'
   };
 
   spawn('man', [path.resolve(__dirname, '/../man/marked.1')], options)
