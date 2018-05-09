@@ -46,3 +46,18 @@ describe('Marked Code spans', function() {
     messenger.test(spec, section, ignore);
   });
 });
+
+describe('Marked Table cells', function() {
+  var section = 'Table cells';
+
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  markedSpec.forEach(function(spec) {
+    messenger.test(spec, section, ignore);
+  });
+});
