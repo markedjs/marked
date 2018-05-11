@@ -47,7 +47,7 @@ console.log(myMarked('I am using __markdown__.'));
 |headerIds   |`boolean` |`true`   |v0.4.0   |If true, include an `id` attribute when emitting headings (h1, h2, h3, etc).|
 |headerPrefix|`string`  |`''`     |???      |A string to prefix the `id` attribute when emitting headings (h1, h2, h3, etc).|
 |highlight   |`function`|`null`   |???      |A function to highlight code blocks, see <a href="#highlight">Asynchronous highlighting</a>.|
-|langPrefix  |`string`  |`'lang-'`|???      |A string to prefix the className in a `<code>` block. Useful for syntax highlighting.|
+|langPrefix  |`string`  |`'language-'`|???      |A string to prefix the className in a `<code>` block. Useful for syntax highlighting.|
 |mangle      |`boolean` |`true`   |???      |???     |
 |pedantic    |`boolean` |`false`  |???      |If true, conform to the original `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`.|
 |renderer    |`object`  |`new Renderer()`|???|An object containing functions to render tokens to HTML. See [extensibility](USING_PRO.md) for more details.|
