@@ -44,4 +44,4 @@ cache:
     - node_modules
 
 git:
-  depth: 5
+  depth: 3
