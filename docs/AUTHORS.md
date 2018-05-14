@@ -11,7 +11,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/chjj">Christopher Jeffrey</a>
         <p>Original Author</p>
         <br>
-        <p>Started the fire</p>
+        <small>Started the fire</small>
       </td>
       <td align="center" valign="top">
         <img width="150" height="150" src="https://github.com/joshbruce.png?s=150">
@@ -19,7 +19,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/joshbruce">Josh Bruce</a>
         <p>Publisher</p>
         <br>
-        <p>Release Wrangler; Humaning Helper; Heckler of Hypertext</p>
+        <small>Release Wrangler; Humaning Helper; Heckler of Hypertext</small>
       </td>
       <td align="center" valign="top">
         <img width="150" height="150" src="https://github.com/styfle.png?s=150">
@@ -27,7 +27,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/styfle">Steven</a>
         <p>Admin</p>
         <br>
-        <p>Open source, of course; GitHub Guru; Humaning Helper</p>
+        <small>Open source, of course; GitHub Guru; Humaning Helper</small>
       </td>
     </tr>
   	<tr>
@@ -37,7 +37,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/davisjam">Jamie Davis</a>
         <p>Committer</p>
         <br>
-        <p>Seeker of Security</p>
+        <small>Seeker of Security</small>
       </td>
       <td align="center" valign="top">
         <img width="150" height="150" src="https://github.com/UziTech.png?s=150">
@@ -45,15 +45,15 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/UziTech">Tony Brix</a>
         <p>Committer</p>
         <br>
-        <p>Titan of the test harness; Dr. DevOps</p>
+        <small>Titan of the test harness; Dr. DevOps</small>
       </td>
       <td align="center" valign="top">
         <img width="150" height="150" src="https://via.placeholder.com/150?text=This+could+be+you">
         <br>
         <a href="https://marked.js.org/#/CONTRIBUTING.md">This could be you!</a>
-        <p>Send a Pull Request</p>
+        <p>Submit a Pull Request!</p>
         <br>
-        <p>Become a committer</p>
+        <small>Become a committer</small>
       </td>
     </tr>
     <tr>
@@ -63,7 +63,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/intcreator">Brandon der Blätter</a>
         <p>Contributor</p>
         <br>
-        <p>Curious Contributor</p>
+        <small>Curious Contributor</small>
       </td>
       <td align="center" valign="top">
         <img width="150" height="150" src="https://github.com/carlosvalle.png?s=150">
@@ -71,7 +71,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/carlosvalle">Carlos Valle</a>
         <p>Contributor</p>
         <br>
-        <p>Maker of the Marked mark from 2018 to present</p>
+        <small>Maker of the Marked mark from 2018 to present</small>
       </td>
       <td align="center" width="20%" valign="top">
         <img width="150" height="150" src="https://github.com/Feder1co5oave.png?s=150">
@@ -79,7 +79,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/Feder1co5oave">Federico Soave</a>
         <p>Contributor</p>
         <br>
-        <p>Regent of the Regex; Master of Marked</p>
+        <small>Regent of the Regex; Master of Marked</small>
       </td>
      </tr>
 	 <tr>
@@ -89,7 +89,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/karenyavine">Karen Yavine</a>
         <p>Contributor</p>
         <br>
-        <p>Snyk's Security Saint</p>
+        <small>Snyk's Security Saint</small>
       </td>
       <td align="center" valign="top">
         <img width="150" height="150" src="https://github.com/KostyaTretyak.png?s=150">
@@ -97,7 +97,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/KostyaTretyak">Костя Третяк</a>
         <p>Contributor</p>
         <br>
-        <p></p>
+        <small></small>
       </td>
       <td align="center" width="20%" valign="top">
         <img width="150" height="150" src="https://github.com/tomtheisen.png?s=150">
@@ -105,7 +105,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/tomtheisen">Tom Theisen</a>
         <p>Contributor</p>
         <br>
-        <p>Defibrillator</p>
+        <small>Defibrillator</small>
       </td>
      </tr>
   </tbody>
