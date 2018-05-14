@@ -1,6 +1,6 @@
 # Authors
 
-Marked takes an encompassing approach to its community. As such, you can think of these as [concentric circles](https://medium.com/the-node-js-collection/healthy-open-source-967fa8be7951), where each subsequent group is enveloped by the previous one.
+Marked takes an encompassing approach to its community. As such, you can think of these as [concentric circles](https://medium.com/the-node-js-collection/healthy-open-source-967fa8be7951), where each group encompases the following groups.
 
 <table>
   <tbody>
@@ -111,30 +111,25 @@ Marked takes an encompassing approach to its community. As such, you can think o
   </tbody>
 </table>
 
-## Users
+## Publishers
 
-Users are anyone using Marked in some fashion, without them, there's no reason for us to exist.
+Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPM and performing outreach and external stakeholder communications. Further, when things go pear-shaped, they're the ones taking most of the heat. Finally, when things go well, they're the primary ones praising the contributors who made it possible.
 
-|Individual or Organization |Website                 |Project                              |Submitted by                                        |
-|:--------------------------|:-----------------------|:------------------------------------|:---------------------------------------------------|
-|MarkedJS                   |https://marked.js.org   |https://github.com/markedjs/marked   |The marked committers                               |
+(In other words, while Admins are focused primarily on the internal workings of the project, Publishers are focused on internal *and* external concerns.)
 
-To be listed: All fields are optional. Contact any of the committers or, more timely, submit a pull request with the following (using the first row as an example):
+**Should not exceed 2:** Having more people with the authority to publish a release can quickly turn into a consensus seeking nightmare (design by committee). Having only one is preferred (Directly Responsible Individual); however, given the nature of the project and its history, having an immediate fallback, and a potential deep fallback (Original author) is probably a good idea.
 
-- **Individual or Organization:** The name you would like associated with the record.
-- **Website:** A URL to a standalone website for the project.
-- **Project:** A URL for the repository of the project using marked.
-- **Submitted by:** The name and optional honorifics for the person adding the listing.
+[Details on badges](#badges)
 
-To be removed: Same as above. Only instead of requesting addition request deletion or delete the row yourself.
+## Admins
 
-## Contributors
+Admins are committers who also have the responsibility, privilege, and burden of selecting committers and making sure the project itself runs smoothly, which includes community maintenance, governance, dispute resolution, and so on. (Letting the contributors easily enter into, and work within, the project to begin contributing, with as little friction as possible.)
 
-Contributors are users who submit a [PR](https://github.com/markedjs/marked/pulls), [Issue](https://github.com/markedjs/marked/issues), or collaborate in making Marked a better product and experience for all the users.
+**Should not exceed 3:** When there are too many people with the ability to reolves disputes, the dispute itself can quickly turn into a dispute amongst the admins themselves; therefore, we want this group to be small enough to commit to action and large enough to not put too much burden on one person. (Should ensure faster resolution and responsiveness.)
 
-To be listed: make a contribution and, if it has significant impact, the committers may be able to add you here.
+To be listed: Admins are usually selected from the pool of committers (or they volunteer, using the same process) who demonstrate good understanding of the marked culture, operations, and do their best to help new contributors get up to speed on how to contribute effectively to the project.
 
-To be removed: please let us know or submit a PR.
+To be removed: You can remove yourself through the [GitHub UI](https://help.github.com/articles/removing-yourself-from-a-collaborator-s-repository/).
 
 [Details on badges](#badges)
 
@@ -158,27 +153,32 @@ A note on volunteering:
 
 [Details on badges](#badges)
 
-## Admins
+## Contributors
 
-Admins are committers who also have the responsibility, privilege, and burden of selecting committers and making sure the project itself runs smoothly, which includes community maintenance, governance, dispute resolution, and so on. (Letting the contributors easily enter into, and work within, the project to begin contributing, with as little friction as possible.)
+Contributors are users who submit a [PR](https://github.com/markedjs/marked/pulls), [Issue](https://github.com/markedjs/marked/issues), or collaborate in making Marked a better product and experience for all the users.
 
-**Should not exceed 3:** When there are too many people with the ability to reolves disputes, the dispute itself can quickly turn into a dispute amongst the admins themselves; therefore, we want this group to be small enough to commit to action and large enough to not put too much burden on one person. (Should ensure faster resolution and responsiveness.)
+To be listed: make a contribution and, if it has significant impact, the committers may be able to add you here.
 
-To be listed: Admins are usually selected from the pool of committers (or they volunteer, using the same process) who demonstrate good understanding of the marked culture, operations, and do their best to help new contributors get up to speed on how to contribute effectively to the project.
-
-To be removed: You can remove yourself through the [GitHub UI](https://help.github.com/articles/removing-yourself-from-a-collaborator-s-repository/).
+To be removed: please let us know or submit a PR.
 
 [Details on badges](#badges)
 
-## Publishers
+## Users
 
-Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPM and performing outreach and external stakeholder communications. Further, when things go pear-shaped, they're the ones taking most of the heat. Finally, when things go well, they're the primary ones praising the contributors who made it possible.
+Users are anyone using Marked in some fashion, without them, there's no reason for us to exist.
 
-(In other words, while Admins are focused primarily on the internal workings of the project, Publishers are focused on internal *and* external concerns.)
+|Individual or Organization |Website                 |Project                              |Submitted by                                        |
+|:--------------------------|:-----------------------|:------------------------------------|:---------------------------------------------------|
+|MarkedJS                   |https://marked.js.org   |https://github.com/markedjs/marked   |The marked committers                               |
 
-**Should not exceed 2:** Having more people with the authority to publish a release can quickly turn into a consensus seeking nightmare (design by committee). Having only one is preferred (Directly Responsible Individual); however, given the nature of the project and its history, having an immediate fallback, and a potential deep fallback (Original author) is probably a good idea.
+To be listed: All fields are optional. Contact any of the committers or, more timely, submit a pull request with the following (using the first row as an example):
 
-[Details on badges](#badges)
+- **Individual or Organization:** The name you would like associated with the record.
+- **Website:** A URL to a standalone website for the project.
+- **Project:** A URL for the repository of the project using marked.
+- **Submitted by:** The name and optional honorifics for the person adding the listing.
+
+To be removed: Same as above. Only instead of requesting addition request deletion or delete the row yourself.
 
 <h2 id="badges">Badges</h2>
 
