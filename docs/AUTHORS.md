@@ -19,7 +19,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/joshbruce">Josh Bruce</a>
         <p>Publisher</p>
         <br>
-        <p>Release Wrangler</p>
+        <p>Release Wrangler; Humaning Helper; Heckler of Hypertext</p>
       </td>
       <td align="center" valign="top">
         <img width="150" height="150" src="https://github.com/styfle.png?s=150">
@@ -27,7 +27,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/styfle">Steven</a>
         <p>Admin</p>
         <br>
-        <p>Open source, of course and GitHub Guru</p>
+        <p>Open source, of course; GitHub Guru; Humaning Helper</p>
       </td>
     </tr>
   	<tr>
@@ -45,7 +45,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/UziTech">Tony Brix</a>
         <p>Committer</p>
         <br>
-        <p>Titan of the test harness and Dr. DevOps</p>
+        <p>Titan of the test harness; Dr. DevOps</p>
       </td>
       <td align="center" width="20%" valign="top">
         Placeholder
@@ -74,7 +74,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/Feder1co5oave">Federico Soave</a>
         <p>Contributor</p>
         <br>
-        <p>Regent of the Regex, Master of Marked</p>
+        <p>Regent of the Regex; Master of Marked</p>
       </td>
      </tr>
 	 <tr>
