@@ -5,7 +5,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
 <table>
   <tbody>
   	<tr>
-      <td align="center" valign="top">
+      <td align="center" valign="top" style="width:32%">
         <img width="150" height="150" src="https://github.com/chjj.png?s=150">
         <br>
         <a href="https://github.com/chjj">Christopher Jeffrey</a>
@@ -13,7 +13,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <br>
         <small>Started the fire</small>
       </td>
-      <td align="center" valign="top">
+      <td align="center" valign="top" style="width:32%">
         <img width="150" height="150" src="https://github.com/joshbruce.png?s=150">
         <br>
         <a href="https://github.com/joshbruce">Josh Bruce</a>
@@ -21,7 +21,7 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <br>
         <small>Release Wrangler; Humaning Helper; Heckler of Hypertext</small>
       </td>
-      <td align="center" valign="top">
+      <td align="center" valign="top" style="width:32%">
         <img width="150" height="150" src="https://github.com/styfle.png?s=150">
         <br>
         <a href="https://github.com/styfle">Steven</a>
