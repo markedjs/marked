@@ -6,7 +6,9 @@ Marked takes an encompassing approach to its community. As such, you can think o
   <tbody>
   	<tr>
       <td align="center" valign="top" style="width:32%">
-        <img width="150" height="150" src="https://github.com/chjj.png?s=150">
+        <a href="https://github.com/chjj">
+          <img width="150" height="150" src="https://github.com/chjj.png?s=150">
+        </a>
         <br>
         <a href="https://github.com/chjj">Christopher Jeffrey</a>
         <p>Original Author</p>
@@ -14,17 +16,21 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <small>Started the fire</small>
       </td>
       <td align="center" valign="top" style="width:32%">
-        <img width="150" height="150" src="https://github.com/joshbruce.png?s=150">
+        <a href="https://github.com/joshbruce">
+          <img width="150" height="150" src="https://github.com/joshbruce.png?s=150">
+        </a>
         <br>
-        <a href="https://github.com/joshbruce">Josh Bruce</a>
+        <a href="https://joshbruce.com">Josh Bruce</a>
         <p>Publisher</p>
         <br>
         <small>Release Wrangler; Humaning Helper; Heckler of Hypertext</small>
       </td>
       <td align="center" valign="top" style="width:32%">
-        <img width="150" height="150" src="https://github.com/styfle.png?s=150">
+        <a href="https://github.com/styfle">
+          <img width="150" height="150" src="https://github.com/styfle.png?s=150">
+        </a>
         <br>
-        <a href="https://github.com/styfle">Steven</a>
+        <a href="https://www.ceriously.com">Steven</a>
         <p>Admin</p>
         <br>
         <small>Open source, of course; GitHub Guru; Humaning Helper</small>
@@ -32,7 +38,9 @@ Marked takes an encompassing approach to its community. As such, you can think o
     </tr>
   	<tr>
       <td align="center" valign="top">
-        <img width="150" height="150" src="https://github.com/davisjam.png?s=150">
+        <a href="https://github.com/davisjam">
+          <img width="150" height="150" src="https://github.com/davisjam.png?s=150">
+        </a>
         <br>
         <a href="https://github.com/davisjam">Jamie Davis</a>
         <p>Committer</p>
@@ -40,9 +48,11 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <small>Seeker of Security</small>
       </td>
       <td align="center" valign="top">
-        <img width="150" height="150" src="https://github.com/UziTech.png?s=150">
+        <a href="https://github.com/UziTech">
+          <img width="150" height="150" src="https://github.com/UziTech.png?s=150">
+        </a>
         <br>
-        <a href="https://github.com/UziTech">Tony Brix</a>
+        <a href="https://tony.brix.ninja">Tony Brix</a>
         <p>Committer</p>
         <br>
         <small>Titan of the test harness; Dr. DevOps</small>
@@ -58,7 +68,9 @@ Marked takes an encompassing approach to its community. As such, you can think o
     </tr>
     <tr>
       <td align="center" valign="top">
-        <img width="150" height="150" src="https://github.com/intcreator.png?s=150">
+        <a href="https://github.com/intcreator">
+          <img width="150" height="150" src="https://github.com/intcreator.png?s=150">
+        </a>
         <br>
         <a href="https://github.com/intcreator">Brandon der Blätter</a>
         <p>Contributor</p>
@@ -66,7 +78,9 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <small>Curious Contributor</small>
       </td>
       <td align="center" valign="top">
-        <img width="150" height="150" src="https://github.com/carlosvalle.png?s=150">
+        <a href="https://github.com/carlosvalle">
+          <img width="150" height="150" src="https://github.com/carlosvalle.png?s=150">
+        </a>
         <br>
         <a href="https://github.com/carlosvalle">Carlos Valle</a>
         <p>Contributor</p>
@@ -74,7 +88,9 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <small>Maker of the Marked mark from 2018 to present</small>
       </td>
       <td align="center" width="20%" valign="top">
-        <img width="150" height="150" src="https://github.com/Feder1co5oave.png?s=150">
+        <a href="https://github.com/Feder1co5oave">
+          <img width="150" height="150" src="https://github.com/Feder1co5oave.png?s=150">
+        </a>
         <br>
         <a href="https://github.com/Feder1co5oave">Federico Soave</a>
         <p>Contributor</p>
@@ -84,7 +100,9 @@ Marked takes an encompassing approach to its community. As such, you can think o
      </tr>
 	 <tr>
       <td align="center" valign="top">
-        <img width="150" height="150" src="https://github.com/karenyavine.png?s=150">
+        <a href="https://github.com/karenyavine">
+          <img width="150" height="150" src="https://github.com/karenyavine.png?s=150">
+        </a>
         <br>
         <a href="https://github.com/karenyavine">Karen Yavine</a>
         <p>Contributor</p>
@@ -92,7 +110,9 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <small>Snyk's Security Saint</small>
       </td>
       <td align="center" valign="top">
-        <img width="150" height="150" src="https://github.com/KostyaTretyak.png?s=150">
+        <a href="https://github.com/KostyaTretyak">
+          <img width="150" height="150" src="https://github.com/KostyaTretyak.png?s=150">
+        </a>
         <br>
         <a href="https://github.com/KostyaTretyak">Костя Третяк</a>
         <p>Contributor</p>
@@ -100,7 +120,9 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <small></small>
       </td>
       <td align="center" width="20%" valign="top">
-        <img width="150" height="150" src="https://github.com/tomtheisen.png?s=150">
+        <a href="https://github.com/tomtheisen">
+          <img width="150" height="150" src="https://github.com/tomtheisen.png?s=150">
+        </a>
         <br>
         <a href="https://github.com/tomtheisen">Tom Theisen</a>
         <p>Contributor</p>
