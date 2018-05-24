@@ -54,7 +54,7 @@ console.log(myMarked('I am using __markdown__.'));
 |sanitize    |`boolean` |`false`  |???      |If true, sanitize the HTML passed into `markdownString` with the `sanitizer` function.|
 |sanitizer   |`function`|`null`   |???      |A function to sanitize the HTML passed into `markdownString`.|
 |silent      |`boolean` |`false`  |???      |???  |
-|smartlists  |`boolean` |`false`  |???      |If true, use smarter list behavior than those found in `markdown.pl`.|
+|smartLists  |`boolean` |`false`  |???      |If true, use smarter list behavior than those found in `markdown.pl`.|
 |smartypants |`boolean` |`false`  |???      |If true, use "smart" typographic punctuation for things like quotes and dashes.|
 |tables      |`boolean` |`true`   |???      |If true and `gfm` is true, use [GFM Tables extension](https://github.github.com/gfm/#tables-extension-).|
 |xhtml       |`boolean` |`false`  |???      |If true, emit self-closing HTML tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.|
