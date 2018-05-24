@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.css" integrity="sha384-BTL0nVi8DnMrNdMQZG1Ww6yasK9ZGnUxL1ZWukXQ7fygA1py52yPp9W4wrR00VML" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.10.0-alpha/dist/katex.min.js" integrity="sha384-y6SGsNt7yZECc4Pf86XmQhC4hG2wxL6Upkt9N1efhFxfh6wlxBH0mJiTE8XYclC1" crossorigin="anonymous"></script>
+<script src="../../lib/marked.js"></script>
+
+
+<script>
+	marked.setOptions({
+		//renderer: new marked.Renderer(),
+		gfm: true,
+		tables: true,
+		breaks: true,
+		pedantic: false,
+		sanitize: false, 
+		smartLists: true,
+		smartypants: false,
+		latexRender: katex.renderToString.bind(katex),
+	});
+
+    $ = document.querySelector.bind(document)
+    function mdRender(){
+        var text = $('#input').value
+        $('#preview').innerHTML = marked (text);
+    }
+	window.onload=mdRender
+</script>
+</head>
+<body>
+<textarea id="input" onkeyup="mdRender()"  "autofocus">
+
+```
+$x^2=y$    $$x^2=y$$
+$$\frac{n!}{k!(n-k)!} = \binom{n}{k}$$
+```
+$x^2=y$    $$x^2=y$$
+$$\frac{n!}{k!(n-k)!} = \binom{n}{k}$$
+
+</textarea>
+
+<style>
+em{ color:red}
+textarea{width:100%; height:200px;}
+#preview{
+ padding: 0.5em 1em; margin: 1em 1em;  
+}
+pre{
+padding: 2em 1em; margin: 0 2em 2em 0; border-radius: 1em;
+line-height: 2em;
+width:90%;
+background: #f5f2f0;
+}
+</style>
+<div id="preview"> </div>
+
+</body>
+</html>
