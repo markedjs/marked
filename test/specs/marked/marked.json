@@ -2,7 +2,7 @@
   {
     "section": "Code spans",
     "markdown": "`someone@example.com`",
-    "html": "<p><code>someone@exmaple.com</code></p>",
+    "html": "<p><code>someone@example.com</code></p>",
     "example": 1
   },
   {
