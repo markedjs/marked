@@ -13,8 +13,8 @@
   },
   {
     "section": "Table cells",
-    "markdown": "|1|\n|-|\n|1\\||",
-    "html": "<table><thead><tr><th>1</th></tr></thead><tbody><tr><td>1|</td></tr></tbody></table>",
+    "markdown": "|1|\n|-|\n|\\||",
+    "html": "<table><thead><tr><th>1</th></tr></thead><tbody><tr><td>|</td></tr></tbody></table>",
     "example": 3
   },
   {
