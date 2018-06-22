@@ -1,5 +1,11 @@
 [
   {
+    "section": "Autolinks",
+    "markdown": "(See https://www.example.com/fhqwhgads.)",
+    "html": "<p>(See <a href=\"https://www.example.com/fhqwhgads\">https://www.example.com/fhqwhgads</a>.)</p>",
+    "example": 10
+  },
+  {
     "section": "Code spans",
     "markdown": "`someone@example.com`",
     "html": "<p><code>someone@example.com</code></p>",

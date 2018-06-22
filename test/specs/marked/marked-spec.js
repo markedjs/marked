@@ -32,6 +32,21 @@ Messenger.prototype.test = function(spec, section, ignore) {
 
 var messenger = new Messenger();
 
+describe('Marked Autolinks', function() {
+  var section = 'Autolinks';
+
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  markedSpec.forEach(function(spec) {
+    messenger.test(spec, section, ignore);
+  });
+});
+
 describe('Marked Code spans', function() {
   var section = 'Code spans';
 
