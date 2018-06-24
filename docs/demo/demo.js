@@ -21,7 +21,7 @@ var changeTimeout = null;
 var search = searchToObject();
 
 var iframeLoaded = false;
-$previewIframe.addEventListener("load", function () {
+$previewIframe.addEventListener('load', function () {
   iframeLoaded = true;
   inputDirty = true;
   checkForChanges();
