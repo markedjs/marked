@@ -39,6 +39,8 @@ These documentation pages are also rendered using marked 💯
 
 <h2 id="usage">Usage</h2>
 
+### Warning: 🚨 Marked does not sanitize the output HTML by default 🚨
+
 **CLI**
 
 ``` bash
