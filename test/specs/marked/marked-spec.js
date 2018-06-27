@@ -35,7 +35,6 @@ var messenger = new Messenger();
 describe('Marked Autolinks', function() {
   var section = 'Autolinks';
 
-  // var shouldPassButFails = [];
   var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
@@ -50,7 +49,6 @@ describe('Marked Autolinks', function() {
 describe('Marked Code spans', function() {
   var section = 'Code spans';
 
-  // var shouldPassButFails = [];
   var shouldPassButFails = [1];
 
   var willNotBeAttemptedByCoreTeam = [];
@@ -65,7 +63,6 @@ describe('Marked Code spans', function() {
 describe('Marked Table cells', function() {
   var section = 'Table cells';
 
-  // var shouldPassButFails = [];
   var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
