@@ -31,7 +31,7 @@ Our [documentation pages](https://marked.js.org) are also rendered using marked 
 
 ## Usage
 
-### Warning: 🚨 Marked does not sanitize the output HTML by default 🚨
+### Warning: 🚨 Marked does not [sanitize](https://marked.js.org/#/USING_ADVANCED.md#options) the output HTML by default 🚨
 
 **CLI**
 
