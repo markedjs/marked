@@ -53,13 +53,14 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <small>Titan of the test harness; Dr. DevOps</small>
       </td>
       <td align="center" valign="top">
-        <img width="100" height="100" src="https://via.placeholder.com/150?text=This+could+be+you">
-        <br>
-        <a href="https://marked.js.org/#/CONTRIBUTING.md">This could be you!</a>
-        <div>Submit a Pull Request!</div>
-        <small>Become a committer</small>
+        &nbsp;
       </td>
     </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
     <tr>
       <td align="center" valign="top">
         <a href="https://github.com/intcreator">
