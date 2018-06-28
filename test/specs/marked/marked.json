@@ -52,5 +52,11 @@
     "markdown": "|1|2|\n|-|-|\n| |2|",
     "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td></td><td>2</td></tr></tbody></table>",
     "example": 9
+  },
+  {
+    "section": "Links",
+    "markdown": "Link: [constructor][].\n\n[constructor]: https://example.org/",
+    "html": "<p>Link: <a href=\"https://example.org/\">constructor</a>.</p>",
+    "example": 10
   }
 ]
