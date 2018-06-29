@@ -1,6 +1,178 @@
 # Authors
 
-Marked takes an encompassing approach to its community. As such, you can think of these as [concentric circles](https://medium.com/the-node-js-collection/healthy-open-source-967fa8be7951), where each subsequent group is enveloped by the previous one.
+Marked takes an encompassing approach to its community. As such, you can think of these as [concentric circles](https://medium.com/the-node-js-collection/healthy-open-source-967fa8be7951), where each group encompases the following groups.
+
+<table>
+  <tbody>
+  	<tr>
+      <td align="center" valign="top" style="width:32%">
+        <a href="https://github.com/chjj">
+          <img width="100" height="100" src="https://github.com/chjj.png?s=150">
+        </a>
+        <br>
+        <a href="https://github.com/chjj">Christopher Jeffrey</a>
+        <div>Original Author</div>
+        <small>Started the fire</small>
+      </td>
+      <td align="center" valign="top" style="width:32%">
+        <a href="https://github.com/joshbruce">
+          <img width="100" height="100" src="https://github.com/joshbruce.png?s=150">
+        </a>
+        <br>
+        <a href="https://joshbruce.com">Josh Bruce</a>
+        <div>Publisher</div>
+        <small>Release Wrangler; Humaning Helper; Heckler of Hypertext</small>
+      </td>
+      <td align="center" valign="top" style="width:32%">
+        <a href="https://github.com/styfle">
+          <img width="100" height="100" src="https://github.com/styfle.png?s=150">
+        </a>
+        <br>
+        <a href="https://www.ceriously.com">Steven</a>
+        <div>Admin</div>
+        <small>Open source, of course; GitHub Guru; Humaning Helper</small>
+      </td>
+    </tr>
+  	<tr>
+      <td align="center" valign="top">
+        <a href="https://github.com/davisjam">
+          <img width="100" height="100" src="https://github.com/davisjam.png?s=150">
+        </a>
+        <br>
+        <a href="https://github.com/davisjam">Jamie Davis</a>
+        <div>Committer</div>
+        <small>Seeker of Security</small>
+      </td>
+      <td align="center" valign="top">
+        <a href="https://github.com/UziTech">
+          <img width="100" height="100" src="https://github.com/UziTech.png?s=150">
+        </a>
+        <br>
+        <a href="https://tony.brix.ninja">Tony Brix</a>
+        <div>Committer</div>
+        <small>Titan of the test harness; Dr. DevOps</small>
+      </td>
+      <td align="center" valign="top">
+        &nbsp;
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top">
+        <a href="https://github.com/intcreator">
+          <img width="100" height="100" src="https://github.com/intcreator.png?s=150">
+        </a>
+        <br>
+        <a href="https://github.com/intcreator">Brandon der Blätter</a>
+        <div>Contributor</div>
+        <small>Curious Contributor</small>
+      </td>
+      <td align="center" valign="top">
+        <a href="https://github.com/carlosvalle">
+          <img width="100" height="100" src="https://github.com/carlosvalle.png?s=150">
+        </a>
+        <br>
+        <a href="https://github.com/carlosvalle">Carlos Valle</a>
+        <div>Contributor</div>
+        <small>Maker of the Marked mark from 2018 to present</small>
+      </td>
+      <td align="center" width="20%" valign="top">
+        <a href="https://github.com/Feder1co5oave">
+          <img width="100" height="100" src="https://github.com/Feder1co5oave.png?s=150">
+        </a>
+        <br>
+        <a href="https://github.com/Feder1co5oave">Federico Soave</a>
+        <div>Contributor</div>
+        <small>Regent of the Regex; Master of Marked</small>
+      </td>
+     </tr>
+	 <tr>
+      <td align="center" valign="top">
+        <a href="https://github.com/karenyavine">
+          <img width="100" height="100" src="https://github.com/karenyavine.png?s=150">
+        </a>
+        <br>
+        <a href="https://github.com/karenyavine">Karen Yavine</a>
+        <div>Contributor</div>
+        <small>Snyk's Security Saint</small>
+      </td>
+      <td align="center" valign="top">
+        <a href="https://github.com/KostyaTretyak">
+          <img width="100" height="100" src="https://github.com/KostyaTretyak.png?s=150">
+        </a>
+        <br>
+        <a href="https://github.com/KostyaTretyak">Костя Третяк</a>
+        <div>Contributor</div>
+        <small></small>
+      </td>
+      <td align="center" width="20%" valign="top">
+        <a href="https://github.com/tomtheisen">
+          <img width="100" height="100" src="https://github.com/tomtheisen.png?s=150">
+        </a>
+        <br>
+        <a href="https://github.com/tomtheisen">Tom Theisen</a>
+        <div>Contributor</div>
+        <small>Defibrillator</small>
+      </td>
+     </tr>
+  </tbody>
+</table>
+
+## Publishers
+
+Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPM and performing outreach and external stakeholder communications. Further, when things go pear-shaped, they're the ones taking most of the heat. Finally, when things go well, they're the primary ones praising the contributors who made it possible.
+
+(In other words, while Admins are focused primarily on the internal workings of the project, Publishers are focused on internal *and* external concerns.)
+
+**Should not exceed 2:** Having more people with the authority to publish a release can quickly turn into a consensus seeking nightmare (design by committee). Having only one is preferred (Directly Responsible Individual); however, given the nature of the project and its history, having an immediate fallback, and a potential deep fallback (Original author) is probably a good idea.
+
+[Details on badges](#badges)
+
+## Admins
+
+Admins are committers who also have the responsibility, privilege, and burden of selecting committers and making sure the project itself runs smoothly, which includes community maintenance, governance, dispute resolution, and so on. (Letting the contributors easily enter into, and work within, the project to begin contributing, with as little friction as possible.)
+
+**Should not exceed 3:** When there are too many people with the ability to resolve disputes, the dispute itself can quickly turn into a dispute amongst the admins themselves; therefore, we want this group to be small enough to commit to action and large enough to not put too much burden on one person. (Should ensure faster resolution and responsiveness.)
+
+To be listed: Admins are usually selected from the pool of committers (or they volunteer, using the same process) who demonstrate good understanding of the marked culture, operations, and do their best to help new contributors get up to speed on how to contribute effectively to the project.
+
+To be removed: You can remove yourself through the [GitHub UI](https://help.github.com/articles/removing-yourself-from-a-collaborator-s-repository/).
+
+[Details on badges](#badges)
+
+## Committers
+
+Committers are contributors who also have the responsibility, privilege, some might even say burden of being able to review and merge contributions (just usually not their own).
+
+A note on "decision making authority". This is related to submitting PRs and the [advice process](http://www.reinventingorganizationswiki.com/Decision_Making). The person marked as having decision making authority over a certain area should be sought for advice in that area before committing to a course of action.
+
+**Should not exceed 5:** For larger PRs affecting more of the codebase and, most likely, review by more people, we try to keep this pool small and responsive and let those with decision making authority have final say without negative repercussions from the other committers.
+
+To be listed: Committers are usually selected (or they volunteer, using the same process) from contributors who enter the discussions regarding the future direction of Marked (maybe even doing informal reviews of contributions despite not being able to merge them yourself).
+
+To be removed: You can remove yourself through the [GitHub UI](https://help.github.com/articles/removing-yourself-from-a-collaborator-s-repository/).
+
+A note on volunteering:
+
+1. Please do not volunteer unless you believe you can demonstrate to your peers you can do the work required.
+2. Please do not overcommit yourself; we count on those committed to the project to be responsive. Really consider, with all you have going on, wehther you able to really commit to it.
+3. Don't let the previous frighten you away, it can always be changed later by you or your peers.
+
+[Details on badges](#badges)
+
+## Contributors
+
+Contributors are users who submit a [PR](https://github.com/markedjs/marked/pulls), [Issue](https://github.com/markedjs/marked/issues), or collaborate in making Marked a better product and experience for all the users.
+
+To be listed: make a contribution and, if it has significant impact, the committers may be able to add you here.
+
+To be removed: please let us know or submit a PR.
+
+[Details on badges](#badges)
 
 ## Users
 
@@ -18,86 +190,6 @@ To be listed: All fields are optional. Contact any of the committers or, more ti
 - **Submitted by:** The name and optional honorifics for the person adding the listing.
 
 To be removed: Same as above. Only instead of requesting addition request deletion or delete the row yourself.
-
-## Contributors
-
-Contributors are users who submit a [PR](https://github.com/markedjs/marked/pulls), [Issue](https://github.com/markedjs/marked/issues), or collaborate in making Marked a better product and experience for all the users.
-
-|Name                |GitHub handle    |Badge of honor                                |
-|:-------------------|:----------------|:---------------------------------------------|
-|Brandon der Blätter |@intcreator      |Curious Contributor                           |
-|Carlos Valle        |@carlosvalle     |Maker of the Marked mark from 2018 to present |
-|Federico Soave      |@Feder1co5oave   |Regent of the Regex, Master of Marked         |
-|Karen Yavine        |@karenyavine     |Snyk's Security Saint                         |
-|Костя Третяк        |@KostyaTretyak   |--                                            |
-|Tom Theisen         |@tomtheisen      |Defibrillator                                 |
-
-To be listed: make a contribution and, if it has significant impact, the committers may be able to add you here.
-
-To be removed: please let us know or submit a PR.
-
-[Details on badges](#badges)
-
-## Committers
-
-Committers are contributors who also have the responsibility, privilege, some might even say burden of being able to review and merge contributions (just usually not their own).
-
-A note on "decision making authority". This is related to submitting PRs and the [advice process](http://www.reinventingorganizationswiki.com/Decision_Making). The person marked as having decision making authority over a certain area should be sought for advice in that area before committing to a course of action.
-
-|Name           |GitHub handle   |Decision making                          |Badges of honor (tag for questions)  |
-|:--------------|:---------------|:----------------------------------------|:------------------------------------|
-|Jamie Davis    |@davisjam       |Seeker of Security                       |                                     |
-|Tony Brix      |@UziTech        |Titan of the test harness and Dr. DevOps |                                     |
-
-**Should not exceed 5:** For larger PRs affecting more of the codebase and, most likely, review by more people, we try to keep this pool small and responsive and let those with decision making authority have final say without negative repercussions from the other committers.
-
-To be listed: Committers are usually selected (or they volunteer, using the same process) from contributors who enter the discussions regarding the future direction of Marked (maybe even doing informal reviews of contributions despite not being able to merge them yourself).
-
-To be removed: You can remove yourself through the [GitHub UI](https://help.github.com/articles/removing-yourself-from-a-collaborator-s-repository/).
-
-A note on volunteering:
-
-1. Please do not volunteer unless you believe you can demonstrate to your peers you can do the work required.
-2. Please do not overcommit yourself; we count on those committed to the project to be responsive. Really consider, with all you have going on, wehther you able to really commit to it.
-3. Don't let the previous frighten you away, it can always be changed later by you or your peers.
-
-[Details on badges](#badges)
-
-## Admins
-
-Admins are committers who also have the responsibility, privilege, and burden of selecting committers and making sure the project itself runs smoothly, which includes community maintenance, governance, dispute resolution, and so on. (Letting the contributors easily enter into, and work within, the project to begin contributing, with as little friction as possible.)
-
-|Name           |GitHub handle   |Decision making                          |Badges of honor (tag for questions)  |
-|:--------------|:---------------|:----------------------------------------|:------------------------------------|
-|Steven         |@styfle         |Open source, of course and GitHub Guru   |Humaning Helper                      |
-
-**Should not exceed 3:** When there are too many people with the ability to reolves disputes, the dispute itself can quickly turn into a dispute amongst the admins themselves; therefore, we want this group to be small enough to commit to action and large enough to not put too much burden on one person. (Should ensure faster resolution and responsiveness.)
-
-To be listed: Admins are usually selected from the pool of committers (or they volunteer, using the same process) who demonstrate good understanding of the marked culture, operations, and do their best to help new contributors get up to speed on how to contribute effectively to the project.
-
-To be removed: You can remove yourself through the [GitHub UI](https://help.github.com/articles/removing-yourself-from-a-collaborator-s-repository/).
-
-[Details on badges](#badges)
-
-## Publishers
-
-Publishers are admins who also have the responsibility, privilege, and burden of publishing the new releases to NPM and performing outreach and external stakeholder communications. Further, when things go pear-shaped, they're the ones taking most of the heat. Finally, when things go well, they're the primary ones praising the contributors who made it possible.
-
-(In other words, while Admins are focused primarily on the internal workings of the project, Publishers are focused on internal *and* external concerns.)
-
-|Name       |GitHub handle  |Decision making          |Badges of honor (tag for questions)   |
-|:----------|:--------------|:------------------------|:-------------------------------------|
-|Josh Bruce |@joshbruce     |Release Wrangler         |Humaning Helper, Heckler of Hypertext |
-
-**Should not exceed 2:** Having more people with the authority to publish a release can quickly turn into a consensus seeking nightmare (design by committee). Having only one is preferred (Directly Responsible Individual); however, given the nature of the project and its history, having an immediate fallback, and a potential deep fallback (Original author) is probably a good idea.
-
-[Details on badges](#badges)
-
-## Original author
-
-The original author is the publisher who started it all.
-
-Christopher Jeffrey @chjj
 
 <h2 id="badges">Badges</h2>
 
