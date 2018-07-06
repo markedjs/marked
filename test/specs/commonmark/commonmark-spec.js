@@ -289,7 +289,7 @@ describe('CommonMark 0.28 Backslash escapes', function() {
   var section = 'Backslash escapes';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [290, 291, 293, 300, 301];
+  var shouldPassButFails = [290, 291, 300, 301];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -409,7 +409,7 @@ describe('CommonMark 0.28 Hard line breaks', function() {
   var section = 'Hard line breaks';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [611, 606, 609, 613];
+  var shouldPassButFails = [613];
 
   var willNotBeAttemptedByCoreTeam = [];
 
