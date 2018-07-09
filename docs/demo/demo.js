@@ -9,7 +9,7 @@ if (!window.fetch) {
 
 var $inputElem = document.querySelector('#input');
 var $outputTypeElem = document.querySelector('#outputType');
-var $previewElem = document.querySelector('#preview');
+var $previewIframe = document.querySelector('#preview iframe');
 var $permalinkElem = document.querySelector('#permalink');
 var $clearElem = document.querySelector('#clear');
 var $htmlElem = document.querySelector('#html');
@@ -19,6 +19,13 @@ var inputDirty = true;
 var $activeElem = null;
 var changeTimeout = null;
 var search = searchToObject();
+
+var iframeLoaded = false;
+$previewIframe.addEventListener('load', function () {
+  iframeLoaded = true;
+  inputDirty = true;
+  checkForChanges();
+})
 
 if ('text' in search) {
   $inputElem.value = search.text;
@@ -51,7 +58,7 @@ function handleChange() {
     $panes[i].style.display = 'none';
   }
   $activeElem = document.querySelector('#' + $outputTypeElem.value);
-  $activeElem.style.display = 'block';
+  $activeElem.style.display = '';
 
   updateLink();
 };
@@ -155,7 +162,9 @@ function checkForChanges() {
 
     var parsed = marked.parser(lexed);
 
-    $previewElem.innerHTML = (parsed);
+    if (iframeLoaded) {
+      $previewIframe.contentDocument.body.innerHTML = (parsed);
+    }
     $htmlElem.value = (parsed);
     $lexerElem.value = (lexedList.join('\n'));
 

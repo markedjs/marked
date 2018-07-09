@@ -29,7 +29,9 @@ Our [documentation pages](https://marked.js.org) are also rendered using marked 
 
 **In-browser:** `npm install marked --save`
 
-## Usage 
+## Usage
+
+### Warning: 🚨 Marked does not [sanitize](https://marked.js.org/#/USING_ADVANCED.md#options) the output HTML by default 🚨
 
 **CLI**
 
@@ -64,4 +66,3 @@ $ cat hello.html
 ## License
 
 Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
-
