@@ -23,6 +23,11 @@ Checkout the [demo page](https://marked.js.org/demo/) to see marked in action â›
 
 Our [documentation pages](https://marked.js.org) are also rendered using marked ðŸ’¯
 
+Also read about:
+
+* [Options](docs/USING_ADVANCED.md)
+* [Extensibility](docs/USING_PRO.md)
+
 ## Installation
 
 **CLI:** `npm install -g marked`
