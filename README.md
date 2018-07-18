@@ -25,8 +25,8 @@ Our [documentation pages](https://marked.js.org) are also rendered using marked 
 
 Also read about:
 
-* [Options](docs/USING_ADVANCED.md)
-* [Extensibility](docs/USING_PRO.md)
+* [Options](https://marked.js.org/#/USING_ADVANCED.md)
+* [Extensibility](https://marked.js.org/#/USING_PRO.md)
 
 ## Installation
 
