@@ -51,13 +51,13 @@ console.log(myMarked('# heading+', { renderer: renderer }));
 
 ### Block level renderer methods
 
-- code(*string* code, *string* language)
+- code(*string* code, *string* language, *boolean* escaped)
 - blockquote(*string* quote)
 - html(*string* html)
-- heading(*string* text, *number*  level)
+- heading(*string* text, *number* level, *string* rawtext)
 - hr()
-- list(*string* body, *boolean* ordered)
-- listitem(*string*  text)
+- list(*string* body, *boolean* ordered, *number* start)
+- listitem(*string* text)
 - paragraph(*string* text)
 - table(*string* header, *string* body)
 - tablerow(*string* content)
