@@ -57,6 +57,11 @@
             font-size: 0.8em;
         }
 
+        nav .selected {
+            color: #21283E;
+            font-weight: bold;
+        }
+
         header {
             display: flex;
             height: 50px;
@@ -177,6 +182,7 @@
 
         var content = document.querySelector('#content');
         var body = document.querySelector('html');
+        var navLinks = document.querySelectorAll('nav a');
         var currentPage = 'README.md';
         var currentHash = '';
         var renderedPage = '';
@@ -204,7 +210,14 @@
                 fetchAnchor(currentHash)
             });
 
-            history.replaceState('', document.title, '#/' + currentPage + (currentHash ? '#' + currentHash : ''));
+            var url = '#/' + currentPage + (currentHash ? '#' + currentHash : '');
+            var fullUrl = window.location.origin + '/' + url;
+
+            navLinks.forEach(function(link) {
+                link.className = link.href === fullUrl ? 'selected' : '';
+            });
+
+            history.replaceState('', document.title, url);
         }
 
         function fetchAnchor(anchor) {
