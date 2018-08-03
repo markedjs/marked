@@ -24,6 +24,10 @@
             background: white;
         }
 
+        #content h1:first-child {
+            margin-top: 0px;
+        }
+
         nav {
             border: 1px solid #ddd;
             border-radius: 3px;
@@ -37,12 +41,12 @@
             margin: 10px 0px;
             padding: 0;
             list-style-type: none;
+            font-size: 14px;
         }
 
         nav > ul > li {
             min-width: 125px;
-            padding-left: 15px;
-            padding-right: 15px;
+            padding: 0px 15px;
         }
 
         nav > ul > li > ul {
@@ -53,7 +57,10 @@
             font-size: 0.8em;
         }
 
-        header { display: flex; }
+        header {
+            display: flex;
+            height: 50px;
+        }
 
         header h1 { margin: 0; }
 
@@ -120,7 +127,6 @@
                     <li>
                         <a href="#/README.md">Getting Started</a>
                         <ul>
-                            <li><a href="#/README.md#marked">About</a></li>
                             <li><a href="#/README.md#demo">Demo</a></li>
                             <li><a href="#/README.md#installation">Installation</a></li>
                             <li><a href="#/README.md#usage">Usage</a></li>
@@ -131,7 +137,6 @@
                     <li>
                         <a href="#/USING_ADVANCED.md">Advanced Usage</a>
                         <ul>
-                            <li><a href="#/USING_ADVANCED.md#the-marked-function">Function</a></li>
                             <li><a href="#/USING_ADVANCED.md#options">Options</a></li>
                             <li><a href="#/USING_ADVANCED.md#highlight">Highlighting</a></li>
                         </ul>
@@ -144,7 +149,14 @@
                             <li><a href="#/USING_PRO.md#parser">Parser</a></li>
                         </ul>
                     </li>
-                    <li><a href="#/CONTRIBUTING.md">Contributing</a></li>
+                    <li>
+                        <a href="#/CONTRIBUTING.md">Contributing</a>
+                        <ul>
+                            <li><a href="#/CONTRIBUTING.md#design-principles">Design Principles</a></li>
+                            <li><a href="#/CONTRIBUTING.md#priorities">Priorities</a></li>
+                            <li><a href="#/CONTRIBUTING.md#test-early-often-and-everything">Testing</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#/CODE_OF_CONDUCT.md">Code of Conduct</a></li>
                     <li><a href="#/AUTHORS.md">Authors</a></li>
                     <li><a href="#/PUBLISHING.md">Publishing</a></li>

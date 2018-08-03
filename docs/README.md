@@ -1,5 +1,3 @@
-<h2 id="about">About</h2>
-
 Marked is
 
 1. built for speed.<sup>*</sup>
