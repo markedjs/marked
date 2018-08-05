@@ -2,12 +2,6 @@
 
 To champion the single-reponsibility and open/closed prinicples, we have tried to make it relatively painless to extend marked. If you are looking to add custom functionality, this is the place to start.
 
-<ul>
-	<li><a href="#renderer">The renderer</a></li>
-	<li><a href="#lexer">The lexer</a></li>
-	<li><a href="#parser">The parser</a></li>
-</ul>
-
 <h2 id="renderer">The renderer</h2>
 
 The renderer is...

@@ -1,17 +1,3 @@
-<ul>
-  <li><a href="#marked">About</a></li>
-  <li><a href="#demo">Demo</a></li>
-  <li><a href="#installation">Installation</a></li>
-  <li><a href="#usage">Usage</a></li>
-  <li><a href="#specifications">Supported Markdown specifications</a></li>
-  <li><a href="#security">Security</a></li>
-  <li><a href="#contributing">Contributing</a></li>
-  <li><a href="#authors">Authors</a></li>
-  <li><a href="#license">License</a></li>
-</ul>
-
-<h2 id="marked">Marked</h2>
-
 Marked is
 
 1. built for speed.<sup>*</sup>
@@ -97,18 +83,3 @@ The only completely secure system is the one that doesn't exist in the first pla
 
 Therefore, please disclose potential security issues by email to the project [committers](#/AUTHORS.md) as well as the [listed owners within NPM](https://docs.npmjs.com/cli/owner). We will provide an initial assessment of security reports within 48 hours and should apply patches within 2 weeks (also, feel free to contribute a fix for the issue).
 
-<h2 id="contributing">Contributing</h2>
-
-The marked community enjoys a spirit of collaboration and contribution from all comers. Whether you're just getting started with Markdown, JavaScript, and Marked or you're a veteran with it all figured out, we're here to help each other improve as professionals while helping Marked improve technically. Please see our [contributing documentation](#/CONTRIBUTING.md) for more details.
-
-For our Contribution License Agreement, see our [license](https://github.com/markedjs/marked/blob/master/LICENSE.md).
-
-<h2 id="authors">Authors</h2>
-
-For list of credited authors and contributors, please see our [authors page](#/AUTHORS.md).
-
-<h2 id="license">License</h2>
-
-Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
-
-See [license](https://github.com/markedjs/marked/blob/master/LICENSE.md) for more details.

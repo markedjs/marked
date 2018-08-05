@@ -90,6 +90,3 @@ To build your own minified version of Marked:
 npm run build
 ```
 
-## Publishing
-
-Creating GitHub releases and publishing to NPM is limited to conributors and owners. If you would like more information, please see our [publishing documentation](#/PUBLISHING.md).
