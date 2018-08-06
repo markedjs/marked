@@ -6,7 +6,7 @@
 
 [![npm](https://badgen.net/npm/v/marked)](https://www.npmjs.com/package/marked)
 [![gzip size](http://img.badgesize.io/https://cdn.jsdelivr.net/npm/marked/marked.min.js?compression=gzip)](https://cdn.jsdelivr.net/npm/marked/marked.min.js)
-[![install size](https://packagephobia.now.sh/badge?p=marked)](https://packagephobia.now.sh/result?p=marked)
+[![install size](https://badgen.net/packagephobia/install/marked)](https://packagephobia.now.sh/result?p=marked)
 [![downloads](https://badgen.net/npm/dt/marked)](https://www.npmjs.com/package/marked)
 [![travis](https://badgen.net/travis/markedjs/marked)](https://travis-ci.org/markedjs/marked)
 
