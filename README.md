@@ -4,11 +4,11 @@
 
 # Marked
 
-[![npm](https://img.shields.io/npm/v/marked.svg)](https://www.npmjs.com/package/marked)
+[![npm](https://badgen.net/npm/v/marked)](https://www.npmjs.com/package/marked)
 [![gzip size](http://img.badgesize.io/https://cdn.jsdelivr.net/npm/marked/marked.min.js?compression=gzip)](https://cdn.jsdelivr.net/npm/marked/marked.min.js)
 [![install size](https://packagephobia.now.sh/badge?p=marked)](https://packagephobia.now.sh/result?p=marked)
-[![downloads](https://img.shields.io/npm/dt/marked.svg)](https://www.npmjs.com/package/marked)
-[![travis](https://travis-ci.org/markedjs/marked.svg?branch=master)](https://travis-ci.org/markedjs/marked)
+[![downloads](https://badgen.net/npm/dt/marked)](https://www.npmjs.com/package/marked)
+[![travis](https://badgen.net/travis/markedjs/marked)](https://travis-ci.org/markedjs/marked)
 
 - ⚡ built for speed
 - ⬇️ low-level compiler for parsing markdown without caching or blocking for long periods of time
