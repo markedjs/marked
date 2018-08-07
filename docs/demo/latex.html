@@ -10,7 +10,7 @@
 	marked.setOptions({
 		gfm: true,
 		breaks: true,
-		//latexRender: katex.renderToString.bind(katex),
+		latexRender: katex.renderToString.bind(katex),
 	});
 
     $ = document.querySelector.bind(document)
@@ -22,7 +22,7 @@
 </script>
 </head>
 <body>
-<textarea id="input" onkeyup="mdRender()"  "autofocus">
+<textarea id="input" onkeyup="mdRender"  "autofocus">
 
 ```
 $x^2=y$    $$x^2=y$$
