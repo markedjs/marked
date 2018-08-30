@@ -281,9 +281,9 @@ function runBench(options) {
   // showdown
   try {
     bench('commonmark', files, (function() {
-      var commonmark = require('commonmark')
-        , parser = new commonmark.Parser()
-        , writer = new commonmark.HtmlRenderer();
+      var commonmark = require('commonmark'),
+          parser = new commonmark.Parser(),
+          writer = new commonmark.HtmlRenderer();
       return function(text) {
         return writer.render(parser.parse(text));
       };
