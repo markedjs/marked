@@ -1,0 +1,269 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Marked.js Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+            font-size: 16px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            background: #F9F9F9;
+        }
+
+        #container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        #content {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            background: white;
+        }
+
+        #content h1:first-child {
+            margin-top: 0px;
+        }
+
+        nav {
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            background: white;
+            margin-right: 10px;
+        }
+
+        nav > ul {
+            position: sticky;
+            top: 5px;
+            margin: 10px 0px;
+            padding: 0;
+            list-style-type: none;
+            font-size: 14px;
+        }
+
+        nav > ul > li {
+            min-width: 125px;
+            padding: 0px 15px;
+        }
+
+        nav > ul > li > ul {
+            padding-left: 25px;
+        }
+
+        nav > ul > li > ul > li {
+            font-size: 0.8em;
+        }
+
+        nav .selected {
+            color: #111;
+            font-weight: bold;
+        }
+
+        nav .selected:hover {
+            text-decoration: none;
+        }
+
+        header {
+            display: flex;
+            height: 50px;
+        }
+
+        header h1 { margin: 0; }
+
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+        }
+
+        td, th {
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        pre {
+            font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f6f8fa;
+            border-radius: 3px;
+        }
+
+        code:not([class]) {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: rgba(27,31,35,0.05);
+            border-radius: 3px;
+        }
+
+        .github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+
+    </style>
+</head>
+<body>
+    <a href="https://github.com/markedjs/marked" class="github-corner" aria-label="View source on Github">
+        <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#202020; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+            <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+            <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+            <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+        </svg>
+    </a>
+    <div id="container">
+        <header>
+            <a href="#/README.md">
+                <img src="img/logo-black.svg" height="64px" width="64px" />
+            </a>
+            <h1>Marked.js Documentation</h1>
+        </header>
+        <div style="display: flex">
+            <nav>
+                <ul>
+                    <li>
+                        <a href="#/README.md">Getting Started</a>
+                        <ul>
+                            <li><a href="#/README.md#demo">Demo</a></li>
+                            <li><a href="#/README.md#installation">Installation</a></li>
+                            <li><a href="#/README.md#usage">Usage</a></li>
+                            <li><a href="#/README.md#specifications">Specs</a></li>
+                            <li><a href="#/README.md#security">Security</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#/USING_ADVANCED.md">Advanced Usage</a>
+                        <ul>
+                            <li><a href="#/USING_ADVANCED.md#options">Options</a></li>
+                            <li><a href="#/USING_ADVANCED.md#highlight">Highlighting</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#/USING_PRO.md">Extensibility</a>
+                        <ul>
+                            <li><a href="#/USING_PRO.md#renderer">Renderer</a></li>
+                            <li><a href="#/USING_PRO.md#lexer">Lexer</a></li>
+                            <li><a href="#/USING_PRO.md#parser">Parser</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#/CONTRIBUTING.md">Contributing</a>
+                        <ul>
+                            <li><a href="#/CONTRIBUTING.md#design-principles">Design Principles</a></li>
+                            <li><a href="#/CONTRIBUTING.md#priorities">Priorities</a></li>
+                            <li><a href="#/CONTRIBUTING.md#test-early-often-and-everything">Testing</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#/CODE_OF_CONDUCT.md">Code of Conduct</a></li>
+                    <li><a href="#/AUTHORS.md">Authors</a></li>
+                    <li><a href="#/PUBLISHING.md">Publishing</a></li>
+                    <li><a href="#/LICENSE.md">License</a></li>
+                </ul>
+            </nav>
+            <div id="content"></div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/unfetch/dist/unfetch.umd.js"></script>
+    <script>
+        if (!window.Promise) {
+          window.Promise = ES6Promise;
+        }
+        if (!window.fetch) {
+          window.fetch = unfetch;
+        }
+
+        var content = document.querySelector('#content');
+        var body = document.querySelector('html');
+        var navLinks = document.querySelectorAll('nav a');
+        var currentPage = 'README.md';
+        var currentHash = '';
+        var renderedPage = '';
+
+        function hashChange() {
+            var hash = location.hash.slice(1);
+            if (!hash) {
+                hash = 'README.md';
+            }
+
+            var uri = hash.split('#');
+
+            if (uri[0].match(/^\//)) {
+                currentPage = uri[0].slice(1);
+                if (uri.length > 1) {
+                    currentHash = uri[1];
+                } else {
+                    currentHash = '';
+                }
+            } else {
+                currentHash = uri[0];
+            }
+
+            fetchPage(currentPage).then(function () {
+                fetchAnchor(currentHash)
+            });
+
+            var url = '#/' + currentPage + (currentHash ? '#' + currentHash : '');
+            var fullUrl = window.location.origin + '/' + url;
+
+            navLinks.forEach(function(link) {
+                link.className = link.href === fullUrl ? 'selected' : '';
+            });
+
+            history.replaceState('', document.title, url);
+        }
+
+        function fetchAnchor(anchor) {
+            if (!anchor) {
+                return;
+            }
+
+            var hashElement = document.getElementById(anchor);
+            if (hashElement) {
+                hashElement.scrollIntoView();
+            }
+        }
+
+        function fetchPage(page) {
+            if (page === renderedPage) {
+                return Promise.resolve();
+            }
+            return fetch(page)
+                .then(function (res) {
+                    if (!res.ok) {
+                        throw new Error('Error ' + res.status + ': ' + res.statusText);
+                    }
+                    return res.text();
+                })
+                .then(function (text) {
+                    renderedPage = page;
+                    content.innerHTML = marked(text);
+                    body.scrollTop = 0;
+                }).catch(function (e) {
+                    content.innerHTML = '<p>Oops! There was a problem rendering the page.</p>'
+                        + '<p>' + e.message + '</p>';
+                });
+        }
+
+        window.addEventListener('hashchange', function (e) {
+            e.preventDefault();
+            hashChange();
+        });
+
+        hashChange();
+    </script>
+</body>
+</html>

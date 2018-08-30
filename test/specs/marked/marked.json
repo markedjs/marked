@@ -1,0 +1,80 @@
+[
+  {
+    "section": "Autolinks",
+    "markdown": "(See https://www.example.com/fhqwhgads.)",
+    "html": "<p>(See <a href=\"https://www.example.com/fhqwhgads\">https://www.example.com/fhqwhgads</a>.)</p>",
+    "example": 10
+  },
+  {
+    "section": "Autolinks",
+    "markdown": "((http://foo.com))",
+    "html": "<p>((<a href=\"http://foo.com\">http://foo.com</a>))</p>",
+    "example": 11
+  },
+  {
+    "section": "Autolinks",
+    "markdown": "((http://foo.com.))",
+    "html": "<p>((<a href=\"http://foo.com\">http://foo.com</a>.))</p>",
+    "example": 12
+  },
+  {
+    "section": "Code spans",
+    "markdown": "`someone@example.com`",
+    "html": "<p><code>someone@example.com</code></p>",
+    "example": 1
+  },
+  {
+    "section": "Table cells",
+    "markdown": "|1|\n|-|\n|1|",
+    "html": "<table><thead><tr><th>1</th></tr></thead><tbody><tr><td>1</td></tr></tbody></table>",
+    "example": 2
+  },
+  {
+    "section": "Table cells",
+    "markdown": "|1|\n|-|\n|\\||",
+    "html": "<table><thead><tr><th>1</th></tr></thead><tbody><tr><td>|</td></tr></tbody></table>",
+    "example": 3
+  },
+  {
+    "section": "Table cells",
+    "markdown": "|1|\n|-|\n|1\\\\1|",
+    "html": "<table><thead><tr><th>1</th></tr></thead><tbody><tr><td>1\\1</td></tr></tbody></table>",
+    "example": 4
+  },
+  {
+    "section": "Table cells",
+    "markdown": "|1|\n|-|\n|\\\\\\\\||",
+    "html": "<table><thead><tr><th>1</th></tr></thead><tbody><tr><td>\\\\</td></tr></tbody></table>",
+    "example": 5
+  },
+  {
+    "section": "Table cells",
+    "markdown": "|1|\n|-|\n|\\\\\\\\\\||",
+    "html": "<table><thead><tr><th>1</th></tr></thead><tbody><tr><td>\\\\|</td></tr></tbody></table>",
+    "example": 6
+  },
+  {
+    "section": "Table cells",
+    "markdown": "|1|2|\n|-|-|\n||2|",
+    "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td></td><td>2</td></tr></tbody></table>",
+    "example": 7
+  },
+  {
+    "section": "Table cells",
+    "markdown": "|1|2|\n|-|-|\n|1\\|\\\\|2\\|\\\\|",
+    "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td>1|\\</td><td>2|\\</td></tr></tbody></table>",
+    "example": 8
+  },
+  {
+    "section": "Table cells",
+    "markdown": "|1|2|\n|-|-|\n| |2|",
+    "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td></td><td>2</td></tr></tbody></table>",
+    "example": 9
+  },
+  {
+    "section": "Links",
+    "markdown": "Link: [constructor][].\n\n[constructor]: https://example.org/",
+    "html": "<p>Link: <a href=\"https://example.org/\">constructor</a>.</p>",
+    "example": 10
+  }
+]

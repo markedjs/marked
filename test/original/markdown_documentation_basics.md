@@ -1,3 +1,7 @@
+---
+pedantic: true
+---
+
 Markdown: Basics
 ================
 

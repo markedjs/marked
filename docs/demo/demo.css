@@ -1,0 +1,63 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #333;
+	background-color: #fbfbfb;
+	height: 100%;
+}
+
+textarea {
+	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+	font-size: 12px;
+	resize: none;
+}
+
+header {
+	padding-top: 10px;
+	display: flex;
+	height: 58px;
+}
+
+header h1 {
+	margin: 0;
+}
+
+.github-ribbon {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: 0;
+	z-index: 1000;
+}
+
+.containers {
+	display: flex;
+	height: calc(100vh - 68px);
+}
+
+.container {
+	flex-basis: 50%;
+	padding: 5px;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+.pane, #input {
+	margin-top: 5px;
+	padding: 0.6em;
+	border: 1px solid #ccc;
+	overflow: auto;
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+
+#preview {
+	display: flex;
+}
+
+#preview iframe {
+	flex-grow: 1;
+}

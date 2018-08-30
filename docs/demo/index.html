@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <title>Marked Demo</title>
+    <link rel="stylesheet" href="./demo.css" type="text/css" />
+  </head>
+
+  <body>
+    <a href="https://github.com/markedjs/marked">
+    <img class="github-ribbon" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+  </a>
+
+    <header>
+      <a href="../">
+      <img src="../img/logo-black.svg" height="64px" width="64px" />
+    </a>
+      <h1>Marked Demo</h1>
+    </header>
+
+    <div class="containers">
+      <div class="container">
+        <div class="label">
+          <span>Input</span> ·
+          <a id="permalink">Permalink</a> ·
+          <button id="clear">Clear</button>
+        </div>
+        <textarea id="input"></textarea>
+      </div>
+
+      <div class="container">
+        <div class="label">
+          <select id="outputType">
+            <option value="preview">Preview</option>
+            <option value="html">HTML Source</option>
+            <option value="lexer">Lexer Data</option>
+            <option value="quickref">Quick Reference</option>
+          </select>
+        </div>
+
+        <div id="preview" class="pane">
+          <noscript>
+            <h2>You'll need to enable Javascript to use this tool.</h2>
+          </noscript>
+          <iframe src="./preview.html" frameborder="0" sandbox="allow-same-origin"></iframe>
+        </div>
+
+        <textarea id="html" class="pane" readonly="readonly"></textarea>
+
+        <textarea id="lexer" class="pane" readonly="readonly"></textarea>
+
+        <textarea id="quickref" class="pane" readonly="readonly"></textarea>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/unfetch/dist/unfetch.umd.js"></script>
+    <script src="./demo.js"></script>
+  </body>
+
+</html>
