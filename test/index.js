@@ -280,22 +280,16 @@ function runBench(options) {
 
   // showdown
   try {
-    bench('showdown (reuse converter)', files, (function() {
-      var Showdown = require('showdown');
-      var convert = new Showdown.Converter();
+    bench('commonmark', files, (function() {
+      var commonmark = require('commonmark'),
+          parser = new commonmark.Parser(),
+          writer = new commonmark.HtmlRenderer();
       return function(text) {
-        return convert.makeHtml(text);
-      };
-    })());
-    bench('showdown (new converter)', files, (function() {
-      var Showdown = require('showdown');
-      return function(text) {
-        var convert = new Showdown.Converter();
-        return convert.makeHtml(text);
+        return writer.render(parser.parse(text));
       };
     })());
   } catch (e) {
-    console.log('Could not bench showdown. (Error: %s)', e.message);
+    console.log('Could not bench commonmark. (Error: %s)', e.message);
   }
 
   // markdown-it
