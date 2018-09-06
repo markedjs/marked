@@ -1,6 +1,6 @@
 var marked = require('../../../lib/marked.js');
 var cmSpec = require('./commonmark.0.28.json');
-var HtmlDiffer = require('html-differ').HtmlDiffer,
+var HtmlDiffer = require('@markedjs/html-differ').HtmlDiffer,
     htmlDiffer = new HtmlDiffer();
 var since = require('jasmine2-custom-message');
 
