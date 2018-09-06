@@ -27,27 +27,32 @@ var messenger = new Messenger();
 /*
 |Section                                 |Count      |Percent |
 |:---------------------------------------|:---------:|-------:|
-|Tabs                                    |  7 of  11 |     64%|
-|Thematic breaks                         | 18 of  19 |     95%|
+|Tabs                                    | 10 of  11 |     91%|
+|Precedence                              |  1 of   1 |    100%|
+|Thematic breaks                         | 19 of  19 |    100%|
 |ATX headings                            | 14 of  18 |     78%|
 |Setext headings                         | 21 of  26 |     81%|
-|Indented code blocks                    | 11 of  12 |     92%|
-|Fenced code blocks                      | 17 of  28 |     61%|
+|Indented code blocks                    | 12 of  12 |    100%|
+|Fenced code blocks                      | 21 of  28 |     75%|
+|HTML blocks                             | 43 of  43 |    100%|
 |Link reference definitions              | 22 of  23 |     96%|
-|Paragraphs                              |  6 of   8 |     75%|
+|Paragraphs                              |  8 of   8 |    100%|
+|Blank lines                             |  1 of   1 |    100%|
 |Block quotes                            | 21 of  25 |     84%|
 |List items                              | 32 of  48 |     67%|
-|Lists                                   | 10 of  24 |     42%|
-|Backslash escapes                       |  8 of  13 |     62%|
+|Lists                                   | 12 of  24 |     50%|
+|Inlines                                 |  1 of   1 |    100%|
+|Backslash escapes                       | 10 of  13 |     77%|
 |Entity and numeric character references |  9 of  12 |     75%|
 |Code spans                              | 11 of  17 |     65%|
-|Emphasis and strong emphasis            | 71 of 128 |     55%|
-|Links                                   | 64 of  84 |     76%|
+|Emphasis and strong emphasis            | 74 of 128 |     58%|
+|Links                                   | 69 of  84 |     82%|
 |Images                                  | 15 of  22 |     68%|
 |Autolinks                               | 15 of  19 |     79%|
 |Raw HTML                                | 19 of  21 |     90%|
-|Hard line breaks                        | 32 of  36 |     89%|
-|Soft line breaks                        |  1 of   2 |     50%|
+|Hard line breaks                        | 15 of  15 |    100%|
+|Soft line breaks                        |  2 of   2 |    100%|
+|Textual content                         |  3 of   3 |    100%|
 */
 
 describe('CommonMark 0.28 Tabs', function() {
