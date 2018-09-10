@@ -8,8 +8,8 @@
 [![gzip size](https://badgen.net/badgesize/gzip/https://cdn.jsdelivr.net/npm/marked/marked.min.js)](https://cdn.jsdelivr.net/npm/marked/marked.min.js)
 [![install size](https://badgen.net/packagephobia/install/marked)](https://packagephobia.now.sh/result?p=marked)
 [![downloads](https://badgen.net/npm/dt/marked)](https://www.npmjs.com/package/marked)
-[![dep](https://badgen.net/david/dep/markedjs/marked)](https://david-dm.org/styfle/marked)
-[![dev dep](https://badgen.net/david/dev/markedjs/marked)](https://david-dm.org/styfle/marked?type=dev)
+[![dep](https://badgen.net/david/dep/markedjs/marked)](https://david-dm.org/markedjs/marked)
+[![dev dep](https://badgen.net/david/dev/markedjs/marked)](https://david-dm.org/markedjs/marked?type=dev)
 [![travis](https://badgen.net/travis/markedjs/marked)](https://travis-ci.org/markedjs/marked)
 
 - ⚡ built for speed
