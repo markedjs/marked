@@ -78,6 +78,12 @@
     "example": 13
   },
   {
+    "section": "Code spans",
+    "markdown": "``*test`*",
+    "html": "<p>``<em>test`</em></p>",
+    "example": 14
+  },
+  {
     "section": "Autolinks",
     "markdown": "~~hello@email.com~~",
     "html": "<p><del><a href=\"mailto:hello@email.com\">hello@email.com</a></del></p>",
