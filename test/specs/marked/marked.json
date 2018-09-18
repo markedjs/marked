@@ -1,23 +1,5 @@
 [
   {
-    "section": "Autolinks",
-    "markdown": "(See https://www.example.com/fhqwhgads.)",
-    "html": "<p>(See <a href=\"https://www.example.com/fhqwhgads\">https://www.example.com/fhqwhgads</a>.)</p>",
-    "example": 10
-  },
-  {
-    "section": "Autolinks",
-    "markdown": "((http://foo.com))",
-    "html": "<p>((<a href=\"http://foo.com\">http://foo.com</a>))</p>",
-    "example": 11
-  },
-  {
-    "section": "Autolinks",
-    "markdown": "((http://foo.com.))",
-    "html": "<p>((<a href=\"http://foo.com\">http://foo.com</a>.))</p>",
-    "example": 12
-  },
-  {
     "section": "Code spans",
     "markdown": "`someone@example.com`",
     "html": "<p><code>someone@example.com</code></p>",
@@ -76,5 +58,35 @@
     "markdown": "Link: [constructor][].\n\n[constructor]: https://example.org/",
     "html": "<p>Link: <a href=\"https://example.org/\">constructor</a>.</p>",
     "example": 10
+  },
+  {
+    "section": "Autolinks",
+    "markdown": "(See https://www.example.com/fhqwhgads.)",
+    "html": "<p>(See <a href=\"https://www.example.com/fhqwhgads\">https://www.example.com/fhqwhgads</a>.)</p>",
+    "example": 11
+  },
+  {
+    "section": "Autolinks",
+    "markdown": "((http://foo.com))",
+    "html": "<p>((<a href=\"http://foo.com\">http://foo.com</a>))</p>",
+    "example": 12
+  },
+  {
+    "section": "Autolinks",
+    "markdown": "((http://foo.com.))",
+    "html": "<p>((<a href=\"http://foo.com\">http://foo.com</a>.))</p>",
+    "example": 13
+  },
+  {
+    "section": "Autolinks",
+    "markdown": "~~hello@email.com~~",
+    "html": "<p><del><a href=\"mailto:hello@email.com\">hello@email.com</a></del></p>",
+    "example": 1307
+  },
+  {
+    "section": "Autolinks",
+    "markdown": "**me@example.com**",
+    "html": "<p><strong><a href=\"mailto:me@example.com\">me@example.com</a></strong></p>",
+    "example": 1327
   }
 ]

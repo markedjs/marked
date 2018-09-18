@@ -49,7 +49,7 @@ describe('Marked Autolinks', function() {
 describe('Marked Code spans', function() {
   var section = 'Code spans';
 
-  var shouldPassButFails = [1];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
