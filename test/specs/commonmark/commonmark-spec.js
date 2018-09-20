@@ -318,8 +318,7 @@ describe('CommonMark 0.28 Entity and numeric character references', function() {
 describe('CommonMark 0.28 Code spans', function() {
   var section = 'Code spans';
 
-  // var shouldPassButFails = [];
-  var shouldPassButFails = [330, 316, 328, 320, 323, 322];
+  var shouldPassButFails = [322, 323];
 
   var willNotBeAttemptedByCoreTeam = [];
 
