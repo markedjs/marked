@@ -34,6 +34,16 @@ Also read about:
 
 **In-browser:** `npm install marked --save`
 
+## CDN Support
+
+Marked is available with the following CDN providers:
+
+**JSDelivr**: `https://cdn.jsdelivr.net/npm/marked/marked.min.js`
+
+**cdnjs.com**: `https://cdnjs.cloudflare.com/ajax/libs/marked/0.5.0/marked.min.js`
+
+**Staticaly**: `https://cdn.staticaly.com/gh/markedjs/marked/master/marked.min.js`
+
 ## Usage
 
 ### Warning: 🚨 Marked does not [sanitize](https://marked.js.org/#/USING_ADVANCED.md#options) the output HTML by default 🚨
