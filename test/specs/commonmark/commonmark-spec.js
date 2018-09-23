@@ -1,7 +1,7 @@
 var marked = require('../../../lib/marked.js');
 var cmSpec = require('./commonmark.0.28.json');
-var HtmlDiffer = require('html-differ').HtmlDiffer,
-    htmlDiffer = new HtmlDiffer();
+var HtmlDiffer = require('@markedjs/html-differ').HtmlDiffer,
+    htmlDiffer = new HtmlDiffer({ignoreSelfClosingSlash: true});
 var since = require('jasmine2-custom-message');
 
 var Messenger = function() {}
@@ -27,27 +27,32 @@ var messenger = new Messenger();
 /*
 |Section                                 |Count      |Percent |
 |:---------------------------------------|:---------:|-------:|
-|Tabs                                    |  7 of  11 |     64%|
-|Thematic breaks                         | 18 of  19 |     95%|
+|Tabs                                    | 10 of  11 |     91%|
+|Precedence                              |  1 of   1 |    100%|
+|Thematic breaks                         | 19 of  19 |    100%|
 |ATX headings                            | 14 of  18 |     78%|
 |Setext headings                         | 21 of  26 |     81%|
-|Indented code blocks                    | 11 of  12 |     92%|
-|Fenced code blocks                      | 17 of  28 |     61%|
+|Indented code blocks                    | 12 of  12 |    100%|
+|Fenced code blocks                      | 21 of  28 |     75%|
+|HTML blocks                             | 43 of  43 |    100%|
 |Link reference definitions              | 22 of  23 |     96%|
-|Paragraphs                              |  6 of   8 |     75%|
+|Paragraphs                              |  8 of   8 |    100%|
+|Blank lines                             |  1 of   1 |    100%|
 |Block quotes                            | 21 of  25 |     84%|
 |List items                              | 32 of  48 |     67%|
-|Lists                                   | 10 of  24 |     42%|
-|Backslash escapes                       |  8 of  13 |     62%|
+|Lists                                   | 12 of  24 |     50%|
+|Inlines                                 |  1 of   1 |    100%|
+|Backslash escapes                       | 10 of  13 |     77%|
 |Entity and numeric character references |  9 of  12 |     75%|
 |Code spans                              | 11 of  17 |     65%|
-|Emphasis and strong emphasis            | 71 of 128 |     55%|
-|Links                                   | 64 of  84 |     76%|
+|Emphasis and strong emphasis            | 74 of 128 |     58%|
+|Links                                   | 69 of  84 |     82%|
 |Images                                  | 15 of  22 |     68%|
 |Autolinks                               | 15 of  19 |     79%|
 |Raw HTML                                | 19 of  21 |     90%|
-|Hard line breaks                        | 32 of  36 |     89%|
-|Soft line breaks                        |  1 of   2 |     50%|
+|Hard line breaks                        | 15 of  15 |    100%|
+|Soft line breaks                        |  2 of   2 |    100%|
+|Textual content                         |  3 of   3 |    100%|
 */
 
 describe('CommonMark 0.28 Tabs', function() {
@@ -60,7 +65,7 @@ describe('CommonMark 0.28 Tabs', function() {
   // 100% compliant with that section of the given specification.
   //
   // var shouldPassButFails = [];
-  var shouldPassButFails = [1, 2, 3, 7];
+  var shouldPassButFails = [7];
 
   // Identifies examples that the Marked core team has determined beyond
   // the ability or desire to correct; thereby, implicitly requesting
@@ -95,7 +100,7 @@ describe('CommonMark 0.28 Thematic breaks', function() {
   var section = 'Thematic breaks';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [19];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -140,7 +145,7 @@ describe('CommonMark 0.28 Indented code blocks', function() {
   var section = 'Indented code blocks';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [82];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -155,7 +160,7 @@ describe('CommonMark 0.28 Fenced code blocks', function() {
   var section = 'Fenced code blocks';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [93, 95, 96, 97, 101, 102, 106, 108, 112];
+  var shouldPassButFails = [93, 95, 96, 97, 106, 108, 112];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -199,7 +204,7 @@ describe('CommonMark 0.28 Paragraphs', function() {
   var section = 'Paragraphs';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [185, 186];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -289,7 +294,7 @@ describe('CommonMark 0.28 Backslash escapes', function() {
   var section = 'Backslash escapes';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [290, 291, 300, 301];
+  var shouldPassButFails = [291, 300, 301];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -348,7 +353,7 @@ describe('CommonMark 0.28 Links', function() {
   var section = 'Links';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [474, 478, 483, 489, 490, 491, 495, 496, 497, 499, 503, 504, 507, 508, 509, 523];
+  var shouldPassButFails = [474, 478, 483, 489, 490, 491, 495, 496, 497, 499, 503, 504, 507, 508, 509];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -408,7 +413,7 @@ describe('CommonMark 0.28 Hard line breaks', function() {
   var section = 'Hard line breaks';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [613];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -423,7 +428,7 @@ describe('CommonMark 0.28 Soft line breaks', function() {
   var section = 'Soft line breaks';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [621];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
