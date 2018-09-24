@@ -5,7 +5,7 @@
   ],
   "parserOptions": { "ecmaVersion": 5 },
   "rules": {
-    "semi": "off",
+    "semi": ["error", "always"],
     "indent": ["warn", 2, {
       "VariableDeclarator": { "var": 2 },
       "SwitchCase": 1,
