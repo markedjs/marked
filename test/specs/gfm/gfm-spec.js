@@ -1,14 +1,14 @@
 var marked = require('../../../lib/marked.js');
-var gfmSpec = require('./gfm.0.28.json')
+var gfmSpec = require('./gfm.0.28.json');
 var HtmlDiffer = require('@markedjs/html-differ').HtmlDiffer,
     htmlDiffer = new HtmlDiffer({ignoreSelfClosingSlash: true});
 var since = require('jasmine2-custom-message');
 
-var Messenger = function() {}
+var Messenger = function() {};
 
 Messenger.prototype.message = function(spec, expected, actual) {
   return 'CommonMark (' + spec.section + '):\n' + spec.markdown + '\n------\n\nExpected:\n' + expected + '\n------\n\nMarked:\n' + actual;
-}
+};
 
 Messenger.prototype.test = function(spec, section, ignore) {
   if (spec.section === section && ignore.indexOf(spec.example) < 0) {
@@ -21,7 +21,7 @@ Messenger.prototype.test = function(spec, section, ignore) {
       ).toEqual(!shouldFail);
     });
   }
-}
+};
 
 var messenger = new Messenger();
 
