@@ -25,7 +25,7 @@ $previewIframe.addEventListener('load', function () {
   iframeLoaded = true;
   inputDirty = true;
   checkForChanges();
-})
+});
 
 if ('text' in search) {
   $inputElem.value = search.text;
