@@ -49,8 +49,8 @@ Marked takes an encompassing approach to its community. As such, you can think o
         </a>
         <br>
         <a href="https://tony.brix.ninja">Tony Brix</a>
-        <div>Committer</div>
-        <small>Titan of the test harness; Dr. DevOps</small>
+        <div>Publisher</div>
+        <small>Release Wrangler; Titan of the test harness; Dr. DevOps</small>
       </td>
       <td align="center" valign="top">
         &nbsp;
