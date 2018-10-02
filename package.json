@@ -4,6 +4,7 @@
   "author": "Christopher Jeffrey",
   "version": "0.5.1",
   "main": "./lib/marked.js",
+  "module": "./src/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
   "repository": "git://github.com/markedjs/marked.git",
@@ -23,24 +24,32 @@
     "html"
   ],
   "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@markedjs/html-differ": "^2.0.0",
+    "babel-eslint": "^10.0.1",
+    "babel-plugin-add-module-exports": "^1.0.0",
     "commonmark": "0.x",
-    "eslint": "^4.19.1",
-    "eslint-config-standard": "^11.0.0",
+    "eslint": "^5.6.1",
+    "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^5.2.1",
-    "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-standard": "^3.1.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vuln-regex-detector": "^1.0.4",
     "front-matter": "^2.3.0",
     "glob-to-regexp": "0.3.0",
-    "@markedjs/html-differ": "^2.0.0",
     "jasmine": "^3.2.0",
     "jasmine2-custom-message": "^0.9.3",
     "markdown": "0.x",
     "markdown-it": "8.x",
-    "uglify-js": "^3.4.8"
+    "rollup": "^0.66.2"
   },
   "scripts": {
+    "lint": "eslint --fix bin/marked \"src/**/*.js\"",
+    "build:module": "npm run lint && babel src -d lib",
+    "build": "npm run build:module && rollup -c",
     "test": "jasmine --config=jasmine.json",
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",
@@ -51,11 +60,15 @@
     "test:lint": "eslint bin/marked .",
     "test:redos": "eslint --plugin vuln-regex-detector --rule '\"vuln-regex-detector/no-vuln-regex\": 2' lib/marked.js",
     "bench": "node test --bench",
-    "lint": "eslint --fix bin/marked .",
-    "build": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
     "preversion": "npm run build && (git diff --quiet || git commit -am 'minify')"
   },
   "engines": {
     "node": ">=0.10.0"
-  }
+  },
+  "files": [
+    "bin/**",
+    "lib/**",
+    "man/**",
+    "README.md"
+  ]
 }

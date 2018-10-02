@@ -1,9 +1,9 @@
 {
   "extends": "standard",
+  "parser": "babel-eslint",
   "plugins": [
     "standard"
   ],
-  "parserOptions": { "ecmaVersion": 5 },
   "rules": {
     "semi": ["error", "always"],
     "indent": ["warn", 2, {
