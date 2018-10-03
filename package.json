@@ -64,7 +64,7 @@
     "preversion": "npm run build && (git diff --quiet || git commit -am 'minify')"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=6.0.0"
   },
   "files": [
     "bin/**",
