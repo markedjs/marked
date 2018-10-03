@@ -50,7 +50,7 @@
     "lint": "eslint --fix bin/marked \"src/**/*.js\"",
     "build:module": "npm run lint && babel src -d lib",
     "build": "npm run build:module && rollup -c",
-    "test": "jasmine --config=jasmine.json",
+    "test": "npm run build && jasmine --config=jasmine.json",
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",
     "test:cm": "npm test -- test/specs/commonmark/**/*-spec.js",
