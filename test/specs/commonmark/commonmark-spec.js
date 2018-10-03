@@ -1,7 +1,7 @@
 var marked = require('../../../lib/marked.js');
 var cmSpec = require('./commonmark.0.28.json');
 var HtmlDiffer = require('@markedjs/html-differ').HtmlDiffer,
-    htmlDiffer = new HtmlDiffer({ignoreSelfClosingSlash: true});
+    htmlDiffer = new HtmlDiffer({ ignoreSelfClosingSlash: true });
 var since = require('jasmine2-custom-message');
 
 var Messenger = function() {};

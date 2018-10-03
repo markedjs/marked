@@ -7,11 +7,11 @@ jobs:
 
   include:
     - stage: unit tests 👩🏽‍💻
-      script: npm run test:unit
+      script: npm run build && npm run test:unit
       node_js: lts/*
 
     - stage: spec tests 👩🏽‍💻
-      script: npm run test:specs
+      script: npm run build && npm run test:specs
       node_js: v0.10
     - node_js: v4
     - node_js: lts/*

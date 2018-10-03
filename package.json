@@ -57,8 +57,8 @@
     "test:gfm": "npm test -- test/specs/gfm/**/*-spec.js",
     "test:marked": "npm test -- test/specs/marked/**/*-spec.js",
     "test:old": "node test",
-    "test:lint": "eslint bin/marked .",
-    "test:redos": "eslint --plugin vuln-regex-detector --rule '\"vuln-regex-detector/no-vuln-regex\": 2' lib/marked.js",
+    "test:lint": "eslint bin/marked \"test/**/*.js\"",
+    "test:redos": "eslint --plugin vuln-regex-detector --rule '\"vuln-regex-detector/no-vuln-regex\": 2' src/marked.js",
     "bench": "node test --bench",
     "preversion": "npm run build && (git diff --quiet || git commit -am 'minify')"
   },
@@ -69,6 +69,7 @@
     "bin/**",
     "lib/**",
     "man/**",
+    "src/**",
     "README.md"
   ]
 }
