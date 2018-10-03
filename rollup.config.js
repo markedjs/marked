@@ -8,4 +8,4 @@ export default {
     name: 'marked'
   },
   plugins: [babel()]
-}
+};
