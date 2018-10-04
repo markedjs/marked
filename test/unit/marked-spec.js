@@ -25,3 +25,13 @@ describe('Test paragraph token type', function () {
     expect(tokens[7].type).toBe('text');
   });
 });
+
+describe('Test url token type', function () {
+  it('should use the "url" type', function () {
+    const md = 'HtTps://www.testsite.com';
+
+    const tokens = marked.lexer(md);
+
+    expect(tokens[0].type).toBe('url');
+  });
+});
