@@ -45,7 +45,7 @@ var messenger = new Messenger();
 |Backslash escapes                       | 10 of  13 |     77%|
 |Entity and numeric character references |  9 of  12 |     75%|
 |Code spans                              | 11 of  17 |     65%|
-|Emphasis and strong emphasis            | 74 of 128 |     58%|
+|Emphasis and strong emphasis            | 79 of 128 |     61%|
 |Links                                   | 69 of  84 |     82%|
 |Images                                  | 15 of  22 |     68%|
 |Autolinks                               | 15 of  19 |     79%|
@@ -338,7 +338,7 @@ describe('CommonMark 0.28 Emphasis and strong emphasis', function() {
   var section = 'Emphasis and strong emphasis';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [334, 342, 348, 349, 352, 353, 354, 355, 356, 360, 368, 369, 371, 372, 378, 380, 381, 382, 387, 388, 392, 393, 394, 395, 396, 402, 403, 409, 416, 419, 420, 421, 422, 423, 424, 428, 431, 432, 433, 434, 435, 436, 443, 444, 445, 448, 449, 451, 453, 454, 455, 456, 457, 458];
+  var shouldPassButFails = [334, 342, 348, 349, 352, 353, 360, 368, 369, 371, 372, 378, 380, 381, 382, 387, 388, 392, 393, 394, 395, 396, 402, 403, 409, 416, 419, 420, 421, 422, 423, 424, 428, 431, 432, 433, 434, 435, 436, 443, 444, 445, 448, 449, 453, 454, 455, 457, 458];
 
   var willNotBeAttemptedByCoreTeam = [];
 
