@@ -8,6 +8,7 @@ if (!window.fetch) {
 }
 
 var $inputElem = document.querySelector('#input');
+var $optionsElem = document.querySelector('#options');
 var $outputTypeElem = document.querySelector('#outputType');
 var $previewIframe = document.querySelector('#preview iframe');
 var $permalinkElem = document.querySelector('#permalink');
@@ -43,6 +44,10 @@ if ('text' in search) {
     });
 }
 
+if ('options' in search) {
+  $optionsElem.value = search.options;
+}
+
 if (search.outputType) {
   $outputTypeElem.value = search.outputType;
 }
@@ -75,8 +80,14 @@ $inputElem.addEventListener('keyup', handleInput, false);
 $inputElem.addEventListener('keypress', handleInput, false);
 $inputElem.addEventListener('keydown', handleInput, false);
 
+$optionsElem.addEventListener('change', handleInput, false);
+$optionsElem.addEventListener('keyup', handleInput, false);
+$optionsElem.addEventListener('keypress', handleInput, false);
+$optionsElem.addEventListener('keydown', handleInput, false);
+
 $clearElem.addEventListener('click', function () {
   $inputElem.value = '';
+  $optionsElem.value = '';
   handleInput();
 }, false);
 
@@ -133,11 +144,13 @@ function updateLink() {
     outputType = 'outputType=' + $outputTypeElem.value + '&';
   }
 
-  $permalinkElem.href = '?' + outputType + 'text=' + encodeURIComponent($inputElem.value);
+  $permalinkElem.href = '?' + outputType + 'text=' + encodeURIComponent($inputElem.value) +
+      '&options=' + encodeURIComponent($optionsElem.value) ;
   history.replaceState('', document.title, $permalinkElem.href);
 }
 
 var delayTime = 1;
+var options = {};
 function checkForChanges() {
   if (inputDirty) {
     inputDirty = false;
@@ -148,7 +161,17 @@ function checkForChanges() {
 
     var scrollPercent = getScrollPercent();
 
-    var lexed = marked.lexer($inputElem.value);
+    try {
+      var optionsString = $optionsElem.value || '{}'
+      var new_options = JSON.parse(optionsString);
+      options = new_options;
+    } catch(err) {
+      console.log('Unable to parse JSON: "%s"', optionsString);
+    }
+
+    console.log(options);
+
+    var lexed = marked.lexer($inputElem.value, options);
 
     var lexedList = [];
 
@@ -160,7 +183,7 @@ function checkForChanges() {
       lexedList.push('{' + lexedLine.join(', ') + '}');
     }
 
-    var parsed = marked.parser(lexed);
+    var parsed = marked.parser(lexed, options);
 
     if (iframeLoaded) {
       $previewIframe.contentDocument.body.innerHTML = (parsed);
