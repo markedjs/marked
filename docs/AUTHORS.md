@@ -29,8 +29,8 @@ Marked takes an encompassing approach to its community. As such, you can think o
         </a>
         <br>
         <a href="https://www.ceriously.com">Steven</a>
-        <div>Admin</div>
-        <small>Open source, of course; GitHub Guru; Humaning Helper</small>
+        <div>Publisher</div>
+        <small>Release Wrangler; Dr. Docs; Open source, of course; GitHub Guru; Humaning Helper</small>
       </td>
     </tr>
   	<tr>
@@ -215,6 +215,8 @@ Badges? If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dr
 			"The main characteristic of the DevOps movement is to strongly advocate automation and monitoring at all steps of software construction, from integration, testing, releasing to deployment and infrastructure management. DevOps aims at shorter development cycles, increased deployment frequency, more dependable releases, in close alignment with business objectives." ~ <a href="https://www.wikipedia.org/wiki/DevOps">Wikipedia</a>
 		</blockquote>
 	</dd>
+  <dt>Dr. Docs</dt>
+  <dd>Someone who has contributed a great deal to the creation and maintainance of the non-code areas of marked.</dd>
 	<dt>Eye for the CLI</dt>
 	<dd>At this point? Pretty much anyone who can update that `man` file to the current Marked version without regression in the CLI tool itself.</dd>
 	<dt>GitHub Guru</dt>
