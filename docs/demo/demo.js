@@ -166,10 +166,7 @@ function checkForChanges() {
       var newOptions = JSON.parse(optionsString);
       options = newOptions;
     } catch (err) {
-      console.log('Unable to parse JSON: "%s"', optionsString);
     }
-
-    console.log(options);
 
     var lexed = marked.lexer($inputElem.value, options);
 
