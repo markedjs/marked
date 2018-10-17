@@ -144,8 +144,8 @@ function updateLink() {
     outputType = 'outputType=' + $outputTypeElem.value + '&';
   }
 
-  $permalinkElem.href = '?' + outputType + 'text=' + encodeURIComponent($inputElem.value) +
-      '&options=' + encodeURIComponent($optionsElem.value) ;
+  $permalinkElem.href = '?' + outputType + 'text=' + encodeURIComponent($inputElem.value)
+      + '&options=' + encodeURIComponent($optionsElem.value);
   history.replaceState('', document.title, $permalinkElem.href);
 }
 
@@ -162,10 +162,10 @@ function checkForChanges() {
     var scrollPercent = getScrollPercent();
 
     try {
-      var optionsString = $optionsElem.value || '{}'
-      var new_options = JSON.parse(optionsString);
-      options = new_options;
-    } catch(err) {
+      var optionsString = $optionsElem.value || '{}';
+      var newOptions = JSON.parse(optionsString);
+      options = newOptions;
+    } catch (err) {
       console.log('Unable to parse JSON: "%s"', optionsString);
     }
 
