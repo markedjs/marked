@@ -52,7 +52,7 @@ if ('options' in search) {
   $optionsElem.value = JSON.stringify(
     marked.getDefaults(),
     function (key, value) {
-      if (value && typeof(value) === "object" && Object.getPrototypeOf(value) !== Object.prototype){
+      if (value && typeof value === 'object' && Object.getPrototypeOf(value) !== Object.prototype) {
         return undefined;
       }
       return value;
