@@ -49,7 +49,14 @@ if ('text' in search) {
 if ('options' in search) {
   $optionsElem.value = search.options;
 } else {
-  $optionsElem.value = JSON.stringify(marked.getDefaults(), null, ' ');
+  $optionsElem.value = JSON.stringify(
+    marked.getDefaults(),
+    function (key, value) {
+      if (value && typeof(value) === "object" && Object.getPrototypeOf(value) !== Object.prototype){
+        return undefined;
+      }
+      return value;
+    }, ' ');
 }
 
 if (search.outputType) {
