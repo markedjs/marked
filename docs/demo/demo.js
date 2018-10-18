@@ -48,6 +48,8 @@ if ('text' in search) {
 
 if ('options' in search) {
   $optionsElem.value = search.options;
+} else {
+  $optionsElem.value = JSON.stringify(marked.getDefaults(), null, ' ');
 }
 
 if (search.outputType) {
