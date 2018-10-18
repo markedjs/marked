@@ -7,17 +7,19 @@ if (!window.fetch) {
   window.fetch = unfetch;
 }
 
-var $inputElem = document.querySelector('#input');
+var $markdownElem = document.querySelector('#markdown');
 var $optionsElem = document.querySelector('#options');
 var $outputTypeElem = document.querySelector('#outputType');
+var $inputTypeElem = document.querySelector('#inputType');
 var $previewIframe = document.querySelector('#preview iframe');
 var $permalinkElem = document.querySelector('#permalink');
 var $clearElem = document.querySelector('#clear');
 var $htmlElem = document.querySelector('#html');
 var $lexerElem = document.querySelector('#lexer');
 var $panes = document.querySelectorAll('.pane');
+var $inputPanes = document.querySelectorAll('.inputPane');
 var inputDirty = true;
-var $activeElem = null;
+var $activeOutputElem = null;
 var changeTimeout = null;
 var search = searchToObject();
 
@@ -29,13 +31,13 @@ $previewIframe.addEventListener('load', function () {
 });
 
 if ('text' in search) {
-  $inputElem.value = search.text;
+  $markdownElem.value = search.text;
 } else {
   fetch('./initial.md')
     .then(function (res) { return res.text(); })
     .then(function (text) {
-      if ($inputElem.value === '') {
-        $inputElem.value = text;
+      if ($markdownElem.value === '') {
+        $markdownElem.value = text;
         inputDirty = true;
         clearTimeout(changeTimeout);
         checkForChanges();
@@ -58,27 +60,41 @@ fetch('./quickref.md')
     document.querySelector('#quickref').value = text;
   });
 
-function handleChange() {
-  for (var i = 0; i < $panes.length; i++) {
-    $panes[i].style.display = 'none';
-  }
-  $activeElem = document.querySelector('#' + $outputTypeElem.value);
-  $activeElem.style.display = '';
+function handleInputChange() {
+  handleChange($inputPanes, $inputTypeElem.value);
+}
 
+function handleOutputChange() {
+  $activeOutputElem = handleChange($panes, $outputTypeElem.value);
   updateLink();
+}
+
+function handleChange(panes, visiblePane) {
+  var active = null;
+  for (var i = 0; i < panes.length; i++) {
+    if (panes[i].id == visiblePane) {
+      panes[i].style.display = '';
+      active = panes[i];
+    } else {
+      panes[i].style.display = 'none';
+    }
+  }
+  return active;
 };
 
-$outputTypeElem.addEventListener('change', handleChange, false);
-handleChange();
+$outputTypeElem.addEventListener('change', handleOutputChange, false);
+handleOutputChange();
+$inputTypeElem.addEventListener('change', handleInputChange, false);
+handleInputChange();
 
 function handleInput() {
   inputDirty = true;
 };
 
-$inputElem.addEventListener('change', handleInput, false);
-$inputElem.addEventListener('keyup', handleInput, false);
-$inputElem.addEventListener('keypress', handleInput, false);
-$inputElem.addEventListener('keydown', handleInput, false);
+$markdownElem.addEventListener('change', handleInput, false);
+$markdownElem.addEventListener('keyup', handleInput, false);
+$markdownElem.addEventListener('keypress', handleInput, false);
+$markdownElem.addEventListener('keydown', handleInput, false);
 
 $optionsElem.addEventListener('change', handleInput, false);
 $optionsElem.addEventListener('keyup', handleInput, false);
@@ -86,7 +102,7 @@ $optionsElem.addEventListener('keypress', handleInput, false);
 $optionsElem.addEventListener('keydown', handleInput, false);
 
 $clearElem.addEventListener('click', function () {
-  $inputElem.value = '';
+  $markdownElem.value = '';
   $optionsElem.value = '';
   handleInput();
 }, false);
@@ -121,7 +137,7 @@ function jsonString(input) {
 };
 
 function getScrollSize() {
-  var e = $activeElem;
+  var e = $activeOutputElem;
 
   return e.scrollHeight - e.clientHeight;
 };
@@ -132,10 +148,10 @@ function getScrollPercent() {
     return 1;
   }
 
-  return $activeElem.scrollTop / size;
+  return $activeOutputElem.scrollTop / size;
 };
 function setScrollPercent(percent) {
-  $activeElem.scrollTop = percent * getScrollSize();
+  $activeOutputElem.scrollTop = percent * getScrollSize();
 };
 
 function updateLink() {
@@ -144,7 +160,7 @@ function updateLink() {
     outputType = 'outputType=' + $outputTypeElem.value + '&';
   }
 
-  $permalinkElem.href = '?' + outputType + 'text=' + encodeURIComponent($inputElem.value)
+  $permalinkElem.href = '?' + outputType + 'text=' + encodeURIComponent($markdownElem.value)
       + '&options=' + encodeURIComponent($optionsElem.value);
   history.replaceState('', document.title, $permalinkElem.href);
 }
@@ -168,7 +184,7 @@ function checkForChanges() {
     } catch (err) {
     }
 
-    var lexed = marked.lexer($inputElem.value, options);
+    var lexed = marked.lexer($markdownElem.value, options);
 
     var lexedList = [];
 

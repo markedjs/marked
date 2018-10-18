@@ -49,7 +49,7 @@ header h1 {
 	resize: both;
 }
 
-.pane, #input {
+.pane, .inputPane {
 	margin-top: 5px;
 	padding: 0.6em;
 	border: 1px solid #ccc;
