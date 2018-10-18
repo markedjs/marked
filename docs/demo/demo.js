@@ -72,7 +72,7 @@ function handleOutputChange() {
 function handleChange(panes, visiblePane) {
   var active = null;
   for (var i = 0; i < panes.length; i++) {
-    if (panes[i].id == visiblePane) {
+    if (panes[i].id === visiblePane) {
       panes[i].style.display = '';
       active = panes[i];
     } else {
