@@ -45,7 +45,11 @@ header h1 {
 	box-sizing: border-box;
 }
 
-.pane, #input {
+#options {
+	resize: both;
+}
+
+.pane, .inputPane {
 	margin-top: 5px;
 	padding: 0.6em;
 	border: 1px solid #ccc;

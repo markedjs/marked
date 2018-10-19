@@ -24,8 +24,13 @@
           <span>Input</span> ·
           <a id="permalink">Permalink</a> ·
           <button id="clear">Clear</button>
+          <select id="inputType">
+            <option value="markdown">Markdown</option>
+            <option value="options">Options</option>
+          </select>
         </div>
-        <textarea id="input"></textarea>
+        <textarea id="markdown" class="inputPane"></textarea>
+        <textarea id="options" class="inputPane" placeholder="Options (as JSON)"></textarea>
       </div>
 
       <div class="container">
