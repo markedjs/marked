@@ -4,7 +4,7 @@ allowed_url_protocols: ["http", "https", "ftp", "mailto"]
 
 [Good Link](http://marked.js.org)
 
-[Better Link](https://marked.js.org))
+[Better Link](https://marked.js.org)
 
 [Mail Link](mailto:marked@example.com)
 
