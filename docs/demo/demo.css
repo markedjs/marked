@@ -45,10 +45,6 @@ header h1 {
 	box-sizing: border-box;
 }
 
-#options {
-	resize: both;
-}
-
 .pane, .inputPane {
 	margin-top: 5px;
 	padding: 0.6em;
@@ -64,4 +60,9 @@ header h1 {
 
 #preview iframe {
 	flex-grow: 1;
+}
+
+#options.badParse {
+	border-color: red;
+	background-color: #FEE
 }

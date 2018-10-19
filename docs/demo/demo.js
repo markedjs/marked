@@ -190,7 +190,9 @@ function checkForChanges() {
       var optionsString = $optionsElem.value || '{}';
       var newOptions = JSON.parse(optionsString);
       options = newOptions;
+      $optionsElem.classList.remove('badParse');
     } catch (err) {
+      $optionsElem.classList.add('badParse');
     }
 
     var lexed = marked.lexer($markdownElem.value, options);
