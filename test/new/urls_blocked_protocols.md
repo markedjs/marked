@@ -1,5 +1,5 @@
 ---
-blocked_url_protocols: ["javascript", "file"]
+blockedUrlProtocols: ["javascript", "file"]
 ---
 
 [Good Link](http://marked.js.org)

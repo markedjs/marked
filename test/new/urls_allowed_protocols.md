@@ -1,5 +1,5 @@
 ---
-allowed_url_protocols: ["http", "https", "ftp", "mailto"]
+allowedUrlProtocols: ["http", "https", "ftp", "mailto"]
 ---
 
 [Good Link](http://marked.js.org)
