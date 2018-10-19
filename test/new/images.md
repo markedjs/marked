@@ -1,12 +1,12 @@
 ---
 sanitize: true
 ---
-[URL](javascript:alert)
+![Image](javascript:alert)
 
-[URL](vbscript:alert)
+![Image](vbscript:alert)
 
-[URL](javascript&colon;alert&#40;1&#41;)
+![Image](javascript&colon;alert&#40;1&#41;)
 
-[URL](javascript&#58document;alert&#40;1&#41;)
+![Image](javascript&#58document;alert&#40;1&#41;)
 
-[URL](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)
+![Image](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)
