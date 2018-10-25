@@ -1,6 +1,6 @@
 ## Extending Marked
 
-To champion the single-reponsibility and open/closed prinicples, we have tried to make it relatively painless to extend marked. If you are looking to add custom functionality, this is the place to start.
+To champion the single-responsibility and open/closed prinicples, we have tried to make it relatively painless to extend marked. If you are looking to add custom functionality, this is the place to start.
 
 <h2 id="renderer">The renderer</h2>
 
