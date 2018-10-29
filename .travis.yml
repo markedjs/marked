@@ -12,8 +12,7 @@ jobs:
 
     - stage: spec tests 👩🏽‍💻
       script: npm run test:specs
-      node_js: v0.10
-    - node_js: v4
+      node_js: v4
     - node_js: lts/*
     - node_js: node
 
