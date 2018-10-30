@@ -1,0 +1,5 @@
+---
+targetBlank: true
+---
+
+[test](/url/)
