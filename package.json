@@ -6,6 +6,12 @@
   "main": "./lib/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
+  "files": [
+    "bin/",
+    "lib/",
+    "man/",
+    "marked.min.js"
+  ],
   "repository": "git://github.com/markedjs/marked.git",
   "homepage": "https://marked.js.org",
   "bugs": {
