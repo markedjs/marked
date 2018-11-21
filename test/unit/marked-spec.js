@@ -1,8 +1,9 @@
 var marked = require('../../lib/marked.js');
+var Slugger = require('../../test/slugger.js');
 
 describe('Test slugger ID functionality', function() {
   it('should add id attribute when slugger option defined', function() {
-    var slugger = new marked.Slugger();
+    var slugger = new Slugger();
     var renderer = new marked.Renderer({ slugger: slugger });
     var header = renderer.heading('test', 1, 'test');
     expect(header).toBe('<h1 id="test">test</h1>\n');
