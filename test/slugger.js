@@ -8,13 +8,8 @@ function Slugger () {
 /**
  * Generate a unique slug.
  */
-Slugger.prototype.slug = function (value) {
-  var slug = value
-    .toLowerCase()
-    .trim()
-    .replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
-    .replace(/\s/g, '-');
-
+Slugger.prototype.slug = function (raw) {
+  var slug = raw.toLowerCase().replace(/[^\w]+/g, '-');
   var count = this.seen.hasOwnProperty(slug) ? this.seen[slug] + 1 : 0;
   this.seen[slug] = count;
 
