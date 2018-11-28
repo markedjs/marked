@@ -42,7 +42,7 @@ console.log(myMarked('I am using __markdown__.'));
 |Member      |Type      |Default  |Since    |Notes         |
 |:-----------|:---------|:--------|:--------|:-------------|
 |baseUrl     |`string`  |`null`   |???      |A prefix url for any relative link. |  
-|breaks      |`boolean` |`false`  |???      |If true, use GFM [hard](https://github.github.com/gfm/#hard-line-breaks) and [soft](https://github.github.com/gfm/#soft-line-breaks) line breaks. Requires `gfm` be `true`.|
+|breaks      |`boolean` |`false`  |???      |If true, add `<br>` on a single line break (copies GitHub). Requires `gfm` be `true`.|
 |gfm         |`boolean` |`true`   |???      |If true, use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).|
 |headerIds   |`boolean` |`true`   |v0.4.0   |If true, include an `id` attribute when emitting headings (h1, h2, h3, etc).|
 |headerPrefix|`string`  |`''`     |???      |A string to prefix the `id` attribute when emitting headings (h1, h2, h3, etc).|
