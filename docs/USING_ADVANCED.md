@@ -39,25 +39,26 @@ console.log(myMarked('I am using __markdown__.'));
 
 <h2 id="options">Options</h2>
 
-|Member      |Type      |Default  |Since    |Notes         |
-|:-----------|:---------|:--------|:--------|:-------------|
-|baseUrl     |`string`  |`null`   |0.3.9    |A prefix url for any relative link. |  
-|breaks      |`boolean` |`false`  |v0.2.7   |If true, add `<br>` on a single line break (copies GitHub). Requires `gfm` be `true`.|
-|gfm         |`boolean` |`true`   |v0.2.1   |If true, use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).|
-|headerIds   |`boolean` |`true`   |v0.4.0   |If true, include an `id` attribute when emitting headings (h1, h2, h3, etc).|
-|headerPrefix|`string`  |`''`     |v0.3.0   |A string to prefix the `id` attribute when emitting headings (h1, h2, h3, etc).|
-|highlight   |`function`|`null`   |v0.3.0   |A function to highlight code blocks, see <a href="#highlight">Asynchronous highlighting</a>.|
-|langPrefix  |`string`  |`'language-'`|v0.3.0|A string to prefix the className in a `<code>` block. Useful for syntax highlighting.|
-|mangle      |`boolean` |`true`   |v0.3.4   |If true, autolinked email address is escaped with HTML character references.|
-|pedantic    |`boolean` |`false`  |v0.2.1   |If true, conform to the original `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`.|
-|renderer    |`object`  |`new Renderer()`|v0.3.0|An object containing functions to render tokens to HTML. See [extensibility](USING_PRO.md) for more details.|
-|sanitize    |`boolean` |`false`  |v0.2.1   |If true, sanitize the HTML passed into `markdownString` with the `sanitizer` function.|
-|sanitizer   |`function`|`null`   |v0.3.4   |A function to sanitize the HTML passed into `markdownString`.|
-|silent      |`boolean` |`false`  |v0.2.7   |If true, the parser does not throw any exception.|
-|smartLists  |`boolean` |`false`  |v0.2.8   |If true, use smarter list behavior than those found in `markdown.pl`.|
-|smartypants |`boolean` |`false`  |v0.2.9   |If true, use "smart" typographic punctuation for things like quotes and dashes.|
-|tables      |`boolean` |`true`   |v0.2.7   |If true and `gfm` is true, use [GFM Tables extension](https://github.github.com/gfm/#tables-extension-).|
-|xhtml       |`boolean` |`false`  |v0.3.2   |If true, emit self-closing HTML tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.|
+|Member      |Type      |Default  |Since    |Removed |Notes         |
+|:-----------|:---------|:--------|:--------|:-------|:-------------|
+|baseUrl     |`string`  |`null`   |0.3.9    |nope    |A prefix url for any relative link. |  
+|breaks      |`boolean` |`false`  |v0.2.7   |nope    |If true, add `<br>` on a single line break (copies GitHub). Requires `gfm` be `true`.|
+|gfm         |`boolean` |`true`   |v0.2.1   |nope    |If true, use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).|
+|~~headerIds~~|`boolean` |`true`   |v0.4.0   |v0.6.0  |If true, include an `id` attribute when emitting headings (h1, h2, h3, etc).|
+|~~headerPrefix~~|`string`  |`''`  |v0.3.0   |v0.6.0  |A string to prefix the `id` attribute when emitting headings (h1, h2, h3, etc).|
+|highlight   |`function`|`null`   |v0.3.0   |nope    |A function to highlight code blocks, see <a href="#highlight">Asynchronous highlighting</a>.|
+|langPrefix  |`string`  |`'language-'`|v0.3.0|nope    |A string to prefix the className in a `<code>` block. Useful for syntax highlighting.|
+|mangle      |`boolean` |`true`   |v0.3.4   |nope    |If true, autolinked email address is escaped with HTML character references.|
+|pedantic    |`boolean` |`false`  |v0.2.1   |nope    |If true, conform to the original `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`.|
+|renderer    |`object`  |`new Renderer()`|v0.3.0|nope    |An object containing functions to render tokens to HTML. See [extensibility](USING_PRO.md) for more details.|
+|sanitize    |`boolean` |`false`  |v0.2.1   |nope    |If true, sanitize the HTML passed into `markdownString` with the `sanitizer` function.|
+|sanitizer   |`function`|`null`   |v0.3.4   |nope    |A function to sanitize the HTML passed into `markdownString`.|
+|silent      |`boolean` |`false`  |v0.2.7   |nope    |If true, the parser does not throw any exception.|
+|slugger     |`function`|`null`   |v0.6.0   |nope    |A function used when generating header ids.|
+|smartLists  |`boolean` |`false`  |v0.2.8   |nope    |If true, use smarter list behavior than those found in `markdown.pl`.|
+|smartypants |`boolean` |`false`  |v0.2.9   |nope    |If true, use "smart" typographic punctuation for things like quotes and dashes.|
+|tables      |`boolean` |`true`   |v0.2.7   |nope    |If true and `gfm` is true, use [GFM Tables extension](https://github.github.com/gfm/#tables-extension-).|
+|xhtml       |`boolean` |`false`  |v0.3.2   |nope    |If true, emit self-closing HTML tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.|
 
 <h2 id="highlight">Asynchronous highlighting</h2>
 
@@ -76,3 +77,53 @@ console.log(myMarked(markdownString));
 ```
 
 In both examples, `code` is a `string` representing the section of code to pass to the highlighter. In this example, `lang` is a `string` informing the highlighter what programming lnaguage to use for the `code` and `callback` is the `function` the asynchronous highlighter will call once complete.
+
+<h2 id="slugger">Slugger</h2>
+
+The default behavior of marked is to follow the CommonMark specification. However, in some cases, it may be desirable to generate IDs for [ATX Headers](https://spec.commonmark.org/0.28/#atx-heading) for the purpose of permalinks or maybe a Table of Contents.
+
+In this case, marked offers a `slugger` option that can take an implementation of [github-slugger](https://www.npmjs.com/package/github-slugger) or your own class with a `slug` method.
+
+Below is a  slugger implementation that generates a lowercase header ID (formerly the `headerIds` option). It also avoids duplicate header IDs by incrementing a count of seen slugs.
+
+```js
+function Slugger () {
+  this.seen = {};
+}
+
+Slugger.prototype.slug = function (raw) {
+  var slug = raw.toLowerCase().replace(/[^\w]+/g, '-');
+  var count = this.seen.hasOwnProperty(slug) ? this.seen[slug] + 1 : 0;
+  this.seen[slug] = count;
+
+  if (count > 0) {
+    slug = slug + '-' + count;
+  }
+
+  return slug;
+};
+
+var options = { slugger: new Slugger() };
+var markdownString = `# My Heading
+This is a paragraph.`;
+var html = marked(markdownString, options);
+```
+
+Sometimes, it is desirable to mix static HTML with dynamic markdown (which of course renders to HTML). Generating dynamic IDs with a slugger might cause collisions with other ID properties on the page. In this case, you can add a prefix to the slugger.
+
+Below is an example that extends the `github-slugger` implementation to add a prefix to each ID (formerly the `headerPrefix` option).
+
+```js
+var marked = require('marked');
+var GithubSlugger = require('github-slugger');
+var ghslugger = new GithubSlugger();
+
+function PrefixSlugger (prefix) {
+  this.headerPrefix = prefix;
+}
+PrefixSlugger.prototype.slug = function (value) {
+  return this.headerPrefix + ghslugger.slug(value);
+};
+
+var options = { slugger: new PrefixSlugger('comment-') };
+```
