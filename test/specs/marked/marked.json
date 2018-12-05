@@ -87,7 +87,7 @@
     "section": "Autolinks",
     "markdown": "HTTP://FOO.COM",
     "html": "<p><a href=\"HTTP://FOO.COM\">HTTP://FOO.COM</a></p>",
-    "example": 15
+    "example": 17
   },
   {
     "section": "Autolinks",
