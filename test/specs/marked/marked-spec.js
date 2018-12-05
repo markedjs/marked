@@ -87,3 +87,17 @@ describe('Marked Table cells', function() {
     messenger.test(spec, section, ignore);
   });
 });
+
+describe('Emphasis extra tests', function() {
+  var section = 'Emphasis extra tests';
+
+  var shouldPassButFails = [];
+
+  var willNotBeAttemptedByCoreTeam = [];
+
+  var ignore = shouldPassButFails.concat(willNotBeAttemptedByCoreTeam);
+
+  markedSpec.forEach(function(spec) {
+    messenger.test(spec, section, ignore);
+  });
+});

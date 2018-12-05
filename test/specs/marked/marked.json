@@ -94,5 +94,11 @@
     "markdown": "**me@example.com**",
     "html": "<p><strong><a href=\"mailto:me@example.com\">me@example.com</a></strong></p>",
     "example": 1327
+  },
+  {  
+    "section": "Emphasis extra tests",
+    "markdown": "_test_. _test_: _test_! _test_? _test_-",
+    "html": "<p><em>test</em>. <em>test</em>: <em>test</em>! <em>test</em>? <em>test</em>-</p>",
+    "example": 15
   }
 ]
