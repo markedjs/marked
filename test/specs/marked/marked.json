@@ -85,6 +85,18 @@
   },
   {
     "section": "Autolinks",
+    "markdown": "HTTP://FOO.COM",
+    "html": "<p><a href=\"HTTP://FOO.COM\">HTTP://FOO.COM</a></p>",
+    "example": 17
+  },
+  {
+    "section": "Autolinks",
+    "markdown": "hTtP://fOo.CoM",
+    "html": "<p><a href=\"hTtP://fOo.CoM\">hTtP://fOo.CoM</a></p>",
+    "example": 18
+  },
+  {
+    "section": "Autolinks",
     "markdown": "~~hello@email.com~~",
     "html": "<p><del><a href=\"mailto:hello@email.com\">hello@email.com</a></del></p>",
     "example": 1307
