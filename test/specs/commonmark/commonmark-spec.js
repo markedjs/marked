@@ -233,7 +233,7 @@ describe('CommonMark 0.28 Block quotes', function() {
   var section = 'Block quotes';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [198, 199, 200, 201];
+  var shouldPassButFails = [198, 199, 200];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -263,7 +263,7 @@ describe('CommonMark 0.28 Lists', function() {
   var section = 'Lists';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [282, 270, 280, 278, 273, 274, 264, 265, 276, 279, 267, 269];
+  var shouldPassButFails = [282, 270, 280, 278, 273, 274, 264, 265, 276, 279, 269];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -381,8 +381,7 @@ describe('CommonMark 0.28 Images', function() {
 describe('CommonMark 0.28 Autolinks', function() {
   var section = 'Autolinks';
 
-  // var shouldPassButFails = [];
-  var shouldPassButFails = [582, 573, 579, 583];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
