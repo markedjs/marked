@@ -233,7 +233,7 @@ describe('CommonMark 0.28 Block quotes', function() {
   var section = 'Block quotes';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [198, 199, 200];
+  var shouldPassButFails = [199, 200];
 
   var willNotBeAttemptedByCoreTeam = [];
 
