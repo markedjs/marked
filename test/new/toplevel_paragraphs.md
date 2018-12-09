@@ -1,6 +1,3 @@
----
-gfm: true
----
 hello world
     text after spaces
     text after spaces
@@ -12,13 +9,6 @@ text inside block code
 
 paragraph before hr
 * * *
-
-paragraph before head with hash
-# how are you
-
-paragraph before head with equals
-how are you
-===========
 
 paragraph before blockquote
 > text for blockquote

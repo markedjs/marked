@@ -130,7 +130,7 @@ describe('CommonMark 0.28 Setext headings', function() {
   var section = 'Setext headings';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [51, 52, 56, 62, 64];
+  var shouldPassButFails = [51, 56, 64];
 
   var willNotBeAttemptedByCoreTeam = [];
 
