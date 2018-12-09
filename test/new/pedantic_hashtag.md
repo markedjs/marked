@@ -1,5 +1,5 @@
 ---
-gfm: false
+pedantic: true
 ---
 #header
 
