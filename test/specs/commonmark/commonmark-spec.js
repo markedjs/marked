@@ -159,8 +159,7 @@ describe('CommonMark 0.28 Indented code blocks', function() {
 describe('CommonMark 0.28 Fenced code blocks', function() {
   var section = 'Fenced code blocks';
 
-  // var shouldPassButFails = [];
-  var shouldPassButFails = [93, 95, 96, 97, 106, 108, 112];
+  var shouldPassButFails = [];
 
   var willNotBeAttemptedByCoreTeam = [];
 
