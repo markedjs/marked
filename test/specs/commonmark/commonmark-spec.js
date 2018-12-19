@@ -248,7 +248,7 @@ describe('CommonMark 0.28 List items', function() {
   var section = 'List items';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [237, 236, 227, 218, 243, 259, 241, 239, 247, 246, 225, 220, 258, 260, 244];
+  var shouldPassButFails = [237, 236, 227, 218, 243, 259, 241, 239, 247, 225, 220, 258, 260];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -263,7 +263,7 @@ describe('CommonMark 0.28 Lists', function() {
   var section = 'Lists';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [282, 270, 280, 278, 273, 274, 264, 265, 276, 279, 267, 269];
+  var shouldPassButFails = [282, 270, 280, 278, 273, 274, 264, 265, 279, 267, 269];
 
   var willNotBeAttemptedByCoreTeam = [];
 
