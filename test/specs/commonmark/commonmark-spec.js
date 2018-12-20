@@ -293,7 +293,7 @@ describe('CommonMark 0.28 Backslash escapes', function() {
   var section = 'Backslash escapes';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [291, 300, 301];
+  var shouldPassButFails = [300, 301];
 
   var willNotBeAttemptedByCoreTeam = [];
 
