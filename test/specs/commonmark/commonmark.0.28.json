@@ -2666,8 +2666,8 @@
   {
     "end_line": 6095,
     "section": "Emphasis and strong emphasis",
-    "html": "<p>* a *</p>\n",
-    "markdown": "* a *\n",
+    "html": "<p>* a *</p>\n",
+    "markdown": "* a *\n",
     "example": 334,
     "start_line": 6091
   },
