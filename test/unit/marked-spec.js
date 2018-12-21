@@ -28,7 +28,14 @@ describe('Test slugger functionality', function() {
     expect(slugger.slug('test')).toBe('test-2');
   });
 
-  it('should be unique to avoid collisions 1401', function() {
+  it('should be unique when slug ends with number', function() {
+    var slugger = new marked.Slugger();
+    expect(slugger.slug('test 1')).toBe('test-1');
+    expect(slugger.slug('test')).toBe('test');
+    expect(slugger.slug('test')).toBe('test-2');
+  });
+
+  it('should be unique when slug ends with hyphen number', function() {
     var slugger = new marked.Slugger();
     expect(slugger.slug('foo')).toBe('foo');
     expect(slugger.slug('foo')).toBe('foo-1');
