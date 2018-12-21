@@ -2,29 +2,54 @@ var marked = require('../../lib/marked.js');
 
 describe('Test heading ID functionality', function() {
   it('should add id attribute by default', function() {
-    var html = marked('# test');
-    expect(html).toBe('<h1 id="test">test</h1>\n');
-  });
-
-  it('should add unique id for repeating heading 1280', function() {
-    var html = marked('# test\n# test\n# test');
-    expect(html).toBe('<h1 id="test">test</h1>\n<h1 id="test-1">test</h1>\n<h1 id="test-2">test</h1>\n');
-  });
-
-  it('should add id with non-latin chars', function() {
-    var html = marked('# привет');
-    expect(html).toBe('<h1 id="привет">привет</h1>\n');
-  });
-
-  it('should add id without ampersands 857', function() {
-    var html = marked('# This & That Section');
-    expect(html).toBe('<h1 id="this--that-section">This &amp; That Section</h1>\n');
+    var renderer = new marked.Renderer();
+    var slugger = new marked.Slugger();
+    var header = renderer.heading('test', 1, 'test', slugger);
+    expect(header).toBe('<h1 id="test">test</h1>\n');
   });
 
   it('should NOT add id attribute when options set false', function() {
-    var options = { headerIds: false };
-    var html = marked('# test', options);
-    expect(html).toBe('<h1>test</h1>\n');
+    var renderer = new marked.Renderer({ headerIds: false });
+    var header = renderer.heading('test', 1, 'test');
+    expect(header).toBe('<h1>test</h1>\n');
+  });
+});
+
+describe('Test slugger functionality', function() {
+  it('should use lowercase slug', function() {
+    var slugger = new marked.Slugger();
+    expect(slugger.slug('Test')).toBe('test');
+  });
+
+  it('should be unique to avoid collisions 1280', function() {
+    var slugger = new marked.Slugger();
+    expect(slugger.slug('test')).toBe('test');
+    expect(slugger.slug('test')).toBe('test-1');
+    expect(slugger.slug('test')).toBe('test-2');
+  });
+
+  it('should be unique to avoid collisions 1401', function() {
+    var slugger = new marked.Slugger();
+    expect(slugger.slug('foo')).toBe('foo');
+    expect(slugger.slug('foo')).toBe('foo-1');
+    expect(slugger.slug('foo 1')).toBe('foo-1-1');
+    expect(slugger.slug('foo-1')).toBe('foo-1-2');
+    expect(slugger.slug('foo')).toBe('foo-2');
+  });
+
+  it('should allow non-latin chars', function() {
+    var slugger = new marked.Slugger();
+    expect(slugger.slug('привет')).toBe('привет');
+  });
+
+  it('should remove ampersands 857', function() {
+    var slugger = new marked.Slugger();
+    expect(slugger.slug('This & That Section')).toBe('this--that-section');
+  });
+
+  it('should remove periods', function() {
+    var slugger = new marked.Slugger();
+    expect(slugger.slug('file.txt')).toBe('filetxt');
   });
 });
 
