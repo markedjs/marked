@@ -89,8 +89,6 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <div>Contributor</div>
         <small>Regent of the Regex; Master of Marked</small>
       </td>
-     </tr>
-	 <tr>
       <td align="center" valign="top">
         <a href="https://github.com/karenyavine">
           <img width="100" height="100" src="https://github.com/karenyavine.png?s=150">
@@ -100,6 +98,8 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <div>Contributor</div>
         <small>Snyk's Security Saint</small>
       </td>
+     </tr>
+     <tr>
       <td align="center" valign="top">
         <a href="https://github.com/KostyaTretyak">
           <img width="100" height="100" src="https://github.com/KostyaTretyak.png?s=150">
@@ -117,6 +117,17 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <a href="https://github.com/tomtheisen">Tom Theisen</a>
         <div>Contributor</div>
         <small>Defibrillator</small>
+      </td>
+      <td align="center" width="20%" valign="top">
+        <a href="https://github.com/mccraveiro">
+          <img width="100" height="100" src="https://github.com/mccraveiro.png?s=150">
+        </a>
+        <br>
+        <a href="https://github.com/mccraveiro">Mateus Craveiro</a>
+        <div>Contributor</div>
+        <small>Defibrillator</small>
+      </td>
+      <td align="center" width="20%" valign="top">
       </td>
      </tr>
   </tbody>
