@@ -1,3 +1,7 @@
+---
+pedantic: true
+---
+
 In Markdown 1.0.0 and earlier. Version
 8. This line turns into a list item.
 Because a hard-wrapped line in the
