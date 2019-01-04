@@ -15,7 +15,7 @@ Messenger.prototype.test = function(spec, section, ignore) {
     var shouldFail = ~ignore.indexOf(spec.example);
     it('should ' + (shouldFail ? 'fail' : 'pass') + ' example ' + spec.example, function() {
       var expected = spec.html;
-      var actual = marked(spec.markdown, { headerIds: false, xhtml: true, gfm: false });
+      var actual = marked(spec.markdown, { headerIds: false, xhtml: true });
       since(messenger.message(spec, expected, actual)).expect(
         htmlDiffer.isEqual(expected, actual)
       ).toEqual(!shouldFail);
@@ -248,7 +248,7 @@ describe('CommonMark 0.28 List items', function() {
   var section = 'List items';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [229, 237, 236, 227, 218, 243, 259, 241, 239, 247, 246, 225, 220, 258, 260, 244];
+  var shouldPassButFails = [237, 236, 227, 218, 243, 259, 241, 239, 247, 225, 220, 258, 260];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -263,7 +263,7 @@ describe('CommonMark 0.28 Lists', function() {
   var section = 'Lists';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [270, 280, 278, 273, 274, 264, 265, 276, 279, 269];
+  var shouldPassButFails = [270, 280, 278, 273, 274, 264, 265, 279, 269];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -293,7 +293,7 @@ describe('CommonMark 0.28 Backslash escapes', function() {
   var section = 'Backslash escapes';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [291, 300, 301];
+  var shouldPassButFails = [300, 301];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -337,7 +337,7 @@ describe('CommonMark 0.28 Emphasis and strong emphasis', function() {
   var section = 'Emphasis and strong emphasis';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [334, 342, 348, 349, 352, 353, 360, 368, 369, 371, 372, 378, 380, 381, 382, 387, 388, 392, 393, 394, 395, 396, 402, 403, 409, 416, 419, 420, 421, 422, 423, 424, 428, 431, 432, 433, 434, 435, 436, 443, 444, 445, 448, 449, 453, 454, 455, 457, 458];
+  var shouldPassButFails = [334, 342, 348, 349, 352, 353, 360, 368, 369, 371, 372, 378, 380, 381, 382, 387, 388, 392, 393, 394, 395, 396, 402, 403, 409, 419, 420, 421, 422, 423, 424, 431, 432, 433, 434, 435, 436, 443, 444, 445, 448, 449, 453, 454, 455, 457, 458];
 
   var willNotBeAttemptedByCoreTeam = [];
 
@@ -381,7 +381,8 @@ describe('CommonMark 0.28 Images', function() {
 describe('CommonMark 0.28 Autolinks', function() {
   var section = 'Autolinks';
 
-  var shouldPassButFails = [];
+  // var shouldPassButFails = [];
+  var shouldPassButFails = [582, 573, 579, 583];
 
   var willNotBeAttemptedByCoreTeam = [];
 

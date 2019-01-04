@@ -184,6 +184,14 @@ function camelize(text) {
   });
 }
 
+function handleError(err) {
+  if (err.code === 'ENOENT') {
+    console.error(`marked: output to ${err.path}: No such directory`);
+    return process.exit(1);
+  }
+  throw err;
+}
+
 /**
  * Expose / Entry Point
  */
@@ -191,7 +199,7 @@ function camelize(text) {
 if (!module.parent) {
   process.title = 'marked';
   main(process.argv.slice(), function(err, code) {
-    if (err) throw err;
+    if (err) return handleError(err);
     return process.exit(code || 0);
   });
 } else {
