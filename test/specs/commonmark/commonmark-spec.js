@@ -30,22 +30,22 @@ var messenger = new Messenger();
 |Tabs                                    | 10 of  11 |     91%|
 |Precedence                              |  1 of   1 |    100%|
 |Thematic breaks                         | 19 of  19 |    100%|
-|ATX headings                            | 14 of  18 |     78%|
-|Setext headings                         | 21 of  26 |     81%|
+|ATX headings                            | 15 of  18 |     83%|
+|Setext headings                         | 23 of  26 |     88%|
 |Indented code blocks                    | 12 of  12 |    100%|
-|Fenced code blocks                      | 21 of  28 |     75%|
+|Fenced code blocks                      | 28 of  28 |    100%|
 |HTML blocks                             | 43 of  43 |    100%|
 |Link reference definitions              | 22 of  23 |     96%|
 |Paragraphs                              |  8 of   8 |    100%|
 |Blank lines                             |  1 of   1 |    100%|
-|Block quotes                            | 21 of  25 |     84%|
-|List items                              | 32 of  48 |     67%|
-|Lists                                   | 12 of  24 |     50%|
+|Block quotes                            | 23 of  25 |     92%|
+|List items                              | 35 of  48 |     73%|
+|Lists                                   | 15 of  24 |     63%|
 |Inlines                                 |  1 of   1 |    100%|
-|Backslash escapes                       | 10 of  13 |     77%|
+|Backslash escapes                       | 11 of  13 |     85%|
 |Entity and numeric character references |  9 of  12 |     75%|
 |Code spans                              | 11 of  17 |     65%|
-|Emphasis and strong emphasis            | 79 of 128 |     61%|
+|Emphasis and strong emphasis            | 81 of 128 |     63%|
 |Links                                   | 69 of  84 |     82%|
 |Images                                  | 15 of  22 |     68%|
 |Autolinks                               | 15 of  19 |     79%|
