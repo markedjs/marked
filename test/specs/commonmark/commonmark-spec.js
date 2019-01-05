@@ -30,8 +30,8 @@ var messenger = new Messenger();
 |Tabs                                    | 10 of  11 |     91%|
 |Precedence                              |  1 of   1 |    100%|
 |Thematic breaks                         | 19 of  19 |    100%|
-|ATX headings                            | 15 of  18 |     83%|
-|Setext headings                         | 23 of  26 |     88%|
+|ATX headings                            | 17 of  18 |     94%|
+|Setext headings                         | 24 of  26 |     92%|
 |Indented code blocks                    | 12 of  12 |    100%|
 |Fenced code blocks                      | 28 of  28 |    100%|
 |HTML blocks                             | 43 of  43 |    100%|
