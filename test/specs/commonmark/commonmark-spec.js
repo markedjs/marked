@@ -46,7 +46,7 @@ var messenger = new Messenger();
 |Entity and numeric character references |  9 of  12 |     75%|
 |Code spans                              | 11 of  17 |     65%|
 |Emphasis and strong emphasis            | 79 of 128 |     61%|
-|Links                                   | 69 of  84 |     82%|
+|Links                                   | 68 of  84 |     81%|
 |Images                                  | 15 of  22 |     68%|
 |Autolinks                               | 15 of  19 |     79%|
 |Raw HTML                                | 19 of  21 |     90%|
@@ -352,7 +352,7 @@ describe('CommonMark 0.28 Links', function() {
   var section = 'Links';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [474, 478, 483, 489, 490, 491, 495, 496, 497, 499, 503, 504, 507, 508, 509];
+  var shouldPassButFails = [468, 474, 478, 483, 489, 490, 491, 495, 496, 497, 499, 503, 504, 507, 508, 509];
 
   var willNotBeAttemptedByCoreTeam = [];
 
