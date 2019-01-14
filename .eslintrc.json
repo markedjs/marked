@@ -12,6 +12,7 @@
       "outerIIFEBody": 0
     }],
     "space-before-function-paren": "off",
+    "object-curly-spacing": "off",
     "operator-linebreak": ["error", "before", { "overrides": { "=": "after" } }],
     "no-cond-assign": "off",
     "no-useless-escape": "off",
