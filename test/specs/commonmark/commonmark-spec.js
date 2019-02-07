@@ -352,7 +352,7 @@ describe('CommonMark 0.28 Links', function() {
   var section = 'Links';
 
   // var shouldPassButFails = [];
-  var shouldPassButFails = [468, 474, 478, 483, 489, 490, 491, 495, 496, 497, 499, 503, 504, 507, 508, 509];
+  var shouldPassButFails = [474, 478, 483, 489, 490, 491, 495, 496, 497, 499, 503, 504, 507, 508, 509];
 
   var willNotBeAttemptedByCoreTeam = [];
 
