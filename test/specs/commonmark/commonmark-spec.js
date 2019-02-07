@@ -46,7 +46,7 @@ var messenger = new Messenger();
 |Entity and numeric character references |  9 of  12 |     75%|
 |Code spans                              | 11 of  17 |     65%|
 |Emphasis and strong emphasis            | 79 of 128 |     61%|
-|Links                                   | 68 of  84 |     81%|
+|Links                                   | 69 of  84 |     82%|
 |Images                                  | 15 of  22 |     68%|
 |Autolinks                               | 15 of  19 |     79%|
 |Raw HTML                                | 19 of  21 |     90%|
