@@ -8,6 +8,8 @@ if (!window.fetch) {
 }
 
 var $markdownElem = document.querySelector('#markdown');
+var $markedVerElem = document.querySelector('#markedVersion');
+var $markedVer = document.querySelector('#markedCdn');
 var $optionsElem = document.querySelector('#options');
 var $outputTypeElem = document.querySelector('#outputType');
 var $inputTypeElem = document.querySelector('#inputType');
@@ -78,6 +80,11 @@ function handleOutputChange() {
   updateLink();
 }
 
+function handleVersionChange() {
+  handleChange($markedVer, $markedVerElem.value);
+  updateVersion();
+}
+
 function handleChange(panes, visiblePane) {
   var active = null;
   for (var i = 0; i < panes.length; i++) {
@@ -95,6 +102,8 @@ $outputTypeElem.addEventListener('change', handleOutputChange, false);
 handleOutputChange();
 $inputTypeElem.addEventListener('change', handleInputChange, false);
 handleInputChange();
+$markedVerElem.addEventListener('change', handleVersionChange, false);
+handleVersionChange();
 
 function handleInput() {
   inputDirty = true;
@@ -172,6 +181,10 @@ function updateLink() {
   $permalinkElem.href = '?' + outputType + 'text=' + encodeURIComponent($markdownElem.value)
       + '&options=' + encodeURIComponent($optionsElem.value);
   history.replaceState('', document.title, $permalinkElem.href);
+}
+
+function updateVersion() {
+  $markedVer.setAttribute('src', $markedVerElem.value);
 }
 
 var delayTime = 1;
