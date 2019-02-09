@@ -105,6 +105,11 @@ function handleOutputChange() {
   updateLink();
 }
 
+function handleVersionChange() {
+  handleChange($markedVer, $markedVerElem.value);
+  updateVersion();
+}
+
 function handleChange(panes, visiblePane) {
   var active = null;
   for (var i = 0; i < panes.length; i++) {
