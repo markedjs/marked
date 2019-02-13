@@ -30,6 +30,7 @@ function parse(e) {
       });
       break;
     case 'parse':
+      var startTime = new Date();
       var lexed = marked.lexer(e.data.markdown, e.data.options);
       var lexedList = [];
       for (var i = 0; i < lexed.length; i++) {
@@ -40,12 +41,15 @@ function parse(e) {
         lexedList.push('{' + lexedLine.join(', ') + '}');
       }
       var parsed = marked.parser(lexed, e.data.options);
-
+      var endTime = new Date();
+      // setTimeout(function () {
       postMessage({
         task: e.data.task,
         lexed: lexedList.join('\n'),
-        parsed: parsed
+        parsed: parsed,
+        time: endTime - startTime
       });
+      // }, 10000);
       break;
   }
 }

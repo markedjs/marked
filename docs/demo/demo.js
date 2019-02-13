@@ -17,6 +17,7 @@ var $markedVer = document.querySelector('#markedCdn');
 var $optionsElem = document.querySelector('#options');
 var $outputTypeElem = document.querySelector('#outputType');
 var $inputTypeElem = document.querySelector('#inputType');
+var $responseTimeElem = document.querySelector('#responseTime');
 var $previewElem = document.querySelector('#preview');
 var $previewIframe = document.querySelector('#preview iframe');
 var $permalinkElem = document.querySelector('#permalink');
@@ -298,6 +299,7 @@ function checkForChanges() {
         setScrollPercent(scrollPercent);
         var endTime = new Date();
         delayTime = endTime - startTime;
+        setResponseTime(delayTime);
         if (delayTime < 50) {
           delayTime = 50;
         } else if (delayTime > 500) {
@@ -308,6 +310,22 @@ function checkForChanges() {
   }
   checkChangeTimeout = window.setTimeout(checkForChanges, delayTime);
 };
+
+function setResponseTime(ms) {
+  var amount = ms;
+  var suffix = 'ms';
+  if (ms > 1000 * 60 * 60) {
+    amount = 'Too Long';
+    suffix = '';
+  } else if (ms > 1000 * 60) {
+    amount = '>' + Math.floor(ms / (1000 * 60));
+    suffix = 'm';
+  } else if (ms > 1000) {
+    amount = '>' + Math.floor(ms / 1000);
+    suffix = 's';
+  }
+  $responseTimeElem.textContent = amount + suffix;
+}
 
 function setParsed(parsed, lexed) {
   if (iframeLoaded) {
@@ -339,6 +357,7 @@ function messageWorker(message) {
           var scrollPercent = getScrollPercent();
           setParsed(e.data.parsed, e.data.lexed);
           setScrollPercent(scrollPercent);
+          setResponseTime(e.data.time);
           break;
       }
       clearTimeout(checkChangeTimeout);
@@ -363,10 +382,16 @@ function messageWorker(message) {
     };
   }
   markedWorker.working = true;
-  markedWorker.timeout = setTimeout(function () {
-    markedWorker.onerror('Marked is taking a while...');
-  }, 1000);
+  workerTimeout(0);
   markedWorker.postMessage(message);
+}
+
+function workerTimeout(seconds) {
+  markedWorker.timeout = setTimeout(function () {
+    seconds++;
+    markedWorker.onerror('Marked has taken longer than ' + seconds + ' second' + (seconds > 1 ? 's' : '') + ' to respond...');
+    workerTimeout(seconds);
+  }, 1000);
 }
 checkForChanges();
 setScrollPercent(0);
