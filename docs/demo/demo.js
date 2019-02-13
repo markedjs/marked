@@ -7,12 +7,17 @@ if (!window.fetch) {
   window.fetch = unfetch;
 }
 
+onunhandledrejection = function (e) {
+  throw e.reason;
+};
+
 var $markdownElem = document.querySelector('#markdown');
 var $markedVerElem = document.querySelector('#markedVersion');
 var $markedVer = document.querySelector('#markedCdn');
 var $optionsElem = document.querySelector('#options');
 var $outputTypeElem = document.querySelector('#outputType');
 var $inputTypeElem = document.querySelector('#inputType');
+var $previewElem = document.querySelector('#preview');
 var $previewIframe = document.querySelector('#preview iframe');
 var $permalinkElem = document.querySelector('#permalink');
 var $clearElem = document.querySelector('#clear');
@@ -20,6 +25,7 @@ var $htmlElem = document.querySelector('#html');
 var $lexerElem = document.querySelector('#lexer');
 var $panes = document.querySelectorAll('.pane');
 var $inputPanes = document.querySelectorAll('.inputPane');
+var lastInput = '';
 var inputDirty = true;
 var $activeOutputElem = null;
 var search = searchToObject();
@@ -74,14 +80,7 @@ fetch('https://data.jsdelivr.com/v1/package/npm/marked')
       if ('options' in search && search.options) {
         $optionsElem.value = search.options;
       } else {
-        $optionsElem.value = JSON.stringify(
-          marked.getDefaults(),
-          function (key, value) {
-            if (value && typeof value === 'object' && Object.getPrototypeOf(value) !== Object.prototype) {
-              return undefined;
-            }
-            return value;
-          }, ' ');
+        setDefaultOptions();
       }
     });
   });
@@ -141,17 +140,31 @@ $optionsElem.addEventListener('keydown', handleInput, false);
 $clearElem.addEventListener('click', function () {
   $markdownElem.value = '';
   $markedVerElem.value = 'master';
-  updateVersion().then(function () {
-    $optionsElem.value = JSON.stringify(
-      marked.getDefaults(),
-      function (key, value) {
-        if (value && typeof value === 'object' && Object.getPrototypeOf(value) !== Object.prototype) {
-          return undefined;
-        }
-        return value;
-      }, ' ');
-  });
+  updateVersion().then(setDefaultOptions);
 }, false);
+
+function setDefaultOptions() {
+  if (window.Worker) {
+    messageWorker({
+      task: 'defaults',
+      version: markedVersions[$markedVerElem.value]}
+    );
+  } else {
+    var defaults = marked.getDefaults();
+    setOptions(defaults);
+  }
+}
+
+function setOptions(opts) {
+  $optionsElem.value = JSON.stringify(
+    opts,
+    function (key, value) {
+      if (value && typeof value === 'object' && Object.getPrototypeOf(value) !== Object.prototype) {
+        return undefined;
+      }
+      return value;
+    }, ' ');
+}
 
 function searchToObject() {
   // modified from https://stackoverflow.com/a/7090123/806777
@@ -213,6 +226,10 @@ function updateLink() {
 }
 
 function updateVersion() {
+  if (window.Worker) {
+    handleInput();
+    return Promise.resolve();
+  }
   var promise;
   if ($markedVerElem.value in markedVersionCache) {
     promise = Promise.resolve(markedVersionCache[$markedVerElem.value]);
@@ -234,57 +251,122 @@ function updateVersion() {
 }
 
 var delayTime = 1;
-var options = {};
+var checkChangeTimeout = null;
 function checkForChanges() {
-  if (inputDirty && typeof marked !== 'undefined') {
+  if (inputDirty && (typeof marked !== 'undefined' || window.Worker)) {
     inputDirty = false;
 
     updateLink();
 
-    var startTime = new Date();
-
-    var scrollPercent = getScrollPercent();
-
+    var options = {};
+    var optionsString = $optionsElem.value || '{}';
     try {
-      var optionsString = $optionsElem.value || '{}';
       var newOptions = JSON.parse(optionsString);
       options = newOptions;
-      $optionsElem.classList.remove('badParse');
+      $optionsElem.classList.remove('error');
     } catch (err) {
-      $optionsElem.classList.add('badParse');
+      $optionsElem.classList.add('error');
     }
 
-    var lexed = marked.lexer($markdownElem.value, options);
-
-    var lexedList = [];
-
-    for (var i = 0; i < lexed.length; i++) {
-      var lexedLine = [];
-      for (var j in lexed[i]) {
-        lexedLine.push(j + ':' + jsonString(lexed[i][j]));
+    var version = markedVersions[$markedVerElem.value];
+    var markdown = $markdownElem.value;
+    var hash = version + markdown + optionsString;
+    if (lastInput !== hash) {
+      lastInput = hash;
+      if (window.Worker) {
+        delayTime = 100;
+        messageWorker({
+          task: 'parse',
+          version: version,
+          markdown: markdown,
+          options: options
+        });
+      } else {
+        var startTime = new Date();
+        var lexed = marked.lexer(markdown, options);
+        var lexedList = [];
+        for (var i = 0; i < lexed.length; i++) {
+          var lexedLine = [];
+          for (var j in lexed[i]) {
+            lexedLine.push(j + ':' + jsonString(lexed[i][j]));
+          }
+          lexedList.push('{' + lexedLine.join(', ') + '}');
+        }
+        var parsed = marked.parser(lexed, options);
+        var scrollPercent = getScrollPercent();
+        setParsed(parsed, lexedList.join('\n'));
+        setScrollPercent(scrollPercent);
+        var endTime = new Date();
+        delayTime = endTime - startTime;
+        if (delayTime < 50) {
+          delayTime = 50;
+        } else if (delayTime > 500) {
+          delayTime = 1000;
+        }
       }
-      lexedList.push('{' + lexedLine.join(', ') + '}');
-    }
-
-    var parsed = marked.parser(lexed, options);
-
-    if (iframeLoaded) {
-      $previewIframe.contentDocument.body.innerHTML = (parsed);
-    }
-    $htmlElem.value = (parsed);
-    $lexerElem.value = (lexedList.join('\n'));
-
-    setScrollPercent(scrollPercent);
-
-    var endTime = new Date();
-    delayTime = endTime - startTime;
-    if (delayTime < 50) {
-      delayTime = 50;
-    } else if (delayTime > 500) {
-      delayTime = 1000;
     }
   }
-  window.setTimeout(checkForChanges, delayTime);
+  checkChangeTimeout = window.setTimeout(checkForChanges, delayTime);
 };
+
+function setParsed(parsed, lexed) {
+  if (iframeLoaded) {
+    $previewIframe.contentDocument.body.innerHTML = parsed;
+  }
+  $htmlElem.value = parsed;
+  $lexerElem.value = lexed;
+}
+
+var markedWorker;
+function messageWorker(message) {
+  if (!markedWorker || markedWorker.working) {
+    if (markedWorker) {
+      clearTimeout(markedWorker.timeout);
+      markedWorker.terminate();
+    }
+    markedWorker = new Worker('worker.js');
+    markedWorker.onmessage = function (e) {
+      clearTimeout(markedWorker.timeout);
+      markedWorker.working = false;
+      switch (e.data.task) {
+        case 'defaults':
+          setOptions(e.data.defaults);
+          break;
+        case 'parse':
+          $previewElem.classList.remove('error');
+          $htmlElem.classList.remove('error');
+          $lexerElem.classList.remove('error');
+          var scrollPercent = getScrollPercent();
+          setParsed(e.data.parsed, e.data.lexed);
+          setScrollPercent(scrollPercent);
+          break;
+      }
+      clearTimeout(checkChangeTimeout);
+      delayTime = 10;
+      checkForChanges();
+    };
+    markedWorker.onerror = markedWorker.onmessageerror = function (err) {
+      clearTimeout(markedWorker.timeout);
+      var error = 'There was an error in the Worker';
+      if (err) {
+        if (err.message) {
+          error = err.message;
+        } else {
+          error = err;
+        }
+      }
+      $previewElem.classList.add('error');
+      $htmlElem.classList.add('error');
+      $lexerElem.classList.add('error');
+      setParsed(error, error);
+      setScrollPercent(0);
+    };
+  }
+  markedWorker.working = true;
+  markedWorker.timeout = setTimeout(function () {
+    markedWorker.onerror('Marked is taking a while...');
+  }, 1000);
+  markedWorker.postMessage(message);
+}
 checkForChanges();
 setScrollPercent(0);

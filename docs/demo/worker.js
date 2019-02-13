@@ -1,0 +1,75 @@
+/* global marked */
+var versionCache = {};
+var currentVersion;
+onmessage = function (e) {
+  if (e.data.version === currentVersion) {
+    parse(e);
+  } else {
+    getVersion(e.data.version).then(function (text) {
+      // eslint-disable-next-line no-new-func
+      Function(text)();
+      currentVersion = e.data.version;
+
+      parse(e);
+    });
+  }
+};
+
+onunhandledrejection = function (e) {
+  throw e.reason;
+};
+
+function parse(e) {
+  switch (e.data.task) {
+    case 'defaults':
+      var defaults = marked.getDefaults();
+      defaults.renderer = null;
+      postMessage({
+        task: e.data.task,
+        defaults: defaults
+      });
+      break;
+    case 'parse':
+      var lexed = marked.lexer(e.data.markdown, e.data.options);
+      var lexedList = [];
+      for (var i = 0; i < lexed.length; i++) {
+        var lexedLine = [];
+        for (var j in lexed[i]) {
+          lexedLine.push(j + ':' + jsonString(lexed[i][j]));
+        }
+        lexedList.push('{' + lexedLine.join(', ') + '}');
+      }
+      var parsed = marked.parser(lexed, e.data.options);
+
+      postMessage({
+        task: e.data.task,
+        lexed: lexedList.join('\n'),
+        parsed: parsed
+      });
+      break;
+  }
+}
+
+function jsonString(input) {
+  var output = (input + '')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t')
+    .replace(/\f/g, '\\f')
+    .replace(/[\\"']/g, '\\$&')
+    .replace(/\u0000/g, '\\0');
+  return '"' + output + '"';
+};
+
+function getVersion(ver) {
+  if (ver in versionCache) {
+    return Promise.resolve(versionCache[ver]);
+  }
+
+  return fetch(ver)
+    .then(function (res) { return res.text(); })
+    .then(function (text) {
+      versionCache[ver] = text;
+      return text;
+    });
+}
