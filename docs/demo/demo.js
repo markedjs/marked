@@ -1,10 +1,13 @@
 /* globals marked, unfetch, ES6Promise */
 
+var useWorker = !!window.Worker;
 if (!window.Promise) {
   window.Promise = ES6Promise;
+  useWorker = false;
 }
 if (!window.fetch) {
   window.fetch = unfetch;
+  useWorker = false;
 }
 
 onunhandledrejection = function (e) {
@@ -145,7 +148,7 @@ $clearElem.addEventListener('click', function () {
 }, false);
 
 function setDefaultOptions() {
-  if (window.Worker) {
+  if (useWorker) {
     messageWorker({
       task: 'defaults',
       version: markedVersions[$markedVerElem.value]}
@@ -227,7 +230,7 @@ function updateLink() {
 }
 
 function updateVersion() {
-  if (window.Worker) {
+  if (useWorker) {
     handleInput();
     return Promise.resolve();
   }
@@ -254,7 +257,7 @@ function updateVersion() {
 var delayTime = 1;
 var checkChangeTimeout = null;
 function checkForChanges() {
-  if (inputDirty && (typeof marked !== 'undefined' || window.Worker)) {
+  if (inputDirty && (typeof marked !== 'undefined' || (useWorker))) {
     inputDirty = false;
 
     updateLink();
@@ -274,7 +277,7 @@ function checkForChanges() {
     var hash = version + markdown + optionsString;
     if (lastInput !== hash) {
       lastInput = hash;
-      if (window.Worker) {
+      if (useWorker) {
         delayTime = 100;
         messageWorker({
           task: 'parse',
