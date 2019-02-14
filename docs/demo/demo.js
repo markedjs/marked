@@ -64,12 +64,13 @@ $clearElem.addEventListener('click', handleClearClick, false);
 
 Promise.all([
   setInitialQuickref(),
-  setInitialOutputType()
-    .then(handleOutputChange),
+  setInitialOutputType(),
   setInitialText(),
   setInitialVersion()
     .then(setInitialOptions)
 ]).then(function () {
+  handleInputChange();
+  handleOutputChange();
   checkForChanges();
   setScrollPercent(0);
 });
