@@ -6,8 +6,12 @@ onmessage = function (e) {
     parse(e);
   } else {
     getVersion(e.data.version).then(function (text) {
-      // eslint-disable-next-line no-new-func
-      Function(text)();
+      try {
+        // eslint-disable-next-line no-new-func
+        Function(text)();
+      } catch (err) {
+        throw new Error('Cannot load that version of marked');
+      }
       currentVersion = e.data.version;
 
       parse(e);
@@ -22,8 +26,18 @@ onunhandledrejection = function (e) {
 function parse(e) {
   switch (e.data.task) {
     case 'defaults':
-      var defaults = marked.getDefaults();
-      defaults.renderer = null;
+
+      var defaults = {};
+      if (typeof marked.getDefaults === 'function') {
+        defaults = marked.getDefaults();
+        delete defaults.renderer;
+      } else if ('defaults' in marked) {
+        for (var prop in marked.defaults) {
+          if (prop !== 'renderer') {
+            defaults[prop] = marked.defaults[prop];
+          }
+        }
+      }
       postMessage({
         task: e.data.task,
         defaults: defaults

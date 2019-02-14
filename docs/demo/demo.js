@@ -16,6 +16,8 @@ onunhandledrejection = function (e) {
 
 var $markdownElem = document.querySelector('#markdown');
 var $markedVerElem = document.querySelector('#markedVersion');
+var $commitVerElem = document.querySelector('#commitVersion');
+$commitVerElem.style.display = 'none';
 var $markedVer = document.querySelector('#markedCdn');
 var $optionsElem = document.querySelector('#options');
 var $outputTypeElem = document.querySelector('#outputType');
@@ -35,6 +37,7 @@ var $activeOutputElem = null;
 var search = searchToObject();
 
 var markedVersions = {
+  commit: 'commit',
   master: 'https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.js'
 };
 var markedVersionCache = {};
@@ -76,11 +79,7 @@ fetch('https://data.jsdelivr.com/v1/package/npm/marked')
   .then(function () {
     if ('version' in search && search.version) {
       if (!(search.version in markedVersions)) {
-        markedVersions[search.version] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + search.version + '/lib/marked.js';
-        var opt = document.createElement('option');
-        opt.textContent = search.version.substring(0, 7);
-        opt.value = search.version;
-        $markedVerElem.insertBefore(opt, $markedVerElem.firstChild);
+        addCommitVersion(search.version);
       }
       $markedVerElem.value = search.version;
     } else {
@@ -105,6 +104,17 @@ fetch('./quickref.md')
   .then(function (text) {
     document.querySelector('#quickref').value = text;
   });
+
+function addCommitVersion(version) {
+  if (version in markedVersions) {
+    return;
+  }
+  markedVersions[version] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + version + '/lib/marked.js';
+  var opt = document.createElement('option');
+  opt.textContent = version.substring(0, 7);
+  opt.value = version;
+  $markedVerElem.insertBefore(opt, $markedVerElem.firstChild);
+}
 
 function handleInputChange() {
   handleChange($inputPanes, $inputTypeElem.value);
@@ -132,7 +142,14 @@ $outputTypeElem.addEventListener('change', handleOutputChange, false);
 handleOutputChange();
 $inputTypeElem.addEventListener('change', handleInputChange, false);
 handleInputChange();
-$markedVerElem.addEventListener('change', updateVersion, false);
+$markedVerElem.addEventListener('change', function () {
+  if ($markedVerElem.value === 'commit') {
+    $commitVerElem.style.display = '';
+  } else {
+    $commitVerElem.style.display = 'none';
+    updateVersion();
+  }
+}, false);
 
 function handleInput() {
   inputDirty = true;
@@ -148,9 +165,25 @@ $optionsElem.addEventListener('keyup', handleInput, false);
 $optionsElem.addEventListener('keypress', handleInput, false);
 $optionsElem.addEventListener('keydown', handleInput, false);
 
+$commitVerElem.addEventListener('keypress', function (e) {
+  if (e.which === 13) {
+    var commit = $commitVerElem.value.toLowerCase();
+    if (!commit.match(/^[0-9a-f]{40}$/)) {
+      alert('That is not a valid commit');
+      return;
+    }
+    addCommitVersion(commit);
+    $markedVerElem.value = commit;
+    $commitVerElem.style.display = 'none';
+    $commitVerElem.value = '';
+    updateVersion();
+  }
+}, false);
+
 $clearElem.addEventListener('click', function () {
   $markdownElem.value = '';
   $markedVerElem.value = 'master';
+  $commitVerElem.style.display = 'none';
   updateVersion().then(setDefaultOptions);
 }, false);
 
@@ -264,7 +297,7 @@ function updateVersion() {
 var delayTime = 1;
 var checkChangeTimeout = null;
 function checkForChanges() {
-  if (inputDirty && (typeof marked !== 'undefined' || (useWorker))) {
+  if (inputDirty && (typeof marked !== 'undefined' || (useWorker)) && $markedVerElem.value !== 'commit') {
     inputDirty = false;
 
     updateLink();
@@ -384,6 +417,7 @@ function messageWorker(message) {
           error = err;
         }
       }
+      error = error.replace(/^Uncaught Error: /, '');
       $previewElem.classList.add('error');
       $htmlElem.classList.add('error');
       $lexerElem.classList.add('error');
@@ -391,8 +425,10 @@ function messageWorker(message) {
       setScrollPercent(0);
     };
   }
-  markedWorker.working = true;
-  workerTimeout(0);
+  if (message.task !== 'defaults') {
+    markedWorker.working = true;
+    workerTimeout(0);
+  }
   markedWorker.postMessage(message);
 }
 
