@@ -75,6 +75,13 @@ fetch('https://data.jsdelivr.com/v1/package/npm/marked')
   })
   .then(function () {
     if ('version' in search && search.version) {
+      if (!(search.version in markedVersions)) {
+        markedVersions[search.version] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + search.version + '/lib/marked.js';
+        var opt = document.createElement('option');
+        opt.textContent = search.version.substring(0, 7);
+        opt.value = search.version;
+        $markedVerElem.insertBefore(opt, $markedVerElem.firstChild);
+      }
       $markedVerElem.value = search.version;
     } else {
       $markedVerElem.value = 'master';
