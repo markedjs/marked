@@ -7,28 +7,22 @@ if (!self.fetch) {
   self.importScripts('https://cdn.jsdelivr.net/npm/unfetch/dist/unfetch.umd.js');
   self.fetch = unfetch;
 }
+
 var versionCache = {};
 var currentVersion;
+
+onunhandledrejection = function (e) {
+  throw e.reason;
+};
+
 onmessage = function (e) {
   if (e.data.version === currentVersion) {
     parse(e);
   } else {
-    getVersion(e.data.version).then(function (text) {
-      try {
-        // eslint-disable-next-line no-new-func
-        Function(text)();
-      } catch (err) {
-        throw new Error('Cannot load that version of marked');
-      }
-      currentVersion = e.data.version;
-
+    loadVersion(e.data.version).then(function () {
       parse(e);
     });
   }
-};
-
-onunhandledrejection = function (e) {
-  throw e.reason;
 };
 
 function parse(e) {
@@ -87,15 +81,25 @@ function jsonString(input) {
   return '"' + output + '"';
 };
 
-function getVersion(ver) {
+function loadVersion(ver) {
+  var promise;
   if (ver in versionCache) {
-    return Promise.resolve(versionCache[ver]);
+    promise = Promise.resolve(versionCache[ver]);
+  } else {
+    promise = fetch(ver)
+      .then(function (res) { return res.text(); })
+      .then(function (text) {
+        versionCache[ver] = text;
+        return text;
+      });
   }
-
-  return fetch(ver)
-    .then(function (res) { return res.text(); })
-    .then(function (text) {
-      versionCache[ver] = text;
-      return text;
-    });
+  return promise.then(function (text) {
+    try {
+      // eslint-disable-next-line no-new-func
+      Function(text)();
+    } catch (err) {
+      throw new Error('Cannot load that version of marked');
+    }
+    currentVersion = ver;
+  });
 }

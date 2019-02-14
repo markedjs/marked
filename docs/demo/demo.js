@@ -31,146 +31,21 @@ var lastInput = '';
 var inputDirty = true;
 var $activeOutputElem = null;
 var search = searchToObject();
-
 var markedVersions = {
   master: 'https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.js'
 };
 var markedVersionCache = {};
+var delayTime = 1;
+var checkChangeTimeout = null;
+var markedWorker;
 
-$commitVerElem.style.display = 'none';
-$previewIframe.addEventListener('load', function () {
-  lastInput = '';
-  inputDirty = true;
-});
-
-if ('text' in search && search.text) {
-  $markdownElem.value = search.text;
-} else {
-  fetch('./initial.md')
-    .then(function (res) { return res.text(); })
-    .then(function (text) {
-      if ($markdownElem.value === '') {
-        $markdownElem.value = text;
-        inputDirty = true;
-        setScrollPercent(0);
-      }
-    });
-}
-
-fetch('https://data.jsdelivr.com/v1/package/npm/marked')
-  .then(function (res) {
-    return res.json();
-  })
-  .then(function (json) {
-    for (var i = 0; i < json.versions.length; i++) {
-      var ver = json.versions[i];
-      markedVersions[ver] = 'https://cdn.jsdelivr.net/npm/marked@' + ver + '/lib/marked.js';
-      var opt = document.createElement('option');
-      opt.textContent = ver;
-      opt.value = ver;
-      $markedVerElem.appendChild(opt);
-    }
-  })
-  .then(function () {
-    if ('version' in search && search.version) {
-      if (!(search.version in markedVersions)) {
-        var match = search.version.match(/^(\w+):(.+)$/);
-        if (match) {
-          switch (match[1]) {
-            case 'commit':
-              addCommitVersion(search.version, match[2].substring(0, 7), match[2]);
-              return search.version;
-            case 'pr':
-              return getPrCommit(match[2])
-                .then(function (commit) {
-                  if (!commit) {
-                    return 'master';
-                  }
-                  addCommitVersion(search.version, 'PR #' + match[2], commit);
-                  return search.version;
-                });
-          }
-        }
-      }
-    }
-
-    return 'master';
-  })
-  .then(function (version) {
-    $markedVerElem.value = version;
-  })
-  .then(updateVersion)
-  .then(function () {
-    if ('options' in search && search.options) {
-      $optionsElem.value = search.options;
-    } else {
-      setDefaultOptions();
-    }
-  })
-  .then(function () {
-    checkForChanges();
-    setScrollPercent(0);
-  });
-
-if (search.outputType) {
-  $outputTypeElem.value = search.outputType;
-}
-
-fetch('./quickref.md')
-  .then(function (res) { return res.text(); })
-  .then(function (text) {
-    document.querySelector('#quickref').value = text;
-  });
-
-function addCommitVersion(value, text, commit) {
-  if (value in markedVersions) {
-    return;
-  }
-  markedVersions[value] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + commit + '/lib/marked.js';
-  var opt = document.createElement('option');
-  opt.textContent = text;
-  opt.value = value;
-  $markedVerElem.insertBefore(opt, $markedVerElem.firstChild);
-}
-
-function handleInputChange() {
-  handleChange($inputPanes, $inputTypeElem.value);
-}
-
-function handleOutputChange() {
-  $activeOutputElem = handleChange($panes, $outputTypeElem.value);
-  updateLink();
-}
-
-function handleChange(panes, visiblePane) {
-  var active = null;
-  for (var i = 0; i < panes.length; i++) {
-    if (panes[i].id === visiblePane) {
-      panes[i].style.display = '';
-      active = panes[i];
-    } else {
-      panes[i].style.display = 'none';
-    }
-  }
-  return active;
-};
+$previewIframe.addEventListener('load', handleIframeLoad);
 
 $outputTypeElem.addEventListener('change', handleOutputChange, false);
-handleOutputChange();
-$inputTypeElem.addEventListener('change', handleInputChange, false);
-handleInputChange();
-$markedVerElem.addEventListener('change', function () {
-  if ($markedVerElem.value === 'commit' || $markedVerElem.value === 'pr') {
-    $commitVerElem.style.display = '';
-  } else {
-    $commitVerElem.style.display = 'none';
-    updateVersion();
-  }
-}, false);
 
-function handleInput() {
-  inputDirty = true;
-};
+$inputTypeElem.addEventListener('change', handleInputChange, false);
+
+$markedVerElem.addEventListener('change', handleVersionChange, false);
 
 $markdownElem.addEventListener('change', handleInput, false);
 $markdownElem.addEventListener('keyup', handleInput, false);
@@ -182,7 +57,131 @@ $optionsElem.addEventListener('keyup', handleInput, false);
 $optionsElem.addEventListener('keypress', handleInput, false);
 $optionsElem.addEventListener('keydown', handleInput, false);
 
-$commitVerElem.addEventListener('keypress', function (e) {
+$commitVerElem.style.display = 'none';
+$commitVerElem.addEventListener('keypress', handleAddVersion, false);
+
+$clearElem.addEventListener('click', handleClearClick, false);
+
+Promise.all([
+  setInitialQuickref(),
+  setInitialOutputType()
+    .then(handleOutputChange),
+  setInitialText(),
+  setInitialVersion()
+    .then(setInitialOptions)
+]).then(function () {
+  checkForChanges();
+  setScrollPercent(0);
+});
+
+function setInitialText() {
+  if (search.text) {
+    $markdownElem.value = search.text;
+  } else {
+    return fetch('./initial.md')
+      .then(function (res) { return res.text(); })
+      .then(function (text) {
+        if ($markdownElem.value === '') {
+          $markdownElem.value = text;
+        }
+      });
+  }
+}
+
+function setInitialQuickref() {
+  return fetch('./quickref.md')
+    .then(function (res) { return res.text(); })
+    .then(function (text) {
+      document.querySelector('#quickref').value = text;
+    });
+}
+
+function setInitialVersion() {
+  return fetch('https://data.jsdelivr.com/v1/package/npm/marked')
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (json) {
+      for (var i = 0; i < json.versions.length; i++) {
+        var ver = json.versions[i];
+        markedVersions[ver] = 'https://cdn.jsdelivr.net/npm/marked@' + ver + '/lib/marked.js';
+        var opt = document.createElement('option');
+        opt.textContent = ver;
+        opt.value = ver;
+        $markedVerElem.appendChild(opt);
+      }
+    })
+    .then(function () {
+      if (search.version) {
+        if (!markedVersions[search.version]) {
+          var match = search.version.match(/^(\w+):(.+)$/);
+          if (match) {
+            switch (match[1]) {
+              case 'commit':
+                addCommitVersion(search.version, match[2].substring(0, 7), match[2]);
+                return search.version;
+              case 'pr':
+                return getPrCommit(match[2])
+                  .then(function (commit) {
+                    if (!commit) {
+                      return 'master';
+                    }
+                    addCommitVersion(search.version, 'PR #' + match[2], commit);
+                    return search.version;
+                  });
+            }
+          }
+        }
+      }
+
+      return 'master';
+    })
+    .then(function (version) {
+      $markedVerElem.value = version;
+    })
+    .then(updateVersion);
+}
+
+function setInitialOptions() {
+  if (search.options) {
+    $optionsElem.value = search.options;
+  } else {
+    setDefaultOptions();
+  }
+}
+
+function setInitialOutputType() {
+  if (search.outputType) {
+    $outputTypeElem.value = search.outputType;
+  }
+}
+
+function handleIframeLoad() {
+  lastInput = '';
+  inputDirty = true;
+}
+
+function handleInput() {
+  inputDirty = true;
+};
+
+function handleVersionChange() {
+  if ($markedVerElem.value === 'commit' || $markedVerElem.value === 'pr') {
+    $commitVerElem.style.display = '';
+  } else {
+    $commitVerElem.style.display = 'none';
+    updateVersion();
+  }
+}
+
+function handleClearClick() {
+  $markdownElem.value = '';
+  $markedVerElem.value = 'master';
+  $commitVerElem.style.display = 'none';
+  updateVersion().then(setDefaultOptions);
+}
+
+function handleAddVersion(e) {
   if (e.which === 13) {
     switch ($markedVerElem.value) {
       case 'commit':
@@ -215,14 +214,40 @@ $commitVerElem.addEventListener('keypress', function (e) {
           });
     }
   }
-}, false);
+}
 
-$clearElem.addEventListener('click', function () {
-  $markdownElem.value = '';
-  $markedVerElem.value = 'master';
-  $commitVerElem.style.display = 'none';
-  updateVersion().then(setDefaultOptions);
-}, false);
+function handleInputChange() {
+  handleChange($inputPanes, $inputTypeElem.value);
+}
+
+function handleOutputChange() {
+  $activeOutputElem = handleChange($panes, $outputTypeElem.value);
+  updateLink();
+}
+
+function handleChange(panes, visiblePane) {
+  var active = null;
+  for (var i = 0; i < panes.length; i++) {
+    if (panes[i].id === visiblePane) {
+      panes[i].style.display = '';
+      active = panes[i];
+    } else {
+      panes[i].style.display = 'none';
+    }
+  }
+  return active;
+};
+
+function addCommitVersion(value, text, commit) {
+  if (markedVersions[value]) {
+    return;
+  }
+  markedVersions[value] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + commit + '/lib/marked.js';
+  var opt = document.createElement('option');
+  opt.textContent = text;
+  opt.value = value;
+  $markedVerElem.insertBefore(opt, $markedVerElem.firstChild);
+}
 
 function getPrCommit(pr) {
   return fetch('https://api.github.com/repos/markedjs/marked/pulls/' + pr + '/commits')
@@ -293,6 +318,7 @@ function getScrollSize() {
 
   return e.scrollHeight - e.clientHeight;
 };
+
 function getScrollPercent() {
   var size = getScrollSize();
 
@@ -302,6 +328,7 @@ function getScrollPercent() {
 
   return $activeOutputElem.scrollTop / size;
 };
+
 function setScrollPercent(percent) {
   $activeOutputElem.scrollTop = percent * getScrollSize();
 };
@@ -324,7 +351,7 @@ function updateVersion() {
     return Promise.resolve();
   }
   var promise;
-  if ($markedVerElem.value in markedVersionCache) {
+  if (markedVersionCache[$markedVerElem.value]) {
     promise = Promise.resolve(markedVersionCache[$markedVerElem.value]);
   } else {
     promise = fetch(markedVersions[$markedVerElem.value])
@@ -343,8 +370,6 @@ function updateVersion() {
   }).then(handleInput);
 }
 
-var delayTime = 1;
-var checkChangeTimeout = null;
 function checkForChanges() {
   if (inputDirty && $markedVerElem.value !== 'commit' && $markedVerElem.value !== 'pr' && (typeof marked !== 'undefined' || window.Worker)) {
     inputDirty = false;
@@ -427,7 +452,6 @@ function setParsed(parsed, lexed) {
   $lexerElem.value = lexed;
 }
 
-var markedWorker;
 function messageWorker(message) {
   if (!markedWorker || markedWorker.working) {
     if (markedWorker) {
