@@ -80,7 +80,7 @@ Promise.all([
 });
 
 function setInitialText() {
-  if (search.text) {
+  if ('text' in search) {
     $markdownElem.value = search.text;
   } else {
     return fetch('./initial.md')
@@ -148,7 +148,7 @@ function setInitialVersion() {
 }
 
 function setInitialOptions() {
-  if (search.options) {
+  if ('options' in search) {
     $optionsElem.value = search.options;
   } else {
     setDefaultOptions();

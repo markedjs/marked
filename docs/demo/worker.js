@@ -83,7 +83,7 @@ function jsonString(input) {
 
 function loadVersion(ver) {
   var promise;
-  if (ver in versionCache) {
+  if (versionCache[ver]) {
     promise = Promise.resolve(versionCache[ver]);
   } else {
     promise = fetch(ver)
