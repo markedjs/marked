@@ -1,4 +1,12 @@
-/* global marked */
+/* globals marked, unfetch, ES6Promise */
+if (!self.Promise) {
+  self.importScripts('https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.js');
+  self.Promise = ES6Promise;
+}
+if (!self.fetch) {
+  self.importScripts('https://cdn.jsdelivr.net/npm/unfetch/dist/unfetch.umd.js');
+  self.fetch = unfetch;
+}
 var versionCache = {};
 var currentVersion;
 onmessage = function (e) {

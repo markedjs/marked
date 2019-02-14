@@ -1,13 +1,10 @@
 /* globals marked, unfetch, ES6Promise */
 
-var useWorker = !!window.Worker;
 if (!window.Promise) {
   window.Promise = ES6Promise;
-  useWorker = false;
 }
 if (!window.fetch) {
   window.fetch = unfetch;
-  useWorker = false;
 }
 
 onunhandledrejection = function (e) {
@@ -42,9 +39,8 @@ var markedVersions = {
 };
 var markedVersionCache = {};
 
-var iframeLoaded = false;
 $previewIframe.addEventListener('load', function () {
-  iframeLoaded = true;
+  lastInput = '';
   inputDirty = true;
 });
 
@@ -188,7 +184,7 @@ $clearElem.addEventListener('click', function () {
 }, false);
 
 function setDefaultOptions() {
-  if (useWorker) {
+  if (window.Worker) {
     messageWorker({
       task: 'defaults',
       version: markedVersions[$markedVerElem.value]}
@@ -270,7 +266,7 @@ function updateLink() {
 }
 
 function updateVersion() {
-  if (useWorker) {
+  if (window.Worker) {
     handleInput();
     return Promise.resolve();
   }
@@ -297,7 +293,7 @@ function updateVersion() {
 var delayTime = 1;
 var checkChangeTimeout = null;
 function checkForChanges() {
-  if (inputDirty && (typeof marked !== 'undefined' || (useWorker)) && $markedVerElem.value !== 'commit') {
+  if (inputDirty && $markedVerElem.value !== 'commit' && (typeof marked !== 'undefined' || window.Worker)) {
     inputDirty = false;
 
     updateLink();
@@ -317,7 +313,7 @@ function checkForChanges() {
     var hash = version + markdown + optionsString;
     if (lastInput !== hash) {
       lastInput = hash;
-      if (useWorker) {
+      if (window.Worker) {
         delayTime = 100;
         messageWorker({
           task: 'parse',
@@ -371,9 +367,9 @@ function setResponseTime(ms) {
 }
 
 function setParsed(parsed, lexed) {
-  if (iframeLoaded) {
+  try {
     $previewIframe.contentDocument.body.innerHTML = parsed;
-  }
+  } catch (ex) {}
   $htmlElem.value = parsed;
   $lexerElem.value = lexed;
 }
