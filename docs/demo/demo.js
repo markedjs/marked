@@ -11,6 +11,8 @@ onunhandledrejection = function (e) {
   throw e.reason;
 };
 
+var $loadingElem = document.querySelector('#loading');
+var $mainElem = document.querySelector('#main');
 var $markdownElem = document.querySelector('#markdown');
 var $markedVerElem = document.querySelector('#markedVersion');
 var $commitVerElem = document.querySelector('#commitVersion');
@@ -73,6 +75,8 @@ Promise.all([
   handleOutputChange();
   checkForChanges();
   setScrollPercent(0);
+  $loadingElem.style.display = 'none';
+  $mainElem.style.display = 'block';
 });
 
 function setInitialText() {

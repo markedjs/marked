@@ -18,52 +18,55 @@
       <h1>Marked Demo</h1>
     </header>
 
-    <div class="containers">
-      <div class="container">
-        <div class="label">
-          <span>Input</span> ·
-          <a id="permalink">Permalink</a> ·
-          <span>Version: </span>
-          <select id="markedVersion">
-            <option value="pr">Add PR:</option>
-            <option value="commit">Add Commit:</option>
-            <option value="master" selected>master</option>
-          </select>
-          <input type="text" id="commitVersion" title="Press ENTER to add commit" />·
-          <button id="clear">Clear</button>
-          <select id="inputType">
-            <option value="markdown">Markdown</option>
-            <option value="options">Options</option>
-          </select>
-        </div>
-        <textarea id="markdown" class="inputPane"></textarea>
-        <textarea id="options" class="inputPane" placeholder="Options (as JSON)"></textarea>
-      </div>
-
-      <div class="container">
-        <div class="label">
-          <select id="outputType">
-            <option value="preview">Preview</option>
-            <option value="html">HTML Source</option>
-            <option value="lexer">Lexer Data</option>
-            <option value="quickref">Quick Reference</option>
-          </select> ·
-          Response Time:
-          <span id="responseTime"></span>
+    <div id="loading">Loading...</div>
+    <div id="main">
+      <div class="containers">
+        <div class="container">
+          <div class="label">
+            <span>Input</span> ·
+            <a id="permalink">Permalink</a> ·
+            <span>Version: </span>
+            <select id="markedVersion">
+              <option value="pr">Add PR:</option>
+              <option value="commit">Add Commit:</option>
+              <option value="master" selected>master</option>
+            </select>
+            <input type="text" id="commitVersion" title="Press ENTER to add commit" />·
+            <button id="clear">Clear</button>
+            <select id="inputType">
+              <option value="markdown">Markdown</option>
+              <option value="options">Options</option>
+            </select>
+          </div>
+          <textarea id="markdown" class="inputPane"></textarea>
+          <textarea id="options" class="inputPane" placeholder="Options (as JSON)"></textarea>
         </div>
 
-        <div id="preview" class="pane">
-          <noscript>
-            <h2>You'll need to enable Javascript to use this tool.</h2>
-          </noscript>
-          <iframe src="./preview.html" frameborder="0" sandbox="allow-same-origin"></iframe>
+        <div class="container">
+          <div class="label">
+            <select id="outputType">
+              <option value="preview">Preview</option>
+              <option value="html">HTML Source</option>
+              <option value="lexer">Lexer Data</option>
+              <option value="quickref">Quick Reference</option>
+            </select> ·
+            Response Time:
+            <span id="responseTime"></span>
+          </div>
+
+          <div id="preview" class="pane">
+            <noscript>
+              <h2>You'll need to enable Javascript to use this tool.</h2>
+            </noscript>
+            <iframe src="./preview.html" frameborder="0" sandbox="allow-same-origin"></iframe>
+          </div>
+
+          <textarea id="html" class="pane" readonly="readonly"></textarea>
+
+          <textarea id="lexer" class="pane" readonly="readonly"></textarea>
+
+          <textarea id="quickref" class="pane" readonly="readonly"></textarea>
         </div>
-
-        <textarea id="html" class="pane" readonly="readonly"></textarea>
-
-        <textarea id="lexer" class="pane" readonly="readonly"></textarea>
-
-        <textarea id="quickref" class="pane" readonly="readonly"></textarea>
       </div>
     </div>
     <script id="markedCdn"></script>

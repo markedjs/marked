@@ -62,6 +62,10 @@ header h1 {
 	flex-grow: 1;
 }
 
+#main {
+	display: none;
+}
+
 .error {
 	border-color: red;
 	background-color: #FEE
