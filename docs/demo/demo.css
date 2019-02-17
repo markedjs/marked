@@ -62,7 +62,11 @@ header h1 {
 	flex-grow: 1;
 }
 
-#options.badParse {
+#main {
+	display: none;
+}
+
+.error {
 	border-color: red;
 	background-color: #FEE
 }
