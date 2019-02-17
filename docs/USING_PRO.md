@@ -45,17 +45,29 @@ console.log(myMarked('# heading+', { renderer: renderer }));
 
 ### Block level renderer methods
 
-- code(*string* code, *string* language, *boolean* escaped)
+- code(*string* code, *string* infostring, *boolean* escaped)
 - blockquote(*string* quote)
 - html(*string* html)
-- heading(*string* text, *number* level, *string* rawtext)
+- heading(*string* text, *number* level, *string* raw, *Slugger* slugger)
 - hr()
 - list(*string* body, *boolean* ordered, *number* start)
 - listitem(*string* text)
+- checkbox(*boolean* checked)
 - paragraph(*string* text)
 - table(*string* header, *string* body)
 - tablerow(*string* content)
 - tablecell(*string* content, *object* flags)
+
+`slugger` has the `slug` method to create an unique id from value:
+
+```js
+slugger.slug('foo')   // foo
+slugger.slug('foo')   // foo-1
+slugger.slug('foo')   // foo-2
+slugger.slug('foo 1') // foo-1-1
+slugger.slug('foo-1') // foo-1-2
+...
+```
 
 `flags` has the following properties:
 
