@@ -23,10 +23,20 @@
         <div class="label">
           <span>Input</span> ·
           <a id="permalink">Permalink</a> ·
+          <span>Version: </span>
+          <select id="markedVersion">
+            <option value="master">master</option>
+          </select> ·
           <button id="clear">Clear</button>
           <select id="inputType">
             <option value="markdown">Markdown</option>
             <option value="options">Options</option>
+          </select>
+          <select id="markedVersion">
+            <option value="https://cdn.jsdelivr.net/npm/marked@master/marked.min.js">Marked@master</option>
+            <option value="https://cdn.jsdelivr.net/npm/marked@0.6.0/marked.min.js">Marked@0.6.0</option>
+            <option value="https://cdn.jsdelivr.net/npm/marked@0.5.2/marked.min.js">Marked@0.5.2</option>
+            <option value="https://cdn.jsdelivr.net/npm/marked@0.5.1/marked.min.js">Marked@0.5.1</option>
           </select>
         </div>
         <textarea id="markdown" class="inputPane"></textarea>
@@ -57,7 +67,7 @@
         <textarea id="quickref" class="pane" readonly="readonly"></textarea>
       </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.js"></script>
+    <script id="markedCdn"></script>
     <script src="https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/unfetch/dist/unfetch.umd.js"></script>
     <script src="./demo.js"></script>

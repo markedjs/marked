@@ -8,6 +8,8 @@ if (!window.fetch) {
 }
 
 var $markdownElem = document.querySelector('#markdown');
+var $markedVerElem = document.querySelector('#markedVersion');
+var $markedVer = document.querySelector('#markedCdn');
 var $optionsElem = document.querySelector('#options');
 var $outputTypeElem = document.querySelector('#outputType');
 var $inputTypeElem = document.querySelector('#inputType');
@@ -20,17 +22,20 @@ var $panes = document.querySelectorAll('.pane');
 var $inputPanes = document.querySelectorAll('.inputPane');
 var inputDirty = true;
 var $activeOutputElem = null;
-var changeTimeout = null;
 var search = searchToObject();
+
+var markedVersions = {
+  master: 'https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.js'
+};
+var markedVersionCache = {};
 
 var iframeLoaded = false;
 $previewIframe.addEventListener('load', function () {
   iframeLoaded = true;
   inputDirty = true;
-  checkForChanges();
 });
 
-if ('text' in search) {
+if ('text' in search && search.text) {
   $markdownElem.value = search.text;
 } else {
   fetch('./initial.md')
@@ -39,25 +44,47 @@ if ('text' in search) {
       if ($markdownElem.value === '') {
         $markdownElem.value = text;
         inputDirty = true;
-        clearTimeout(changeTimeout);
-        checkForChanges();
         setScrollPercent(0);
       }
     });
 }
 
-if ('options' in search) {
-  $optionsElem.value = search.options;
-} else {
-  $optionsElem.value = JSON.stringify(
-    marked.getDefaults(),
-    function (key, value) {
-      if (value && typeof value === 'object' && Object.getPrototypeOf(value) !== Object.prototype) {
-        return undefined;
+fetch('https://data.jsdelivr.com/v1/package/npm/marked')
+  .then(function (res) {
+    return res.json();
+  })
+  .then(function (json) {
+    for (var i = 0; i < json.versions.length; i++) {
+      var ver = json.versions[i];
+      markedVersions[ver] = 'https://cdn.jsdelivr.net/npm/marked@' + ver + '/lib/marked.js';
+      var opt = document.createElement('option');
+      opt.textContent = ver;
+      opt.value = ver;
+      $markedVerElem.appendChild(opt);
+    }
+  })
+  .then(function () {
+    if ('version' in search && search.version) {
+      $markedVerElem.value = search.version;
+    } else {
+      $markedVerElem.value = 'master';
+    }
+
+    updateVersion().then(function () {
+      if ('options' in search && search.options) {
+        $optionsElem.value = search.options;
+      } else {
+        $optionsElem.value = JSON.stringify(
+          marked.getDefaults(),
+          function (key, value) {
+            if (value && typeof value === 'object' && Object.getPrototypeOf(value) !== Object.prototype) {
+              return undefined;
+            }
+            return value;
+          }, ' ');
       }
-      return value;
-    }, ' ');
-}
+    });
+  });
 
 if (search.outputType) {
   $outputTypeElem.value = search.outputType;
@@ -95,6 +122,7 @@ $outputTypeElem.addEventListener('change', handleOutputChange, false);
 handleOutputChange();
 $inputTypeElem.addEventListener('change', handleInputChange, false);
 handleInputChange();
+$markedVerElem.addEventListener('change', updateVersion, false);
 
 function handleInput() {
   inputDirty = true;
@@ -112,8 +140,17 @@ $optionsElem.addEventListener('keydown', handleInput, false);
 
 $clearElem.addEventListener('click', function () {
   $markdownElem.value = '';
-  $optionsElem.value = '';
-  handleInput();
+  $markedVerElem.value = 'master';
+  updateVersion().then(function () {
+    $optionsElem.value = JSON.stringify(
+      marked.getDefaults(),
+      function (key, value) {
+        if (value && typeof value === 'object' && Object.getPrototypeOf(value) !== Object.prototype) {
+          return undefined;
+        }
+        return value;
+      }, ' ');
+  });
 }, false);
 
 function searchToObject() {
@@ -170,14 +207,36 @@ function updateLink() {
   }
 
   $permalinkElem.href = '?' + outputType + 'text=' + encodeURIComponent($markdownElem.value)
-      + '&options=' + encodeURIComponent($optionsElem.value);
+      + '&options=' + encodeURIComponent($optionsElem.value)
+      + '&version=' + encodeURIComponent($markedVerElem.value);
   history.replaceState('', document.title, $permalinkElem.href);
+}
+
+function updateVersion() {
+  var promise;
+  if ($markedVerElem.value in markedVersionCache) {
+    promise = Promise.resolve(markedVersionCache[$markedVerElem.value]);
+  } else {
+    promise = fetch(markedVersions[$markedVerElem.value])
+      .then(function (res) { return res.text(); })
+      .then(function (text) {
+        markedVersionCache[$markedVerElem.value] = text;
+        return text;
+      });
+  }
+  return promise.then(function (text) {
+    var script = document.createElement('script');
+    script.textContent = text;
+
+    $markedVer.parentNode.replaceChild(script, $markedVer);
+    $markedVer = script;
+  }).then(handleInput);
 }
 
 var delayTime = 1;
 var options = {};
 function checkForChanges() {
-  if (inputDirty) {
+  if (inputDirty && typeof marked !== 'undefined') {
     inputDirty = false;
 
     updateLink();
@@ -225,7 +284,7 @@ function checkForChanges() {
       delayTime = 1000;
     }
   }
-  changeTimeout = window.setTimeout(checkForChanges, delayTime);
+  window.setTimeout(checkForChanges, delayTime);
 };
 checkForChanges();
 setScrollPercent(0);
