@@ -34,7 +34,7 @@ Also read about:
 
 **CLI:** `npm install -g marked`
 
-**In-browser:** `npm install marked --save`
+**In-browser:** `npm install marked`
 
 ## Usage
 
