@@ -21,7 +21,7 @@ These documentation pages are also rendered using marked 💯
 
 **CLI:** `npm install -g marked`
 
-**In-browser:** `npm install marked --save`
+**In-browser:** `npm install marked`
 
 <h2 id="usage">Usage</h2>
 
