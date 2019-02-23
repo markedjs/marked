@@ -13,4 +13,4 @@ it('should run spec tests', function () {
       return failed();
     }
   }, failed);
-});
+}, 30 * 1000);
