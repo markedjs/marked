@@ -14,8 +14,7 @@ var fs = require('fs'),
     path = require('path'),
     fm = require('front-matter'),
     g2r = require('glob-to-regexp'),
-    marked = require('../'),
-    markedMin = require('../marked.min.js');
+    marked = require('../');
 
 /**
  * Load Tests
@@ -91,117 +90,121 @@ function runTests(engine, options) {
     engine = null;
   }
 
-  engine = engine || marked;
+  if (!engine) {
+    try {
+      engine = require('./markedAsync.js');
+    } catch (ex) {
+      engine = require('../');
+    }
+  }
   options = options || {};
   var succeeded = 0,
       failed = 0,
       files = options.files || load(options),
-      filenames = Object.keys(files),
-      len = filenames.length,
-      success,
-      i,
-      filename,
-      file;
+      filenames = Object.keys(files);
 
-  if (options.marked) {
-    marked.setOptions(options.marked);
-  }
-
-  for (i = 0; i < len; i++) {
-    filename = filenames[i];
-    file = files[filename];
-
-    success = testFile(engine, file, filename, i + 1);
-
-    if (success) {
-      succeeded++;
-    } else {
-      failed++;
-      if (options.stop) {
-        break;
-      }
+  return Promise.all(filenames.map((filename, i) => {
+    return testFile(engine, files[filename], filename, i + 1, options)
+      .then(success => {
+        if (success) {
+          succeeded++;
+        } else {
+          failed++;
+          if (options.stop) {
+            // eslint-disable-next-line no-throw-literal
+            throw 'stop';
+          }
+        }
+      });
+  })).catch(err => {
+    if (err !== 'stop') {
+      throw err;
     }
-  }
+  }).then(() => {
+    if (!options.hideOutput) {
+      console.log('%d/%d tests completed successfully.', succeeded, filenames.length);
+      if (failed) console.log('%d/%d tests failed.', failed, filenames.length);
+    }
 
-  console.log('%d/%d tests completed successfully.', succeeded, len);
-  if (failed) console.log('%d/%d tests failed.', failed, len);
-
-  return !failed;
+    return !failed;
+  });
 }
 
 /**
  * Test a file
  */
 
-function testFile(engine, file, filename, index) {
-  var opts = Object.keys(file.options),
-      text,
-      html,
-      j,
-      l,
-      before,
-      elapsed;
+function testFile(engine, file, filename, index, options) {
+  var before,
+      elapsed,
+      opts;
 
-  if (marked._original) {
-    marked.defaults = marked._original;
-    delete marked._original;
-  }
-
-  console.log('#%d. Test %s', index, filename);
-
-  if (opts.length) {
-    marked._original = marked.defaults;
-    marked.defaults = {};
-    Object.keys(marked._original).forEach(function(key) {
-      marked.defaults[key] = marked._original[key];
-    });
-    opts.forEach(function(key) {
-      if (marked.defaults.hasOwnProperty(key)) {
-        marked.defaults[key] = file.options[key];
-      }
-    });
-  }
+  marked.defaults = marked.getDefaults();
+  opts = Object.assign({}, options.marked, file.options);
 
   before = process.hrtime();
-  try {
-    text = engine(file.text).replace(/\s/g, '');
-    html = file.html.replace(/\s/g, '');
-  } catch (e) {
-    elapsed = process.hrtime(before);
-    console.log('    failed in %dms', prettyElapsedTime(elapsed));
-    throw e;
-  }
+  return Promise.resolve(engine(file.text, opts))
+    .then(text => {
+      elapsed = process.hrtime(before);
+      var html,
+          j,
+          l;
+      if (typeof text === 'object' && text instanceof Array) {
+        elapsed = text[1];
+        text = text[0];
+      }
+      text = text.replace(/\s/g, '');
+      html = file.html.replace(/\s/g, '');
 
-  elapsed = process.hrtime(before);
+      l = html.length;
 
-  l = html.length;
+      for (j = 0; j < l; j++) {
+        if (text[j] !== html[j]) {
+          text = text.substring(
+            Math.max(j - 30, 0),
+            Math.min(j + 30, text.length));
 
-  for (j = 0; j < l; j++) {
-    if (text[j] !== html[j]) {
-      text = text.substring(
-        Math.max(j - 30, 0),
-        Math.min(j + 30, text.length));
+          html = html.substring(
+            Math.max(j - 30, 0),
+            Math.min(j + 30, l));
 
-      html = html.substring(
-        Math.max(j - 30, 0),
-        Math.min(j + 30, l));
+          if (!options.hideOutput) {
+            console.log('#%d. Test %s', index, filename);
+            console.log('    failed in %dms at offset %d. Near: "%s".\n', prettyElapsedTime(elapsed), j, text);
 
-      console.log('    failed in %dms at offset %d. Near: "%s".\n', prettyElapsedTime(elapsed), j, text);
+            console.log('\nGot:\n%s\n', text.trim() || text);
+            console.log('\nExpected:\n%s\n', html.trim() || html);
+          }
 
-      console.log('\nGot:\n%s\n', text.trim() || text);
-      console.log('\nExpected:\n%s\n', html.trim() || html);
+          return false;
+        }
+      }
 
-      return false;
-    }
-  }
+      if (elapsed[0] > 0) {
+        if (!options.hideOutput) {
+          console.log('#%d. Test %s', index, filename);
+          console.log('    failed because it took too long.\n\n    passed in %dms', prettyElapsedTime(elapsed));
+        }
+        return false;
+      }
 
-  if (elapsed[0] > 0) {
-    console.log('    failed because it took too long.\n\n    passed in %dms', prettyElapsedTime(elapsed));
-    return false;
-  }
-
-  console.log('    passed in %dms', prettyElapsedTime(elapsed));
-  return true;
+      if (!options.failedOutput && !options.hideOutput) {
+        console.log('#%d. Test %s', index, filename);
+        console.log('    passed in %dms', prettyElapsedTime(elapsed));
+      }
+      return true;
+    }, err => {
+      elapsed = process.hrtime(before);
+      if (typeof err === 'object' && err instanceof Array) {
+        elapsed = err[1];
+        err = err[0];
+      }
+      if (!options.hideOutput) {
+        console.log('#%d. Test %s', index, filename);
+        console.log('    failed in %dms\n\n    Error: %s', prettyElapsedTime(elapsed), err.message || err);
+      }
+      throw err;
+    });
 }
 
 /**
@@ -441,12 +444,12 @@ function fix() {
  * Argument Parsing
  */
 
-function parseArg() {
+function parseArg(options) {
   var argv = process.argv.slice(2),
-      options = {},
       opt = '',
       orphans = [],
       arg;
+  options = options || {};
 
   function getarg() {
     var arg = argv.shift();
@@ -497,6 +500,12 @@ function parseArg() {
       case '-s':
       case '--stop':
         options.stop = true;
+        break;
+      case '--failed-output':
+        options.failedOutput = true;
+        break;
+      case '--hide-output':
+        options.hideOutput = true;
         break;
       case '-t':
       case '--time':
@@ -550,8 +559,8 @@ function camelize(text) {
  * Main
  */
 
-function main(argv) {
-  var opt = parseArg();
+function main(options) {
+  var opt = parseArg(options);
 
   if (opt.fix !== false) {
     fix();
@@ -571,7 +580,7 @@ function main(argv) {
   }
 
   if (opt.minified) {
-    marked = markedMin;
+    marked = require('../marked.min.js');
   }
   return runTests(opt);
 }
@@ -582,7 +591,9 @@ function main(argv) {
 
 if (!module.parent) {
   process.title = 'marked';
-  process.exit(main(process.argv.slice()) ? 0 : 1);
+  main(process.argv.slice()).then(success => {
+    process.exit(success ? 0 : 1);
+  });
 } else {
   exports = main;
   exports.main = main;

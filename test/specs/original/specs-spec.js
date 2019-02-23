@@ -2,11 +2,15 @@ var specTests = require('../../');
 
 it('should run spec tests', function () {
   // hide output
-  spyOn(console, 'log');
-  if (!specTests({stop: true})) {
+  function failed() {
     // if tests fail rerun tests and show output
-    console.log.and.callThrough();
-    specTests();
-    fail();
+    return specTests({failedOutput: true}).then(() => {
+      fail();
+    });
   }
+  return specTests({stop: true, hideOutput: true}).then(passed => {
+    if (!passed) {
+      return failed();
+    }
+  }, failed);
 });
