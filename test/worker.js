@@ -1,18 +1,17 @@
-const marked = require('../lib/marked.js');
 const {
   Worker, isMainThread, parentPort
 } = require('worker_threads');
-let count = 0;
-const listeners = {};
 
 if (isMainThread) {
   const worker = new Worker(__filename);
+  let count = 0;
+  const listeners = {};
   worker.on('message', ([id, err, html, elapsed]) => {
     if (!listeners[id]) {
       return;
     }
     if (err) {
-      listeners[id].reject([new Error(err), elapsed]);
+      listeners[id].reject([err, elapsed]);
     } else {
       listeners[id].resolve([html, elapsed]);
     }
@@ -25,19 +24,19 @@ if (isMainThread) {
       worker.postMessage([id, md, opts]);
     });
   };
-  module.exports.worker = worker;
 } else {
+  const marked = require('../');
   parentPort.on('message', ([id, md, opts]) => {
     marked.defaults = marked.getDefaults();
     let before, elapsed;
+    before = process.hrtime();
     try {
-      before = process.hrtime();
       const html = marked(md, opts);
       elapsed = process.hrtime(before);
       parentPort.postMessage([id, null, html, elapsed]);
     } catch (err) {
       elapsed = process.hrtime(before);
-      parentPort.postMessage([id, err.message, null, elapsed]);
+      parentPort.postMessage([id, (err.stack ? err.stack.toString() : err.toString()), null, elapsed]);
     }
   });
 }

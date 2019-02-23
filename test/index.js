@@ -14,7 +14,8 @@ var fs = require('fs'),
     path = require('path'),
     fm = require('front-matter'),
     g2r = require('glob-to-regexp'),
-    marked = require('../');
+    marked = require('../'),
+    usingWorker = false;
 
 /**
  * Load Tests
@@ -92,9 +93,10 @@ function runTests(engine, options) {
 
   if (!engine) {
     try {
-      engine = require('./markedAsync.js');
+      engine = require('./worker.js');
+      usingWorker = true;
     } catch (ex) {
-      engine = require('../');
+      engine = marked;
     }
   }
   options = options || {};
@@ -115,19 +117,22 @@ function runTests(engine, options) {
             throw 'stop';
           }
         }
+      }, () => {
+        failed++;
+        if (options.stop) {
+          // eslint-disable-next-line no-throw-literal
+          throw 'stop';
+        }
       });
-  })).catch(err => {
-    if (err !== 'stop') {
-      throw err;
-    }
-  }).then(() => {
-    if (!options.hideOutput) {
-      console.log('%d/%d tests completed successfully.', succeeded, filenames.length);
-      if (failed) console.log('%d/%d tests failed.', failed, filenames.length);
-    }
+  })).catch(() => {})
+    .then(() => {
+      if (!options.hideOutput) {
+        console.log('%d/%d tests completed successfully.', succeeded, filenames.length);
+        if (failed) console.log('%d/%d tests failed.', failed, filenames.length);
+      }
 
-    return !failed;
-  });
+      return !failed;
+    });
 }
 
 /**
@@ -137,22 +142,37 @@ function runTests(engine, options) {
 function testFile(engine, file, filename, index, options) {
   var before,
       elapsed,
-      opts;
+      opts,
+      promise;
 
   marked.defaults = marked.getDefaults();
   opts = Object.assign({}, options.marked, file.options);
 
-  before = process.hrtime();
-  return Promise.resolve(engine(file.text, opts))
-    .then(text => {
+  if (usingWorker) {
+    promise = engine(file.text, opts).then(text => {
+      elapsed = text[1];
+      return text[0];
+    }, err => {
+      elapsed = err[1];
+      return Promise.reject(err[0]);
+    });
+  } else {
+    before = process.hrtime();
+    try {
+      var text = engine(file.text, opts);
       elapsed = process.hrtime(before);
+      promise = Promise.resolve(text);
+    } catch (err) {
+      elapsed = process.hrtime(before);
+      promise = Promise.reject(err);
+    }
+  }
+  return promise
+    .then(text => {
       var html,
           j,
           l;
-      if (typeof text === 'object' && text instanceof Array) {
-        elapsed = text[1];
-        text = text[0];
-      }
+
       text = text.replace(/\s/g, '');
       html = file.html.replace(/\s/g, '');
 
@@ -194,14 +214,9 @@ function testFile(engine, file, filename, index, options) {
       }
       return true;
     }, err => {
-      elapsed = process.hrtime(before);
-      if (typeof err === 'object' && err instanceof Array) {
-        elapsed = err[1];
-        err = err[0];
-      }
       if (!options.hideOutput) {
         console.log('#%d. Test %s', index, filename);
-        console.log('    failed in %dms\n\n    Error: %s', prettyElapsedTime(elapsed), err.message || err);
+        console.log('    failed in %dms\n\n    %s', prettyElapsedTime(elapsed), err.message || err);
       }
       throw err;
     });
