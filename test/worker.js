@@ -1,9 +1,16 @@
 const {
   Worker, isMainThread, parentPort
 } = require('worker_threads');
+let worker;
+let count = 0;
+const listeners = {};
 
-function newWorker(listeners) {
-  let worker = new Worker(__filename);
+function newWorker() {
+  if (worker) {
+    worker.terminate();
+  }
+  worker = new Worker(__filename);
+  module.exports.worker = worker;
   worker.on('message', ([id, err, html, elapsed]) => {
     if (!listeners[id]) {
       return;
@@ -16,39 +23,43 @@ function newWorker(listeners) {
     clearTimeout(listeners[id].timeout);
     delete listeners[id];
   });
-
-  return worker;
 }
 
-function createTimeout(worker, listeners, id) {
+function createTimeout(id, stop) {
   return setTimeout(() => {
     if (listeners[id]) {
-      listeners[id].reject(['took longer than 5 second', [5, 0]]);
+      listeners[id].reject(['took longer than 2 second', [2, 0]]);
     }
     delete listeners[id];
-    worker.terminate();
-    worker = newWorker(listeners);
+    if (stop) {
+      worker.terminate();
+    } else {
+      newWorker();
+    }
     Object.keys(listeners).forEach(cid => {
       const listener = listeners[cid];
       clearTimeout(listener.timeout);
-      listener.timeout = createTimeout(worker, listeners, cid);
-      worker.postMessage([cid, listener.md, listener.opts]);
+      if (stop) {
+        delete listeners[cid];
+      } else {
+        listener.timeout = createTimeout(cid);
+        worker.postMessage([cid, listener.md, listener.opts]);
+      }
     });
-  }, 5000);
+  }, 2000);
 }
 
 if (isMainThread) {
-  let count = 0;
-  const listeners = {};
-  let worker = newWorker(listeners);
-  module.exports = function markedAsync(md, opts) {
+  module.exports = function markedAsync(md, opts, stop) {
     return new Promise((resolve, reject) => {
       const id = count++;
-      const timeout = createTimeout(worker, listeners, id);
+      const timeout = createTimeout(id, stop);
       listeners[id] = {md, opts, resolve, reject, timeout};
       worker.postMessage([id, md, opts]);
     });
   };
+  module.exports.newWorker = newWorker;
+  module.exports.worker = worker;
 } else {
   const marked = require('../');
   parentPort.on('message', ([id, md, opts]) => {

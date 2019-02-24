@@ -94,8 +94,10 @@ function runTests(engine, options) {
   if (!engine) {
     try {
       engine = require('./worker.js');
+      engine.newWorker();
       usingWorker = true;
     } catch (ex) {
+      console.log(ex);
       engine = marked;
     }
   }
@@ -126,6 +128,9 @@ function runTests(engine, options) {
       });
   })).catch(() => {})
     .then(() => {
+      if (usingWorker) {
+        engine.worker.terminate();
+      }
       if (!options.hideOutput) {
         console.log('%d/%d tests completed successfully.', succeeded, filenames.length);
         if (failed) console.log('%d/%d tests failed.', failed, filenames.length);
@@ -149,7 +154,7 @@ function testFile(engine, file, filename, index, options) {
   opts = Object.assign({}, options.marked, file.options);
 
   if (usingWorker) {
-    promise = engine(file.text, opts).then(text => {
+    promise = engine(file.text, opts, options.stop).then(text => {
       elapsed = text[1];
       return text[0];
     }, err => {
