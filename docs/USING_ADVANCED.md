@@ -136,7 +136,7 @@ var markedTimeout = setTimeout(() => {
   throw new Error('Marked took too long!');
 }, timeoutLimit);
 
-markedWorker.onmessage = function (html) => {
+markedWorker.onmessage = (html) => {
   clearTimeout(markedTimeout);
   console.log(html);
 });
