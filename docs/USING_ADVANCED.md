@@ -139,7 +139,7 @@ var markedTimeout = setTimeout(() => {
 markedWorker.onmessage = (html) => {
   clearTimeout(markedTimeout);
   console.log(html);
-});
+};
 
 markedWorker.postMessage(markdownString);
 </script>
