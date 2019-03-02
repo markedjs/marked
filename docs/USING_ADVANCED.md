@@ -122,7 +122,7 @@ markedWorker.postMessage(markdownString);
 
 importScripts('path/to/marked.min.js');
 
-onmessage = function (markdownString) {
+onmessage = (markdownString) => {
   postMessage(marked(markdownString));
 };
 ```
