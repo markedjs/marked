@@ -79,7 +79,7 @@ In both examples, `code` is a `string` representing the section of code to pass 
 
 <h2 id="workers">Workers</h2>
 
-To prevent ReDoS attacks you can run marked on a worker and shut it down when parsing takes longer than usual.
+To prevent ReDoS attacks you can run marked on a worker and terminate it when parsing takes longer than usual.
 
 Marked can be run in a [worker thread](https://nodejs.org/api/worker_threads.html) on a node server, or a [web worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) in a browser.
 
