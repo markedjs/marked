@@ -53,7 +53,8 @@
     "html": "<ul>\n<li>\n<pre><code>  foo\n</code></pre>\n</li>\n</ul>\n",
     "markdown": "-\t\tfoo\n",
     "example": 7,
-    "start_line": 422
+    "start_line": 422,
+    "shouldFail": true
   },
   {
     "end_line": 441,
@@ -317,7 +318,8 @@
     "html": "<p>foo\n# bar</p>\n",
     "markdown": "foo\n    # bar\n",
     "example": 40,
-    "start_line": 860
+    "start_line": 860,
+    "shouldFail": true
   },
   {
     "end_line": 877,
@@ -357,7 +359,8 @@
     "html": "<h1>foo#</h1>\n",
     "markdown": "# foo#\n",
     "example": 45,
-    "start_line": 913
+    "start_line": 913,
+    "shouldFail": true
   },
   {
     "end_line": 931,
@@ -365,7 +368,8 @@
     "html": "<h3>foo ###</h3>\n<h2>foo ###</h2>\n<h1>foo #</h1>\n",
     "markdown": "### foo \\###\n## foo #\\##\n# foo \\#\n",
     "example": 46,
-    "start_line": 923
+    "start_line": 923,
+    "shouldFail": true
   },
   {
     "end_line": 945,
@@ -389,7 +393,8 @@
     "html": "<h2></h2>\n<h1></h1>\n<h3></h3>\n",
     "markdown": "## \n#\n### ###\n",
     "example": 49,
-    "start_line": 961
+    "start_line": 961,
+    "shouldFail": true
   },
   {
     "end_line": 1013,
@@ -405,7 +410,8 @@
     "html": "<h1>Foo <em>bar\nbaz</em></h1>\n",
     "markdown": "Foo *bar\nbaz*\n====\n",
     "example": 51,
-    "start_line": 1018
+    "start_line": 1018,
+    "shouldFail": true
   },
   {
     "end_line": 1039,
@@ -413,7 +419,8 @@
     "html": "<h2>Foo</h2>\n<h1>Foo</h1>\n",
     "markdown": "Foo\n-------------------------\n\nFoo\n=\n",
     "example": 52,
-    "start_line": 1030
+    "start_line": 1030,
+    "shouldFail": true
   },
   {
     "end_line": 1058,
@@ -445,7 +452,8 @@
     "html": "<p>Foo\n---</p>\n",
     "markdown": "Foo\n    ---\n",
     "example": 56,
-    "start_line": 1092
+    "start_line": 1092,
+    "shouldFail": true
   },
   {
     "end_line": 1114,
@@ -493,7 +501,8 @@
     "html": "<blockquote>\n<p>foo\nbar\n===</p>\n</blockquote>\n",
     "markdown": "> foo\nbar\n===\n",
     "example": 62,
-    "start_line": 1170
+    "start_line": 1170,
+    "shouldFail": true
   },
   {
     "end_line": 1191,
@@ -509,7 +518,8 @@
     "html": "<h2>Foo\nBar</h2>\n",
     "markdown": "Foo\nBar\n---\n",
     "example": 64,
-    "start_line": 1198
+    "start_line": 1198,
+    "shouldFail": true
   },
   {
     "end_line": 1223,
@@ -1333,7 +1343,8 @@
     "html": "<p><a href=\"/url%5Cbar*baz\" title=\"foo&quot;bar\\baz\">foo</a></p>\n",
     "markdown": "[foo]: /url\\bar\\*baz \"foo\\\"bar\\baz\"\n\n[foo]\n",
     "example": 167,
-    "start_line": 2884
+    "start_line": 2884,
+    "shouldFail": true
   },
   {
     "end_line": 2901,
@@ -1581,7 +1592,8 @@
     "html": "<blockquote>\n<ul>\n<li>foo</li>\n</ul>\n</blockquote>\n<ul>\n<li>bar</li>\n</ul>\n",
     "markdown": "> - foo\n- bar\n",
     "example": 198,
-    "start_line": 3378
+    "start_line": 3378,
+    "shouldFail": true
   },
   {
     "end_line": 3406,
@@ -1589,7 +1601,8 @@
     "html": "<blockquote>\n<pre><code>foo\n</code></pre>\n</blockquote>\n<pre><code>bar\n</code></pre>\n",
     "markdown": ">     foo\n    bar\n",
     "example": 199,
-    "start_line": 3396
+    "start_line": 3396,
+    "shouldFail": true
   },
   {
     "end_line": 3419,
@@ -1597,7 +1610,8 @@
     "html": "<blockquote>\n<pre><code></code></pre>\n</blockquote>\n<p>foo</p>\n<pre><code></code></pre>\n",
     "markdown": "> ```\nfoo\n```\n",
     "example": 200,
-    "start_line": 3409
+    "start_line": 3409,
+    "shouldFail": true
   },
   {
     "end_line": 3433,
@@ -1741,7 +1755,8 @@
     "html": "<ul>\n<li>one</li>\n</ul>\n<p>two</p>\n",
     "markdown": "- one\n\n two\n",
     "example": 218,
-    "start_line": 3749
+    "start_line": 3749,
+    "shouldFail": true
   },
   {
     "end_line": 3772,
@@ -1757,7 +1772,8 @@
     "html": "<ul>\n<li>one</li>\n</ul>\n<pre><code> two\n</code></pre>\n",
     "markdown": " -    one\n\n     two\n",
     "example": 220,
-    "start_line": 3775
+    "start_line": 3775,
+    "shouldFail": true
   },
   {
     "end_line": 3799,
@@ -1797,7 +1813,8 @@
     "html": "<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>\n",
     "markdown": "- foo\n\n\n  bar\n",
     "example": 225,
-    "start_line": 3869
+    "start_line": 3869,
+    "shouldFail": true
   },
   {
     "end_line": 3908,
@@ -1813,7 +1830,8 @@
     "html": "<ul>\n<li>\n<p>Foo</p>\n<pre><code>bar\n\n\nbaz\n</code></pre>\n</li>\n</ul>\n",
     "markdown": "- Foo\n\n      bar\n\n\n      baz\n",
     "example": 227,
-    "start_line": 3914
+    "start_line": 3914,
+    "shouldFail": true
   },
   {
     "end_line": 3942,
@@ -1885,7 +1903,8 @@
     "html": "<ol>\n<li>\n<pre><code>indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>\n</li>\n</ol>\n",
     "markdown": "1.     indented code\n\n   paragraph\n\n       more code\n",
     "example": 236,
-    "start_line": 4049
+    "start_line": 4049,
+    "shouldFail": true
   },
   {
     "end_line": 4087,
@@ -1893,7 +1912,8 @@
     "html": "<ol>\n<li>\n<pre><code> indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>\n</li>\n</ol>\n",
     "markdown": "1.      indented code\n\n   paragraph\n\n       more code\n",
     "example": 237,
-    "start_line": 4071
+    "start_line": 4071,
+    "shouldFail": true
   },
   {
     "end_line": 4105,
@@ -1909,7 +1929,8 @@
     "html": "<ul>\n<li>foo</li>\n</ul>\n<p>bar</p>\n",
     "markdown": "-    foo\n\n  bar\n",
     "example": 239,
-    "start_line": 4108
+    "start_line": 4108,
+    "shouldFail": true
   },
   {
     "end_line": 4136,
@@ -1925,7 +1946,8 @@
     "html": "<ul>\n<li>foo</li>\n<li>\n<pre><code>bar\n</code></pre>\n</li>\n<li>\n<pre><code>baz\n</code></pre>\n</li>\n</ul>\n",
     "markdown": "-\n  foo\n-\n  ```\n  bar\n  ```\n-\n      baz\n",
     "example": 241,
-    "start_line": 4153
+    "start_line": 4153,
+    "shouldFail": true
   },
   {
     "end_line": 4186,
@@ -1941,7 +1963,8 @@
     "html": "<ul>\n<li></li>\n</ul>\n<p>foo</p>\n",
     "markdown": "-\n\n  foo\n",
     "example": 243,
-    "start_line": 4193
+    "start_line": 4193,
+    "shouldFail": true
   },
   {
     "end_line": 4217,
@@ -1973,7 +1996,8 @@
     "html": "<ul>\n<li></li>\n</ul>\n",
     "markdown": "*\n",
     "example": 247,
-    "start_line": 4252
+    "start_line": 4252,
+    "shouldFail": true
   },
   {
     "end_line": 4273,
@@ -2061,7 +2085,8 @@
     "html": "<ul>\n<li>foo</li>\n<li>bar</li>\n<li>baz</li>\n<li>boo</li>\n</ul>\n",
     "markdown": "- foo\n - bar\n  - baz\n   - boo\n",
     "example": 258,
-    "start_line": 4493
+    "start_line": 4493,
+    "shouldFail": true
   },
   {
     "end_line": 4521,
@@ -2069,7 +2094,8 @@
     "html": "<ol start=\"10\">\n<li>foo\n<ul>\n<li>bar</li>\n</ul>\n</li>\n</ol>\n",
     "markdown": "10) foo\n    - bar\n",
     "example": 259,
-    "start_line": 4510
+    "start_line": 4510,
+    "shouldFail": true
   },
   {
     "end_line": 4536,
@@ -2077,7 +2103,8 @@
     "html": "<ol start=\"10\">\n<li>foo</li>\n</ol>\n<ul>\n<li>bar</li>\n</ul>\n",
     "markdown": "10) foo\n   - bar\n",
     "example": 260,
-    "start_line": 4526
+    "start_line": 4526,
+    "shouldFail": true
   },
   {
     "end_line": 4551,
@@ -2109,7 +2136,8 @@
     "html": "<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n<ul>\n<li>baz</li>\n</ul>\n",
     "markdown": "- foo\n- bar\n+ baz\n",
     "example": 264,
-    "start_line": 4809
+    "start_line": 4809,
+    "shouldFail": true
   },
   {
     "end_line": 4836,
@@ -2117,7 +2145,8 @@
     "html": "<ol>\n<li>foo</li>\n<li>bar</li>\n</ol>\n<ol start=\"3\">\n<li>baz</li>\n</ol>\n",
     "markdown": "1. foo\n2. bar\n3) baz\n",
     "example": 265,
-    "start_line": 4824
+    "start_line": 4824,
+    "shouldFail": true
   },
   {
     "end_line": 4853,
@@ -2133,7 +2162,8 @@
     "html": "<p>The number of windows in my house is\n14.  The number of doors is 6.</p>\n",
     "markdown": "The number of windows in my house is\n14.  The number of doors is 6.\n",
     "example": 267,
-    "start_line": 4920
+    "start_line": 4920,
+    "shouldFail": true
   },
   {
     "end_line": 4938,
@@ -2149,7 +2179,8 @@
     "html": "<ul>\n<li>\n<p>foo</p>\n</li>\n<li>\n<p>bar</p>\n</li>\n<li>\n<p>baz</p>\n</li>\n</ul>\n",
     "markdown": "- foo\n\n- bar\n\n\n- baz\n",
     "example": 269,
-    "start_line": 4944
+    "start_line": 4944,
+    "shouldFail": true
   },
   {
     "end_line": 4987,
@@ -2157,7 +2188,8 @@
     "html": "<ul>\n<li>foo\n<ul>\n<li>bar\n<ul>\n<li>\n<p>baz</p>\n<p>bim</p>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n",
     "markdown": "- foo\n  - bar\n    - baz\n\n\n      bim\n",
     "example": 270,
-    "start_line": 4965
+    "start_line": 4965,
+    "shouldFail": true
   },
   {
     "end_line": 5013,
@@ -2181,7 +2213,8 @@
     "html": "<ul>\n<li>a</li>\n<li>b</li>\n<li>c</li>\n<li>d</li>\n<li>e</li>\n<li>f</li>\n<li>g</li>\n<li>h</li>\n<li>i</li>\n</ul>\n",
     "markdown": "- a\n - b\n  - c\n   - d\n    - e\n   - f\n  - g\n - h\n- i\n",
     "example": 273,
-    "start_line": 5047
+    "start_line": 5047,
+    "shouldFail": true
   },
   {
     "end_line": 5090,
@@ -2189,7 +2222,8 @@
     "html": "<ol>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>c</p>\n</li>\n</ol>\n",
     "markdown": "1. a\n\n  2. b\n\n    3. c\n",
     "example": 274,
-    "start_line": 5072
+    "start_line": 5072,
+    "shouldFail": true
   },
   {
     "end_line": 5113,
@@ -2221,7 +2255,8 @@
     "html": "<ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>d</p>\n</li>\n</ul>\n",
     "markdown": "- a\n- b\n\n  [ref]: /url\n- d\n",
     "example": 278,
-    "start_line": 5162
+    "start_line": 5162,
+    "shouldFail": true
   },
   {
     "end_line": 5204,
@@ -2229,7 +2264,8 @@
     "html": "<ul>\n<li>a</li>\n<li>\n<pre><code>b\n\n\n</code></pre>\n</li>\n<li>c</li>\n</ul>\n",
     "markdown": "- a\n- ```\n  b\n\n\n  ```\n- c\n",
     "example": 279,
-    "start_line": 5185
+    "start_line": 5185,
+    "shouldFail": true
   },
   {
     "end_line": 5229,
@@ -2237,7 +2273,8 @@
     "html": "<ul>\n<li>a\n<ul>\n<li>\n<p>b</p>\n<p>c</p>\n</li>\n</ul>\n</li>\n<li>d</li>\n</ul>\n",
     "markdown": "- a\n  - b\n\n    c\n- d\n",
     "example": 280,
-    "start_line": 5211
+    "start_line": 5211,
+    "shouldFail": true
   },
   {
     "end_line": 5249,
@@ -2253,7 +2290,8 @@
     "html": "<ul>\n<li>a\n<blockquote>\n<p>b</p>\n</blockquote>\n<pre><code>c\n</code></pre>\n</li>\n<li>d</li>\n</ul>\n",
     "markdown": "- a\n  > b\n  ```\n  c\n  ```\n- d\n",
     "example": 282,
-    "start_line": 5255
+    "start_line": 5255,
+    "shouldFail": true
   },
   {
     "end_line": 5284,
@@ -2397,7 +2435,8 @@
     "html": "<p><a href=\"/bar*\" title=\"ti*tle\">foo</a></p>\n",
     "markdown": "[foo]\n\n[foo]: /bar\\* \"ti\\*tle\"\n",
     "example": 300,
-    "start_line": 5502
+    "start_line": 5502,
+    "shouldFail": true
   },
   {
     "end_line": 5518,
@@ -2405,7 +2444,8 @@
     "html": "<pre><code class=\"language-foo+bar\">foo\n</code></pre>\n",
     "markdown": "``` foo\\+bar\nfoo\n```\n",
     "example": 301,
-    "start_line": 5511
+    "start_line": 5511,
+    "shouldFail": true
   },
   {
     "end_line": 5546,
@@ -2469,7 +2509,8 @@
     "html": "<p><a href=\"/f%C3%B6%C3%B6\" title=\"föö\">foo</a></p>\n",
     "markdown": "[foo](/f&ouml;&ouml; \"f&ouml;&ouml;\")\n",
     "example": 309,
-    "start_line": 5620
+    "start_line": 5620,
+    "shouldFail": true
   },
   {
     "end_line": 5633,
@@ -2477,7 +2518,8 @@
     "html": "<p><a href=\"/f%C3%B6%C3%B6\" title=\"föö\">foo</a></p>\n",
     "markdown": "[foo]\n\n[foo]: /f&ouml;&ouml; \"f&ouml;&ouml;\"\n",
     "example": 310,
-    "start_line": 5627
+    "start_line": 5627,
+    "shouldFail": true
   },
   {
     "end_line": 5643,
@@ -2485,7 +2527,8 @@
     "html": "<pre><code class=\"language-föö\">foo\n</code></pre>\n",
     "markdown": "``` f&ouml;&ouml;\nfoo\n```\n",
     "example": 311,
-    "start_line": 5636
+    "start_line": 5636,
+    "shouldFail": true
   },
   {
     "end_line": 5653,
@@ -2573,7 +2616,8 @@
     "html": "<p>*foo<code>*</code></p>\n",
     "markdown": "*foo`*`\n",
     "example": 322,
-    "start_line": 5776
+    "start_line": 5776,
+    "shouldFail": true
   },
   {
     "end_line": 5789,
@@ -2581,7 +2625,8 @@
     "html": "<p>[not a <code>link](/foo</code>)</p>\n",
     "markdown": "[not a `link](/foo`)\n",
     "example": 323,
-    "start_line": 5785
+    "start_line": 5785,
+    "shouldFail": true
   },
   {
     "end_line": 5799,
@@ -2669,7 +2714,8 @@
     "html": "<p>* a *</p>\n",
     "markdown": "* a *\n",
     "example": 334,
-    "start_line": 6091
+    "start_line": 6091,
+    "shouldFail": true
   },
   {
     "end_line": 6104,
@@ -2733,7 +2779,8 @@
     "html": "<p>пристаням_стремятся_</p>\n",
     "markdown": "пристаням_стремятся_\n",
     "example": 342,
-    "start_line": 6159
+    "start_line": 6159,
+    "shouldFail": true
   },
   {
     "end_line": 6173,
@@ -2781,7 +2828,8 @@
     "html": "<p>*(*foo)</p>\n",
     "markdown": "*(*foo)\n",
     "example": 348,
-    "start_line": 6224
+    "start_line": 6224,
+    "shouldFail": true
   },
   {
     "end_line": 6238,
@@ -2789,7 +2837,8 @@
     "html": "<p><em>(<em>foo</em>)</em></p>\n",
     "markdown": "*(*foo*)*\n",
     "example": 349,
-    "start_line": 6234
+    "start_line": 6234,
+    "shouldFail": true
   },
   {
     "end_line": 6247,
@@ -2813,7 +2862,8 @@
     "html": "<p>_(_foo)</p>\n",
     "markdown": "_(_foo)\n",
     "example": 352,
-    "start_line": 6266
+    "start_line": 6266,
+    "shouldFail": true
   },
   {
     "end_line": 6279,
@@ -2821,7 +2871,8 @@
     "html": "<p><em>(<em>foo</em>)</em></p>\n",
     "markdown": "_(_foo_)_\n",
     "example": 353,
-    "start_line": 6275
+    "start_line": 6275,
+    "shouldFail": true
   },
   {
     "end_line": 6288,
@@ -2877,7 +2928,8 @@
     "html": "<p>a**&quot;foo&quot;**</p>\n",
     "markdown": "a**\"foo\"**\n",
     "example": 360,
-    "start_line": 6339
+    "start_line": 6339,
+    "shouldFail": true
   },
   {
     "end_line": 6352,
@@ -2941,7 +2993,8 @@
     "html": "<p>пристаням__стремятся__</p>\n",
     "markdown": "пристаням__стремятся__\n",
     "example": 368,
-    "start_line": 6410
+    "start_line": 6410,
+    "shouldFail": true
   },
   {
     "end_line": 6421,
@@ -2949,7 +3002,8 @@
     "html": "<p><strong>foo, <strong>bar</strong>, baz</strong></p>\n",
     "markdown": "__foo, __bar__, baz__\n",
     "example": 369,
-    "start_line": 6417
+    "start_line": 6417,
+    "shouldFail": true
   },
   {
     "end_line": 6432,
@@ -2965,7 +3019,8 @@
     "html": "<p>**foo bar **</p>\n",
     "markdown": "**foo bar **\n",
     "example": 371,
-    "start_line": 6441
+    "start_line": 6441,
+    "shouldFail": true
   },
   {
     "end_line": 6458,
@@ -2973,7 +3028,8 @@
     "html": "<p>**(**foo)</p>\n",
     "markdown": "**(**foo)\n",
     "example": 372,
-    "start_line": 6454
+    "start_line": 6454,
+    "shouldFail": true
   },
   {
     "end_line": 6468,
@@ -3021,7 +3077,8 @@
     "html": "<p>__(__foo)</p>\n",
     "markdown": "__(__foo)\n",
     "example": 378,
-    "start_line": 6511
+    "start_line": 6511,
+    "shouldFail": true
   },
   {
     "end_line": 6525,
@@ -3037,7 +3094,8 @@
     "html": "<p>__foo__bar</p>\n",
     "markdown": "__foo__bar\n",
     "example": 380,
-    "start_line": 6530
+    "start_line": 6530,
+    "shouldFail": true
   },
   {
     "end_line": 6541,
@@ -3045,7 +3103,8 @@
     "html": "<p>__пристаням__стремятся</p>\n",
     "markdown": "__пристаням__стремятся\n",
     "example": 381,
-    "start_line": 6537
+    "start_line": 6537,
+    "shouldFail": true
   },
   {
     "end_line": 6548,
@@ -3053,7 +3112,8 @@
     "html": "<p><strong>foo__bar__baz</strong></p>\n",
     "markdown": "__foo__bar__baz__\n",
     "example": 382,
-    "start_line": 6544
+    "start_line": 6544,
+    "shouldFail": true
   },
   {
     "end_line": 6559,
@@ -3093,7 +3153,8 @@
     "html": "<p><em>foo <em>bar</em> baz</em></p>\n",
     "markdown": "_foo _bar_ baz_\n",
     "example": 387,
-    "start_line": 6593
+    "start_line": 6593,
+    "shouldFail": true
   },
   {
     "end_line": 6604,
@@ -3101,7 +3162,8 @@
     "html": "<p><em><em>foo</em> bar</em></p>\n",
     "markdown": "__foo_ bar_\n",
     "example": 388,
-    "start_line": 6600
+    "start_line": 6600,
+    "shouldFail": true
   },
   {
     "end_line": 6611,
@@ -3133,7 +3195,8 @@
     "html": "<p><em><strong>foo</strong> bar</em></p>\n",
     "markdown": "***foo** bar*\n",
     "example": 392,
-    "start_line": 6645
+    "start_line": 6645,
+    "shouldFail": true
   },
   {
     "end_line": 6656,
@@ -3141,7 +3204,8 @@
     "html": "<p><em>foo <strong>bar</strong></em></p>\n",
     "markdown": "*foo **bar***\n",
     "example": 393,
-    "start_line": 6652
+    "start_line": 6652,
+    "shouldFail": true
   },
   {
     "end_line": 6663,
@@ -3149,7 +3213,8 @@
     "html": "<p><em>foo<strong>bar</strong></em></p>\n",
     "markdown": "*foo**bar***\n",
     "example": 394,
-    "start_line": 6659
+    "start_line": 6659,
+    "shouldFail": true
   },
   {
     "end_line": 6672,
@@ -3157,7 +3222,8 @@
     "html": "<p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>\n",
     "markdown": "*foo **bar *baz* bim** bop*\n",
     "example": 395,
-    "start_line": 6668
+    "start_line": 6668,
+    "shouldFail": true
   },
   {
     "end_line": 6679,
@@ -3165,7 +3231,8 @@
     "html": "<p><em>foo <a href=\"/url\"><em>bar</em></a></em></p>\n",
     "markdown": "*foo [*bar*](/url)*\n",
     "example": 396,
-    "start_line": 6675
+    "start_line": 6675,
+    "shouldFail": true
   },
   {
     "end_line": 6688,
@@ -3213,7 +3280,8 @@
     "html": "<p><strong>foo <strong>bar</strong> baz</strong></p>\n",
     "markdown": "__foo __bar__ baz__\n",
     "example": 402,
-    "start_line": 6730
+    "start_line": 6730,
+    "shouldFail": true
   },
   {
     "end_line": 6741,
@@ -3221,7 +3289,8 @@
     "html": "<p><strong><strong>foo</strong> bar</strong></p>\n",
     "markdown": "____foo__ bar__\n",
     "example": 403,
-    "start_line": 6737
+    "start_line": 6737,
+    "shouldFail": true
   },
   {
     "end_line": 6748,
@@ -3269,7 +3338,8 @@
     "html": "<p><strong>foo <em>bar <strong>baz</strong>\nbim</em> bop</strong></p>\n",
     "markdown": "**foo *bar **baz**\nbim* bop**\n",
     "example": 409,
-    "start_line": 6781
+    "start_line": 6781,
+    "shouldFail": true
   },
   {
     "end_line": 6794,
@@ -3349,7 +3419,8 @@
     "html": "<p>*<em>foo</em></p>\n",
     "markdown": "**foo*\n",
     "example": 419,
-    "start_line": 6862
+    "start_line": 6862,
+    "shouldFail": true
   },
   {
     "end_line": 6873,
@@ -3357,7 +3428,8 @@
     "html": "<p><em>foo</em>*</p>\n",
     "markdown": "*foo**\n",
     "example": 420,
-    "start_line": 6869
+    "start_line": 6869,
+    "shouldFail": true
   },
   {
     "end_line": 6880,
@@ -3365,7 +3437,8 @@
     "html": "<p>*<strong>foo</strong></p>\n",
     "markdown": "***foo**\n",
     "example": 421,
-    "start_line": 6876
+    "start_line": 6876,
+    "shouldFail": true
   },
   {
     "end_line": 6887,
@@ -3373,7 +3446,8 @@
     "html": "<p>***<em>foo</em></p>\n",
     "markdown": "****foo*\n",
     "example": 422,
-    "start_line": 6883
+    "start_line": 6883,
+    "shouldFail": true
   },
   {
     "end_line": 6894,
@@ -3381,7 +3455,8 @@
     "html": "<p><strong>foo</strong>*</p>\n",
     "markdown": "**foo***\n",
     "example": 423,
-    "start_line": 6890
+    "start_line": 6890,
+    "shouldFail": true
   },
   {
     "end_line": 6901,
@@ -3389,7 +3464,8 @@
     "html": "<p><em>foo</em>***</p>\n",
     "markdown": "*foo****\n",
     "example": 424,
-    "start_line": 6897
+    "start_line": 6897,
+    "shouldFail": true
   },
   {
     "end_line": 6911,
@@ -3445,7 +3521,8 @@
     "html": "<p>_<em>foo</em></p>\n",
     "markdown": "__foo_\n",
     "example": 431,
-    "start_line": 6949
+    "start_line": 6949,
+    "shouldFail": true
   },
   {
     "end_line": 6964,
@@ -3453,7 +3530,8 @@
     "html": "<p><em>foo</em>_</p>\n",
     "markdown": "_foo__\n",
     "example": 432,
-    "start_line": 6960
+    "start_line": 6960,
+    "shouldFail": true
   },
   {
     "end_line": 6971,
@@ -3461,7 +3539,8 @@
     "html": "<p>_<strong>foo</strong></p>\n",
     "markdown": "___foo__\n",
     "example": 433,
-    "start_line": 6967
+    "start_line": 6967,
+    "shouldFail": true
   },
   {
     "end_line": 6978,
@@ -3469,7 +3548,8 @@
     "html": "<p>___<em>foo</em></p>\n",
     "markdown": "____foo_\n",
     "example": 434,
-    "start_line": 6974
+    "start_line": 6974,
+    "shouldFail": true
   },
   {
     "end_line": 6985,
@@ -3477,7 +3557,8 @@
     "html": "<p><strong>foo</strong>_</p>\n",
     "markdown": "__foo___\n",
     "example": 435,
-    "start_line": 6981
+    "start_line": 6981,
+    "shouldFail": true
   },
   {
     "end_line": 6992,
@@ -3485,7 +3566,8 @@
     "html": "<p><em>foo</em>___</p>\n",
     "markdown": "_foo____\n",
     "example": 436,
-    "start_line": 6988
+    "start_line": 6988,
+    "shouldFail": true
   },
   {
     "end_line": 7002,
@@ -3541,7 +3623,8 @@
     "html": "<p><strong><strong><strong>foo</strong></strong></strong></p>\n",
     "markdown": "******foo******\n",
     "example": 443,
-    "start_line": 7047
+    "start_line": 7047,
+    "shouldFail": true
   },
   {
     "end_line": 7060,
@@ -3549,7 +3632,8 @@
     "html": "<p><em><strong>foo</strong></em></p>\n",
     "markdown": "***foo***\n",
     "example": 444,
-    "start_line": 7056
+    "start_line": 7056,
+    "shouldFail": true
   },
   {
     "end_line": 7067,
@@ -3557,7 +3641,8 @@
     "html": "<p><em><strong><strong>foo</strong></strong></em></p>\n",
     "markdown": "_____foo_____\n",
     "example": 445,
-    "start_line": 7063
+    "start_line": 7063,
+    "shouldFail": true
   },
   {
     "end_line": 7076,
@@ -3581,7 +3666,8 @@
     "html": "<p>**foo <strong>bar baz</strong></p>\n",
     "markdown": "**foo **bar baz**\n",
     "example": 448,
-    "start_line": 7088
+    "start_line": 7088,
+    "shouldFail": true
   },
   {
     "end_line": 7099,
@@ -3589,7 +3675,8 @@
     "html": "<p>*foo <em>bar baz</em></p>\n",
     "markdown": "*foo *bar baz*\n",
     "example": 449,
-    "start_line": 7095
+    "start_line": 7095,
+    "shouldFail": true
   },
   {
     "end_line": 7108,
@@ -3621,7 +3708,8 @@
     "html": "<p>**<a href=\"**\"></p>\n",
     "markdown": "**<a href=\"**\">\n",
     "example": 453,
-    "start_line": 7125
+    "start_line": 7125,
+    "shouldFail": true
   },
   {
     "end_line": 7136,
@@ -3629,7 +3717,8 @@
     "html": "<p>__<a href=\"__\"></p>\n",
     "markdown": "__<a href=\"__\">\n",
     "example": 454,
-    "start_line": 7132
+    "start_line": 7132,
+    "shouldFail": true
   },
   {
     "end_line": 7143,
@@ -3637,7 +3726,8 @@
     "html": "<p><em>a <code>*</code></em></p>\n",
     "markdown": "*a `*`*\n",
     "example": 455,
-    "start_line": 7139
+    "start_line": 7139,
+    "shouldFail": true
   },
   {
     "end_line": 7150,
@@ -3653,7 +3743,8 @@
     "html": "<p>**a<a href=\"http://foo.bar/?q=**\">http://foo.bar/?q=**</a></p>\n",
     "markdown": "**a<http://foo.bar/?q=**>\n",
     "example": 457,
-    "start_line": 7153
+    "start_line": 7153,
+    "shouldFail": true
   },
   {
     "end_line": 7164,
@@ -3661,7 +3752,8 @@
     "html": "<p>__a<a href=\"http://foo.bar/?q=__\">http://foo.bar/?q=__</a></p>\n",
     "markdown": "__a<http://foo.bar/?q=__>\n",
     "example": 458,
-    "start_line": 7160
+    "start_line": 7160,
+    "shouldFail": true
   },
   {
     "end_line": 7245,
@@ -3789,7 +3881,8 @@
     "html": "<p><a href=\"foo%20b%C3%A4\">link</a></p>\n",
     "markdown": "[link](foo%20b&auml;)\n",
     "example": 474,
-    "start_line": 7385
+    "start_line": 7385,
+    "shouldFail": true
   },
   {
     "end_line": 7400,
@@ -3821,7 +3914,8 @@
     "html": "<p><a href=\"/url%C2%A0%22title%22\">link</a></p>\n",
     "markdown": "[link](/url \"title\")\n",
     "example": 478,
-    "start_line": 7429
+    "start_line": 7429,
+    "shouldFail": true
   },
   {
     "end_line": 7442,
@@ -3861,7 +3955,8 @@
     "html": "<p><a href=\"/uri\">link [foo [bar]]</a></p>\n",
     "markdown": "[link [foo [bar]]](/uri)\n",
     "example": 483,
-    "start_line": 7492
+    "start_line": 7492,
+    "shouldFail": true
   },
   {
     "end_line": 7503,
@@ -3909,7 +4004,8 @@
     "html": "<p>[foo <a href=\"/uri\">bar</a>](/uri)</p>\n",
     "markdown": "[foo [bar](/uri)](/uri)\n",
     "example": 489,
-    "start_line": 7538
+    "start_line": 7538,
+    "shouldFail": true
   },
   {
     "end_line": 7549,
@@ -3917,7 +4013,8 @@
     "html": "<p>[foo <em>[bar <a href=\"/uri\">baz</a>](/uri)</em>](/uri)</p>\n",
     "markdown": "[foo *[bar [baz](/uri)](/uri)*](/uri)\n",
     "example": 490,
-    "start_line": 7545
+    "start_line": 7545,
+    "shouldFail": true
   },
   {
     "end_line": 7556,
@@ -3925,7 +4022,8 @@
     "html": "<p><img src=\"uri3\" alt=\"[foo](uri2)\" /></p>\n",
     "markdown": "![[[foo](uri1)](uri2)](uri3)\n",
     "example": 491,
-    "start_line": 7552
+    "start_line": 7552,
+    "shouldFail": true
   },
   {
     "end_line": 7566,
@@ -3957,7 +4055,8 @@
     "html": "<p>[foo <bar attr=\"](baz)\"></p>\n",
     "markdown": "[foo <bar attr=\"](baz)\">\n",
     "example": 495,
-    "start_line": 7589
+    "start_line": 7589,
+    "shouldFail": true
   },
   {
     "end_line": 7600,
@@ -3965,7 +4064,8 @@
     "html": "<p>[foo<code>](/uri)</code></p>\n",
     "markdown": "[foo`](/uri)`\n",
     "example": 496,
-    "start_line": 7596
+    "start_line": 7596,
+    "shouldFail": true
   },
   {
     "end_line": 7607,
@@ -3973,7 +4073,8 @@
     "html": "<p>[foo<a href=\"http://example.com/?search=%5D(uri)\">http://example.com/?search=](uri)</a></p>\n",
     "markdown": "[foo<http://example.com/?search=](uri)>\n",
     "example": 497,
-    "start_line": 7603
+    "start_line": 7603,
+    "shouldFail": true
   },
   {
     "end_line": 7647,
@@ -3989,7 +4090,8 @@
     "html": "<p><a href=\"/uri\">link [foo [bar]]</a></p>\n",
     "markdown": "[link [foo [bar]]][ref]\n\n[ref]: /uri\n",
     "example": 499,
-    "start_line": 7656
+    "start_line": 7656,
+    "shouldFail": true
   },
   {
     "end_line": 7671,
@@ -4021,7 +4123,8 @@
     "html": "<p>[foo <a href=\"/uri\">bar</a>]<a href=\"/uri\">ref</a></p>\n",
     "markdown": "[foo [bar](/uri)][ref]\n\n[ref]: /uri\n",
     "example": 503,
-    "start_line": 7696
+    "start_line": 7696,
+    "shouldFail": true
   },
   {
     "end_line": 7711,
@@ -4029,7 +4132,8 @@
     "html": "<p>[foo <em>bar <a href=\"/uri\">baz</a></em>]<a href=\"/uri\">ref</a></p>\n",
     "markdown": "[foo *bar [baz][ref]*][ref]\n\n[ref]: /uri\n",
     "example": 504,
-    "start_line": 7705
+    "start_line": 7705,
+    "shouldFail": true
   },
   {
     "end_line": 7726,
@@ -4053,7 +4157,8 @@
     "html": "<p>[foo <bar attr=\"][ref]\"></p>\n",
     "markdown": "[foo <bar attr=\"][ref]\">\n\n[ref]: /uri\n",
     "example": 507,
-    "start_line": 7741
+    "start_line": 7741,
+    "shouldFail": true
   },
   {
     "end_line": 7756,
@@ -4061,7 +4166,8 @@
     "html": "<p>[foo<code>][ref]</code></p>\n",
     "markdown": "[foo`][ref]`\n\n[ref]: /uri\n",
     "example": 508,
-    "start_line": 7750
+    "start_line": 7750,
+    "shouldFail": true
   },
   {
     "end_line": 7765,
@@ -4069,7 +4175,8 @@
     "html": "<p>[foo<a href=\"http://example.com/?search=%5D%5Bref%5D\">http://example.com/?search=][ref]</a></p>\n",
     "markdown": "[foo<http://example.com/?search=][ref]>\n\n[ref]: /uri\n",
     "example": 509,
-    "start_line": 7759
+    "start_line": 7759,
+    "shouldFail": true
   },
   {
     "end_line": 7776,
@@ -4349,7 +4456,8 @@
     "html": "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>\n",
     "markdown": "![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"\n",
     "example": 544,
-    "start_line": 8199
+    "start_line": 8199,
+    "shouldFail": true
   },
   {
     "end_line": 8212,
@@ -4357,7 +4465,8 @@
     "html": "<p><img src=\"/url2\" alt=\"foo bar\" /></p>\n",
     "markdown": "![foo ![bar](/url)](/url2)\n",
     "example": 545,
-    "start_line": 8208
+    "start_line": 8208,
+    "shouldFail": true
   },
   {
     "end_line": 8219,
@@ -4365,7 +4474,8 @@
     "html": "<p><img src=\"/url2\" alt=\"foo bar\" /></p>\n",
     "markdown": "![foo [bar](/url)](/url2)\n",
     "example": 546,
-    "start_line": 8215
+    "start_line": 8215,
+    "shouldFail": true
   },
   {
     "end_line": 8235,
@@ -4373,7 +4483,8 @@
     "html": "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>\n",
     "markdown": "![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"\n",
     "example": 547,
-    "start_line": 8229
+    "start_line": 8229,
+    "shouldFail": true
   },
   {
     "end_line": 8244,
@@ -4381,7 +4492,8 @@
     "html": "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>\n",
     "markdown": "![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"\n",
     "example": 548,
-    "start_line": 8238
+    "start_line": 8238,
+    "shouldFail": true
   },
   {
     "end_line": 8251,
@@ -4445,7 +4557,8 @@
     "html": "<p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>\n",
     "markdown": "![*foo* bar][]\n\n[*foo* bar]: /url \"title\"\n",
     "example": 556,
-    "start_line": 8306
+    "start_line": 8306,
+    "shouldFail": true
   },
   {
     "end_line": 8323,
@@ -4477,7 +4590,8 @@
     "html": "<p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>\n",
     "markdown": "![*foo* bar]\n\n[*foo* bar]: /url \"title\"\n",
     "example": 560,
-    "start_line": 8351
+    "start_line": 8351,
+    "shouldFail": true
   },
   {
     "end_line": 8369,
@@ -4581,7 +4695,8 @@
     "html": "<p>&lt;http://foo.bar/baz bim&gt;</p>\n",
     "markdown": "<http://foo.bar/baz bim>\n",
     "example": 573,
-    "start_line": 8496
+    "start_line": 8496,
+    "shouldFail": true
   },
   {
     "end_line": 8509,
@@ -4629,7 +4744,8 @@
     "html": "<p>&lt; http://foo.bar &gt;</p>\n",
     "markdown": "< http://foo.bar >\n",
     "example": 579,
-    "start_line": 8559
+    "start_line": 8559,
+    "shouldFail": true
   },
   {
     "end_line": 8570,
@@ -4653,7 +4769,8 @@
     "html": "<p>http://example.com</p>\n",
     "markdown": "http://example.com\n",
     "example": 582,
-    "start_line": 8580
+    "start_line": 8580,
+    "shouldFail": true
   },
   {
     "end_line": 8591,
@@ -4661,7 +4778,8 @@
     "html": "<p>foo@bar.example.com</p>\n",
     "markdown": "foo@bar.example.com\n",
     "example": 583,
-    "start_line": 8587
+    "start_line": 8587,
+    "shouldFail": true
   },
   {
     "end_line": 8673,
@@ -4773,7 +4891,8 @@
     "html": "<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>\n",
     "markdown": "foo <!-- not a comment -- two hyphens -->\n",
     "example": 597,
-    "start_line": 8792
+    "start_line": 8792,
+    "shouldFail": true
   },
   {
     "end_line": 8808,
@@ -4781,7 +4900,8 @@
     "html": "<p>foo &lt;!--&gt; foo --&gt;</p>\n<p>foo &lt;!-- foo---&gt;</p>\n",
     "markdown": "foo <!--> foo -->\n\nfoo <!-- foo--->\n",
     "example": 598,
-    "start_line": 8801
+    "start_line": 8801,
+    "shouldFail": true
   },
   {
     "end_line": 8817,

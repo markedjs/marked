@@ -1,4 +1,4 @@
-var specTests = require('../../');
+var specTests = require('../');
 
 it('should run spec tests', function () {
   // hide output

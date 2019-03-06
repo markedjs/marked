@@ -113,7 +113,7 @@
     "html": "<p><strong><a href=\"mailto:test@test.com\">test@test.com</a></strong></p>",
     "example": 1347
   },
-  {  
+  {
     "section": "Emphasis extra tests",
     "markdown": "_test_. _test_: _test_! _test_? _test_-",
     "html": "<p><em>test</em>. <em>test</em>: <em>test</em>! <em>test</em>? <em>test</em>-</p>",
