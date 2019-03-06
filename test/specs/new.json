@@ -1,228 +1,427 @@
 [
   {
     "section": "Adjacent Lists",
-    "markdown": "* This should be\n* An unordered list\n\n1. This should be\n2. An unordered list\n",
-    "html": "<ul>\n<li>This should be</li>\n<li>An unordered list</li>\n</ul>\n\n<ol>\n<li>This should be</li>\n<li>An unordered list</li>\n</ol>\n",
+    "markdown": "* This should be\n* An unordered list",
+    "html": "<ul>\n<li>This should be</li>\n<li>An unordered list</li>\n</ul>",
+    "example": 1
+  },
+  {
+    "section": "Adjacent Lists",
+    "markdown": "1. This should be\n2. An unordered list",
+    "html": "<ol>\n<li>This should be</li>\n<li>An unordered list</li>\n</ol>",
     "example": 1
   },
   {
     "section": "Autolink Lines",
-    "markdown": "hello world\n<http://example.com>\n",
-    "html": "<p>hello world\n<a href=\"http://example.com\">http://example.com</a>\n</p>\n",
+    "markdown": "hello world\n<http://example.com>",
+    "html": "<p>hello world\n<a href=\"http://example.com\">http://example.com</a>\n</p>",
     "example": 2
   },
   {
     "section": "Blockquote List Item",
-    "markdown": "This fails in markdown.pl and upskirt:\n\n* hello\n  > world\n",
-    "html": "<p>This fails in markdown.pl and upskirt:</p>\n\n<ul><li>hello<blockquote><p>world</p></blockquote></li></ul>\n",
+    "comment": "This fails in markdown.pl and upskirt",
+    "markdown": "* hello\n  > world",
+    "html": "<ul><li>hello<blockquote><p>world</p></blockquote></li></ul>",
     "example": 3
   },
   {
     "section": "Case Insensitive Refs",
-    "markdown": "[hi]\n\n[HI]: /url\n",
-    "html": "<p><a href=\"/url\">hi</a></p>\n",
+    "markdown": "[hi]\n\n[HI]: /url",
+    "html": "<p><a href=\"/url\">hi</a></p>",
     "example": 4
   },
   {
-    "section": "Cm Autolinks",
-    "markdown": "Here are some valid autolinks:\n\n### Example 565\n\n<http://foo.bar.baz>\n\n### Example 566\n\n<http://foo.bar.baz/test?q=hello&id=22&boolean>\n\n### Example 567\n\n<irc://foo.bar:2233/baz>\n\n### Example 568\n\nUppercase is also fine:\n\n<MAILTO:FOO@BAR.BAZ>\n\nNote that many strings that count as absolute URIs for purposes of this spec are not valid URIs, because their schemes are not registered or because of other problems with their syntax:\n\n### Example 569\n\n<a+b+c:d>\n\n### Example 570\n\n<made-up-scheme://foo,bar>\n\n### Example 571\n\n<http://../>\n\n### Example 572\n\n<localhost:5001/foo>\n\n### Example 573\n\nSpaces are not allowed in autolinks:\n\n<http://foo.bar/baz bim>\n\n### Example 574\n\nBackslash-escapes do not work inside autolinks:\n\n<http://example.com/\\[\\>\n\nExamples of email autolinks:\n\n### Example 575\n\n<foo@bar.example.com>\n\n### Example 576\n\n<foo+special@Bar.baz-bar0.com>\n\n### Example 577\n\nBackslash-escapes do not work inside email autolinks:\n\n<foo\\+@bar.example.com>\n\nThese are not autolinks:\n\n### Example 578\n\n<>\n\n### Example 579\n\n< http://foo.bar >\n\n### Example 580\n\n<m:abc>\n\n### Example 581\n\n<foo.bar.baz>\n\n### Example 582\n\nhttp://example.com\n\n### Example 583\n\nfoo@bar.example.com",
-    "html": "<p>Here are some valid autolinks:</p>\n\n<h3 id=\"example-565\">Example 565</h3>\n\n<p><a href=\"http://foo.bar.baz\">http://foo.bar.baz</a></p>\n\n<h3 id=\"example-566\">Example 566</h3>\n\n<p><a href=\"http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean\">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>\n\n<h3 id=\"example-567\">Example 567</h3>\n\n<p><a href=\"irc://foo.bar:2233/baz\">irc://foo.bar:2233/baz</a></p>\n\n<h3 id=\"example-568\">Example 568</h3>\n\n<p>Uppercase is also fine:</p>\n\n<p><a href=\"MAILTO:FOO@BAR.BAZ\">MAILTO:FOO@BAR.BAZ</a></p>\n\n<p>Note that many strings that count as absolute URIs for purposes of this spec are not valid URIs, because their schemes are not registered or because of other problems with their syntax:</p>\n\n<h3 id=\"example-569\">Example 569</h3>\n\n<p><a href=\"a+b+c:d\">a+b+c:d</a></p>\n\n<h3 id=\"example-570\">Example 570</h3>\n\n<p><a href=\"made-up-scheme://foo,bar\">made-up-scheme://foo,bar</a></p>\n\n<h3 id=\"example-571\">Example 571</h3>\n\n<p><a href=\"http://../\">http://../</a></p>\n\n<h3 id=\"example-572\">Example 572</h3>\n\n<p><a href=\"localhost:5001/foo\">localhost:5001/foo</a></p>\n\n<h3 id=\"example-573\">Example 573</h3>\n\n<p>Spaces are not allowed in autolinks:</p>\n\n<p>&lt;http://foo.bar/baz bim&gt;</p>\n\n<h3 id=\"example-574\">Example 574</h3>\n\n<p>Backslash-escapes do not work inside autolinks:</p>\n\n<p><a href=\"http://example.com/%5C%5B%5C\">http://example.com/\\[\\</a></p>\n\n<p>Examples of email autolinks:</p>\n\n<h3 id=\"example-575\">Example 575</h3>\n\n<p><a href=\"mailto:foo@bar.example.com\">foo@bar.example.com</a></p>\n\n<h3 id=\"example-576\">Example 576</h3>\n\n<p><a href=\"mailto:foo+special@Bar.baz-bar0.com\">foo+special@Bar.baz-bar0.com</a></p>\n\n<h3 id=\"example-577\">Example 577</h3>\n\n<p>Backslash-escapes do not work inside email autolinks:</p>\n\n<p>&lt;foo+@bar.example.com&gt;</p>\n\n<p>These are not autolinks:</p>\n\n<h3 id=\"example-578\">Example 578</h3>\n\n<p>&lt;&gt;</p>\n\n<h3 id=\"example-579\">Example 579</h3>\n\n<p>&lt; http://foo.bar &gt;</p>\n\n<h3 id=\"example-580\">Example 580</h3>\n\n<p>&lt;m:abc&gt;</p>\n\n<h3 id=\"example-581\">Example 581</h3>\n\n<p>&lt;foo.bar.baz&gt;</p>\n\n<h3 id=\"example-582\">Example 582</h3>\n\n<p>http://example.com</p>\n\n<h3 id=\"example-583\">Example 583</h3>\n\n<p>foo@bar.example.com</p>",
-    "example": 5,
-    "options": {
-      "gfm": false,
-      "mangle": false
-    }
-  },
-  {
-    "section": "Cm Blockquotes",
-    "markdown": "### Example 191\n\n> # Foo\n> bar\n> baz\n\n### Example 192\n\nThe spaces after the `>` characters can be omitted:\n\n># Bar\n>bar\n> baz\n\n### Example 193\n\nThe `>` characters can be indented 1-3 spaces:\n\n   > # Baz\n   > bar\n > baz\n\n### Example 194\n\nFour spaces gives us a code block:\n\n    > # Qux\n    > bar\n    > baz\n\n### Example 195\n\nThe Laziness clause allows us to omit the `>` before paragraph continuation text:\n\n> # Quux\n> bar\nbaz\n\n### Example 196\n\nA block quote can contain some lazy and some non-lazy continuation lines:\n\n> bar\nbaz\n> foo\n\n### Example 197\n\nLaziness only applies to lines that would have been continuations of paragraphs had they been prepended with block quote markers. For example, the `>` cannot be omitted in the second line of\n\n> foo\n---\n\nwithout changing the meaning.\n\n### Example 198\n\n    Similarly, if we omit the `>` in the second line then the block quote ends after the first line:\n\n    > - foo\n    - bar\n\n### Example 199\n\nFor the same reason, we can’t omit the `>` in front of subsequent lines of an indented or fenced code block:\n\n>     foo\n\n    bar\n\n### Example 200\n\n    > ```\n    foo\n    ```\n\n    <blockquote>\n    <pre><code></code></pre>\n    </blockquote>\n    <p>foo</p>\n    <pre><code></code></pre>\n\n### Example 201\n\n    > foo\n        - bar\n\n    <blockquote>\n    <p>foo\n    - bar</p>\n    </blockquote>\n\n### Example 202\n\nA block quote can be empty:\n\n>\n\n### Example 203\n\n>\n>  \n> \n\n### Example 204\n\nA block quote can have initial or final blank lines:\n\n>\n> foo\n>  \n\n### Example 205\n\nA blank line always separates block quotes:\n\n> foo\n\n> bar\n\n### Example 206\n\nConsecutiveness means that if we put these block quotes together, we get a single block quote:\n\n> foo\n> bar\n\n### Example 207\n\nTo get a block quote with two paragraphs, use:\n\n> foo\n>\n> bar\n\n### Example 208\n\nBlock quotes can interrupt paragraphs:\n\nfoo\n> bar\n\n### Example 209\n\nIn general, blank lines are not needed before or after block quotes:\n\n> aaa\n***\n> bbb\n\n### Example 210\n\nHowever, because of laziness, a blank line is needed between a block quote and a following paragraph:\n\n> bar\nbaz\n\n### Example 211\n\n> bar\n\nbaz\n\n### Example 212\n\n> bar\n>\nbaz\n\n### Example 213\n\nIt is a consequence of the Laziness rule that any number of initial `>`s may be omitted on a continuation line of a nested block quote:\n\n> > > foo\nbar\n\n### Example 214\n\n>>> foo\n> bar\n>>baz\n\n### Example 215\n\nWhen including an indented code block in a block quote, remember that the block quote marker includes both the `>` and a following space. So five spaces are needed after the `>`:\n\n>     code\n\n>    not code\n",
-    "html": "<h3 id=\"example-191\">Example 191</h3>\n\n<blockquote>\n<h1 id=\"foo\">Foo</h1>\n<p>bar\nbaz</p>\n</blockquote>\n\n<h3 id=\"example-192\">Example 192</h3>\n\n<p>The spaces after the <code>&gt;</code> characters can be omitted:</p>\n\n<blockquote>\n<h1 id=\"bar\">Bar</h1>\n<p>bar\nbaz</p>\n</blockquote>\n\n<h3 id=\"example-193\">Example 193</h3>\n\n<p>The <code>&gt;</code> characters can be indented 1-3 spaces:</p>\n\n<blockquote>\n<h1 id=\"baz\">Baz</h1>\n<p>bar\nbaz</p>\n</blockquote>\n\n<h3 id=\"example-194\">Example 194</h3>\n\n<p>Four spaces gives us a code block:</p>\n\n<pre><code>&gt; # Qux\n&gt; bar\n&gt; baz</code></pre>\n\n<h3 id=\"example-195\">Example 195</h3>\n\n<p>The Laziness clause allows us to omit the <code>&gt;</code> before paragraph continuation text:</p>\n\n<blockquote>\n<h1 id=\"quux\">Quux</h1>\n<p>bar\nbaz</p>\n</blockquote>\n\n<h3 id=\"example-196\">Example 196</h3>\n\n<p>A block quote can contain some lazy and some non-lazy continuation lines:</p>\n\n<blockquote>\n<p>bar\nbaz\nfoo</p>\n</blockquote>\n\n<h3 id=\"example-197\">Example 197</h3>\n\n<p>Laziness only applies to lines that would have been continuations of paragraphs had they been prepended with block quote markers. For example, the <code>&gt;</code> cannot be omitted in the second line of</p>\n\n<blockquote>\n<p>foo</p>\n</blockquote>\n<hr>\n\n<p>without changing the meaning.</p>\n\n<h3 id=\"example-198\">Example 198</h3>\n\n<pre><code>Similarly, if we omit the `&gt;` in the second line then the block quote ends after the first line:\n\n&gt; - foo\n- bar</code></pre>\n\n<h3 id=\"example-199\">Example 199</h3>\n\n<p>For the same reason, we can’t omit the <code>&gt;</code> in front of subsequent lines of an indented or fenced code block:</p>\n\n<blockquote>\n<pre><code>foo</code></pre>\n</blockquote>\n<pre><code>bar</code></pre>\n\n<h3 id=\"example-200\">Example 200</h3>\n\n<pre><code>&gt; ```\nfoo\n```\n\n&lt;blockquote&gt;\n&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;\n&lt;/blockquote&gt;\n&lt;p&gt;foo&lt;/p&gt;\n&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;</code></pre>\n\n<h3 id=\"example-201\">Example 201</h3>\n<pre><code>&gt; foo\n    - bar\n\n&lt;blockquote&gt;\n&lt;p&gt;foo\n- bar&lt;/p&gt;\n&lt;/blockquote&gt;</code></pre>\n\n<h3 id=\"example-202\">Example 202</h3>\n\n<p>A block quote can be empty:</p>\n\n<blockquote>\n</blockquote>\n\n<h3 id=\"example-203\">Example 203</h3>\n\n<blockquote>\n</blockquote>\n\n<h3 id=\"example-204\">Example 204</h3>\n\n<p>A block quote can have initial or final blank lines:</p>\n\n<blockquote>\n<p>foo</p>\n</blockquote>\n\n\n<h3 id=\"example-205\">Example 205</h3>\n\n<p>A blank line always separates block quotes:</p>\n\n<blockquote>\n<p>foo</p>\n</blockquote>\n<blockquote>\n<p>bar</p>\n</blockquote>\n\n<h3 id=\"example-206\">Example 206</h3>\n\n<p>Consecutiveness means that if we put these block quotes together, we get a single block quote:</p>\n\n<blockquote>\n<p>foo\nbar</p>\n</blockquote>\n\n<h3 id=\"example-207\">Example 207</h3>\n\n<p>To get a block quote with two paragraphs, use:</p>\n\n<blockquote>\n<p>foo</p>\n<p>bar</p>\n</blockquote>\n\n<h3 id=\"example-208\">Example 208</h3>\n\n<p>Block quotes can interrupt paragraphs:</p>\n\n<p>foo</p>\n<blockquote>\n<p>bar</p>\n</blockquote>\n\n<h3 id=\"example-209\">Example 209</h3>\n\n<p>In general, blank lines are not needed before or after block quotes:</p>\n\n<blockquote>\n<p>aaa</p>\n</blockquote>\n<hr>\n<blockquote>\n<p>bbb</p>\n</blockquote>\n\n<h3 id=\"example-210\">Example 210</h3>\n\n<p>However, because of laziness, a blank line is needed between a block quote and a following paragraph:</p>\n\n<blockquote>\n<p>bar\nbaz</p>\n</blockquote>\n\n<h3 id=\"example-211\">Example 211</h3>\n\n<blockquote>\n<p>bar</p>\n</blockquote>\n<p>baz</p>\n\n<h3 id=\"example-212\">Example 212</h3>\n\n<blockquote>\n<p>bar</p>\n</blockquote>\n<p>baz</p>\n\n<h3 id=\"example-213\">Example 213</h3>\n\n<p>It is a consequence of the Laziness rule that any number of initial <code>&gt;</code>s may be omitted on a continuation line of a nested block quote:</p>\n\n<blockquote>\n<blockquote>\n<blockquote>\n<p>foo\nbar</p>\n</blockquote>\n</blockquote>\n</blockquote>\n\n<h3 id=\"example-214\">Example 214</h3>\n\n<blockquote>\n<blockquote>\n<blockquote>\n<p>foo\nbar\nbaz</p>\n</blockquote>\n</blockquote>\n</blockquote>\n\n<h3 id=\"example-215\">Example 215</h3>\n\n<p>When including an indented code block in a block quote, remember that the block quote marker includes both the <code>&gt;</code> and a following space. So five spaces are needed after the <code>&gt;</code>:</p>\n\n<blockquote>\n<pre><code>code</code></pre>\n</blockquote>\n<blockquote>\n<p>not code</p>\n</blockquote>\n",
-    "example": 6
-  },
-  {
-    "section": "Cm Html Blocks",
-    "markdown": "HTML blocks\n===================\n\n### Example 116\n\n<table><tr><td>\n<pre>\n**Hello**,\n\n_world_.\n</pre>\n</td></tr></table>\n\n### Example 117\n\n<table>\n  <tr>\n    <td>\n           hi\n    </td>\n  </tr>\n</table>\n\nokay.\n\n### Example 118\n\n <div>\n  *hello*\n         <foo><a>\n\n### Example 119\n\n</div>\n*foo*\n\n### Example 120\n\n<DIV CLASS=\"foo\">\n\n*Markdown*\n\n</DIV>\n\n### Example 121\n\n<div id=\"foo\"\n  class=\"bar\">\n</div>\n\n### Example 122\n\n<div id=\"foo\" class=\"bar\n  baz\">\n</div>\n\n### Example 123\n\n<div>\n*foo*\n\n*bar*\n\n### Example 124\n\n<div id=\"foo\"\n*hi*\n\n### Example 125\n\n<div class\nfoo\n\n### Example 126\n\n<div *???-&&&-<---\n*foo*\n\n### Example 127\n\n<div><a href=\"bar\">*foo*</a></div>\n\n### Example 128\n\n<table><tr><td>\nfoo\n</td></tr></table>\n\n### Example 129\n\n<div></div>\n``` c\nint x = 33;\n```\n\n### Example 130\n\n<a href=\"foo\">\n*bar*\n</a>\n\n### Example 131\n\n<Warning>\n*bar*\n</Warning>\n\n### Example 132\n\n<i class=\"foo\">\n*bar*\n</i>\n\n### Example 133\n\n</ins>\n*bar*\n\n### Example 134\n\n<del>\n*foo*\n</del>\n\n### Example 135\n\n<del>\n\n*foo*\n\n</del>\n\n### Example 136\n\n<del>*foo*</del>\n\n### Example 137\n\n<pre language=\"haskell\"><code>\nimport Text.HTML.TagSoup\n\nmain :: IO ()\nmain = print $ parseTags tags\n</code></pre>\nokay\n\n### Example 138\n\n<script type=\"text/javascript\">\n// JavaScript example\n\ndocument.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";\n</script>\nokay\n\n### Example 139\n\n<style\n  type=\"text/css\">\nh1 {color:red;}\n\np {color:blue;}\n</style>\nokay\n\n### Example 141\n\n> <div>\n> foo\n\nbar\n\n### Example 142\n\n- <div>\n- foo\n\n### Example 143\n\n<style>p{color:red;}</style>\n*foo*\n\n### Example 144\n\n<!-- foo -->*bar*\n*baz*\n\n### Example 145\n\n<script>\nfoo\n</script>1. *bar*\n\n### Example 146\n\n<!-- Foo\n\nbar\n   baz -->\nokay\n\n### Example 147\n\n<?php\n\n  echo '>';\n\n?>\nokay\n\n### Example 148\n\n<!DOCTYPE html>\n\n### Example 149\n\n<![CDATA[\nfunction matchwo(a,b)\n{\n  if (a < b && a < 0) then {\n    return 1;\n\n  } else {\n\n    return 0;\n  }\n}\n]]>\nokay\n\n### Example 150\n\n  <!-- foo -->\n\n    <!-- foo -->\n\n### Example 151\n\n  <div>\n\n    <div>\n\n### Example 152\n\nFoo\n<div>\nbar\n</div>\n\n### Example 153\n\n<div>\nbar\n</div>\n*foo*\n\n### Example 154\n\nFoo\n<a href=\"bar\">\nbaz\n\n### Example 155\n\n<div>\n\n*Emphasized* text.\n\n</div>\n\n### Example 156\n\n<div>\n*Emphasized* text.\n</div>\n\n### Example 157\n\n<table>\n\n<tr>\n\n<td>\nHi\n</td>\n\n</tr>\n\n</table>\n\n### Example 158\n\n<table>\n\n  <tr>\n\n    <td>\n      Hi\n    </td>\n\n  </tr>\n\n</table>\n\n### Example 140\n\nIf there is no matching end tag, the block will end at the end of the document (or the enclosing block quote or list item):\n\n<style\n  type=\"text/css\">\n\nfoo",
-    "html": "<h1 id=\"html-blocks\">HTML blocks</h1>\n\n<h3 id=\"example-116\">Example 116</h3>\n\n<table><tr><td>\n<pre>\n**Hello**,\n<p><em>world</em>.\n</pre></p>\n</td></tr></table>\n\n<h3 id=\"example-117\">Example 117</h3>\n\n<table>\n  <tr>\n    <td>\n           hi\n    </td>\n  </tr>\n</table>\n<p>okay.</p>\n\n<h3 id=\"example-118\">Example 118</h3>\n\n <div>\n  *hello*\n         <foo><a>\n\n<h3 id=\"example-119\">Example 119</h3>\n\n</div>\n*foo*\n\n<h3 id=\"example-120\">Example 120</h3>\n\n<DIV CLASS=\"foo\">\n<p><em>Markdown</em></p>\n</DIV>\n\n<h3 id=\"example-121\">Example 121</h3>\n\n<div id=\"foo\"\n  class=\"bar\">\n</div>\n\n<h3 id=\"example-122\">Example 122</h3>\n\n<div id=\"foo\" class=\"bar\n  baz\">\n</div>\n\n<h3 id=\"example-123\">Example 123</h3>\n\n<div>\n*foo*\n<p><em>bar</em></p>\n\n<h3 id=\"example-124\">Example 124</h3>\n\n<div id=\"foo\"\n*hi*\n\n<h3 id=\"example-125\">Example 125</h3>\n\n<div class\nfoo\n\n<h3 id=\"example-126\">Example 126</h3>\n\n<div *???-&&&-<---\n*foo*\n\n<h3 id=\"example-127\">Example 127</h3>\n\n<div><a href=\"bar\">*foo*</a></div>\n\n<h3 id=\"example-128\">Example 128</h3>\n\n<table><tr><td>\nfoo\n</td></tr></table>\n\n<h3 id=\"example-129\">Example 129</h3>\n\n<div></div>\n``` c\nint x = 33;\n```\n\n<h3 id=\"example-130\">Example 130</h3>\n\n<a href=\"foo\">\n*bar*\n</a>\n\n<h3 id=\"example-131\">Example 131</h3>\n\n<Warning>\n*bar*\n</Warning>\n\n<h3 id=\"example-132\">Example 132</h3>\n\n<i class=\"foo\">\n*bar*\n</i>\n\n<h3 id=\"example-133\">Example 133</h3>\n\n</ins>\n*bar*\n\n<h3 id=\"example-134\">Example 134</h3>\n\n<del>\n*foo*\n</del>\n\n<h3 id=\"example-135\">Example 135</h3>\n\n<del>\n<p><em>foo</em></p>\n</del>\n\n<h3 id=\"example-136\">Example 136</h3>\n\n<p><del><em>foo</em></del></p>\n\n<h3 id=\"example-137\">Example 137</h3>\n\n<pre language=\"haskell\"><code>\nimport Text.HTML.TagSoup\n\nmain :: IO ()\nmain = print $ parseTags tags\n</code></pre>\n<p>okay</p>\n\n<h3 id=\"example-138\">Example 138</h3>\n\n<script type=\"text/javascript\">\n// JavaScript example\n\ndocument.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";\n</script>\n<p>okay</p>\n\n<h3 id=\"example-139\">Example 139</h3>\n\n<style\n  type=\"text/css\">\nh1 {color:red;}\n\np {color:blue;}\n</style>\n<p>okay</p>\n\n<h3 id=\"example-141\">Example 141</h3>\n\n<blockquote>\n<div>\nfoo\n</blockquote>\n<p>bar</p>\n\n<h3 id=\"example-142\">Example 142</h3>\n\n<ul>\n<li>\n<div>\n</li>\n<li>foo</li>\n</ul>\n\n<h3 id=\"example-143\">Example 143</h3>\n\n<style>p{color:red;}</style>\n<p><em>foo</em></p>\n\n<h3 id=\"example-144\">Example 144</h3>\n\n<!-- foo -->*bar*\n<p><em>baz</em></p>\n\n<h3 id=\"example-145\">Example 145</h3>\n\n<script>\nfoo\n</script>1. *bar*\n\n<h3 id=\"example-146\">Example 146</h3>\n\n<!-- Foo\n\nbar\n   baz -->\n<p>okay</p>\n\n<h3 id=\"example-147\">Example 147</h3>\n\n<?php\n\n  echo '>';\n\n?>\n<p>okay</p>\n\n<h3 id=\"example-148\">Example 148</h3>\n\n<!DOCTYPE html>\n\n<h3 id=\"example-149\">Example 149</h3>\n\n<![CDATA[\nfunction matchwo(a,b)\n{\n  if (a < b && a < 0) then {\n    return 1;\n\n  } else {\n\n    return 0;\n  }\n}\n]]>\n<p>okay</p>\n\n<h3 id=\"example-150\">Example 150</h3>\n\n  <!-- foo -->\n<pre><code>&lt;!-- foo --&gt;\n</code></pre>\n\n<h3 id=\"example-151\">Example 151</h3>\n\n  <div>\n<pre><code>&lt;div&gt;\n</code></pre>\n\n<h3 id=\"example-152\">Example 152</h3>\n\n<p>Foo</p>\n<div>\nbar\n</div>\n\n<h3 id=\"example-153\">Example 153</h3>\n\n<div>\nbar\n</div>\n*foo*\n\n<h3 id=\"example-154\">Example 154</h3>\n\n<p>Foo\n<a href=\"bar\">\nbaz</p>\n\n<h3 id=\"example-155\">Example 155</h3>\n\n<div>\n<p><em>Emphasized</em> text.</p>\n</div>\n\n<h3 id=\"example-156\">Example 156</h3>\n\n<div>\n*Emphasized* text.\n</div>\n\n<h3 id=\"example-157\">Example 157</h3>\n\n<table>\n<tr>\n<td>\nHi\n</td>\n</tr>\n</table>\n\n<h3 id=\"example-158\">Example 158</h3>\n\n<table>\n  <tr>\n<pre><code>&lt;td&gt;\n  Hi\n&lt;/td&gt;\n</code></pre>\n  </tr>\n</table>\n\n<h3 id=\"example-140\">Example 140</h3>\n\n<p>If there is no matching end tag, the block will end at the end of the document (or the enclosing block quote or list item):</p>\n\n<style\n  type=\"text/css\">\n\nfoo\n",
-    "example": 7
-  },
-  {
-    "section": "Cm Links",
-    "markdown": "Links\n===================\n\n### Example 459\n\n[link](/uri \"title\")\n\n### Example 460\n\n[link](/uri)\n\n### Example 461\n\n[link]()\n\n### Example 462\n\n[link](<>)\n\n### Example 463\n\n[link](/my uri)\n\n### Example 464\n\n[link](</my uri>)\n\n### Example 465\n\n[link](foo\nbar)\n\n### Example 466\n\n[link](<foo\nbar>)\n\n### Example 467\n\n[link](\\(foo\\))\n\n### Example 4680\n\nONE LEVEL of parentheses are allowed without escaping, as long as they are balanced:\n\n[link](foo(bar))\n\n### Example 469\n\n[link](foo\\(and\\(bar\\))\n\n### Example 470\n\nHowever, if you have ANY unbalanced parentheses, you need to escape or use the <...> form:\n\n[link](<foo(and(bar)>)\n\n### Example 471\n\n[link](foo\\)\\:)\n\n### Example 472\n\n[link](#fragment)\n\n[link](http://example.com#fragment)\n\n[link](http://example.com?foo=3#frag)\n\n### Example 473\n\n[link](foo\\bar)\n\n### Example 4740\n\n[link](foo%20b&auml;)\n\n### Example 475\n\n[link](\"title\")\n\n### Example 476\n\n[link](/url \"title\")\n[link](/url 'title')\n[link](/url (title))\n\n### Example 477\n\n[link](/url \"title \\\"&quot;\")\n\n### Example 479\n\n[link](/url \"title \"and\" title\")\n\n### Example 480\n\n[link](/url 'title \"and\" title')\n\n### Example 481\n\n[link](   /uri\n  \"title\"  )\n\n### Example 482\n\n[link] (/uri)\n\n### Example 4830\n\nThe link text may contain ONE LEVEL of balanced brackets, but not unbalanced ones, unless they are escaped:\n\n[link [foo4830]](/uri)\n\n### Example 484\n\n[link] bar](/uri)\n\n### Example 485\n\n[link [bar](/uri)\n\n### Example 486\n\n[link \\[bar](/uri)\n\n### Example 487\n\n[link *foo **bar** `#`*](/uri)\n\n### Example 488\n\n[![moon](moon.jpg)](/uri)\n\n### Example 493\n\n[foo *bar](baz*)\n\n### Example 494\n\n*foo [bar* baz]\n\n### Example 498\n\n[foo][bar]\n\n[bar]: /url \"title\"\n\n### Example 4990\n\n[link [foo499]][ref499]\n\n[ref499]: /uri\n\n### Example 500\n\n[link \\[bar][ref]\n\n[ref]: /uri\n\n### Example 501\n\n[link *foo **bar** `#`*][ref]\n\n[ref]: /uri\n\n### Example 502\n\n[![moon](moon.jpg)][ref]\n\n[ref]: /uri\n\n### Example 5030\n\n[foo [bar](/uri)][ref503]\n\n[ref503]: /uri\n\n### Example 504\n\n[foo *bar [baz][ref504]*][ref504]\n\n[ref504]: /uri\n\n### Example 506\n\n[foo *bar][ref]\n\n[ref]: /uri\n\n### Example 510\n\n[foo][BaR]\n\n[bar]: /url \"title\"\n\n### Example 511\n\n[Толпой][Толпой] is a Russian word.\n\n[ТОЛПОЙ]: /url\n\n### Example 512\n\n[Foo\n  bar]: /url\n\n[Baz][Foo bar]\n\n### Example 513\n\n[foo513] [bar513]\n\n[bar513]: /url \"title\"\n\n### Example 514\n\n[foo514]\n[bar514]\n\n[bar514]: /url \"title\"\n\n### Example 515\n\n[foo515]: /url1\n\n[foo515]: /url2\n\n[bar][foo515]\n\n### Example 516\n\n[bar][foo\\!516]\n\n[foo!516]: /url\n\n### Example 517\n\n[foo517][ref[517]\n\n[ref[517]: /uri\n\n### Example 518\n\n[foo518][ref[bar518]518]\n\n[ref[bar518]518]: /uri\n\n### Example 519\n\n[[[foo519]]]\n\n[[[foo519]]]: /url\n\n### Example 520\n\n[foo][ref\\[]\n\n[ref\\[]: /uri\n\n### Example 521\n\n[bar\\\\]: /uri\n\n[bar\\\\]\n\n### Example 522\n\n[]\n\n[]: /uri\n\n### Example 523\n\n[\n ]\n\n[\n ]: /uri\n\n### Example 524\n\n[foo][]\n\n[foo]: /url \"title\"\n\n### Example 525\n\n[*foo* bar][]\n\n[*foo* bar]: /url \"title\"\n\n### Example 526\n\n[Foo][]\n\n[foo]: /url \"title\"\n\n### Example 527\n\n[foo] \n[]\n\n[foo]: /url \"title\"\n\n### Example 528\n\n[foo]\n\n[foo]: /url \"title\"\n\n### Example 529\n\n[*foo* bar]\n\n[*foo* bar]: /url \"title\"\n\n### Example 530\n\n[[*foo* bar]]\n\n[*foo* bar]: /url \"title\"\n\n### Example 531\n\n[[bar [foo531]\n\n[foo531]: /url\n\n### Example 532\n\n[Foo]\n\n[foo]: /url \"title\"\n\n### Example 533\n\n[foo533] bar\n\n[foo533]: /url\n\n### Example 534\n\n\\[foo]\n\n[foo534]: /url \"title\"\n\n### Example 536\n\n[foo536][bar536]\n\n[foo536]: /url1\n[bar536]: /url2\n\n### Example 537\n\n[foo537][]\n\n[foo537]: /url1\n\n### Example 538\n\n[foo538]()\n\n[foo538]: /url1\n\n### Example 539\n\n[foo539](not a link)\n\n[foo539]: /url1\n\n### Example 540\n\n[foo540][bar540][baz540]\n\n[baz540]: /url\n\n### Example 541\n\n[foo541][bar541][baz541]\n\n[baz541]: /url1\n[bar541]: /url2\n\n### Example 542\n\n[foo542][bar542][baz542]\n\n[baz542]: /url1\n[foo542]: /url2\n\n### Example 543\n\n![foo543](/url \"title\")\n\n### Example 5440\n\n![foo *bar*544]\n\n[foo *bar*544]: train.jpg \"train & tracks\"\n\n### Example 5450\n\n![foo ![bar](/url)](/url2)\n\n### Example 5460\n\n![foo [bar](/url)](/url2)\n\n### Example 5470\n\n![foo *bar*547][]\n\n[foo *bar*547]: train.jpg \"train & tracks\"\n\n### Example 5480\n\n![foo *bar*][foobar548]\n\n[FOOBAR548]: train.jpg \"train & tracks\"\n\n### Example 549\n\n![foo](train.jpg)\n\n### Example 550\n\nMy ![foo bar](/path/to/train.jpg  \"title\"   )\n\n### Example 551\n\n![foo](<url>)\n\n### Example 552\n\n![](/url)\n\n### Example 553\n\n![foo][bar553]\n\n[bar553]: /url\n\n### Example 554\n\n![foo][bar554]\n\n[BAR554]: /url\n\n### Example 555\n\n![foo][]\n\n[foo]: /url \"title\"\n\n### Example 5560\n\n![*foo* bar][]\n\n[*foo* bar]: /url \"title\"\n\n### Example 557\n\n![Foo][]\n\n[foo]: /url \"title\"\n\n### Example 558\n\n![foo] \n[]\n\n[foo]: /url \"title\"\n\n### Example 559\n\n![foo]\n\n[foo]: /url \"title\"\n\n### Example 5600\n\n![*foo* bar]\n\n[*foo* bar]: /url \"title\"\n\n### Example 561\n\n![[foo561]]\n\n[[foo561]]: /url \"title\"\n\n### Example 562\n\n![Foo]\n\n[foo]: /url \"title\"\n\n### Example 563\n\n!\\[foo]\n\n[foo]: /url \"title\"\n\n### Example 564\n\n\\![foo]\n\n[foo]: /url \"title\"\n\n",
-    "html": "<h1 id=\"links\">Links</h1>\n\n<h3 id=\"example-459\">Example 459</h3>\n\n<p><a href=\"/uri\" title=\"title\">link</a></p>\n\n<h3 id=\"example-460\">Example 460</h3>\n\n<p><a href=\"/uri\">link</a></p>\n\n<h3 id=\"example-461\">Example 461</h3>\n\n<p><a href=\"\">link</a></p>\n\n<h3 id=\"example-462\">Example 462</h3>\n\n<p><a href=\"\">link</a></p>\n\n<h3 id=\"example-463\">Example 463</h3>\n\n<p>[link](/my uri)</p>\n\n<h3 id=\"example-464\">Example 464</h3>\n\n<p>[link](&lt;/my uri&gt;)</p>\n\n<h3 id=\"example-465\">Example 465</h3>\n\n<p>[link](foo\nbar)</p>\n\n<h3 id=\"example-466\">Example 466</h3>\n\n<p>[link](<foo\nbar>)</p>\n\n<h3 id=\"example-467\">Example 467</h3>\n\n<p><a href=\"(foo)\">link</a></p>\n\n<h3 id=\"example-4680\">Example 4680</h3>\n\n<p>ONE LEVEL of parentheses are allowed without escaping, as long as they are balanced:</p>\n\n<p><a href=\"foo(bar)\">link</a></p>\n\n<h3 id=\"example-469\">Example 469</h3>\n\n<p><a href=\"foo(and(bar)\">link</a></p>\n\n<h3 id=\"example-470\">Example 470</h3>\n\n<p>However, if you have ANY unbalanced parentheses, you need to escape or use the &lt;...&gt; form:</p>\n\n<p><a href=\"foo(and(bar)\">link</a></p>\n\n<h3 id=\"example-471\">Example 471</h3>\n\n<p><a href=\"foo):\">link</a></p>\n\n<h3 id=\"example-472\">Example 472</h3>\n\n<p><a href=\"#fragment\">link</a></p>\n<p><a href=\"http://example.com#fragment\">link</a></p>\n<p><a href=\"http://example.com?foo=3#frag\">link</a></p>\n\n<h3 id=\"example-473\">Example 473</h3>\n\n<p><a href=\"foo%5Cbar\">link</a></p>\n\n<h3 id=\"example-4740\">Example 4740</h3>\n\n<p><a href=\"foo%20b&auml;\">link</a></p>\n\n<h3 id=\"example-475\">Example 475</h3>\n\n<p><a href=\"%22title%22\">link</a></p>\n\n<h3 id=\"example-476\">Example 476</h3>\n\n<p><a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a></p>\n\n<h3 id=\"example-477\">Example 477</h3>\n\n<p><a href=\"/url\" title=\"title &quot;&quot;\">link</a></p>\n\n<h3 id=\"example-479\">Example 479</h3>\n\n<p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>\n\n<h3 id=\"example-480\">Example 480</h3>\n\n<p><a href=\"/url\" title=\"title &quot;and&quot; title\">link</a></p>\n\n<h3 id=\"example-481\">Example 481</h3>\n\n<p><a href=\"/uri\" title=\"title\">link</a></p>\n\n<h3 id=\"example-482\">Example 482</h3>\n\n<p>[link] (/uri)</p>\n\n<h3 id=\"example-4830\">Example 4830</h3>\n\n<p>The link text may contain ONE LEVEL of balanced brackets, but not unbalanced ones, unless they are escaped:</p>\n\n<p><a href=\"/uri\">link [foo4830]</a></p>\n\n<h3 id=\"example-484\">Example 484</h3>\n\n<p>[link] bar](/uri)</p>\n\n<h3 id=\"example-485\">Example 485</h3>\n\n<p>[link <a href=\"/uri\">bar</a></p>\n\n<h3 id=\"example-486\">Example 486</h3>\n\n<p><a href=\"/uri\">link [bar</a></p>\n\n<h3 id=\"example-487\">Example 487</h3>\n\n<p><a href=\"/uri\">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>\n\n<h3 id=\"example-488\">Example 488</h3>\n\n<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>\n\n<h3 id=\"example-493\">Example 493</h3>\n\n<p><a href=\"baz*\">foo *bar</a></p>\n\n<h3 id=\"example-494\">Example 494</h3>\n\n<p><em>foo [bar</em> baz]</p>\n\n<h3 id=\"example-498\">Example 498</h3>\n\n<p><a href=\"/url\" title=\"title\">foo</a></p>\n\n<h3 id=\"example-4990\">Example 4990</h3>\n\n<p><a href=\"/uri\">link [foo499]</a></p>\n\n<h3 id=\"example-500\">Example 500</h3>\n\n<p><a href=\"/uri\">link [bar</a></p>\n\n<h3 id=\"example-501\">Example 501</h3>\n\n<p><a href=\"/uri\">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>\n\n<h3 id=\"example-502\">Example 502</h3>\n\n<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>\n\n<h3 id=\"example-5030\">Example 5030</h3>\n\n<p><a href=\"/uri\">foo <a href=\"/uri\">bar</a></a></p>\n\n<h3 id=\"example-504\">Example 504</h3>\n\n<p><a href=\"/uri\">foo <em>bar <a href=\"/uri\">baz</a></em></a></p>\n\n<h3 id=\"example-506\">Example 506</h3>\n\n<p><a href=\"/uri\">foo *bar</a></p>\n\n<h3 id=\"example-510\">Example 510</h3>\n\n<p><a href=\"/url\" title=\"title\">foo</a></p>\n\n<h3 id=\"example-511\">Example 511</h3>\n\n<p><a href=\"/url\">Толпой</a> is a Russian word.</p>\n\n<h3 id=\"example-512\">Example 512</h3>\n\n<p><a href=\"/url\">Baz</a></p>\n\n<h3 id=\"example-513\">Example 513</h3>\n\n<p>[foo513] <a href=\"/url\" title=\"title\">bar513</a></p>\n\n<h3 id=\"example-514\">Example 514</h3>\n\n<p>[foo514]\n<a href=\"/url\" title=\"title\">bar514</a></p>\n\n<h3 id=\"example-515\">Example 515</h3>\n\n<p><a href=\"/url1\">bar</a></p>\n\n<h3 id=\"example-516\">Example 516</h3>\n\n<p>[bar][foo!516]</p>\n\n<h3 id=\"example-517\">Example 517</h3>\n\n<p>[foo517][ref[517]</p>\n<p>[ref[517]: /uri</p>\n\n<h3 id=\"example-518\">Example 518</h3>\n\n<p>[foo518][ref[bar518]518]</p>\n<p>[ref[bar518]518]: /uri</p>\n\n<h3 id=\"example-519\">Example 519</h3>\n\n<p>[[[foo519]]]</p>\n<p>[[[foo519]]]: /url</p>\n\n<h3 id=\"example-520\">Example 520</h3>\n\n<p><a href=\"/uri\">foo</a></p>\n\n<h3 id=\"example-521\">Example 521</h3>\n\n<p><a href=\"/uri\">bar\\</a></p>\n\n<h3 id=\"example-522\">Example 522</h3>\n\n<p>[]</p>\n<p>[]: /uri</p>\n\n<h3 id=\"example-523\">Example 523</h3>\n\n<p>[\n ]</p>\n<p>[\n ]: /uri</p>\n\n<h3 id=\"example-524\">Example 524</h3>\n\n<p><a href=\"/url\" title=\"title\">foo</a></p>\n\n<h3 id=\"example-525\">Example 525</h3>\n\n<p><a href=\"/url\" title=\"title\"><em>foo</em> bar</a></p>\n\n<h3 id=\"example-526\">Example 526</h3>\n\n<p><a href=\"/url\" title=\"title\">Foo</a></p>\n\n<h3 id=\"example-527\">Example 527</h3>\n\n<p><a href=\"/url\" title=\"title\">foo</a>\n[]</p>\n\n<h3 id=\"example-528\">Example 528</h3>\n\n<p><a href=\"/url\" title=\"title\">foo</a></p>\n\n<h3 id=\"example-529\">Example 529</h3>\n\n<p><a href=\"/url\" title=\"title\"><em>foo</em> bar</a></p>\n\n<h3 id=\"example-530\">Example 530</h3>\n\n<p>[<a href=\"/url\" title=\"title\"><em>foo</em> bar</a>]</p>\n\n<h3 id=\"example-531\">Example 531</h3>\n\n<p>[[bar <a href=\"/url\">foo531</a></p>\n\n<h3 id=\"example-532\">Example 532</h3>\n\n<p><a href=\"/url\" title=\"title\">Foo</a></p>\n\n<h3 id=\"example-533\">Example 533</h3>\n\n<p><a href=\"/url\">foo533</a> bar</p>\n\n<h3 id=\"example-534\">Example 534</h3>\n\n<p>[foo]</p>\n\n<h3 id=\"example-536\">Example 536</h3>\n\n<p><a href=\"/url2\">foo536</a></p>\n\n<h3 id=\"example-537\">Example 537</h3>\n\n<p><a href=\"/url1\">foo537</a></p>\n\n<h3 id=\"example-538\">Example 538</h3>\n\n<p><a href=\"\">foo538</a></p>\n\n<h3 id=\"example-539\">Example 539</h3>\n\n<p><a href=\"/url1\">foo539</a>(not a link)</p>\n\n<h3 id=\"example-540\">Example 540</h3>\n\n<p>[foo540]<a href=\"/url\">bar540</a></p>\n\n<h3 id=\"example-541\">Example 541</h3>\n\n<p><a href=\"/url2\">foo541</a><a href=\"/url1\">baz541</a></p>\n\n<h3 id=\"example-542\">Example 542</h3>\n\n<p>[foo542]<a href=\"/url1\">bar542</a></p>\n\n<h3 id=\"example-543\">Example 543</h3>\n\n<p><img src=\"/url\" alt=\"foo543\" title=\"title\" /></p>\n\n<h3 id=\"example-5440\">Example 5440</h3>\n\n<p><img src=\"train.jpg\" alt=\"foo *bar*544\" title=\"train &amp; tracks\" /></p>\n\n<h3 id=\"example-5450\">Example 5450</h3>\n\n<p><img src=\"/url2\" alt=\"foo ![bar](/url)\" /></p>\n\n<h3 id=\"example-5460\">Example 5460</h3>\n\n<p><img src=\"/url2\" alt=\"foo [bar](/url)\" /></p>\n\n<h3 id=\"example-5470\">Example 5470</h3>\n\n<p><img src=\"train.jpg\" alt=\"foo *bar*547\" title=\"train &amp; tracks\" /></p>\n\n<h3 id=\"example-5480\">Example 5480</h3>\n\n<p><img src=\"train.jpg\" alt=\"foo *bar*\" title=\"train &amp; tracks\" /></p>\n\n<h3 id=\"example-549\">Example 549</h3>\n\n<p><img src=\"train.jpg\" alt=\"foo\" /></p>\n\n<h3 id=\"example-550\">Example 550</h3>\n\n<p>My <img src=\"/path/to/train.jpg\" alt=\"foo bar\" title=\"title\" /></p>\n\n<h3 id=\"example-551\">Example 551</h3>\n\n<p><img src=\"url\" alt=\"foo\" /></p>\n\n<h3 id=\"example-552\">Example 552</h3>\n\n<p><img src=\"/url\" alt=\"\" /></p>\n\n<h3 id=\"example-553\">Example 553</h3>\n\n<p><img src=\"/url\" alt=\"foo\" /></p>\n\n<h3 id=\"example-554\">Example 554</h3>\n\n<p><img src=\"/url\" alt=\"foo\" /></p>\n\n<h3 id=\"example-555\">Example 555</h3>\n\n<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>\n\n<h3 id=\"example-5560\">Example 5560</h3>\n\n<p><img src=\"/url\" alt=\"*foo* bar\" title=\"title\" /></p>\n\n<h3 id=\"example-557\">Example 557</h3>\n\n<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>\n\n<h3 id=\"example-558\">Example 558</h3>\n\n<p><img src=\"/url\" alt=\"foo\" title=\"title\" />\n[]</p>\n\n<h3 id=\"example-559\">Example 559</h3>\n\n<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>\n\n<h3 id=\"example-5600\">Example 5600</h3>\n\n<p><img src=\"/url\" alt=\"*foo* bar\" title=\"title\" /></p>\n\n<h3 id=\"example-561\">Example 561</h3>\n\n<p>![[foo561]]</p>\n<p>[[foo561]]: /url &quot;title&quot;</p>\n\n<h3 id=\"example-562\">Example 562</h3>\n\n<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>\n\n<h3 id=\"example-563\">Example 563</h3>\n\n<p>![foo]</p>\n\n<h3 id=\"example-564\">Example 564</h3>\n\n<p>!<a href=\"/url\" title=\"title\">foo</a></p>\n\n",
-    "example": 8,
-    "options": {
-      "xhtml": true
-    }
-  },
-  {
-    "section": "Cm Link Defs",
-    "markdown": "### Example 159\n\n[foo159]: /url \"title\"\n\n[foo159]\n\n### Example 160\n\n   [foo160]: \n      /url  \n           'the title'  \n\n[foo160]\n\n### Example 161\n\n[Foo161*bar\\]]:my_(url) 'title (with parens)'\n\n[Foo161*bar\\]]\n\n### Example 162\n\n[Foo162 bar]:\n<my%20url>\n'title'\n\n[Foo162 bar]\n\n### Example 163\n\n[foo163]: /url '\ntitle\nline1\nline2\n'\n\n[foo163]\n\n### Example 164\n\n[foo164]: /url 'title\n\nwith blank line'\n\n[foo164]\n\n### Example 165\n\n[foo165]:\n/url\n\n[foo165]\n\n### Example 166\n\n[foo166]:\n\n[foo166]\n\n### Example 167\n\n\t[foo167]: /url\\bar\\*baz \"foo\\\"bar\\baz\"\n\n\t[foo167]\n\n\tshould render to\n\n\t<p><a href=\"/url%5Cbar*baz\" title=\"foo&quot;bar\\baz\">foo167</a></p>\n\n### Example 168\n\n[foo168]\n\n[foo168]: url\n\n### Example 169\n\n[foo169]\n\n[foo169]: first\n[foo169]: second\n\n### Example 170\n\n[FOO170]: /url\n\n[Foo170]\n\n### Example 171\n\n[ΑΓΩ]: /φου\n\n[αγω]\n\n### Example 172\n\n[foo172]: /url\n\n### Example 173\n\n[\nfoo173\n]: /url\nbar\n\n### Example 174\n\n[foo174]: /url \"title\" ok\n\n### Example 175\n\n[foo175]: /url\n\"title\" ok\n\n### Example 176\n\n    [foo176]: /url \"title\"\n\n[foo176]\n\n### Example 177\n\n```\n[foo177]: /url\n```\n\n[foo177]\n\n### Example 178\n\nFoo\n[bar178]: /baz\n\n[bar178]\n\n### Example 179\n\n# [Foo179]\n[foo179]: /url\n> bar\n\n### Example 180\n\n[foo180]: /foo-url \"foo\"\n[bar180]: /bar-url\n  \"bar\"\n[baz180]: /baz-url\n\n[foo180],\n[bar180],\n[baz180]\n\n### Example 181\n\n[foo181]\n\n> [foo181]: /url",
-    "html": "<h3 id=\"example-159\">Example 159</h3>\n\n<p><a href=\"/url\" title=\"title\">foo159</a></p>\n\n<h3 id=\"example-160\">Example 160</h3>\n\n<p><a href=\"/url\" title=\"the title\">foo160</a></p>\n\n<h3 id=\"example-161\">Example 161</h3>\n\n<p><a href=\"my_(url)\" title=\"title (with parens)\">Foo161*bar]</a></p>\n\n<h3 id=\"example-162\">Example 162</h3>\n\n<p><a href=\"my%20url\" title=\"title\">Foo162 bar</a></p>\n\n<h3 id=\"example-163\">Example 163</h3>\n\n<p><a href=\"/url\" title=\"\ntitle\nline1\nline2\n\">foo163</a></p>\n\n<h3 id=\"example-164\">Example 164</h3>\n\n<p>[foo164]: /url &#39;title</p>\n<p>with blank line&#39;</p>\n<p>[foo164]</p>\n\n<h3 id=\"example-165\">Example 165</h3>\n\n<p><a href=\"/url\">foo165</a></p>\n\n<h3 id=\"example-166\">Example 166</h3>\n\n<p>[foo166]:</p>\n<p>[foo166]</p>\n\n<h3 id=\"example-167\">Example 167</h3>\n\n<pre><code>[foo167]: /url\\bar\\*baz &quot;foo\\&quot;bar\\baz&quot;\n\n[foo167]\n\nshould render to\n\n&lt;p&gt;&lt;a href=&quot;/url%5Cbar*baz&quot; title=&quot;foo&amp;quot;bar\\baz&quot;&gt;foo167&lt;/a&gt;&lt;/p&gt;</code></pre>\n\n<h3 id=\"example-168\">Example 168</h3>\n\n<p><a href=\"url\">foo168</a></p>\n\n<h3 id=\"example-169\">Example 169</h3>\n\n<p><a href=\"first\">foo169</a></p>\n\n<h3 id=\"example-170\">Example 170</h3>\n\n<p><a href=\"/url\">Foo170</a></p>\n\n<h3 id=\"example-171\">Example 171</h3>\n\n<p><a href=\"/%CF%86%CE%BF%CF%85\">αγω</a></p>\n\n<h3 id=\"example-172\">Example 172</h3>\n\n<h3 id=\"example-173\">Example 173</h3>\n\n<p>bar</p>\n\n<h3 id=\"example-174\">Example 174</h3>\n\n<p>[foo174]: /url &quot;title&quot; ok</p>\n\n<h3 id=\"example-175\">Example 175</h3>\n\n<p>&quot;title&quot; ok</p>\n\n<h3 id=\"example-176\">Example 176</h3>\n\n<pre><code>[foo176]: /url &quot;title&quot;\n</code></pre>\n<p>[foo176]</p>\n\n<h3 id=\"example-177\">Example 177</h3>\n\n<pre><code>[foo177]: /url\n</code></pre>\n<p>[foo177]</p>\n\n<h3 id=\"example-178\">Example 178</h3>\n\n<p>Foo\n[bar178]: /baz</p>\n<p>[bar178]</p>\n\n<h3 id=\"example-179\">Example 179</h3>\n\n<h1 id=\"foo179\"><a href=\"/url\">Foo179</a></h1>\n<blockquote>\n<p>bar</p>\n</blockquote>\n\n<h3 id=\"example-180\">Example 180</h3>\n\n<p><a href=\"/foo-url\" title=\"foo\">foo180</a>,\n<a href=\"/bar-url\" title=\"bar\">bar180</a>,\n<a href=\"/baz-url\">baz180</a></p>\n\n<h3 id=\"example-181\">Example 181</h3>\n\n<p><a href=\"/url\">foo181</a></p>\n<blockquote>\n</blockquote>",
+    "section": "Def Blocks",
+    "markdown": "> hello\n> [1]: hello",
+    "html": "<blockquote>\n  <p>hello\n[1]: hello</p>\n</blockquote>",
     "example": 9
   },
   {
-    "section": "Cm Raw Html",
-    "markdown": "Raw HTML\n===================\n\n### Example 584\n\n<a><bab><c2c>\n\n### Example 585\n\n<a/><b2/>\n\n### Example 586\n\n<a  /><b2\ndata=\"foo\" >\n\n### Example 587\n\n<a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />\n\n### Example 588\n\nFoo <responsive-image src=\"foo.jpg\" />\n\n### Example 589\n\n<33> <__>\n\n### Example 590\n\n<a h*#ref=\"hi\">\n\n### Example 591\n\n<a href=\"hi'> <a href=hi'>\n\n### Example 592\n\n< a><\nfoo><bar/ >\n\n### Example 593\n\n<a href='bar'title=title>\n\n### Example 594\n\n</a></foo >\n\n### Example 595\n\n</a href=\"foo\">\n\n### Example 596\n\nfoo <!-- this is a\ncomment - with hyphen -->\n\n### Example 599\n\nfoo <?php echo $a; ?>\n\n### Example 600\n\nfoo <!ELEMENT br EMPTY>\n\n### Example 601\n\nfoo <![CDATA[>&<]]>\n\n### Example 602\n\nfoo <a href=\"&ouml;\">\n\n### Example 603\n\nfoo <a href=\"\\*\">\n",
-    "html": "<h1 id=\"raw-html\">Raw HTML</h1>\n\n<h3 id=\"example-584\">Example 584</h3>\n\n<p><a><bab><c2c></p>\n\n<h3 id=\"example-585\">Example 585</h3>\n\n<p><a/><b2/></p>\n\n<h3 id=\"example-586\">Example 586</h3>\n\n<p><a  /><b2\ndata=\"foo\" ></p>\n\n<h3 id=\"example-587\">Example 587</h3>\n\n<p><a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 /></p>\n\n<h3 id=\"example-588\">Example 588</h3>\n\n<p>Foo <responsive-image src=\"foo.jpg\" /></p>\n\n<h3 id=\"example-589\">Example 589</h3>\n\n<p>&lt;33&gt; &lt;__&gt;</p>\n\n<h3 id=\"example-590\">Example 590</h3>\n\n<p>&lt;a h*#ref=&quot;hi&quot;&gt;</p>\n\n<h3 id=\"example-591\">Example 591</h3>\n\n<p>&lt;a href=&quot;hi&#39;&gt; &lt;a href=hi&#39;&gt;</p>\n\n<h3 id=\"example-592\">Example 592</h3>\n\n<p>&lt; a&gt;&lt;\nfoo&gt;&lt;bar/ &gt;</p>\n\n<h3 id=\"example-593\">Example 593</h3>\n\n<p>&lt;a href=&#39;bar&#39;title=title&gt;</p>\n\n<h3 id=\"example-594\">Example 594</h3>\n\n<p></a></foo ></p>\n\n<h3 id=\"example-595\">Example 595</h3>\n\n<p>&lt;/a href=&quot;foo&quot;&gt;</p>\n\n<h3 id=\"example-596\">Example 596</h3>\n\n<p>foo <!-- this is a\ncomment - with hyphen --></p>\n\n<h3 id=\"example-599\">Example 599</h3>\n\n<p>foo <?php echo $a; ?></p>\n\n<h3 id=\"example-600\">Example 600</h3>\n\n<p>foo <!ELEMENT br EMPTY></p>\n\n<h3 id=\"example-601\">Example 601</h3>\n\n<p>foo <![CDATA[>&<]]></p>\n\n<h3 id=\"example-602\">Example 602</h3>\n\n<p>foo <a href=\"&ouml;\"></p>\n\n<h3 id=\"example-603\">Example 603</h3>\n\n<p>foo <a href=\"\\*\"></p>\n",
+    "section": "Def Blocks",
+    "markdown": "> hello\n[2]: hello",
+    "html": "<blockquote>\n  <p>hello\n[2]: hello</p>\n</blockquote>",
     "example": 10
   },
   {
-    "section": "Cm Strong And Em",
-    "markdown": "So *a* single *word* followed *b*y *a*nother\n\nSo **a** single **word** followed **b**y **a**nother\n\nSo _a_ single _word_ followed _b_y _a_nother\n\nSo __a__ single __word__ followed __b__y __a__nother\n",
-    "html": "<p>So <em>a</em> single <em>word</em> followed <em>b</em>y <em>a</em>nother</p>\n\n<p>So <strong>a</strong> single <strong>word</strong> followed <strong>b</strong>y <strong>a</strong>nother</p>\n\n<p>So <em>a</em> single <em>word</em> followed <em>b</em>y <em>a</em>nother</p>\n\n<p>So <strong>a</strong> single <strong>word</strong> followed <strong>b</strong>y <strong>a</strong>nother</p>\n",
+    "section": "Def Blocks",
+    "markdown": "* hello\n* [3]: hello",
+    "html": "<ul>\n<li>hello</li>\n<li>[3]: hello</li>\n</ul>",
     "example": 11
   },
   {
-    "section": "Cm Thematic Breaks",
-    "markdown": "Thematic breaks\n===================\n\n### Example 13\n\n***\n---\n___\n\n### Example 14\n\n+++\n\n### Example 15\n\n===\n\n### Example 16\n\n--\n**\n__\n\n### Example 17\n\n ***\n  ***\n   ***\n\n### Example 18\n\n    ***\n\n### Example 19\n\nFoo\n    ***\n\n### Example 20\n\n_____________________________________\n\n### Example 21\n\n - - -\n\n### Example 22\n\n **  * ** * ** * **\n\n### Example 23\n\n-     -      -      -\n\n### Example 24\n\n- - - -    \n\n### Example 25\n\n_ _ _ _ a\n\na------\n\n---a---\n\n### Example 26\n\n *-*\n\n### Example 27\n\n- foo\n***\n- bar\n\n### Example 28\n\nFoo\n***\nbar\n\n### Example 29\n\nFoo\n---\nbar\n\n### Example 30\n\n* Foo\n* * *\n* Bar\n\n### Example 31\n\n- Foo\n- * * *\n",
-    "html": "<h1 id=\"thematic-breaks\">Thematic breaks</h1>\n\n<h3 id=\"example-13\">Example 13</h3>\n\n<hr>\n<hr>\n<hr>\n\n<h3 id=\"example-14\">Example 14</h3>\n\n<p>+++</p>\n\n<h3 id=\"example-15\">Example 15</h3>\n\n<p>===</p>\n\n<h3 id=\"example-16\">Example 16</h3>\n\n<p>--\n**\n__</p>\n\n<h3 id=\"example-17\">Example 17</h3>\n\n<hr>\n<hr>\n<hr>\n\n<h3 id=\"example-18\">Example 18</h3>\n\n<pre><code>***\n</code></pre>\n\n<h3 id=\"example-19\">Example 19</h3>\n\n<p>Foo\n    ***</p>\n\n<h3 id=\"example-20\">Example 20</h3>\n\n<hr>\n\n<h3 id=\"example-21\">Example 21</h3>\n\n<hr>\n\n<h3 id=\"example-22\">Example 22</h3>\n\n<hr>\n\n<h3 id=\"example-23\">Example 23</h3>\n\n<hr>\n\n<h3 id=\"example-24\">Example 24</h3>\n\n<hr>\n\n<h3 id=\"example-25\">Example 25</h3>\n\n<p>_ _ _ _ a</p>\n<p>a------</p>\n<p>---a---</p>\n\n\n<h3 id=\"example-26\">Example 26</h3>\n\n<p> <em>-</em></p>\n\n<h3 id=\"example-27\">Example 27</h3>\n\n<ul>\n<li>foo</li>\n</ul>\n<hr>\n<ul>\n<li>bar</li>\n</ul>\n\n<h3 id=\"example-28\">Example 28</h3>\n\n<p>Foo</p>\n<hr>\n<p>bar</p>\n\n<h3 id=\"example-29\">Example 29</h3>\n\n<h2 id=\"foo\">Foo</h2>\n<p>bar</p>\n\n<h3 id=\"example-30\">Example 30</h3>\n\n<ul>\n<li>Foo</li>\n</ul>\n<hr>\n<ul>\n<li>Bar</li>\n</ul>\n\n<h3 id=\"example-31\">Example 31</h3>\n\n<ul>\n<li>Foo</li>\n<li><hr></li>\n</ul>",
+    "section": "Def Blocks",
+    "markdown": "* hello\n[4]: hello",
+    "html": "<ul>\n<li>hello</li>\n</ul>",
     "example": 12
   },
   {
     "section": "Def Blocks",
-    "markdown": "> hello\n> [1]: hello\n\n* * *\n\n> hello\n[2]: hello\n\n\n* hello\n* [3]: hello\n\n\n* hello\n[4]: hello\n\n\n> foo\n> bar\n[5]: foo\n> bar\n",
-    "html": "<blockquote>\n  <p>hello\n[1]: hello</p>\n</blockquote>\n\n<hr>\n\n<blockquote>\n  <p>hello\n[2]: hello</p>\n</blockquote>\n\n\n<ul>\n<li>hello</li>\n<li>[3]: hello</li>\n</ul>\n\n\n<ul>\n<li>hello</li>\n</ul>\n\n\n<blockquote>\n  <p>foo\nbar\n[5]: foo\nbar</p>\n</blockquote>\n",
+    "markdown": "> foo\n> bar\n[5]: foo\n> bar",
+    "html": "<blockquote>\n  <p>foo\nbar\n[5]: foo\nbar</p>\n</blockquote>",
     "example": 13
   },
   {
     "section": "Double Link",
-    "markdown": "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>\n\nAlready linked: [http://example.com/](http://example.com/).\n\nAlready linked: <a href=\"http://example.com/\">**http://example.com/**</a>.\n",
-    "html": "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>\n\n<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>\n\n<p>Already linked: <a href=\"http://example.com/\"><strong>http://example.com/</strong></a>.</p>\n",
+    "markdown": "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>",
+    "html": "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>",
+    "example": 14
+  },
+  {
+    "section": "Double Link",
+    "markdown": "Already linked: [http://example.com/](http://example.com/).",
+    "html": "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>",
+    "example": 14
+  },
+  {
+    "section": "Double Link",
+    "markdown": "Already linked: <a href=\"http://example.com/\">**http://example.com/**</a>.",
+    "html": "<p>Already linked: <a href=\"http://example.com/\"><strong>http://example.com/</strong></a>.</p>",
     "example": 14
   },
   {
     "section": "Em 2char",
-    "markdown": "_123_\n\n*123*\n\n_12_\n\n*12*\n\n_1_\n\n*1*\n\n__\n\n**\n\n_123 _\n\n*123 *\n\n_ 123_\n\n_1__\n\n*1**\n",
-    "html": "<p><em>123</em></p>\n\n<p><em>123</em></p>\n\n<p><em>12</em></p>\n\n<p><em>12</em></p>\n\n<p><em>1</em></p>\n\n<p><em>1</em></p>\n\n<p>__</p>\n\n<p>**</p>\n\n<p>_123 _</p>\n\n<p>*123 *</p>\n\n<p>_ 123_</p>\n\n<p><em>1_</em></p>\n\n<p><em>1*</em></p>\n",
+    "markdown": "_123_",
+    "html": "<p><em>123</em></p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "*123*",
+    "html": "<p><em>123</em></p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "_12_",
+    "html": "<p><em>12</em></p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "*12*",
+    "html": "<p><em>12</em></p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "_1_",
+    "html": "<p><em>1</em></p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "*1*",
+    "html": "<p><em>1</em></p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "__",
+    "html": "<p>__</p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "**",
+    "html": "<p>**</p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "_123 _",
+    "html": "<p>_123 _</p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "*123 *",
+    "html": "<p>*123 *</p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "_ 123_",
+    "html": "<p>_ 123_</p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "_1__",
+    "html": "<p><em>1_</em></p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "*1**",
+    "html": "<p><em>1*</em></p>",
     "example": 15
   },
   {
     "section": "Escaped Angles",
-    "markdown": "\\>\n",
-    "html": "<p>&gt;</p>\n",
+    "markdown": "\\>",
+    "html": "<p>&gt;</p>",
     "example": 16
   },
   {
-    "section": "Gfm Autolinks",
-    "markdown": "link with . http://example.com/hello-world.\n\nlink with ! http://example.com/hello-world!\n\nlink with : http://example.com/hello-world:\n\nlink with , http://example.com/hello-world,\n\nlink with ; http://example.com/hello-world;\n\nlink with ) http://example.com/hello-world)\n\nlink with nothing http://example.com/hello-world\n\n### Example 597\n\nThe scheme http will be inserted automatically:\n\nwww.commonmark.org\n\n### Example 598\n\nAfter a valid domain, zero or more non-space non-< characters may follow:\n\nVisit www.commonmark.org/help for more information.\n\n### Example 599\n\nTrailing punctuation (specifically, ?, !, ., ,, :, \\*, \\_, and ~) will not be considered part of the autolink, though they may be included in the interior of the link:\n\nVisit www.commonmark.org.\n\nVisit www.commonmark.org/a.b.\n\n### Example 600\n\nwww.google.com/search?q=Markup+(business)\n\n(www.google.com/search?q=Markup+(business))\n\n### Example 601\n\nwww.google.com/search?q=(business))+ok\n\n### Example 602\n\nwww.google.com/search?q=commonmark&hl=en\n\nwww.google.com/search?q=commonmark&amp;\n\n### Example 603\n\n< immediately ends an autolink.\n\nwww.commonmark.org/he<lp\n\n### Example 604\n\nhttp://commonmark.org\n\n(Visit https://encrypted.google.com/search?q=Markup+(business))\n\nAnonymous FTP is available at ftp://foo.bar.baz.\n\nExtended email autolinks:\n\n### Example 605\n\nfoo@bar.baz\n\n### Example 606\n\nhello@mail+xyz.example isn't valid, but hello+xyz@mail.example is.\n\n### Example 607\n\na.b-c_d@a.b\n\na.b-c_d@a.b.\n\na.b-c_d@a.b-\n\n    a.b-c_d@a.b_\n",
-    "html": "<p>link with . <a href=\"http://example.com/hello-world\">http://example.com/hello-world</a>.</p>\n\n<p>link with ! <a href=\"http://example.com/hello-world\">http://example.com/hello-world</a>!</p>\n\n<p>link with : <a href=\"http://example.com/hello-world\">http://example.com/hello-world</a>:</p>\n\n<p>link with , <a href=\"http://example.com/hello-world\">http://example.com/hello-world</a>,</p>\n\n<p>link with ; <a href=\"http://example.com/hello-world\">http://example.com/hello-world</a>;</p>\n\n<p>link with ) <a href=\"http://example.com/hello-world\">http://example.com/hello-world</a>)</p>\n\n<p>link with nothing <a href=\"http://example.com/hello-world\">http://example.com/hello-world</a></p>\n\n<h3 id=\"example-597\">Example 597</h3>\n\n<p>The scheme http will be inserted automatically:</p>\n\n<p><a href=\"http://www.commonmark.org\">www.commonmark.org</a></p>\n<h3 id=\"example-598\">Example 598</h3>\n\n<p>After a valid domain, zero or more non-space non-&lt; characters may follow:</p>\n\n<p>Visit <a href=\"http://www.commonmark.org/help\">www.commonmark.org/help</a> for more information.</p>\n\n<h3 id=\"example-599\">Example 599</h3>\n\n<p>Trailing punctuation (specifically, ?, !, ., ,, :, *, _, and ~) will not be considered part of the autolink, though they may be included in the interior of the link:</p>\n\n<p>Visit <a href=\"http://www.commonmark.org\">www.commonmark.org</a>.</p>\n\n<p>Visit <a href=\"http://www.commonmark.org/a.b\">www.commonmark.org/a.b</a>.</p>\n\n<h3 id=\"example-600\">Example 600</h3>\n\n<p><a href=\"http://www.google.com/search?q=Markup+(business)\">www.google.com/search?q=Markup+(business)</a></p>\n\n<p>(<a href=\"http://www.google.com/search?q=Markup+(business)\">www.google.com/search?q=Markup+(business)</a>)</p>\n\n<h3 id=\"example-601\">Example 601</h3>\n\n<p><a href=\"http://www.google.com/search?q=(business))+ok\">www.google.com/search?q=(business))+ok</a></p>\n\n<h3 id=\"example-602\">Example 602</h3>\n\n<p><a href=\"http://www.google.com/search?q=commonmark&amp;hl=en\">www.google.com/search?q=commonmark&amp;hl=en</a></p>\n\n<p><a href=\"http://www.google.com/search?q=commonmark\">www.google.com/search?q=commonmark</a>&amp;</p>\n\n<h3 id=\"example-603\">Example 603</h3>\n\n<p>&lt; immediately ends an autolink.</p>\n\n<p><a href=\"http://www.commonmark.org/he\">www.commonmark.org/he</a>&lt;lp</p>\n\n<h3 id=\"example-604\">Example 604</h3>\n\n<p><a href=\"http://commonmark.org\">http://commonmark.org</a></p>\n\n<p>(Visit <a href=\"https://encrypted.google.com/search?q=Markup+(business)\">https://encrypted.google.com/search?q=Markup+(business)</a>)</p>\n\n<p>Anonymous FTP is available at <a href=\"ftp://foo.bar.baz\">ftp://foo.bar.baz</a>.</p>\n\n<p>Extended email autolinks:</p>\n\n<h3 id=\"example-605\">Example 605</h3>\n\n<p><a href=\"mailto:foo@bar.baz\">foo@bar.baz</a></p>\n\n<h3 id=\"example-606\">Example 606</h3>\n\n<p>hello@mail+xyz.example isn&#39;t valid, but <a href=\"mailto:hello+xyz@mail.example\">hello+xyz@mail.example</a> is.</p>\n\n<h3 id=\"example-607\">Example 607</h3>\n\n<p><a href=\"mailto:a.b-c_d@a.b\">a.b-c_d@a.b</a></p>\n\n<p><a href=\"mailto:a.b-c_d@a.b\">a.b-c_d@a.b</a>.</p>\n\n<p>a.b-c_d@a.b-</p>\n\n<pre><code>a.b-c_d@a.b_\n</code></pre>",
-    "example": 17
-  },
-  {
-    "section": "Gfm Break",
-    "markdown": "Look at the\npretty line\nbreaks.\n",
-    "html": "<p>Look at the<br>pretty line<br>breaks.</p>\n",
-    "example": 18,
-    "options": {
-      "breaks": true
-    }
-  },
-  {
-    "section": "Gfm Code",
-    "markdown": "``` js\nvar a = 'hello';\nconsole.log(a + ' world');\n```\n\n~~~bash\necho \"hello, ${WORLD}\"\n~~~\n\n```````longfence\nQ: What do you call a tall person who sells stolen goods?\n```````\n\n~~~~~~~~~~  ManyTildes\nA longfence!\n~~~~~~~~~~\n\nHow about an empty code block?\n\n```js\n```\n\nHow about a code block with only an empty line?\n\n```js\n\n```\n\nWith some trailing empty lines:\n\n```\nciao\n\n\n```\n\nClosing fences must lay on a new line:\n\n```\nhello()\n^```\n\"this should still be in the code block!\"\n```\n",
-    "html": "<pre><code class=\"language-js\">var a = &#39;hello&#39;;\nconsole.log(a + &#39; world&#39;);</code></pre>\n<pre><code class=\"language-bash\">echo &quot;hello, ${WORLD}&quot;</code></pre>\n<pre><code class=\"language-longfence\">Q: What do you call a tall person who sells stolen goods?</code></pre>\n<pre><code class=\"language-ManyTildes\">A longfence!</code></pre>\n<p>How about an empty code block?</p>\n<pre><code class=\"language-js\"></code></pre>\n<p>How about a code block with only an empty line?</p>\n<pre><code class=\"language-js\">\n</code></pre>\n\n<p>With some trailing empty lines:</p>\n<pre><code>ciao\n\n\n</code></pre>\n\n<p>Closing fences must lay on a new line:</p>\n<pre><code>hello()\n^```\n&quot;this should still be in the code block!&quot;</code></pre>\n",
-    "example": 19
-  },
-  {
-    "section": "Gfm Code Hr List",
-    "markdown": "## foo\n\n1. bar:\n\n    > - one\n        - two\n            - three\n            - four\n            - five\n\n1. foo:\n\n    ```\n    line 1\n    line 2\n    ```\n\n1. foo:\n\n    1. foo `bar` bar:\n\n        ``` erb\n        some code here\n        ```\n\n    2. foo `bar` bar:\n\n        ``` erb\n        foo\n        ---\n        bar\n        ---\n        foo\n        bar\n        ```\n\n    3. foo `bar` bar:\n\n        ``` html\n        ---\n        foo\n        foo\n        ---\n        bar\n        ```\n\n    4. foo `bar` bar:\n\n            foo\n            ---\n            bar\n\n    5. foo\n",
-    "html": "<h2 id=\"foo\">foo</h2>\n<ol>\n<li><p>bar:</p>\n<blockquote>\n<ul>\n<li>one<ul>\n<li>two<ul>\n<li>three</li>\n<li>four</li>\n<li>five</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</blockquote>\n</li>\n<li><p>foo:</p>\n<pre><code> line 1\n line 2</code></pre>\n</li>\n<li><p>foo:</p>\n<ol>\n<li><p>foo <code>bar</code> bar:</p>\n<pre><code class=\"language-erb\"> some code here\n</code></pre>\n</li>\n<li><p>foo <code>bar</code> bar:</p>\n<pre><code class=\"language-erb\"> foo\n ---\n bar\n ---\n foo\n bar</code></pre>\n</li>\n<li><p>foo <code>bar</code> bar:</p>\n<pre><code class=\"language-html\"> ---\n foo\n foo\n ---\n bar</code></pre>\n</li>\n<li><p>foo <code>bar</code> bar:</p>\n<pre><code> foo\n ---\n bar</code></pre>\n</li>\n<li><p>foo</p>\n</li>\n</ol>\n</li>\n</ol>\n",
-    "example": 20
-  },
-  {
-    "section": "Gfm Em",
-    "markdown": "These words should_not_be_emphasized.\n",
-    "html": "<p>These words should_not_be_emphasized.</p>\n",
-    "example": 21
-  },
-  {
-    "section": "Gfm Hashtag",
-    "markdown": "#header\n\n# header1\n\n#  header2\n",
-    "html": "<p>#header</p>\n\n<h1 id=\"header1\">header1</h1>\n\n<h1 id=\"header2\">header2</h1>\n",
-    "example": 22,
-    "options": {
-      "gfm": true
-    }
-  },
-  {
-    "section": "Gfm Links Invalid",
-    "markdown": "This should not be linked: http://example.com/%ff\n",
-    "html": "<p>This should not be linked: http://example.com/%ff</p>\n",
-    "example": 23,
-    "options": {
-      "sanitize": true
-    }
-  },
-  {
-    "section": "Gfm Tables",
-    "markdown": "| Heading 1 | Heading 2\n| --------- | ---------\n| Cell 1    | Cell 2\n| Cell 3    | Cell 4\n\n| Header 1 | Header 2 | Header 3 | Header 4 |\n| :------: | -------: | :------- | -------- |\n| Cell 1   | Cell 2   | Cell 3   | Cell 4   |\n| Cell 5   | Cell 6   | Cell 7   | Cell 8   |\n\n    Test code\n\nHeader 1 | Header 2\n-------- | --------\nCell 1   | Cell 2\nCell 3   | Cell 4\n\nHeader 1|Header 2|Header 3|Header 4\n:-------|:------:|-------:|--------\nCell 1  |Cell 2  |Cell 3  |Cell 4\n*Cell 5*|Cell 6  |Cell 7  |Cell 8\n",
-    "html": "<table>\n\t<thead>\n\t\t<tr><th>Heading 1</th><th>Heading 2</th></tr>\n\t</thead>\n\t<tbody>\n\t\t<tr><td>Cell 1</td><td>Cell 2</td></tr>\n\t\t<tr><td>Cell 3</td><td>Cell 4</td></tr>\n\t</tbody>\n</table>\n<table>\n\t<thead>\n\t\t<tr><th align=\"center\">Header 1</th><th align=\"right\">Header 2</th><th align=\"left\">Header 3</th><th>Header 4</th></tr>\n\t</thead>\n\t<tbody>\n\t\t<tr><td align=\"center\">Cell 1</td><td align=\"right\">Cell 2</td><td align=\"left\">Cell 3</td><td>Cell 4</td></tr>\n\t\t<tr><td align=\"center\">Cell 5</td><td align=\"right\">Cell 6</td><td align=\"left\">Cell 7</td><td>Cell 8</td></tr>\n\t</tbody>\n</table>\n<pre><code>Test code</code></pre>\n<table>\n\t<thead>\n\t\t<tr><th>Header 1</th><th>Header 2</th></tr>\n\t</thead>\n\t<tbody>\n\t\t<tr><td>Cell 1</td><td>Cell 2</td></tr>\n\t\t<tr><td>Cell 3</td><td>Cell 4</td></tr>\n\t</tbody>\n</table>\n<table>\n\t<thead>\n\t\t<tr><th align=\"left\">Header 1</th><th align=\"center\">Header 2</th><th align=\"right\">Header 3</th><th>Header 4</th></tr>\n\t</thead>\n\t<tbody>\n\t\t<tr><td align=\"left\">Cell 1</td><td align=\"center\">Cell 2</td><td align=\"right\">Cell 3</td><td>Cell 4</td></tr>\n\t\t<tr><td align=\"left\"><em>Cell 5</em></td><td align=\"center\">Cell 6</td><td align=\"right\">Cell 7</td><td>Cell 8</td></tr>\n\t</tbody>\n</table>\n",
-    "example": 24
+    "section": "Headings Id",
+    "markdown": "### Heading with a [link](http://github.com/)",
+    "html": "<h3 id=\"heading-with-a-link\">Heading with a <a href=\"http://github.com/\">link</a></h3>",
+    "example": 25
   },
   {
     "section": "Headings Id",
-    "markdown": "### Heading with a [link](http://github.com/)\n\n### Heading with some _italic text_\n\n### Or some **strong**\n(which doesn't really make any difference, here)\n\n### Or even `code`\n\n### What about ~~strikethrough~~\n\n## And a ref [link][destination]\n\n[destination]: /some/url \"link to nowhere\"",
-    "html": "<h3 id=\"heading-with-a-link\">Heading with a <a href=\"http://github.com/\">link</a></h3>\n\n<h3 id=\"heading-with-some-italic-text\">Heading with some <em>italic text</em></h3>\n\n<h3 id=\"or-some-strong\">Or some <strong>strong</strong></h3>\n\n<p>(which doesn&#39;t really make any difference, here)</p>\n\n<h3 id=\"or-even-code\">Or even <code>code</code></h3>\n\n<h3 id=\"what-about-strikethrough\">What about <del>strikethrough</del></h3>\n\n<h2 id=\"and-a-ref-link\">And a ref <a href=\"/some/url\" title=\"link to nowhere\">link</a></h2>",
+    "markdown": "### Heading with some _italic text_",
+    "html": "<h3 id=\"heading-with-some-italic-text\">Heading with some <em>italic text</em></h3>",
+    "example": 25
+  },
+  {
+    "section": "Headings Id",
+    "markdown": "### Or some **strong**",
+    "html": "<h3 id=\"or-some-strong\">Or some <strong>strong</strong></h3>",
+    "example": 25
+  },
+  {
+    "section": "Headings Id",
+    "markdown": "### Or even `code`",
+    "html": "<h3 id=\"or-even-code\">Or even <code>code</code></h3>",
+    "example": 25
+  },
+  {
+    "section": "Headings Id",
+    "markdown": "### What about ~~strikethrough~~",
+    "html": "<h3 id=\"what-about-strikethrough\">What about <del>strikethrough</del></h3>",
+    "example": 25
+  },
+  {
+    "section": "Headings Id",
+    "markdown": "## And a ref [link][destination]\n\n[destination]: /some/url \"link to nowhere\"",
+    "html": "<h2 id=\"and-a-ref-link\">And a ref <a href=\"/some/url\" title=\"link to nowhere\">link</a></h2>",
     "example": 25
   },
   {
     "section": "Hr List Break",
-    "markdown": "* hello\nworld\n* how\nare\n* * *\nyou today?\n",
-    "html": "<ul>\n<li>hello\nworld</li>\n<li>how\nare</li>\n</ul>\n\n<hr>\n\n<p>you today?</p>\n",
+    "markdown": "* hello\nworld\n* how\nare\n* * *\nyou today?",
+    "html": "<ul>\n<li>hello\nworld</li>\n<li>how\nare</li>\n</ul>\n\n<hr>\n\n<p>you today?</p>",
     "example": 26
   },
   {
     "section": "Html Comments",
-    "markdown": "### Example 1\n\n<!-- comment -->\n\n### Example 2\n\n<!---->\n\n### Example 3\n\n<!-- -->\n\n### Example 4\n\n<!-- - -->\n\n### Example 5\n\n<!-- -- -->\n\n### Example 6\n\n<!-- --->\n\n### Example 7\n\n<!----->\n\n### Example 8\n\n<!------>\n\n### Example 9\n\n<!-- My favorite operators are > and <!-->\n\n### Example 10\n\n<!-- multi\nline\t\ncomment\n-->\n\n### Example 11\n\n   <!-- indented comment -->\n\n    <!-- too much indentation -->\n\n### Example 12\n\n<!--> not a comment -->\n\n<!---> not a comment -->\n\n<!-- <!-- not a comment? --> -->",
-    "html": "<h3 id=\"example-1\">Example 1</h3>\n\n<!-- comment -->\n\n<h3 id=\"example-2\">Example 2</h3>\n\n<!---->\n\n<h3 id=\"example-3\">Example 3</h3>\n\n<!-- -->\n\n<h3 id=\"example-4\">Example 4</h3>\n\n<!-- - -->\n\n<h3 id=\"example-5\">Example 5</h3>\n\n<!-- -- -->\n\n<h3 id=\"example-6\">Example 6</h3>\n\n<!-- --->\n\n<h3 id=\"example-7\">Example 7</h3>\n\n<!----->\n\n<h3 id=\"example-8\">Example 8</h3>\n\n<!------>\n\n<h3 id=\"example-9\">Example 9</h3>\n\n<!-- My favorite operators are > and <!-->\n\n<h3 id=\"example-10\">Example 10</h3>\n\n<!-- multi\nline    \ncomment\n-->\n\n<h3 id=\"example-11\">Example 11</h3>\n\n   <!-- indented comment -->\n\n<pre><code>&lt;!-- too much indentation --&gt;\n</code></pre>\n\n<h3 id=\"example-12\">Example 12</h3>\n\n<p>&lt;!--&gt; not a comment --&gt;</p>\n\n<p>&lt;!---&gt; not a comment --&gt;</p>\n\n<!-- <!-- not a comment? --> -->\n",
+    "markdown": "<!-- comment -->",
+    "html": "<!-- comment -->",
     "example": 27
   },
   {
-    "section": "Images",
-    "markdown": "![Image](javascript:alert)\n\n![Image](vbscript:alert)\n\n![Image](javascript&colon;alert&#40;1&#41;)\n\n![Image](javascript&#58document;alert&#40;1&#41;)\n\n![Image](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)\n",
-    "html": "<p>Image</p>\n<p>Image</p>\n<p>Image</p>\n<p>Image</p>\n<p>Image</p>\n",
+    "section": "Html Comments",
+    "markdown": "<!---->",
+    "html": "<!---->",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- -->",
+    "html": "<!-- -->",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- - -->",
+    "html": "<!-- - -->",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- -- -->",
+    "html": "<!-- -- -->",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- --->",
+    "html": "<!-- --->",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!----->",
+    "html": "<!----->",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!------>",
+    "html": "<!------>",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- My favorite operators are > and <!-->",
+    "html": "<!-- My favorite operators are > and <!-->",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- multi\nline\t\ncomment\n-->",
+    "html": "<!-- multi\nline    \ncomment\n-->",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "   <!-- indented comment -->",
+    "html": "   <!-- indented comment -->",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "    <!-- too much indentation -->",
+    "html": "<pre><code>&lt;!-- too much indentation --&gt;\n</code></pre>",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!--> not a comment -->",
+    "html": "<p>&lt;!--&gt; not a comment --&gt;</p>",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!---> not a comment -->",
+    "html": "<p>&lt;!---&gt; not a comment --&gt;</p>",
+    "example": 27
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- <!-- not a comment? --> -->",
+    "html": "<!-- <!-- not a comment? --> -->",
+    "example": 27
+  },
+  {
+    "section": "Sanitize Images",
+    "markdown": "![Image](javascript:alert)",
+    "html": "<p>Image</p>",
     "example": 28,
     "options": {
       "sanitize": true
     }
   },
   {
-    "section": "Lazy Blockquotes",
-    "markdown": "> hi there\nbud\n",
-    "html": "<blockquote>\n  <p>hi there\nbud</p>\n</blockquote>\n",
-    "example": 29
+    "section": "Sanitize Images",
+    "markdown": "![Image](vbscript:alert)",
+    "html": "<p>Image</p>",
+    "example": 28,
+    "options": {
+      "sanitize": true
+    }
   },
   {
-    "section": "Links",
-    "markdown": "[URL](javascript:alert)\n\n[URL](vbscript:alert)\n\n[URL](javascript&colon;alert&#40;1&#41;)\n\n[URL](javascript&#58document;alert&#40;1&#41;)\n\n[URL](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)\n",
-    "html": "<p>URL</p>\n<p>URL</p>\n<p>URL</p>\n<p>URL</p>\n<p>URL</p>\n",
+    "section": "Sanitize Images",
+    "markdown": "![Image](javascript&colon;alert&#40;1&#41;)",
+    "html": "<p>Image</p>",
+    "example": 28,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Images",
+    "markdown": "![Image](javascript&#58document;alert&#40;1&#41;)",
+    "html": "<p>Image</p>",
+    "example": 28,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Images",
+    "markdown": "![Image](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)",
+    "html": "<p>Image</p>",
+    "example": 28,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Links",
+    "markdown": "[URL](javascript:alert)",
+    "html": "<p>URL</p>",
     "example": 30,
     "options": {
       "sanitize": true
     }
   },
   {
+    "section": "Sanitize Links",
+    "markdown": "[URL](vbscript:alert)",
+    "html": "<p>URL</p>",
+    "example": 30,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Links",
+    "markdown": "[URL](javascript&colon;alert&#40;1&#41;)",
+    "html": "<p>URL</p>",
+    "example": 30,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Links",
+    "markdown": "[URL](javascript&#58document;alert&#40;1&#41;)",
+    "html": "<p>URL</p>",
+    "example": 30,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Links",
+    "markdown": "[URL](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)",
+    "html": "<p>URL</p>",
+    "example": 30,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Lazy Blockquotes",
+    "markdown": "> hi there\nbud",
+    "html": "<blockquote>\n  <p>hi there\nbud</p>\n</blockquote>",
+    "example": 29
+  },
+  {
     "section": "Link Lt",
-    "markdown": "[URL](<test)\n",
-    "html": "<p><a href=\"%3Ctest\">URL</a></p>\n",
+    "markdown": "[URL](<test)",
+    "html": "<p><a href=\"%3Ctest\">URL</a></p>",
     "example": 31
   },
   {
     "section": "List Item Text",
-    "markdown": "  * item1\n\n    * item2\n\n  text\n",
-    "html": "<ul><li><p>item1</p>  <ul><li>item2 </li></ul> <p>text</p> </li></ul>\n",
+    "markdown": "  * item1\n\n    * item2\n\n  text",
+    "html": "<ul><li><p>item1</p>  <ul><li>item2 </li></ul> <p>text</p> </li></ul>",
     "example": 32
   },
   {
     "section": "Main",
-    "markdown": "[test]: http://google.com/ \"Google\"\n\n# A heading\n\nJust a note, I've found that I can't test my markdown parser vs others.\nFor example, both markdown.js and showdown code blocks in lists wrong. They're\nalso completely [inconsistent][test] with regards to paragraphs in list items.\n\nA link. Not anymore.\n\n<aside>This will make me fail the test because\nmarkdown.js doesnt acknowledge arbitrary html blocks =/</aside>\n\n* List Item 1\n\n* List Item 2\n  * New List Item 1\n    Hi, this is a list item.\n  * New List Item 2\n    Another item\n        Code goes here.\n        Lots of it...\n  * New List Item 3\n    The last item\n\n* List Item 3\nThe final item.\n\n* List Item 4\nThe real final item.\n\nParagraph.\n\n> * bq Item 1\n> * bq Item 2\n>   * New bq Item 1\n>   * New bq Item 2\n>   Text here\n\n* * *\n\n> Another blockquote!\n> I really need to get\n> more creative with\n> mockup text..\n> markdown.js breaks here again\n\nAnother Heading\n-------------\n\nHello *world*. Here is a [link](//hello).\nAnd an image ![alt](src).\n\n    Code goes here.\n    Lots of it...\n",
-    "html": "<h1 id=\"a-heading\">A heading</h1> <p>Just a note, I&#39;ve found that I can&#39;t test my markdown parser vs others. For example, both markdown.js and showdown code blocks in lists wrong. They&#39;re  also completely <a href=\"http://google.com/\" title=\"Google\">inconsistent</a> with regards to paragraphs in list items.</p> <p>A link. Not anymore.</p> <aside>This will make me fail the test because\nmarkdown.js doesnt acknowledge arbitrary html blocks =/</aside> <ul><li><p>List Item 1</p></li><li><p>List Item 2 </p><ul><li>New List Item 1 Hi, this is a list item.</li><li>New List Item 2 Another item <pre><code>Code goes here.\nLots of it...</code></pre></li><li>New List Item 3 The last item</li></ul></li><li><p>List Item 3 The final item.</p></li><li><p>List Item 4 The real final item.</p></li></ul> <p>Paragraph.</p> <blockquote><ul><li>bq Item 1</li><li>bq Item 2 <ul><li>New bq Item 1</li><li>New bq Item 2 Text here</li></ul></li></ul></blockquote> <hr> <blockquote><p> Another blockquote!  I really need to get  more creative with  mockup text..  markdown.js breaks here again</p></blockquote> <h2 id=\"another-heading\">Another Heading</h2> <p>Hello <em>world</em>. Here is a <a href=\"//hello\">link</a>. And an image <img src=\"src\" alt=\"alt\">.</p> <pre><code>Code goes here.\nLots of it...</code></pre>\n",
+    "markdown": "[test]: http://google.com/ \"Google\"\n\n# A heading\n\nJust a note, I've found that I can't test my markdown parser vs others.\nFor example, both markdown.js and showdown code blocks in lists wrong. They're\nalso completely [inconsistent][test] with regards to paragraphs in list items.\n\nA link. Not anymore.\n\n<aside>This will make me fail the test because\nmarkdown.js doesnt acknowledge arbitrary html blocks =/</aside>\n\n* List Item 1\n\n* List Item 2\n  * New List Item 1\n    Hi, this is a list item.\n  * New List Item 2\n    Another item\n        Code goes here.\n        Lots of it...\n  * New List Item 3\n    The last item\n\n* List Item 3\nThe final item.\n\n* List Item 4\nThe real final item.\n\nParagraph.\n\n> * bq Item 1\n> * bq Item 2\n>   * New bq Item 1\n>   * New bq Item 2\n>   Text here\n\n* * *\n\n> Another blockquote!\n> I really need to get\n> more creative with\n> mockup text..\n> markdown.js breaks here again\n\nAnother Heading\n-------------\n\nHello *world*. Here is a [link](//hello).\nAnd an image ![alt](src).\n\n    Code goes here.\n    Lots of it...",
+    "html": "<h1 id=\"a-heading\">A heading</h1> <p>Just a note, I&#39;ve found that I can&#39;t test my markdown parser vs others. For example, both markdown.js and showdown code blocks in lists wrong. They&#39;re  also completely <a href=\"http://google.com/\" title=\"Google\">inconsistent</a> with regards to paragraphs in list items.</p> <p>A link. Not anymore.</p> <aside>This will make me fail the test because\nmarkdown.js doesnt acknowledge arbitrary html blocks =/</aside> <ul><li><p>List Item 1</p></li><li><p>List Item 2 </p><ul><li>New List Item 1 Hi, this is a list item.</li><li>New List Item 2 Another item <pre><code>Code goes here.\nLots of it...</code></pre></li><li>New List Item 3 The last item</li></ul></li><li><p>List Item 3 The final item.</p></li><li><p>List Item 4 The real final item.</p></li></ul> <p>Paragraph.</p> <blockquote><ul><li>bq Item 1</li><li>bq Item 2 <ul><li>New bq Item 1</li><li>New bq Item 2 Text here</li></ul></li></ul></blockquote> <hr> <blockquote><p> Another blockquote!  I really need to get  more creative with  mockup text..  markdown.js breaks here again</p></blockquote> <h2 id=\"another-heading\">Another Heading</h2> <p>Hello <em>world</em>. Here is a <a href=\"//hello\">link</a>. And an image <img src=\"src\" alt=\"alt\">.</p> <pre><code>Code goes here.\nLots of it...</code></pre>",
     "example": 33
   },
   {
     "section": "Mangle Xss",
-    "markdown": "<<svg/onload=\"alert(1)\"//@x>\n\n<bar\"onclick=\"alert('XSS')\"@foo>\n",
-    "html": "<p>&lt;&lt;svg/onload=&quot;alert(1)&quot;//@x&gt;</p>\n\n<p>&lt;bar&quot;onclick=&quot;alert(&#39;XSS&#39;)&quot;@foo&gt;</p>\n",
+    "markdown": "<<svg/onload=\"alert(1)\"//@x>",
+    "html": "<p>&lt;&lt;svg/onload=&quot;alert(1)&quot;//@x&gt;</p>",
+    "example": 34,
+    "options": {
+      "sanatize": true,
+      "mangle": false
+    }
+  },
+  {
+    "section": "Mangle Xss",
+    "markdown": "<bar\"onclick=\"alert('XSS')\"@foo>",
+    "html": "<p>&lt;bar&quot;onclick=&quot;alert(&#39;XSS&#39;)&quot;@foo&gt;</p>",
     "example": 34,
     "options": {
       "sanatize": true,
@@ -231,26 +430,80 @@
   },
   {
     "section": "Nested Code",
-    "markdown": "````` hi ther `` ok ``` `````\n\n`` ` ``\n\n``There is a literal backtick (`) here.``\n\nA backtick-delimited string in a code span: `` `foo` ``\n\nPlease don't use any `<blink>` tags.",
-    "html": "<p><code>hi ther `` ok ```</code></p>\n\n<p><code>`</code></p>\n\n<p><code>There is a literal backtick (`) here.</code></p>\n\n<p>A backtick-delimited string in a code span: <code>`foo`</code></p>\n\n<p>Please don&#39;t use any <code>&lt;blink&gt;</code> tags.</p>",
+    "markdown": "````` hi ther `` ok ``` `````",
+    "html": "<p><code>hi ther `` ok ```</code></p>",
+    "example": 35
+  },
+  {
+    "section": "Nested Code",
+    "markdown": "`` ` ``",
+    "html": "<p><code>`</code></p>",
+    "example": 35
+  },
+  {
+    "section": "Nested Code",
+    "markdown": "``There is a literal backtick (`) here.``",
+    "html": "<p><code>There is a literal backtick (`) here.</code></p>",
+    "example": 35
+  },
+  {
+    "section": "Nested Code",
+    "markdown": "A backtick-delimited string in a code span: `` `foo` ``",
+    "html": "<p>A backtick-delimited string in a code span: <code>`foo`</code></p>",
+    "example": 35
+  },
+  {
+    "section": "Nested Code",
+    "markdown": "Please don't use any `<blink>` tags.",
+    "html": "<p>Please don&#39;t use any <code>&lt;blink&gt;</code> tags.</p>",
     "example": 35
   },
   {
     "section": "Nested Em",
-    "markdown": "*test **test** test*\n\n_test __test__ test_\n",
-    "html": "<p><em>test <strong>test</strong> test</em></p>\n\n<p><em>test <strong>test</strong> test</em></p>\n",
+    "markdown": "*test **test** test*",
+    "html": "<p><em>test <strong>test</strong> test</em></p>",
+    "example": 36
+  },
+  {
+    "section": "Nested Em",
+    "markdown": "_test __test__ test_",
+    "html": "<p><em>test <strong>test</strong> test</em></p>",
     "example": 36
   },
   {
     "section": "Nested Square Link",
-    "markdown": "[the `]` character](/url)\n\n[the ` character](/url)\n",
-    "html": "<p><a href=\"/url\">the <code>]</code> character</a></p>\n\n<p><a href=\"/url\">the ` character</a></p>\n",
+    "markdown": "[the `]` character](/url)",
+    "html": "<p><a href=\"/url\">the <code>]</code> character</a></p>",
+    "example": 37
+  },
+  {
+    "section": "Nested Square Link",
+    "markdown": "[the ` character](/url)",
+    "html": "<p><a href=\"/url\">the ` character</a></p>",
     "example": 37
   },
   {
     "section": "Nogfm Hashtag",
-    "markdown": "#header\n\n# header1\n\n#  header2\n",
-    "html": "<h1 id=\"header\">header</h1>\n\n<h1 id=\"header1\">header1</h1>\n\n<h1 id=\"header2\">header2</h1>\n",
+    "markdown": "#header",
+    "html": "<h1 id=\"header\">header</h1>",
+    "example": 38,
+    "options": {
+      "gfm": false
+    }
+  },
+  {
+    "section": "Nogfm Hashtag",
+    "markdown": "# header1",
+    "html": "<h1 id=\"header1\">header1</h1>",
+    "example": 38,
+    "options": {
+      "gfm": false
+    }
+  },
+  {
+    "section": "Nogfm Hashtag",
+    "markdown": "#  header2",
+    "html": "<h1 id=\"header2\">header2</h1>",
     "example": 38,
     "options": {
       "gfm": false
@@ -258,20 +511,20 @@
   },
   {
     "section": "Not A Link",
-    "markdown": "\\[test](not a link)\n",
-    "html": "<p>[test](not a link)</p>\n",
+    "markdown": "\\[test](not a link)",
+    "html": "<p>[test](not a link)</p>",
     "example": 39
   },
   {
     "section": "Ref Paren",
-    "markdown": "[hi]\n\n[hi]: /url (there)\n",
-    "html": "<p><a href=\"/url\" title=\"there\">hi</a></p>\n",
+    "markdown": "[hi]\n\n[hi]: /url (there)",
+    "html": "<p><a href=\"/url\" title=\"there\">hi</a></p>",
     "example": 40
   },
   {
     "section": "Relative Urls",
-    "markdown": "# Absolutization of RFC 3986 URIs\n\n## Absolute URI\n[![section 4.3](http://example.com/logo)](http://example.com/)\n\n## Network-path reference\n[![section 4.2](//example.com/logo)](//example.com/)\n\n## Absolute path\n[![section 4.2](/path/to/img)](/path/to/content)\n\n## Relative path\n[![section 4.2](img)](content)\n\n## Dot-relative path\n[![section 3.3](./img)](./content)\n\n[![section 3.3](../img)](../content)\n\n## Same-document query\n[![section 4.4](?type=image)](?)\n\n## Same-document fragment\n[![section 4.4](#img)](#)\n\n## Empty\n[section 4.2]()\n",
-    "html": "<h1 id=\"absolutization-of-rfc-3986-uris\">Absolutization of RFC 3986 URIs</h1>\n\n<h2 id=\"absolute-uri\">Absolute URI</h2>\n\n<p><a href=\"http://example.com/\"><img src=\"http://example.com/logo\" alt=\"section 4.3\"></a></p>\n\n<h2 id=\"network-path-reference\">Network-path reference</h2>\n\n<p><a href=\"http://example.com/\"><img src=\"http://example.com/logo\" alt=\"section 4.2\"></a></p>\n\n<h2 id=\"absolute-path\">Absolute path</h2>\n\n<p><a href=\"http://example.com/path/to/content\"><img src=\"http://example.com/path/to/img\" alt=\"section 4.2\"></a></p>\n\n<h2 id=\"relative-path\">Relative path</h2>\n\n<p><a href=\"http://example.com/base/content\"><img src=\"http://example.com/base/img\" alt=\"section 4.2\"></a></p>\n\n<h2 id=\"dot-relative-path\">Dot-relative path</h2>\n\n<p><a href=\"http://example.com/base/./content\"><img src=\"http://example.com/base/./img\" alt=\"section 3.3\"></a></p>\n\n<p><a href=\"http://example.com/base/../content\"><img src=\"http://example.com/base/../img\" alt=\"section 3.3\"></a></p>\n\n<h2 id=\"same-document-query\">Same-document query</h2>\n\n<p><a href=\"?\"><img src=\"?type=image\" alt=\"section 4.4\"></a></p>\n\n<h2 id=\"same-document-fragment\">Same-document fragment</h2>\n\n<p><a href=\"#\"><img src=\"#img\" alt=\"section 4.4\"></a></p>\n\n<h2 id=\"empty\">Empty</h2>\n\n<p><a href=\"\">section 4.2</a></p>\n",
+    "markdown": "# Absolutization of RFC 3986 URIs\n\n## Absolute URI\n[![section 4.3](http://example.com/logo)](http://example.com/)\n\n## Network-path reference\n[![section 4.2](//example.com/logo)](//example.com/)\n\n## Absolute path\n[![section 4.2](/path/to/img)](/path/to/content)\n\n## Relative path\n[![section 4.2](img)](content)\n\n## Dot-relative path\n[![section 3.3](./img)](./content)\n\n[![section 3.3](../img)](../content)\n\n## Same-document query\n[![section 4.4](?type=image)](?)\n\n## Same-document fragment\n[![section 4.4](#img)](#)\n\n## Empty\n[section 4.2]()",
+    "html": "<h1 id=\"absolutization-of-rfc-3986-uris\">Absolutization of RFC 3986 URIs</h1>\n\n<h2 id=\"absolute-uri\">Absolute URI</h2>\n\n<p><a href=\"http://example.com/\"><img src=\"http://example.com/logo\" alt=\"section 4.3\"></a></p>\n\n<h2 id=\"network-path-reference\">Network-path reference</h2>\n\n<p><a href=\"http://example.com/\"><img src=\"http://example.com/logo\" alt=\"section 4.2\"></a></p>\n\n<h2 id=\"absolute-path\">Absolute path</h2>\n\n<p><a href=\"http://example.com/path/to/content\"><img src=\"http://example.com/path/to/img\" alt=\"section 4.2\"></a></p>\n\n<h2 id=\"relative-path\">Relative path</h2>\n\n<p><a href=\"http://example.com/base/content\"><img src=\"http://example.com/base/img\" alt=\"section 4.2\"></a></p>\n\n<h2 id=\"dot-relative-path\">Dot-relative path</h2>\n\n<p><a href=\"http://example.com/base/./content\"><img src=\"http://example.com/base/./img\" alt=\"section 3.3\"></a></p>\n\n<p><a href=\"http://example.com/base/../content\"><img src=\"http://example.com/base/../img\" alt=\"section 3.3\"></a></p>\n\n<h2 id=\"same-document-query\">Same-document query</h2>\n\n<p><a href=\"?\"><img src=\"?type=image\" alt=\"section 4.4\"></a></p>\n\n<h2 id=\"same-document-fragment\">Same-document fragment</h2>\n\n<p><a href=\"#\"><img src=\"#img\" alt=\"section 4.4\"></a></p>\n\n<h2 id=\"empty\">Empty</h2>\n\n<p><a href=\"\">section 4.2</a></p>",
     "example": 41,
     "options": {
       "baseUrl": "http://example.com/base/"
@@ -279,14 +532,14 @@
   },
   {
     "section": "Same Bullet",
-    "markdown": "* test\n+ test\n- test\n",
-    "html": "<ul>\n<li>test</li>\n<li>test</li>\n<li>test</li>\n</ul>\n",
+    "markdown": "* test\n+ test\n- test",
+    "html": "<ul>\n<li>test</li>\n<li>test</li>\n<li>test</li>\n</ul>",
     "example": 42
   },
   {
     "section": "Smartypants",
-    "markdown": "Hello world 'how' \"are\" you -- today...\n\n\"It's a more 'challenging' smartypants test...\"\n\n'And,' as a bonus --- \"one\nmultiline\" test!\n",
-    "html": "<p>Hello world ‘how’ “are” you – today…</p>\n\n<p>“It’s a more ‘challenging’ smartypants test…”</p>\n\n<p>‘And,’ as a bonus — “one\nmultiline” test!</p>\n",
+    "markdown": "Hello world 'how' \"are\" you -- today...\n\n\"It's a more 'challenging' smartypants test...\"\n\n'And,' as a bonus --- \"one\nmultiline\" test!",
+    "html": "<p>Hello world ‘how’ “are” you – today…</p>\n\n<p>“It’s a more ‘challenging’ smartypants test…”</p>\n\n<p>‘And,’ as a bonus — “one\nmultiline” test!</p>",
     "example": 43,
     "options": {
       "smartypants": true
@@ -294,8 +547,8 @@
   },
   {
     "section": "Smartypants Code",
-    "markdown": "<pre>&amp;</pre>\n<code>--foo</code>\n<kbd>---foo</kbd>\n<script>--foo</script>\n\nEnsure that text such as custom tags that happen to\nbegin with the same letters as the above tags don't\nmatch and thus benefit from Smartypants-ing.\n<script-custom>--foo</script-custom>\n`--foo` <codebar --foo codebar>\n",
-    "html": "<pre>&amp;</pre>\n<p><code>--foo</code>\n<kbd>---foo</kbd></p>\n<script>--foo</script>\n\n<p>Ensure that text such as custom tags that happen to\nbegin with the same letters as the above tags don’t\nmatch and thus benefit from Smartypants-ing.</p>\n\n<p><script-custom>–foo</script-custom>\n<code>--foo</code> &lt;codebar –foo codebar&gt;</p>\n",
+    "markdown": "<pre>&amp;</pre>\n<code>--foo</code>\n<kbd>---foo</kbd>\n<script>--foo</script>\n\nEnsure that text such as custom tags that happen to\nbegin with the same letters as the above tags don't\nmatch and thus benefit from Smartypants-ing.\n<script-custom>--foo</script-custom>\n`--foo` <codebar --foo codebar>",
+    "html": "<pre>&amp;</pre>\n<p><code>--foo</code>\n<kbd>---foo</kbd></p>\n<script>--foo</script>\n\n<p>Ensure that text such as custom tags that happen to\nbegin with the same letters as the above tags don’t\nmatch and thus benefit from Smartypants-ing.</p>\n\n<p><script-custom>–foo</script-custom>\n<code>--foo</code> &lt;codebar –foo codebar&gt;</p>",
     "example": 44,
     "options": {
       "smartypants": true,
@@ -305,8 +558,8 @@
   },
   {
     "section": "Toplevel Paragraphs",
-    "markdown": "hello world\n    text after spaces\n    text after spaces\n\nparagraph before code\n```\ntext inside block code\n```\n\nparagraph before hr\n* * *\n\nparagraph before head with hash\n# how are you\n\nparagraph before head with equals\nhow are you again\n===========\n\nparagraph before blockquote\n> text for blockquote\n\nparagraph before list\n* text inside list\n\nparagraph before div\n<div>text inside div</div>\n\nparagraph with span\n<span>text inside span</span>\n\nhello [world][how]\n\n[how]: /are/you\n\n<div>hello</div>\n\n<span>hello</span>\n",
-    "html": "<p>hello world\n    text after spaces\n    text after spaces</p>\n\n<p>paragraph before code</p>\n<pre><code>text inside block code</code></pre>\n\n<p>paragraph before hr</p>\n<hr>\n\n<p>paragraph before head with hash</p>\n<h1 id=\"how-are-you\">how are you</h1>\n\n<p>paragraph before head with equals</p>\n<h1 id=\"how-are-you-again\">how are you again</h1>\n\n<p>paragraph before blockquote</p>\n<blockquote><p>text for blockquote</p></blockquote>\n\n<p>paragraph before list</p>\n<ul><li>text inside list</li></ul>\n\n<p>paragraph before div</p>\n<div>text inside div</div>\n\n<p>paragraph with span\n<span>text inside span</span></p>\n\n<p>hello <a href=\"/are/you\">world</a>\n</p>\n\n<div>hello</div>\n\n<p><span>hello</span></p>\n",
+    "markdown": "hello world\n    text after spaces\n    text after spaces\n\nparagraph before code\n```\ntext inside block code\n```\n\nparagraph before hr\n* * *\n\nparagraph before head with hash\n# how are you\n\nparagraph before head with equals\nhow are you again\n===========\n\nparagraph before blockquote\n> text for blockquote\n\nparagraph before list\n* text inside list\n\nparagraph before div\n<div>text inside div</div>\n\nparagraph with span\n<span>text inside span</span>\n\nhello [world][how]\n\n[how]: /are/you\n\n<div>hello</div>\n\n<span>hello</span>",
+    "html": "<p>hello world\n    text after spaces\n    text after spaces</p>\n\n<p>paragraph before code</p>\n<pre><code>text inside block code</code></pre>\n\n<p>paragraph before hr</p>\n<hr>\n\n<p>paragraph before head with hash</p>\n<h1 id=\"how-are-you\">how are you</h1>\n\n<p>paragraph before head with equals</p>\n<h1 id=\"how-are-you-again\">how are you again</h1>\n\n<p>paragraph before blockquote</p>\n<blockquote><p>text for blockquote</p></blockquote>\n\n<p>paragraph before list</p>\n<ul><li>text inside list</li></ul>\n\n<p>paragraph before div</p>\n<div>text inside div</div>\n\n<p>paragraph with span\n<span>text inside span</span></p>\n\n<p>hello <a href=\"/are/you\">world</a>\n</p>\n\n<div>hello</div>\n\n<p><span>hello</span></p>",
     "example": 45,
     "options": {
       "gfm": true
@@ -314,14 +567,14 @@
   },
   {
     "section": "Tricky List",
-    "markdown": "**hello** _world_\n\n* hello world\n\n**hello** _world_\n\n* hello world\n\n**hello** _world_\n\n* Hello world\n\n**hello** _world_\n\n* hello world\n",
-    "html": "<p><strong>hello</strong> <em>world</em></p>\n\n<ul>\n<li>hello world</li>\n</ul>\n\n<p><strong>hello</strong> <em>world</em></p>\n\n<ul>\n<li>hello world</li>\n</ul>\n\n<p><strong>hello</strong> <em>world</em></p>\n\n<ul>\n<li>Hello world</li>\n</ul>\n\n<p><strong>hello</strong> <em>world</em></p>\n\n<ul>\n<li>hello world</li>\n</ul>\n",
+    "markdown": "**hello** _world_\n\n* hello world\n\n**hello** _world_\n\n* hello world\n\n**hello** _world_\n\n* Hello world\n\n**hello** _world_\n\n* hello world",
+    "html": "<p><strong>hello</strong> <em>world</em></p>\n\n<ul>\n<li>hello world</li>\n</ul>\n\n<p><strong>hello</strong> <em>world</em></p>\n\n<ul>\n<li>hello world</li>\n</ul>\n\n<p><strong>hello</strong> <em>world</em></p>\n\n<ul>\n<li>Hello world</li>\n</ul>\n\n<p><strong>hello</strong> <em>world</em></p>\n\n<ul>\n<li>hello world</li>\n</ul>",
     "example": 46
   },
   {
     "section": "Uppercase Hex",
-    "markdown": "lower[click me](javascript&#x3a;...)lower\nupper[click me](javascript&#X3a;...)upper\n",
-    "html": "<p>lowerclick melower\nupperclick meupper</p>\n",
+    "markdown": "lower[click me](javascript&#x3a;...)lower\nupper[click me](javascript&#X3a;...)upper",
+    "html": "<p>lowerclick melower\nupperclick meupper</p>",
     "example": 47,
     "options": {
       "sanitize": true
