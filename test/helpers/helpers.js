@@ -16,10 +16,10 @@ beforeEach(function () {
           if (result.pass) {
             result.message = spec.markdown + '\n------\n\nExpected: Should Fail';
           } else {
-            let expectedHtml = expected.replace(/\s/g, '');
-            let actualHtml = actual.replace(/\s/g, '');
+            var expectedHtml = expected.replace(/\s/g, '');
+            var actualHtml = actual.replace(/\s/g, '');
 
-            for (let i = 0; i < expectedHtml.length; i++) {
+            for (var i = 0; i < expectedHtml.length; i++) {
               if (actualHtml[i] !== expectedHtml[i]) {
                 actualHtml = actualHtml.substring(
                   Math.max(i - 30, 0),
