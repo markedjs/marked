@@ -57,16 +57,6 @@ function load(options) {
   }
 
   if (options.bench || options.time) {
-    if (!options.glob) {
-      // Change certain tests to allow
-      // comparison to older benchmark times.
-      fs.readdirSync(path.join(__dirname, 'new')).forEach(function(name) {
-        if (path.extname(name) === '.html') return;
-        if (name === 'main.md') return;
-        delete files[name];
-      });
-    }
-
     if (files['backslash_escapes.md']) {
       files['backslash_escapes.md'] = {
         text: 'hello world \\[how](are you) today'
@@ -357,7 +347,7 @@ function time(options) {
  */
 
 function fix() {
-  ['compiled_tests', 'original', 'new', 'redos'].forEach(function(dir) {
+  ['compiled_tests', 'original', 'redos'].forEach(function(dir) {
     try {
       fs.mkdirSync(path.resolve(__dirname, dir));
     } catch (e) {
@@ -426,12 +416,6 @@ function fix() {
 
     fs.writeFileSync(file, html);
   })();
-
-  // cp new/* tests/
-  fs.readdirSync(path.resolve(__dirname, 'new')).forEach(function(file) {
-    fs.writeFileSync(path.resolve(__dirname, 'compiled_tests', file),
-      fs.readFileSync(path.resolve(__dirname, 'new', file)));
-  });
 
   // cp redos/* tests/
   fs.readdirSync(path.resolve(__dirname, 'redos')).forEach(function(file) {
