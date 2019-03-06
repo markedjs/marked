@@ -1,122 +1,703 @@
 [
   {
+    "section": "Adjacent Lists",
+    "markdown": "* This should be\n* An unordered list",
+    "html": "<ul>\n<li>This should be</li>\n<li>An unordered list</li>\n</ul>",
+    "example": 1
+  },
+  {
+    "section": "Adjacent Lists",
+    "markdown": "1. This should be\n2. An unordered list",
+    "html": "<ol>\n<li>This should be</li>\n<li>An unordered list</li>\n</ol>",
+    "example": 2
+  },
+  {
+    "section": "Autolink Lines",
+    "markdown": "hello world\n<http://example.com>",
+    "html": "<p>hello world\n<a href=\"http://example.com\">http://example.com</a>\n</p>",
+    "example": 3
+  },
+  {
+    "section": "Blockquote List Item",
+    "comment": "This fails in markdown.pl and upskirt",
+    "markdown": "* hello\n  > world",
+    "html": "<ul><li>hello<blockquote><p>world</p></blockquote></li></ul>",
+    "example": 4
+  },
+  {
+    "section": "Case Insensitive Refs",
+    "markdown": "[hi]\n\n[HI]: /url",
+    "html": "<p><a href=\"/url\">hi</a></p>",
+    "example": 5
+  },
+  {
+    "section": "Def Blocks",
+    "markdown": "> hello\n> [1]: hello",
+    "html": "<blockquote>\n  <p>hello\n[1]: hello</p>\n</blockquote>",
+    "example": 6
+  },
+  {
+    "section": "Def Blocks",
+    "markdown": "> hello\n[2]: hello",
+    "html": "<blockquote>\n  <p>hello\n[2]: hello</p>\n</blockquote>",
+    "example": 7
+  },
+  {
+    "section": "Def Blocks",
+    "markdown": "* hello\n* [3]: hello",
+    "html": "<ul>\n<li>hello</li>\n<li>[3]: hello</li>\n</ul>",
+    "example": 8
+  },
+  {
+    "section": "Def Blocks",
+    "markdown": "* hello\n[4]: hello",
+    "html": "<ul>\n<li>hello</li>\n</ul>",
+    "example": 9
+  },
+  {
+    "section": "Def Blocks",
+    "markdown": "> foo\n> bar\n[5]: foo\n> bar",
+    "html": "<blockquote>\n  <p>foo\nbar\n[5]: foo\nbar</p>\n</blockquote>",
+    "example": 10
+  },
+  {
+    "section": "Double Link",
+    "markdown": "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>",
+    "html": "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>",
+    "example": 11
+  },
+  {
+    "section": "Double Link",
+    "markdown": "Already linked: [http://example.com/](http://example.com/).",
+    "html": "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>",
+    "example": 12
+  },
+  {
+    "section": "Double Link",
+    "markdown": "Already linked: <a href=\"http://example.com/\">**http://example.com/**</a>.",
+    "html": "<p>Already linked: <a href=\"http://example.com/\"><strong>http://example.com/</strong></a>.</p>",
+    "example": 13
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "_123_",
+    "html": "<p><em>123</em></p>",
+    "example": 14
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "*123*",
+    "html": "<p><em>123</em></p>",
+    "example": 15
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "_12_",
+    "html": "<p><em>12</em></p>",
+    "example": 16
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "*12*",
+    "html": "<p><em>12</em></p>",
+    "example": 17
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "_1_",
+    "html": "<p><em>1</em></p>",
+    "example": 18
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "*1*",
+    "html": "<p><em>1</em></p>",
+    "example": 19
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "__",
+    "html": "<p>__</p>",
+    "example": 20
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "**",
+    "html": "<p>**</p>",
+    "example": 21
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "_123 _",
+    "html": "<p>_123 _</p>",
+    "example": 22
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "*123 *",
+    "html": "<p>*123 *</p>",
+    "example": 23
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "_ 123_",
+    "html": "<p>_ 123_</p>",
+    "example": 24
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "_1__",
+    "html": "<p><em>1_</em></p>",
+    "example": 25
+  },
+  {
+    "section": "Em 2char",
+    "markdown": "*1**",
+    "html": "<p><em>1*</em></p>",
+    "example": 26
+  },
+  {
+    "section": "Escaped Angles",
+    "markdown": "\\>",
+    "html": "<p>&gt;</p>",
+    "example": 27
+  },
+  {
+    "section": "Headings Id",
+    "markdown": "### Heading with a [link](http://github.com/)",
+    "html": "<h3 id=\"heading-with-a-link\">Heading with a <a href=\"http://github.com/\">link</a></h3>",
+    "example": 28
+  },
+  {
+    "section": "Headings Id",
+    "markdown": "### Heading with some _italic text_",
+    "html": "<h3 id=\"heading-with-some-italic-text\">Heading with some <em>italic text</em></h3>",
+    "example": 29
+  },
+  {
+    "section": "Headings Id",
+    "markdown": "### Or some **strong**",
+    "html": "<h3 id=\"or-some-strong\">Or some <strong>strong</strong></h3>",
+    "example": 30
+  },
+  {
+    "section": "Headings Id",
+    "markdown": "### Or even `code`",
+    "html": "<h3 id=\"or-even-code\">Or even <code>code</code></h3>",
+    "example": 31
+  },
+  {
+    "section": "Headings Id",
+    "markdown": "### What about ~~strikethrough~~",
+    "html": "<h3 id=\"what-about-strikethrough\">What about <del>strikethrough</del></h3>",
+    "example": 32
+  },
+  {
+    "section": "Headings Id",
+    "markdown": "## And a ref [link][destination]\n\n[destination]: /some/url \"link to nowhere\"",
+    "html": "<h2 id=\"and-a-ref-link\">And a ref <a href=\"/some/url\" title=\"link to nowhere\">link</a></h2>",
+    "example": 33
+  },
+  {
+    "section": "Hr List Break",
+    "markdown": "* hello\nworld\n* how\nare\n* * *\nyou today?",
+    "html": "<ul>\n<li>hello\nworld</li>\n<li>how\nare</li>\n</ul>\n\n<hr>\n\n<p>you today?</p>",
+    "example": 34
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- comment -->",
+    "html": "<!-- comment -->",
+    "example": 35
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!---->",
+    "html": "<!---->",
+    "example": 36
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- -->",
+    "html": "<!-- -->",
+    "example": 37
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- - -->",
+    "html": "<!-- - -->",
+    "example": 38
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- -- -->",
+    "html": "<!-- -- -->",
+    "example": 39
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- --->",
+    "html": "<!-- --->",
+    "example": 40
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!----->",
+    "html": "<!----->",
+    "example": 41
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!------>",
+    "html": "<!------>",
+    "example": 42
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- My favorite operators are > and <!-->",
+    "html": "<!-- My favorite operators are > and <!-->",
+    "example": 43
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- multi\nline\t\ncomment\n-->",
+    "html": "<!-- multi\nline    \ncomment\n-->",
+    "example": 44
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "   <!-- indented comment -->",
+    "html": "   <!-- indented comment -->",
+    "example": 45
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "    <!-- too much indentation -->",
+    "html": "<pre><code>&lt;!-- too much indentation --&gt;\n</code></pre>",
+    "example": 46
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!--> not a comment -->",
+    "html": "<p>&lt;!--&gt; not a comment --&gt;</p>",
+    "example": 47
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!---> not a comment -->",
+    "html": "<p>&lt;!---&gt; not a comment --&gt;</p>",
+    "example": 48
+  },
+  {
+    "section": "Html Comments",
+    "markdown": "<!-- <!-- not a comment? --> -->",
+    "html": "<!-- <!-- not a comment? --> -->",
+    "example": 49
+  },
+  {
+    "section": "Sanitize Images",
+    "markdown": "![Image](javascript:alert)",
+    "html": "<p>Image</p>",
+    "example": 50,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Images",
+    "markdown": "![Image](vbscript:alert)",
+    "html": "<p>Image</p>",
+    "example": 51,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Images",
+    "markdown": "![Image](javascript&colon;alert&#40;1&#41;)",
+    "html": "<p>Image</p>",
+    "example": 52,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Images",
+    "markdown": "![Image](javascript&#58document;alert&#40;1&#41;)",
+    "html": "<p>Image</p>",
+    "example": 53,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Images",
+    "markdown": "![Image](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)",
+    "html": "<p>Image</p>",
+    "example": 54,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Links",
+    "markdown": "[URL](javascript:alert)",
+    "html": "<p>URL</p>",
+    "example": 55,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Links",
+    "markdown": "[URL](vbscript:alert)",
+    "html": "<p>URL</p>",
+    "example": 56,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Links",
+    "markdown": "[URL](javascript&colon;alert&#40;1&#41;)",
+    "html": "<p>URL</p>",
+    "example": 57,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Links",
+    "markdown": "[URL](javascript&#58document;alert&#40;1&#41;)",
+    "html": "<p>URL</p>",
+    "example": 58,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Sanitize Links",
+    "markdown": "[URL](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)",
+    "html": "<p>URL</p>",
+    "example": 59,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
+    "section": "Lazy Blockquotes",
+    "markdown": "> hi there\nbud",
+    "html": "<blockquote>\n  <p>hi there\nbud</p>\n</blockquote>",
+    "example": 60
+  },
+  {
+    "section": "Link Lt",
+    "markdown": "[URL](<test)",
+    "html": "<p><a href=\"%3Ctest\">URL</a></p>",
+    "example": 61
+  },
+  {
+    "section": "List Item Text",
+    "markdown": "  * item1\n\n    * item2\n\n  text",
+    "html": "<ul><li><p>item1</p>  <ul><li>item2 </li></ul> <p>text</p> </li></ul>",
+    "example": 62
+  },
+  {
+    "section": "Main",
+    "markdown": "[test]: http://google.com/ \"Google\"\n\n# A heading\n\nJust a note, I've found that I can't test my markdown parser vs others.\nFor example, both markdown.js and showdown code blocks in lists wrong. They're\nalso completely [inconsistent][test] with regards to paragraphs in list items.\n\nA link. Not anymore.\n\n<aside>This will make me fail the test because\nmarkdown.js doesnt acknowledge arbitrary html blocks =/</aside>\n\n* List Item 1\n\n* List Item 2\n  * New List Item 1\n    Hi, this is a list item.\n  * New List Item 2\n    Another item\n        Code goes here.\n        Lots of it...\n  * New List Item 3\n    The last item\n\n* List Item 3\nThe final item.\n\n* List Item 4\nThe real final item.\n\nParagraph.\n\n> * bq Item 1\n> * bq Item 2\n>   * New bq Item 1\n>   * New bq Item 2\n>   Text here\n\n* * *\n\n> Another blockquote!\n> I really need to get\n> more creative with\n> mockup text..\n> markdown.js breaks here again\n\nAnother Heading\n-------------\n\nHello *world*. Here is a [link](//hello).\nAnd an image ![alt](src).\n\n    Code goes here.\n    Lots of it...",
+    "html": "<h1 id=\"a-heading\">A heading</h1> <p>Just a note, I&#39;ve found that I can&#39;t test my markdown parser vs others. For example, both markdown.js and showdown code blocks in lists wrong. They&#39;re  also completely <a href=\"http://google.com/\" title=\"Google\">inconsistent</a> with regards to paragraphs in list items.</p> <p>A link. Not anymore.</p> <aside>This will make me fail the test because\nmarkdown.js doesnt acknowledge arbitrary html blocks =/</aside> <ul><li><p>List Item 1</p></li><li><p>List Item 2 </p><ul><li>New List Item 1 Hi, this is a list item.</li><li>New List Item 2 Another item <pre><code>Code goes here.\nLots of it...</code></pre></li><li>New List Item 3 The last item</li></ul></li><li><p>List Item 3 The final item.</p></li><li><p>List Item 4 The real final item.</p></li></ul> <p>Paragraph.</p> <blockquote><ul><li>bq Item 1</li><li>bq Item 2 <ul><li>New bq Item 1</li><li>New bq Item 2 Text here</li></ul></li></ul></blockquote> <hr> <blockquote><p> Another blockquote!  I really need to get  more creative with  mockup text..  markdown.js breaks here again</p></blockquote> <h2 id=\"another-heading\">Another Heading</h2> <p>Hello <em>world</em>. Here is a <a href=\"//hello\">link</a>. And an image <img src=\"src\" alt=\"alt\">.</p> <pre><code>Code goes here.\nLots of it...</code></pre>",
+    "example": 63
+  },
+  {
+    "section": "Mangle Xss",
+    "markdown": "<<svg/onload=\"alert(1)\"//@x>",
+    "html": "<p>&lt;&lt;svg/onload=&quot;alert(1)&quot;//@x&gt;</p>",
+    "example": 64,
+    "options": {
+      "sanatize": true,
+      "mangle": false
+    }
+  },
+  {
+    "section": "Mangle Xss",
+    "markdown": "<bar\"onclick=\"alert('XSS')\"@foo>",
+    "html": "<p>&lt;bar&quot;onclick=&quot;alert(&#39;XSS&#39;)&quot;@foo&gt;</p>",
+    "example": 65,
+    "options": {
+      "sanatize": true,
+      "mangle": false
+    }
+  },
+  {
+    "section": "Nested Code",
+    "markdown": "````` hi ther `` ok ``` `````",
+    "html": "<p><code>hi ther `` ok ```</code></p>",
+    "example": 66
+  },
+  {
+    "section": "Nested Code",
+    "markdown": "`` ` ``",
+    "html": "<p><code>`</code></p>",
+    "example": 67
+  },
+  {
+    "section": "Nested Code",
+    "markdown": "``There is a literal backtick (`) here.``",
+    "html": "<p><code>There is a literal backtick (`) here.</code></p>",
+    "example": 68
+  },
+  {
+    "section": "Nested Code",
+    "markdown": "A backtick-delimited string in a code span: `` `foo` ``",
+    "html": "<p>A backtick-delimited string in a code span: <code>`foo`</code></p>",
+    "example": 69
+  },
+  {
+    "section": "Nested Code",
+    "markdown": "Please don't use any `<blink>` tags.",
+    "html": "<p>Please don&#39;t use any <code>&lt;blink&gt;</code> tags.</p>",
+    "example": 70
+  },
+  {
+    "section": "Nested Em",
+    "markdown": "*test **test** test*",
+    "html": "<p><em>test <strong>test</strong> test</em></p>",
+    "example": 71
+  },
+  {
+    "section": "Nested Em",
+    "markdown": "_test __test__ test_",
+    "html": "<p><em>test <strong>test</strong> test</em></p>",
+    "example": 72
+  },
+  {
+    "section": "Nested Square Link",
+    "markdown": "[the `]` character](/url)",
+    "html": "<p><a href=\"/url\">the <code>]</code> character</a></p>",
+    "example": 73
+  },
+  {
+    "section": "Nested Square Link",
+    "markdown": "[the ` character](/url)",
+    "html": "<p><a href=\"/url\">the ` character</a></p>",
+    "example": 74
+  },
+  {
+    "section": "Nogfm Hashtag",
+    "markdown": "#header",
+    "html": "<h1 id=\"header\">header</h1>",
+    "example": 75,
+    "options": {
+      "gfm": false
+    }
+  },
+  {
+    "section": "Nogfm Hashtag",
+    "markdown": "# header1",
+    "html": "<h1 id=\"header1\">header1</h1>",
+    "example": 76,
+    "options": {
+      "gfm": false
+    }
+  },
+  {
+    "section": "Nogfm Hashtag",
+    "markdown": "#  header2",
+    "html": "<h1 id=\"header2\">header2</h1>",
+    "example": 77,
+    "options": {
+      "gfm": false
+    }
+  },
+  {
+    "section": "Not A Link",
+    "markdown": "\\[test](not a link)",
+    "html": "<p>[test](not a link)</p>",
+    "example": 78
+  },
+  {
+    "section": "Ref Paren",
+    "markdown": "[hi]\n\n[hi]: /url (there)",
+    "html": "<p><a href=\"/url\" title=\"there\">hi</a></p>",
+    "example": 79
+  },
+  {
+    "section": "Relative Urls",
+    "markdown": "# Absolutization of RFC 3986 URIs\n\n## Absolute URI\n[![section 4.3](http://example.com/logo)](http://example.com/)\n\n## Network-path reference\n[![section 4.2](//example.com/logo)](//example.com/)\n\n## Absolute path\n[![section 4.2](/path/to/img)](/path/to/content)\n\n## Relative path\n[![section 4.2](img)](content)\n\n## Dot-relative path\n[![section 3.3](./img)](./content)\n\n[![section 3.3](../img)](../content)\n\n## Same-document query\n[![section 4.4](?type=image)](?)\n\n## Same-document fragment\n[![section 4.4](#img)](#)\n\n## Empty\n[section 4.2]()",
+    "html": "<h1 id=\"absolutization-of-rfc-3986-uris\">Absolutization of RFC 3986 URIs</h1>\n\n<h2 id=\"absolute-uri\">Absolute URI</h2>\n\n<p><a href=\"http://example.com/\"><img src=\"http://example.com/logo\" alt=\"section 4.3\"></a></p>\n\n<h2 id=\"network-path-reference\">Network-path reference</h2>\n\n<p><a href=\"http://example.com/\"><img src=\"http://example.com/logo\" alt=\"section 4.2\"></a></p>\n\n<h2 id=\"absolute-path\">Absolute path</h2>\n\n<p><a href=\"http://example.com/path/to/content\"><img src=\"http://example.com/path/to/img\" alt=\"section 4.2\"></a></p>\n\n<h2 id=\"relative-path\">Relative path</h2>\n\n<p><a href=\"http://example.com/base/content\"><img src=\"http://example.com/base/img\" alt=\"section 4.2\"></a></p>\n\n<h2 id=\"dot-relative-path\">Dot-relative path</h2>\n\n<p><a href=\"http://example.com/base/./content\"><img src=\"http://example.com/base/./img\" alt=\"section 3.3\"></a></p>\n\n<p><a href=\"http://example.com/base/../content\"><img src=\"http://example.com/base/../img\" alt=\"section 3.3\"></a></p>\n\n<h2 id=\"same-document-query\">Same-document query</h2>\n\n<p><a href=\"?\"><img src=\"?type=image\" alt=\"section 4.4\"></a></p>\n\n<h2 id=\"same-document-fragment\">Same-document fragment</h2>\n\n<p><a href=\"#\"><img src=\"#img\" alt=\"section 4.4\"></a></p>\n\n<h2 id=\"empty\">Empty</h2>\n\n<p><a href=\"\">section 4.2</a></p>",
+    "example": 80,
+    "options": {
+      "baseUrl": "http://example.com/base/"
+    }
+  },
+  {
+    "section": "Same Bullet",
+    "markdown": "* test\n+ test\n- test",
+    "html": "<ul>\n<li>test</li>\n<li>test</li>\n<li>test</li>\n</ul>",
+    "example": 81
+  },
+  {
+    "section": "Smartypants",
+    "markdown": "Hello world 'how' \"are\" you -- today...\n\n\"It's a more 'challenging' smartypants test...\"\n\n'And,' as a bonus --- \"one\nmultiline\" test!",
+    "html": "<p>Hello world ‘how’ “are” you – today…</p>\n\n<p>“It’s a more ‘challenging’ smartypants test…”</p>\n\n<p>‘And,’ as a bonus — “one\nmultiline” test!</p>",
+    "example": 82,
+    "options": {
+      "smartypants": true
+    }
+  },
+  {
+    "section": "Smartypants Code",
+    "markdown": "<pre>&amp;</pre>\n<code>--foo</code>\n<kbd>---foo</kbd>\n<script>--foo</script>\n\nEnsure that text such as custom tags that happen to\nbegin with the same letters as the above tags don't\nmatch and thus benefit from Smartypants-ing.\n<script-custom>--foo</script-custom>\n`--foo` <codebar --foo codebar>",
+    "html": "<pre>&amp;</pre>\n<p><code>--foo</code>\n<kbd>---foo</kbd></p>\n<script>--foo</script>\n\n<p>Ensure that text such as custom tags that happen to\nbegin with the same letters as the above tags don’t\nmatch and thus benefit from Smartypants-ing.</p>\n\n<p><script-custom>–foo</script-custom>\n<code>--foo</code> &lt;codebar –foo codebar&gt;</p>",
+    "example": 83,
+    "options": {
+      "smartypants": true,
+      "description": "SmartyPants does not modify characters within <pre>, <code>, <kbd>, or <script> tag blocks.",
+      "spec": "https://daringfireball.net/projects/smartypants/"
+    }
+  },
+  {
+    "section": "Toplevel Paragraphs",
+    "markdown": "hello world\n    text after spaces\n    text after spaces\n\nparagraph before code\n```\ntext inside block code\n```\n\nparagraph before hr\n* * *\n\nparagraph before head with hash\n# how are you\n\nparagraph before head with equals\nhow are you again\n===========\n\nparagraph before blockquote\n> text for blockquote\n\nparagraph before list\n* text inside list\n\nparagraph before div\n<div>text inside div</div>\n\nparagraph with span\n<span>text inside span</span>\n\nhello [world][how]\n\n[how]: /are/you\n\n<div>hello</div>\n\n<span>hello</span>",
+    "html": "<p>hello world\n    text after spaces\n    text after spaces</p>\n\n<p>paragraph before code</p>\n<pre><code>text inside block code</code></pre>\n\n<p>paragraph before hr</p>\n<hr>\n\n<p>paragraph before head with hash</p>\n<h1 id=\"how-are-you\">how are you</h1>\n\n<p>paragraph before head with equals</p>\n<h1 id=\"how-are-you-again\">how are you again</h1>\n\n<p>paragraph before blockquote</p>\n<blockquote><p>text for blockquote</p></blockquote>\n\n<p>paragraph before list</p>\n<ul><li>text inside list</li></ul>\n\n<p>paragraph before div</p>\n<div>text inside div</div>\n\n<p>paragraph with span\n<span>text inside span</span></p>\n\n<p>hello <a href=\"/are/you\">world</a>\n</p>\n\n<div>hello</div>\n\n<p><span>hello</span></p>",
+    "example": 84,
+    "options": {
+      "gfm": true
+    }
+  },
+  {
+    "section": "Tricky List",
+    "markdown": "**hello** _world_\n\n* hello world\n\n**hello** _world_\n\n* hello world\n\n**hello** _world_\n\n* Hello world\n\n**hello** _world_\n\n* hello world",
+    "html": "<p><strong>hello</strong> <em>world</em></p>\n\n<ul>\n<li>hello world</li>\n</ul>\n\n<p><strong>hello</strong> <em>world</em></p>\n\n<ul>\n<li>hello world</li>\n</ul>\n\n<p><strong>hello</strong> <em>world</em></p>\n\n<ul>\n<li>Hello world</li>\n</ul>\n\n<p><strong>hello</strong> <em>world</em></p>\n\n<ul>\n<li>hello world</li>\n</ul>",
+    "example": 85
+  },
+  {
+    "section": "Uppercase Hex",
+    "markdown": "lower[click me](javascript&#x3a;...)lower\nupper[click me](javascript&#X3a;...)upper",
+    "html": "<p>lowerclick melower\nupperclick meupper</p>",
+    "example": 86,
+    "options": {
+      "sanitize": true
+    }
+  },
+  {
     "section": "Code spans",
     "markdown": "`someone@example.com`",
     "html": "<p><code>someone@example.com</code></p>",
-    "example": 1
+    "example": 87
   },
   {
     "section": "Table cells",
     "markdown": "|1|\n|-|\n|1|",
     "html": "<table><thead><tr><th>1</th></tr></thead><tbody><tr><td>1</td></tr></tbody></table>",
-    "example": 2
+    "example": 88
   },
   {
     "section": "Table cells",
     "markdown": "|1|\n|-|\n|\\||",
     "html": "<table><thead><tr><th>1</th></tr></thead><tbody><tr><td>|</td></tr></tbody></table>",
-    "example": 3
+    "example": 89
   },
   {
     "section": "Table cells",
     "markdown": "|1|\n|-|\n|1\\\\1|",
     "html": "<table><thead><tr><th>1</th></tr></thead><tbody><tr><td>1\\1</td></tr></tbody></table>",
-    "example": 4
+    "example": 90
   },
   {
     "section": "Table cells",
     "markdown": "|1|\n|-|\n|\\\\\\\\||",
     "html": "<table><thead><tr><th>1</th></tr></thead><tbody><tr><td>\\\\</td></tr></tbody></table>",
-    "example": 5
+    "example": 91
   },
   {
     "section": "Table cells",
     "markdown": "|1|\n|-|\n|\\\\\\\\\\||",
     "html": "<table><thead><tr><th>1</th></tr></thead><tbody><tr><td>\\\\|</td></tr></tbody></table>",
-    "example": 6
+    "example": 92
   },
   {
     "section": "Table cells",
     "markdown": "|1|2|\n|-|-|\n||2|",
     "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td></td><td>2</td></tr></tbody></table>",
-    "example": 7
+    "example": 93
   },
   {
     "section": "Table cells",
     "markdown": "|1|2|\n|-|-|\n|1\\|\\\\|2\\|\\\\|",
     "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td>1|\\</td><td>2|\\</td></tr></tbody></table>",
-    "example": 8
+    "example": 94
   },
   {
     "section": "Table cells",
     "markdown": "|1|2|\n|-|-|\n| |2|",
     "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td></td><td>2</td></tr></tbody></table>",
-    "example": 9
+    "example": 95
   },
   {
     "section": "Links",
     "markdown": "Link: [constructor][].\n\n[constructor]: https://example.org/",
     "html": "<p>Link: <a href=\"https://example.org/\">constructor</a>.</p>",
-    "example": 10
+    "example": 96
   },
   {
     "section": "Autolinks",
     "markdown": "(See https://www.example.com/fhqwhgads.)",
     "html": "<p>(See <a href=\"https://www.example.com/fhqwhgads\">https://www.example.com/fhqwhgads</a>.)</p>",
-    "example": 11
+    "example": 97
   },
   {
     "section": "Autolinks",
     "markdown": "((http://foo.com))",
     "html": "<p>((<a href=\"http://foo.com\">http://foo.com</a>))</p>",
-    "example": 12
+    "example": 98
   },
   {
     "section": "Autolinks",
     "markdown": "((http://foo.com.))",
     "html": "<p>((<a href=\"http://foo.com\">http://foo.com</a>.))</p>",
-    "example": 13
+    "example": 99
   },
   {
     "section": "Code spans",
     "markdown": "``*test`*",
     "html": "<p>``<em>test`</em></p>",
-    "example": 14
+    "example": 100
   },
   {
     "section": "Autolinks",
     "markdown": "HTTP://FOO.COM",
     "html": "<p><a href=\"HTTP://FOO.COM\">HTTP://FOO.COM</a></p>",
-    "example": 17
+    "example": 101
   },
   {
     "section": "Autolinks",
     "markdown": "hTtP://fOo.CoM",
     "html": "<p><a href=\"hTtP://fOo.CoM\">hTtP://fOo.CoM</a></p>",
-    "example": 18
+    "example": 102
   },
   {
     "section": "Autolinks",
     "markdown": "~~hello@email.com~~",
     "html": "<p><del><a href=\"mailto:hello@email.com\">hello@email.com</a></del></p>",
-    "example": 1307
+    "example": 103
   },
   {
     "section": "Autolinks",
     "markdown": "**me@example.com**",
     "html": "<p><strong><a href=\"mailto:me@example.com\">me@example.com</a></strong></p>",
-    "example": 1327
+    "example": 104
   },
   {
     "section": "Autolinks",
     "markdown": "__test@test.com__",
     "html": "<p><strong><a href=\"mailto:test@test.com\">test@test.com</a></strong></p>",
-    "example": 1347
+    "example": 105
   },
   {
     "section": "Emphasis extra tests",
     "markdown": "_test_. _test_: _test_! _test_? _test_-",
     "html": "<p><em>test</em>. <em>test</em>: <em>test</em>! <em>test</em>? <em>test</em>-</p>",
-    "example": 15
+    "example": 106
   }
 ]

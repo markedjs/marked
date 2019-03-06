@@ -45,4 +45,3 @@ runSpecs('Marked', './marked.json');
 runSpecs('GFM 0.28', './gfm.0.28.json', {gfm: true});
 runSpecs('CommonMark 0.28', './commonmark.0.28.json', {headerIds: false});
 runSpecs('Pedantic', './pedantic.json', {pedantic: true});
-runSpecs('New', './new.json');
