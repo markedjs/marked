@@ -113,10 +113,34 @@
     "html": "<p><strong><a href=\"mailto:test@test.com\">test@test.com</a></strong></p>",
     "example": 1347
   },
-  {  
+  {
     "section": "Emphasis extra tests",
     "markdown": "_test_. _test_: _test_! _test_? _test_-",
     "html": "<p><em>test</em>. <em>test</em>: <em>test</em>! <em>test</em>? <em>test</em>-</p>",
     "example": 15
+  },
+  {
+    "section": "Table cells",
+    "markdown": "1|2\n-|-\n1\\|\\\\|2\\|\\\\",
+    "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td>1|\\</td><td>2|\\</td></tr></tbody></table>",
+    "example": 19
+  },
+  {
+    "section": "Table cells",
+    "markdown": "1|2\n-|-\n |2",
+    "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td></td><td>2</td></tr></tbody></table>",
+    "example": 20
+  },
+  {
+    "section": "Table cells",
+    "markdown": "1|2\n-|-\n1|2\\|\n\n1|2\n-|-\n1|2\\|",
+    "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td>1</td><td>2|</td></tr></tbody></table>\n\n<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td>1</td><td>2|</td></tr></tbody></table>",
+    "example": 21
+  },
+  {
+    "section": "Table cells",
+    "markdown": "|1|2|\n|-|-|\n|1|2\\||\n\n|1|2|\n|-|-|\n|1|2\\||",
+    "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td>1</td><td>2|</td></tr></tbody></table>\n\n<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td>1</td><td>2|</td></tr></tbody></table>",
+    "example": 22
   }
 ]
