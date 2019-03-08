@@ -113,10 +113,16 @@
     "html": "<p><strong><a href=\"mailto:test@test.com\">test@test.com</a></strong></p>",
     "example": 1347
   },
-  {  
+  {
     "section": "Emphasis extra tests",
     "markdown": "_test_. _test_: _test_! _test_? _test_-",
     "html": "<p><em>test</em>. <em>test</em>: <em>test</em>! <em>test</em>? <em>test</em>-</p>",
     "example": 15
+  },
+  {
+    "section": "Links",
+    "markdown": "[One](https://example.com/1) ([Two](https://example.com/2)) [Three](https://example.com/3)",
+    "html": "<p><a href=\"https://example.com/1\">One</a> (<a href=\"https://example.com/2\">Two</a>) <a href=\"https://example.com/3\">Three</a></p>",
+    "example": 16
   }
 ]
