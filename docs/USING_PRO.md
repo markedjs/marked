@@ -51,7 +51,7 @@ console.log(myMarked('# heading+', { renderer: renderer }));
 - heading(*string* text, *number* level, *string* raw, *Slugger* slugger)
 - hr()
 - list(*string* body, *boolean* ordered, *number* start)
-- listitem(*string* text)
+- listitem(*string* text, *boolean* task, *boolean* checked)
 - checkbox(*boolean* checked)
 - paragraph(*string* text)
 - table(*string* header, *string* body)
