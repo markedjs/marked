@@ -30,11 +30,13 @@ OPTIONS
 
               --glob [file] Specify which test to use.
 
+              --fix Fixes tests.
+
               --bench Benchmarks the test(s).
 
               --time Times The test(s).
 
-              --Run Runs test file(s) as minified.
+              --minified Runs test file(s) as minified.
 
        -t, --tokens
               Output a token stream instead of html.
