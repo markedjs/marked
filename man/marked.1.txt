@@ -26,13 +26,13 @@ OPTIONS
        -i, --input [input]
               Specify file input, otherwise use last argument as input file. If no input file is specified, read from stdin.
 
-       --test Makes sure test file(s) pass.
+       --test Makes sure the test(s) pass.
 
-              --glob [file] Specify test file to use.
+              --glob [file] Specify which test to use.
 
-              --bench Benchmarks the test file(s).
+              --bench Benchmarks the test(s).
 
-              --time Times The test file(s).
+              --time Times The test(s).
 
               --Run Runs test file(s) as minified.
 

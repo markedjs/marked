@@ -441,9 +441,8 @@ function fix() {
  * Argument Parsing
  */
 
-function parseArg() {
-  var argv = process.argv.slice(2),
-      options = {},
+function parseArg(argv) {
+  var options = {},
       opt = '',
       orphans = [],
       arg;
@@ -551,7 +550,7 @@ function camelize(text) {
  */
 
 function main(argv) {
-  var opt = parseArg();
+  var opt = parseArg(argv);
 
   if (opt.fix !== false) {
     fix();
