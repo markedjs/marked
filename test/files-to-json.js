@@ -7,7 +7,7 @@ const jsonFile = process.argv[3];
 const useFiles = process.argv.includes('--files');
 
 if (!folder || !jsonFile) {
-  console.log('node ./files-to-json.js {path to folder} {path to json file}');
+  console.log('node ./files-to-json.js {path to folder} {path to json file} [--files]');
   process.exit(1);
 }
 
