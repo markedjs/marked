@@ -2,6 +2,8 @@ const marked = require('../../');
 const HtmlDiffer = require('@markedjs/html-differ').HtmlDiffer;
 const htmlDiffer = new HtmlDiffer({ignoreSelfClosingSlash: true});
 
+const EXCERPT_LENGTH = 30;
+
 beforeEach(() => {
   marked.setOptions(marked.getDefaults());
 
@@ -22,12 +24,12 @@ beforeEach(() => {
             for (var i = 0; i < expectedHtml.length; i++) {
               if (actualHtml[i] !== expectedHtml[i]) {
                 actualHtml = actualHtml.substring(
-                  Math.max(i - 30, 0),
-                  Math.min(i + 30, actualHtml.length));
+                  Math.max(i - EXCERPT_LENGTH, 0),
+                  Math.min(i + EXCERPT_LENGTH, actualHtml.length));
 
                 expectedHtml = expectedHtml.substring(
-                  Math.max(i - 30, 0),
-                  Math.min(i + 30, expectedHtml.length));
+                  Math.max(i - EXCERPT_LENGTH, 0),
+                  Math.min(i + EXCERPT_LENGTH, expectedHtml.length));
 
                 break;
               }
