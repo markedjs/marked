@@ -1,6 +1,6 @@
 var specTests = require('../../');
 
-it('should run spec tests', function () {
+it('should run spec tests', () => {
   // hide output
   spyOn(console, 'log');
   if (!specTests(['', '', '--stop'])) {

@@ -8,14 +8,14 @@ function runSpecs(title, file, options) {
     return obj;
   }, {});
 
-  describe(title, function() {
+  describe(title, () => {
     Object.keys(specs).forEach(section => {
-      describe(section, function() {
-        specs[section].forEach(function(spec) {
+      describe(section, () => {
+        specs[section].forEach((spec) => {
           if (options) {
             spec.options = Object.assign({}, options, (spec.options || {}));
           }
-          (spec.only ? fit : it)('should ' + (spec.shouldFail ? 'fail' : 'pass') + ' example ' + spec.example, function() {
+          (spec.only ? fit : it)('should ' + (spec.shouldFail ? 'fail' : 'pass') + ' example ' + spec.example, () => {
             if (spec.shouldFail) {
               expect(spec).not.toRender(spec.html);
             } else {

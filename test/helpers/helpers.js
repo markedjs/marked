@@ -2,13 +2,13 @@ const marked = require('../../');
 const HtmlDiffer = require('@markedjs/html-differ').HtmlDiffer;
 const htmlDiffer = new HtmlDiffer({ignoreSelfClosingSlash: true});
 
-beforeEach(function () {
+beforeEach(() => {
   marked.setOptions(marked.getDefaults());
 
   jasmine.addMatchers({
-    toRender: function () {
+    toRender: () => {
       return {
-        compare: function (spec, expected) {
+        compare: (spec, expected) => {
           const result = {};
           const actual = marked(spec.markdown, spec.options);
           result.pass = htmlDiffer.isEqual(expected, actual);
