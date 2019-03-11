@@ -582,7 +582,7 @@ function main(argv) {
 
 if (!module.parent) {
   process.title = 'marked';
-  process.exit(main(process.argv) ? 0 : 1);
+  process.exit(main(process.argv.slice()) ? 0 : 1);
 } else {
   exports = main;
   exports.main = main;
