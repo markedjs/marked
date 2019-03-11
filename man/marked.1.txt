@@ -36,7 +36,7 @@ OPTIONS
 
               --time Times The test(s).
 
-              --minified Runs test file(s) as minified.
+              --minified Runs test file(s) as minified.  --stop Stop process if a test fails.
 
        -t, --tokens
               Output a token stream instead of html.
