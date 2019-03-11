@@ -176,6 +176,17 @@ function testFile(engine, file, filename, index) {
 
   l = html.length;
 
+  if (l === 0 && text.length > 0) {
+    text = text.substring(0, Math.min(30, text.length));
+
+    console.log('    failed in %dms at offset %d. Near: "%s".\n', prettyElapsedTime(elapsed), 0, text);
+
+    console.log('\nActual:\n%s\n', text.trim() || text);
+    console.log('\nExpected:\n\n');
+
+    return false;
+  }
+
   for (j = 0; j < l; j++) {
     if (text[j] !== html[j]) {
       text = text.substring(
@@ -188,7 +199,7 @@ function testFile(engine, file, filename, index) {
 
       console.log('    failed in %dms at offset %d. Near: "%s".\n', prettyElapsedTime(elapsed), j, text);
 
-      console.log('\nGot:\n%s\n', text.trim() || text);
+      console.log('\nActual:\n%s\n', text.trim() || text);
       console.log('\nExpected:\n%s\n', html.trim() || html);
 
       return false;
@@ -346,11 +357,11 @@ function time(options) {
  */
 
 function fix() {
-  ['compiled_tests', 'original', 'new'].forEach(function(dir) {
+  ['compiled_tests', 'original', 'new', 'redos'].forEach(function(dir) {
     try {
       fs.mkdirSync(path.resolve(__dirname, dir));
     } catch (e) {
-      ;
+      // directory already exists
     }
   });
 
@@ -434,6 +445,12 @@ function fix() {
   fs.readdirSync(path.resolve(__dirname, 'new')).forEach(function(file) {
     fs.writeFileSync(path.resolve(__dirname, 'compiled_tests', file),
       fs.readFileSync(path.resolve(__dirname, 'new', file)));
+  });
+
+  // cp redos/* tests/
+  fs.readdirSync(path.resolve(__dirname, 'redos')).forEach(function(file) {
+    fs.writeFileSync(path.resolve(__dirname, 'compiled_tests', file),
+      fs.readFileSync(path.resolve(__dirname, 'redos', file)));
   });
 }
 
