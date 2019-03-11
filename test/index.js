@@ -447,7 +447,7 @@ function parseArg(argv) {
       orphans = [],
       arg;
 
-  argv = Array.isArray(argv) ? argv.slice(2) : [];
+  argv = argv.slice(2);
   function getarg() {
     var arg = argv.shift();
 
