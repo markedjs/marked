@@ -1,14 +1,17 @@
-marked(1)                                                           marked.js                                                          marked(1)
+marked(1)		    General Commands Manual		     marked(1)
 
 NAME
        marked - a javascript markdown parser
 
 SYNOPSIS
-       marked  [-o  <output>]  [-i  <input>]  [--help]  [--tokens]  [--pedantic]  [--gfm]  [--breaks]  [--tables]  [--sanitize]  [--smart-lists]
-       [--lang-prefix <prefix>] [--no-etc...] [--silent] [filename]
+       marked  [-o  <output>]  [-i  <input>]  [--help]  [--tokens]
+       [--pedantic]  [--gfm]  [--breaks]  [--tables]  [--sanitize]
+       [--smart-lists]  [--lang-prefix <prefix>]  [--no-etc...]  [--silent]
+       [filename]
 
 DESCRIPTION
-       marked is a full-featured javascript markdown parser, built for speed. It also includes multiple GFM features.
+       marked is a full-featured javascript markdown parser, built for speed.
+       It also includes multiple GFM features.
 
 EXAMPLES
        cat in.md | marked > out.html
@@ -24,7 +27,8 @@ OPTIONS
               Specify file output. If none is specified, write to stdout.
 
        -i, --input [input]
-              Specify file input, otherwise use last argument as input file. If no input file is specified, read from stdin.
+              Specify file input, otherwise use last argument as input file.
+              If no input file is specified, read from stdin.
 
        --test Makes sure the test(s) pass.
 
@@ -44,7 +48,8 @@ OPTIONS
               Output a token stream instead of html.
 
        --pedantic
-              Conform to obscure parts of markdown.pl as much as possible. Don't fix original markdown bugs.
+              Conform to obscure parts of markdown.pl as much as possible.
+              Don't fix original markdown bugs.
 
        --gfm  Enable github flavored markdown.
 
@@ -91,4 +96,4 @@ LICENSE
 SEE ALSO
        markdown(1), node.js(1)
 
-v0.3.1                                                             2014-01-31                                                          marked(1)
+								     marked(1)
