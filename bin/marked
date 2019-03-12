@@ -32,6 +32,11 @@ function help() {
     });
 }
 
+function version() {
+  var pkg = require('../package.json');
+  console.log(pkg.version);
+}
+
 /**
  * Main
  */
@@ -98,6 +103,9 @@ function main(argv, callback) {
       case '-h':
       case '--help':
         return help();
+      case '-v':
+      case '--version':
+        return version();
       default:
         if (arg.indexOf('--') === 0) {
           opt = camelize(arg.replace(/^--(no-)?/, ''));
