@@ -36,6 +36,29 @@ Specify file output. If none is specified, write to stdout.
 Specify file input, otherwise use last argument as input file. If no input file
 is specified, read from stdin.
 .TP
+.BI \-\-test
+Makes sure the test(s) pass.
+.RS
+.PP
+.B \-\-glob [\fIfile\fP]
+Specify which test to use.
+.PP
+.B \-\-fix
+Fixes tests.
+.PP
+.B \-\-bench
+Benchmarks the test(s).
+.PP
+.B \-\-time
+Times The test(s).
+.PP
+.B \-\-minified
+Runs test file(s) as minified.
+.PP
+.B \-\-stop
+Stop process if a test fails.
+.RE
+.TP
 .BI \-t,\ \-\-tokens
 Output a token stream instead of html.
 .TP
