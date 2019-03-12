@@ -1,12 +1,5 @@
----
-sanitize: true
----
-[URL](javascript:alert)
+Link: [constructor][].
 
-[URL](vbscript:alert)
+[One](https://example.com/1) ([Two](https://example.com/2)) [Three](https://example.com/3)
 
-[URL](javascript&colon;alert&#40;1&#41;)
-
-[URL](javascript&#58document;alert&#40;1&#41;)
-
-[URL](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)
+[constructor]: https://example.org/
