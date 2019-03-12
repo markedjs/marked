@@ -120,6 +120,30 @@
     "example": 15
   },
   {
+    "section": "Table cells",
+    "markdown": "1|2\n-|-\n1\\|\\\\|2\\|\\\\",
+    "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td>1|\\</td><td>2|\\</td></tr></tbody></table>",
+    "example": 19
+  },
+  {
+    "section": "Table cells",
+    "markdown": "1|2\n-|-\n |2",
+    "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td></td><td>2</td></tr></tbody></table>",
+    "example": 20
+  },
+  {
+    "section": "Table cells",
+    "markdown": "1|2\n-|-\n1|2\\|\n\n1|2\n-|-\n1|2\\|",
+    "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td>1</td><td>2|</td></tr></tbody></table>\n\n<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td>1</td><td>2|</td></tr></tbody></table>",
+    "example": 21
+  },
+  {
+    "section": "Table cells",
+    "markdown": "|1|2|\n|-|-|\n|1|2\\||\n\n|1|2|\n|-|-|\n|1|2\\||",
+    "html": "<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td>1</td><td>2|</td></tr></tbody></table>\n\n<table><thead><tr><th>1</th><th>2</th></tr></thead><tbody><tr><td>1</td><td>2|</td></tr></tbody></table>",
+    "example": 22
+  },
+  {
     "section": "Links",
     "markdown": "[One](https://example.com/1) ([Two](https://example.com/2)) [Three](https://example.com/3)",
     "html": "<p><a href=\"https://example.com/1\">One</a> (<a href=\"https://example.com/2\">Two</a>) <a href=\"https://example.com/3\">Three</a></p>",
