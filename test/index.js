@@ -245,7 +245,6 @@ function runBench(options) {
   }
   bench('marked (pedantic)', files, marked);
 
-  // commonmark
   try {
     bench('commonmark', files, (() => {
       const commonmark = require('commonmark');
@@ -259,7 +258,6 @@ function runBench(options) {
     console.log('Could not bench commonmark. (Error: %s)', e.message);
   }
 
-  // markdown-it
   try {
     bench('markdown-it', files, (() => {
       const MarkdownIt = require('markdown-it');
@@ -270,7 +268,6 @@ function runBench(options) {
     console.log('Could not bench markdown-it. (Error: %s)', e.message);
   }
 
-  // markdown.js
   try {
     bench('markdown.js', files, (() => {
       const markdown = require('markdown').markdown;
