@@ -329,9 +329,9 @@ function fix() {
     if (path.extname(file) === '.md') {
       if (fm.test(text)) {
         text = fm(text);
-        text = '---\n' + text.frontmatter + '\ngfm: false\n---\n' + text.body;
+        text = `---\n${text.frontmatter}\ngfm: false\n---\n${text.body}`;
       } else {
-        text = '---\ngfm: false\n---\n' + text;
+        text = `---\ngfm: false\n---\n${text}`;
       }
     }
 
@@ -372,7 +372,7 @@ function fix() {
   // markdown does some strange things.
   // it does not encode naked `>`, marked does.
   {
-    const file = dir + '/amps_and_angles_encoding.html';
+    const file = `${dir}/amps_and_angles_encoding.html`;
     const html = fs.readFileSync(file, 'utf8')
       .replace('6 > 5.', '6 &gt; 5.');
 
@@ -417,7 +417,7 @@ function parseArg(argv) {
       if (arg.length > 2) {
         // e.g. -abc
         argv = arg.substring(1).split('').map(ch => {
-          return '-' + ch;
+          return `-${ch}`;
         }).concat(argv);
         arg = argv.shift();
       } else {

@@ -13,10 +13,10 @@ beforeEach(() => {
           result.pass = htmlDiffer.isEqual(expected, actual);
 
           if (result.pass) {
-            result.message = spec.markdown + '\n------\n\nExpected: Should Fail';
+            result.message = `${spec.markdown}\n------\n\nExpected: Should Fail`;
           } else {
             const diff = htmlDiffer.firstDiff(actual, expected);
-            result.message = 'Expected: ' + diff.expected + '\n  Actual: ' + diff.actual;
+            result.message = `Expected: ${diff.expected}\n  Actual: ${diff.actual}`;
           }
           return result;
         }
