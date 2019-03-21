@@ -4,6 +4,7 @@
   "author": "Christopher Jeffrey",
   "version": "0.6.1",
   "main": "./lib/marked.js",
+  "module": "./lib/marked.esm.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
   "files": [
@@ -43,9 +44,11 @@
     "jasmine": "^3.3.1",
     "markdown": "0.x",
     "markdown-it": "8.x",
+    "rollup": "^1.7.0",
     "uglify-js": "^3.4.9"
   },
   "scripts": {
+    "pretest": "rollup -c rollup.config.js",
     "test": "jasmine --config=jasmine.json",
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",
@@ -58,7 +61,7 @@
     "test:node4": "npx node@4 ./node_modules/jasmine/bin/jasmine.js --config=jasmine.json",
     "bench": "node test --bench",
     "lint": "eslint --fix bin/marked .",
-    "build": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
+    "build": "rollup -c rollup.config.js && uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
     "preversion": "npm run build && (git diff --quiet || git commit -am 'minify')"
   },
   "engines": {
