@@ -3231,8 +3231,7 @@
     "html": "<p><em>foo <a href=\"/url\"><em>bar</em></a></em></p>\n",
     "markdown": "*foo [*bar*](/url)*\n",
     "example": 396,
-    "start_line": 6675,
-    "shouldFail": true
+    "start_line": 6675
   },
   {
     "end_line": 6688,
@@ -3726,8 +3725,7 @@
     "html": "<p><em>a <code>*</code></em></p>\n",
     "markdown": "*a `*`*\n",
     "example": 455,
-    "start_line": 7139,
-    "shouldFail": true
+    "start_line": 7139
   },
   {
     "end_line": 7150,
