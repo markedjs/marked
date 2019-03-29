@@ -34,7 +34,7 @@ var inputDirty = true;
 var $activeOutputElem = null;
 var search = searchToObject();
 var markedVersions = {
-  master: 'https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.js'
+  master: 'https://cdn.jsdelivr.net/gh/markedjs/marked@master/lib/marked.js'
 };
 var markedVersionCache = {};
 var delayTime = 1;
