@@ -34,7 +34,7 @@ var inputDirty = true;
 var $activeOutputElem = null;
 var search = searchToObject();
 var markedVersions = {
-  master: 'https://cdn.jsdelivr.net/gh/markedjs/marked@master/lib/marked.js'
+  master: 'https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.js'
 };
 var markedVersionCache = {};
 var delayTime = 1;
@@ -115,6 +115,19 @@ function setInitialVersion() {
         opt.value = ver;
         $markedVerElem.appendChild(opt);
       }
+    })
+    .then(function () {
+      return fetch('https://api.github.com/repos/markedjs/marked/commits')
+        .then(function (res) {
+          return res.json();
+        })
+        .then(function (json) {
+          markedVersions['master'] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + json[0].sha + '/lib/marked.js';
+        })
+        .catch(function () {
+          // do nothing
+          // uses url without commit
+        });
     })
     .then(function () {
       if (search.version) {
