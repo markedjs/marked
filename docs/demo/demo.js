@@ -131,7 +131,9 @@ function setInitialVersion() {
     })
     .then(function () {
       if (search.version) {
-        if (!markedVersions[search.version]) {
+        if (markedVersions[search.version]) {
+          return search.version;
+        } else {
           var match = search.version.match(/^(\w+):(.+)$/);
           if (match) {
             switch (match[1]) {
