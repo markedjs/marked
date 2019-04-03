@@ -141,8 +141,7 @@
     "section": "Autolinks",
     "html": "<p><a href=\"mailto:a.b-c_d@a.b\">a.b-c_d@a.b</a></p>\n<p><a href=\"mailto:a.b-c_d@a.b\">a.b-c_d@a.b</a>.</p>\n<p>a.b-c_d@a.b-</p>\n<p>a.b-c_d@a.b_</p>",
     "markdown": "a.b-c_d@a.b\n\na.b-c_d@a.b.\n\na.b-c_d@a.b-\n\na.b-c_d@a.b_",
-    "example": 607,
-    "shouldFail": true
+    "example": 607
   },
   {
     "section": "Disallowed Raw HTML",
