@@ -117,8 +117,23 @@ function setInitialVersion() {
       }
     })
     .then(function () {
+      return fetch('https://api.github.com/repos/markedjs/marked/commits')
+        .then(function (res) {
+          return res.json();
+        })
+        .then(function (json) {
+          markedVersions['master'] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + json[0].sha + '/lib/marked.js';
+        })
+        .catch(function () {
+          // do nothing
+          // uses url without commit
+        });
+    })
+    .then(function () {
       if (search.version) {
-        if (!markedVersions[search.version]) {
+        if (markedVersions[search.version]) {
+          return search.version;
+        } else {
           var match = search.version.match(/^(\w+):(.+)$/);
           if (match) {
             switch (match[1]) {
