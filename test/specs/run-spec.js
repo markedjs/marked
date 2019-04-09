@@ -49,4 +49,4 @@ function runSpecs(title, file, options) {
 };
 
 runSpecs('GFM 0.28', './gfm/gfm.0.28.json', {gfm: true});
-runSpecs('CommonMark 0.28', './commonmark/commonmark.0.28.json', {headerIds: false});
+runSpecs('CommonMark 0.29', './commonmark/commonmark.0.29.json', {headerIds: false});
