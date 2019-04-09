@@ -43,8 +43,7 @@
     "jasmine": "^3.3.1",
     "markdown": "0.x",
     "markdown-it": "8.x",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.4",
+    "node-fetch": "^2.3.0",
     "uglify-js": "^3.4.9"
   },
   "scripts": {
