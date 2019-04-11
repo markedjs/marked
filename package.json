@@ -29,6 +29,7 @@
     "html"
   ],
   "devDependencies": {
+    "@markedjs/html-differ": "^2.0.1",
     "commonmark": "0.x",
     "eslint": "^5.15.1",
     "eslint-config-standard": "^12.0.0",
@@ -39,10 +40,10 @@
     "eslint-plugin-vuln-regex-detector": "^1.0.4",
     "front-matter": "^3.0.1",
     "glob-to-regexp": "^0.4.0",
-    "@markedjs/html-differ": "^2.0.1",
     "jasmine": "^3.3.1",
     "markdown": "0.x",
     "markdown-it": "8.x",
+    "node-fetch": "^2.3.0",
     "uglify-js": "^3.4.9"
   },
   "scripts": {
