@@ -16,7 +16,7 @@ fetch('https://github.github.com/gfm/')
     $('.extension').each((i, ext) => {
       const section = $('.definition', ext).text().trim().replace(/^\d+\.\d+(.*?) \(extension\)[\s\S]*$/, '$1');
       $('.example', ext).each((j, exa) => {
-        const example = $(exa).attr('id').replace(/\D/g, '');
+        const example = +$(exa).attr('id').replace(/\D/g, '');
         const markdown = $('.language-markdown', exa).text().trim();
         const html = $('.language-html', exa).text().trim();
         specs.push({
