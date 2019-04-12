@@ -10,8 +10,8 @@ describe('ReDOS tests', () => {
       return;
     }
 
-    it(file, () => {
-      const spec = require(path.resolve(redosDir, file));
+    const spec = require(path.resolve(redosDir, file));
+    (spec.only ? fit : it)(file, () => {
       const before = process.hrtime();
       expect(spec).toRender(spec.html);
       const elapsed = process.hrtime(before);
