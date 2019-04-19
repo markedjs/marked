@@ -4667,8 +4667,7 @@
     "example": 569,
     "start_line": 8490,
     "end_line": 8496,
-    "section": "Images",
-    "shouldFail": true
+    "section": "Images"
   },
   {
     "markdown": "![foo ![bar](/url)](/url2)\n",
@@ -4694,8 +4693,7 @@
     "example": 572,
     "start_line": 8520,
     "end_line": 8526,
-    "section": "Images",
-    "shouldFail": true
+    "section": "Images"
   },
   {
     "markdown": "![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"\n",
@@ -4703,8 +4701,7 @@
     "example": 573,
     "start_line": 8529,
     "end_line": 8535,
-    "section": "Images",
-    "shouldFail": true
+    "section": "Images"
   },
   {
     "markdown": "![foo](train.jpg)\n",
@@ -4768,8 +4765,7 @@
     "example": 581,
     "start_line": 8597,
     "end_line": 8603,
-    "section": "Images",
-    "shouldFail": true
+    "section": "Images"
   },
   {
     "markdown": "![Foo][]\n\n[foo]: /url \"title\"\n",
@@ -4801,8 +4797,7 @@
     "example": 585,
     "start_line": 8642,
     "end_line": 8648,
-    "section": "Images",
-    "shouldFail": true
+    "section": "Images"
   },
   {
     "markdown": "![[foo]]\n\n[[foo]]: /url \"title\"\n",
