@@ -40,7 +40,6 @@
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vuln-regex-detector": "^1.0.4",
     "front-matter": "^3.0.2",
-    "glob-to-regexp": "^0.4.1",
     "jasmine": "^3.4.0",
     "markdown": "0.x",
     "markdown-it": "8.x",
