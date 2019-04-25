@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
-const marked = require('../../../');
-const htmlDiffer = require('../../helpers/html-differ.js');
+const marked = require('../');
+const htmlDiffer = require('./helpers/html-differ.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -27,6 +27,7 @@ function updateCommonmark(dir) {
           });
           removeFiles(dir);
           fs.writeFileSync(path.resolve(dir, `./commonmark.${version}.json`), JSON.stringify(specs, null, 2) + '\n');
+          console.log(`Saved CommonMark v${version} specs`);
         })
     )
     .catch((err) => {
@@ -70,6 +71,7 @@ function updateGfm(dir) {
       });
       removeFiles(dir);
       fs.writeFileSync(path.resolve(dir, `./gfm.${version}.json`), JSON.stringify(specs, null, 2) + '\n');
+      console.log(`Saved GFM v${version} specs.`);
     })
     .catch((err) => {
       console.error(err);
