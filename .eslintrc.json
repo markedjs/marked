@@ -2,17 +2,23 @@
   "parserOptions": { "ecmaVersion": 5 },
   "rules": {
     "semi": ["error", "always"],
-    "indent": ["warn", 2, {
-      "VariableDeclarator": { "var": 2 },
+    "indent": ["error", 2, {
       "SwitchCase": 1,
-      "outerIIFEBody": 0
+      "VariableDeclarator": { "var": 2 },
+      "outerIIFEBody": 0,
+      "MemberExpression": 1,
+      "FunctionDeclaration": { "parameters": 1, "body": 1 },
+      "FunctionExpression": { "parameters": 1, "body": 1 },
+      "CallExpression": { "arguments": 1 },
+      "ArrayExpression": 1,
+      "ObjectExpression": 1,
+      "ImportDeclaration": 1,
+      "flatTernaryExpressions": false,
+      "ignoreComments": false
     }],
-    "space-before-function-paren": "off",
-    "object-curly-spacing": "off",
     "operator-linebreak": ["error", "before", { "overrides": { "=": "after" } }],
     "no-cond-assign": "off",
     "no-useless-escape": "off",
-    "no-return-assign": "off",
     "one-var": "off",
     "no-control-regex": "off",
 
@@ -100,6 +106,7 @@
     "no-proto": "error",
     "no-redeclare": "error",
     "no-regex-spaces": "error",
+    "no-return-assign": ["error", "except-parens"],
     "no-return-await": "error",
     "no-self-assign": "error",
     "no-self-compare": "error",
@@ -129,6 +136,7 @@
     "no-useless-return": "error",
     "no-whitespace-before-property": "error",
     "no-with": "error",
+    "object-curly-spacing": ["error", "always"],
     "object-property-newline": ["error", { "allowMultiplePropertiesPerLine": true }],
     "padded-blocks": ["error", { "blocks": "never", "switches": "never", "classes": "never" }],
     "prefer-promise-reject-errors": "error",
@@ -136,6 +144,7 @@
     "rest-spread-spacing": ["error", "never"],
     "semi-spacing": ["error", { "before": false, "after": true }],
     "space-before-blocks": ["error", "always"],
+    "space-before-function-paren": ["error", "always"],
     "space-in-parens": ["error", "never"],
     "space-infix-ops": "error",
     "space-unary-ops": ["error", { "words": true, "nonwords": false }],

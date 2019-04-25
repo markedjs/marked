@@ -25,7 +25,7 @@ onmessage = function (e) {
   }
 };
 
-function parse(e) {
+function parse (e) {
   switch (e.data.task) {
     case 'defaults':
 
@@ -70,7 +70,7 @@ function parse(e) {
   }
 }
 
-function jsonString(input) {
+function jsonString (input) {
   var output = (input + '')
     .replace(/\n/g, '\\n')
     .replace(/\r/g, '\\r')
@@ -81,7 +81,7 @@ function jsonString(input) {
   return '"' + output + '"';
 };
 
-function loadVersion(ver) {
+function loadVersion (ver) {
   var promise;
   if (versionCache[ver]) {
     promise = Promise.resolve(versionCache[ver]);

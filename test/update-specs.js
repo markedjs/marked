@@ -5,13 +5,13 @@ const htmlDiffer = require('./helpers/html-differ.js');
 const fs = require('fs');
 const path = require('path');
 
-function removeFiles(dir) {
+function removeFiles (dir) {
   fs.readdirSync(dir).forEach(file => {
     fs.unlinkSync(path.join(dir, file));
   });
 }
 
-function updateCommonmark(dir) {
+function updateCommonmark (dir) {
   return fetch('https://raw.githubusercontent.com/commonmark/commonmark.js/master/package.json')
     .then(res => res.json())
     .then(pkg => pkg.version.replace(/^(\d+\.\d+).*$/, '$1'))
@@ -20,7 +20,7 @@ function updateCommonmark(dir) {
         .then(res => res.json())
         .then(specs => {
           specs.forEach(spec => {
-            const html = marked(spec.markdown, {headerIds: false});
+            const html = marked(spec.markdown, { headerIds: false });
             if (!htmlDiffer.isEqual(html, spec.html)) {
               spec.shouldFail = true;
             }
@@ -35,7 +35,7 @@ function updateCommonmark(dir) {
     });
 }
 
-function updateGfm(dir) {
+function updateGfm (dir) {
   return fetch('https://github.github.com/gfm/')
     .then(res => res.text())
     .then(html => cheerio.load(html))
@@ -64,7 +64,7 @@ function updateGfm(dir) {
     })
     .then(([version, specs]) => {
       specs.forEach(spec => {
-        const html = marked(spec.markdown, {gfm: true});
+        const html = marked(spec.markdown, { gfm: true });
         if (!htmlDiffer.isEqual(html, spec.html)) {
           spec.shouldFail = true;
         }

@@ -1,7 +1,7 @@
 const path = require('path');
 const load = require('../helpers/load.js');
 
-function runSpecs(title, dir, showCompletionTable, options) {
+function runSpecs (title, dir, showCompletionTable, options) {
   options = options || {};
   const specs = load.loadFiles(path.resolve(__dirname, dir));
 
@@ -33,8 +33,8 @@ function runSpecs(title, dir, showCompletionTable, options) {
   });
 }
 
-runSpecs('GFM', './gfm', true, {gfm: true});
-runSpecs('CommonMark', './commonmark', true, {headerIds: false});
-runSpecs('Original', './original', false, {gfm: false});
+runSpecs('GFM', './gfm', true, { gfm: true });
+runSpecs('CommonMark', './commonmark', true, { headerIds: false });
+runSpecs('Original', './original', false, { gfm: false });
 runSpecs('New', './new');
 runSpecs('Redos', './redos');

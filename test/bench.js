@@ -1,13 +1,13 @@
 const path = require('path');
 const htmlDiffer = require('./helpers/html-differ.js');
-const {loadFiles} = require('./helpers/load.js');
+const { loadFiles } = require('./helpers/load.js');
 
 let marked = require('../');
 
 /**
  * Load specs
  */
-function load() {
+function load () {
   const dir = path.resolve(__dirname, './specs/commonmark');
   const sections = loadFiles(dir);
   let specs = [];
@@ -22,7 +22,7 @@ function load() {
 /**
  * Run all benchmarks
  */
-function runBench(options) {
+function runBench (options) {
   options = options || {};
   const specs = load();
 
@@ -101,7 +101,7 @@ function runBench(options) {
   }
 }
 
-function bench(name, specs, engine) {
+function bench (name, specs, engine) {
   const before = process.hrtime();
   for (let i = 0; i < 1e3; i++) {
     for (const spec of specs) {
@@ -127,7 +127,7 @@ function bench(name, specs, engine) {
 /**
  * A simple one-time benchmark
  */
-function time(options) {
+function time (options) {
   options = options || {};
   const specs = load();
   if (options.marked) {
@@ -139,13 +139,13 @@ function time(options) {
 /**
  * Argument Parsing
  */
-function parseArg(argv) {
+function parseArg (argv) {
   argv = argv.slice(2);
 
   const options = {};
   const orphans = [];
 
-  function getarg() {
+  function getarg () {
     let arg = argv.shift();
 
     if (arg.indexOf('--') === 0) {
@@ -222,14 +222,14 @@ function parseArg(argv) {
 /**
  * Helpers
  */
-function camelize(text) {
+function camelize (text) {
   return text.replace(/(\w)-(\w)/g, (_, a, b) => a + b.toUpperCase());
 }
 
 /**
  * Main
  */
-function main(argv) {
+function main (argv) {
   const opt = parseArg(argv);
 
   if (opt.minified) {
@@ -246,7 +246,7 @@ function main(argv) {
 /**
  * returns time to millisecond granularity
  */
-function prettyElapsedTime(hrtimeElapsed) {
+function prettyElapsedTime (hrtimeElapsed) {
   const seconds = hrtimeElapsed[0];
   const frac = Math.round(hrtimeElapsed[1] / 1e3) / 1e3;
   return seconds * 1e3 + frac;
