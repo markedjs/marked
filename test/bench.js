@@ -1,20 +1,19 @@
-#!/usr/bin/env node
-
 const path = require('path');
-const fs = require('fs');
 const htmlDiffer = require('./helpers/html-differ.js');
+const {loadFiles} = require('./helpers/load.js');
 
 let marked = require('../');
 
 function load() {
-  const folder = path.resolve(__dirname, './specs/commonmark');
-  const files = fs.readdirSync(folder);
-  return files.reduce((arr, file) => {
-    if (file.match(/\.json$/)) {
-      return arr.concat(require(`${folder}/${file}`));
-    }
-    return arr;
-  }, []);
+  const dir = path.resolve(__dirname, './specs/commonmark');
+  const sections = loadFiles(dir);
+  let specs = [];
+
+  for (const section in sections) {
+    specs = specs.concat(sections[section].specs);
+  }
+
+  return specs;
 }
 
 function runBench(options) {
