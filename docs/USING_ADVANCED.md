@@ -139,8 +139,8 @@ var markedTimeout = setTimeout(() => {
 }, timeoutLimit);
 
 markedWorker.onmessage = (e) => {
-  var html = e.data;
   clearTimeout(markedTimeout);
+  var html = e.data;
   console.log(html);
   markedWorker.terminate();
 };
