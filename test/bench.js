@@ -4,6 +4,9 @@ const {loadFiles} = require('./helpers/load.js');
 
 let marked = require('../');
 
+/**
+ * Load specs
+ */
 function load() {
   const dir = path.resolve(__dirname, './specs/commonmark');
   const sections = loadFiles(dir);
@@ -16,6 +19,9 @@ function load() {
   return specs;
 }
 
+/**
+ * Run all benchmarks
+ */
 function runBench(options) {
   options = options || {};
   const specs = load();
