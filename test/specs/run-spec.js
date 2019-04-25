@@ -14,7 +14,9 @@ function runSpecs (title, dir, showCompletionTable, options) {
       describe(section, () => {
         specs[section].specs.forEach((spec) => {
           spec.options = Object.assign({}, options, (spec.options || {}));
-          (spec.only ? fit : it)('should ' + (spec.shouldFail ? 'fail' : 'pass') + ' example ' + spec.example, () => {
+          const example = (spec.example ? ' example ' + spec.example : '');
+          const passFail = (spec.shouldFail ? 'fail' : 'pass');
+          (spec.only ? fit : it)('should ' + passFail + example, () => {
             const before = process.hrtime();
             if (spec.shouldFail) {
               expect(spec).not.toRender(spec.html);

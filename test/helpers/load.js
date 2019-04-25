@@ -81,7 +81,6 @@ function loadFiles (dir) {
         const content = fm(fs.readFileSync(absFile, 'utf8'));
         specs = [{
           section: name,
-          example: 1,
           markdown: content.body,
           html: fs.readFileSync(absFile.replace(/[^.]+$/, 'html'), 'utf8'),
           options: content.attributes
