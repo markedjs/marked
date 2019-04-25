@@ -14,7 +14,7 @@ marked(markdownString [,options] [,callback])
 
 ```js
 // Create reference instance
-var marked = require('marked');
+const marked = require('marked');
 
 // Set options
 // `highlight` example uses `highlight.js`
@@ -124,23 +124,23 @@ markedWorker.postMessage(markdownString);
 importScripts('path/to/marked.min.js');
 
 onmessage = (e) => {
-  var markdownString = e.data
+  const markdownString = e.data
   postMessage(marked(markdownString));
 };
 ```
 
 ```html
 <script>
-var markedWorker = new Worker('markedWorker.js');
+const markedWorker = new Worker('markedWorker.js');
 
-var markedTimeout = setTimeout(() => {
+const markedTimeout = setTimeout(() => {
   markedWorker.terminate();
   throw new Error('Marked took too long!');
 }, timeoutLimit);
 
 markedWorker.onmessage = (e) => {
   clearTimeout(markedTimeout);
-  var html = e.data;
+  const html = e.data;
   console.log(html);
   markedWorker.terminate();
 };
