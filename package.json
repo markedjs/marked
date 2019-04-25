@@ -45,16 +45,12 @@
     "markdown": "0.x",
     "markdown-it": "8.x",
     "node-fetch": "^2.3.0",
-    "uglify-js": "^3.5.4"
+    "uglify-js": "^3.5.8"
   },
   "scripts": {
     "test": "jasmine --config=jasmine.json",
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",
-    "test:cm": "npm test -- test/specs/commonmark/**/*-spec.js",
-    "test:gfm": "npm test -- test/specs/gfm/**/*-spec.js",
-    "test:marked": "npm test -- test/specs/marked/**/*-spec.js",
-    "test:old": "node test",
     "test:lint": "eslint bin/marked .",
     "test:redos": "eslint --plugin vuln-regex-detector --rule '\"vuln-regex-detector/no-vuln-regex\": 2' lib/marked.js",
     "test:node4": "npx node@4 ./node_modules/jasmine/bin/jasmine.js --config=jasmine.json",
