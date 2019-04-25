@@ -100,7 +100,7 @@ parentPort.on('message', (markdownString) => {
 // index.js
 
 const { Worker } = require('worker_threads');
-const markedWorker = new Worker('markedWorker.js');
+const markedWorker = new Worker('./markedWorker.js');
 
 const markedTimeout = setTimeout(() => {
   markedWorker.terminate();
@@ -110,6 +110,7 @@ const markedTimeout = setTimeout(() => {
 markedWorker.on('message', (html) => {
   clearTimeout(markedTimeout);
   console.log(html);
+  markedWorker.terminate();
 });
 
 markedWorker.postMessage(markdownString);
@@ -122,7 +123,8 @@ markedWorker.postMessage(markdownString);
 
 importScripts('path/to/marked.min.js');
 
-onmessage = (markdownString) => {
+onmessage = (e) => {
+  var markdownString = e.data
   postMessage(marked(markdownString));
 };
 ```
@@ -136,9 +138,11 @@ var markedTimeout = setTimeout(() => {
   throw new Error('Marked took too long!');
 }, timeoutLimit);
 
-markedWorker.onmessage = (html) => {
+markedWorker.onmessage = (e) => {
+  var html = e.data;
   clearTimeout(markedTimeout);
   console.log(html);
+  markedWorker.terminate();
 };
 
 markedWorker.postMessage(markdownString);
