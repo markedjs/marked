@@ -54,6 +54,7 @@
     "test:lint": "eslint bin/marked .",
     "test:redos": "eslint --plugin vuln-regex-detector --rule '\"vuln-regex-detector/no-vuln-regex\": 2' lib/marked.js",
     "test:node4": "npx node@4 ./node_modules/jasmine/bin/jasmine.js --config=jasmine.json",
+    "test:update": "node test/update-specs.js",
     "bench": "node test/bench.js",
     "lint": "eslint --fix bin/marked .",
     "build": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
