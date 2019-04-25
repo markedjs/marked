@@ -7,7 +7,7 @@ const htmlDiffer = require('./helpers/html-differ.js');
 let marked = require('../');
 
 function load() {
-  let folder = path.resolve(__dirname, './specs/commonmark');
+  const folder = path.resolve(__dirname, './specs/commonmark');
   const files = fs.readdirSync(folder);
   return files.reduce((arr, file) => {
     if (file.match(/\.json$/)) {
@@ -171,7 +171,7 @@ function parseArg(argv) {
   const defaults = marked.getDefaults();
 
   while (argv.length) {
-    let arg = getarg();
+    const arg = getarg();
     switch (arg) {
       case '-t':
       case '--time':

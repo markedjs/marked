@@ -1,0 +1,28 @@
+{
+  "extends": "standard",
+  "plugins": [
+    "standard"
+  ],
+  "parserOptions": { "ecmaVersion": 2018 },
+  "rules": {
+    "semi": ["error", "always"],
+    "indent": ["warn", 2, {
+      "SwitchCase": 1,
+      "outerIIFEBody": 0
+    }],
+    "space-before-function-paren": "off",
+    "object-curly-spacing": "off",
+    "operator-linebreak": ["error", "before", { "overrides": { "=": "after" } }],
+    "no-cond-assign": "off",
+    "no-useless-escape": "off",
+    "no-return-assign": "off",
+    "one-var": "off",
+    "no-control-regex": "off",
+    "prefer-const": "error",
+    "no-var": "error"
+  },
+  "env": {
+    "node": true,
+    "jasmine": true
+  }
+}

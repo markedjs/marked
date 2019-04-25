@@ -1,4 +1,4 @@
-/* globals marked, unfetch, ES6Promise */
+/* globals marked, unfetch, ES6Promise, Promise */
 
 if (!window.Promise) {
   window.Promise = ES6Promise;

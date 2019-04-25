@@ -194,7 +194,7 @@ function camelize(text) {
 
 function handleError(err) {
   if (err.code === 'ENOENT') {
-    console.error(`marked: output to ${err.path}: No such directory`);
+    console.error('marked: output to ' + err.path + ': No such directory');
     return process.exit(1);
   }
   throw err;
