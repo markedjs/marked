@@ -86,6 +86,7 @@ Marked can be run in a [worker thread](https://nodejs.org/api/worker_threads.htm
 ### Node Worker Thread
 
 > 🚨 Node Worker Threads are [experimental](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) 🚨
+>
 > This implementation may change.
 
 ```js
@@ -134,8 +135,9 @@ onmessage = (e) => {
 };
 ```
 
-```html
-<script>
+```js
+// script.js
+
 const markedWorker = new Worker('markedWorker.js');
 
 const markedTimeout = setTimeout(() => {
@@ -151,5 +153,4 @@ markedWorker.onmessage = (e) => {
 };
 
 markedWorker.postMessage(markdownString);
-</script>
 ```
