@@ -121,6 +121,8 @@ markedWorker.postMessage(markdownString);
 
 ### Web Worker
 
+> **NOTE**: Web Workers send the payload from `postMessage` in an object with the payload in a `.data` property
+
 ```js
 // markedWorker.js
 
