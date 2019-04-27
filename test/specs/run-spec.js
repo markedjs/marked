@@ -1,7 +1,7 @@
 const path = require('path');
 const load = require('../helpers/load.js');
 
-function runSpecs (title, dir, showCompletionTable, options) {
+function runSpecs(title, dir, showCompletionTable, options) {
   options = options || {};
   const specs = load.loadFiles(path.resolve(__dirname, dir));
 

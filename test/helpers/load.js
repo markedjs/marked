@@ -4,12 +4,12 @@ const fs = require('fs');
 const path = require('path');
 const fm = require('front-matter');
 
-function node4Polyfills () {
+function node4Polyfills() {
   // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd
   if (!String.prototype.padEnd) {
     // eslint-disable-next-line no-extend-native
-    String.prototype.padEnd = function padEnd (targetLength, padString) {
+    String.prototype.padEnd = function padEnd(targetLength, padString) {
       targetLength = targetLength >> 0; // floor if number or convert non-number to 0;
       padString = String((typeof padString !== 'undefined' ? padString : ' '));
       if (this.length > targetLength) {
@@ -28,7 +28,7 @@ function node4Polyfills () {
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
   if (!String.prototype.padStart) {
     // eslint-disable-next-line no-extend-native
-    String.prototype.padStart = function padStart (targetLength, padString) {
+    String.prototype.padStart = function padStart(targetLength, padString) {
       targetLength = targetLength >> 0; // truncate if number, or convert non-number to 0;
       padString = String(typeof padString !== 'undefined' ? padString : ' ');
       if (this.length >= targetLength) {
@@ -45,7 +45,7 @@ function node4Polyfills () {
 }
 node4Polyfills();
 
-function outputCompletionTable (title, specs) {
+function outputCompletionTable(title, specs) {
   let longestName = 0;
   let maxSpecs = 0;
 
@@ -67,7 +67,7 @@ function outputCompletionTable (title, specs) {
   console.log();
 }
 
-function loadFiles (dir) {
+function loadFiles(dir) {
   const files = fs.readdirSync(dir);
 
   return files.reduce((obj, file) => {

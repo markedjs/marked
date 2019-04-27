@@ -5,6 +5,26 @@
   ],
   "rules": {
     "semi": ["error", "always"],
+    "indent": ["error", 2, {
+      "SwitchCase": 1,
+      "VariableDeclarator": { "var": 2 },
+      "outerIIFEBody": 0,
+      "MemberExpression": 1,
+      "FunctionDeclaration": { "parameters": 1, "body": 1 },
+      "FunctionExpression": { "parameters": 1, "body": 1 },
+      "CallExpression": { "arguments": 1 },
+      "ArrayExpression": 1,
+      "ObjectExpression": 1,
+      "ImportDeclaration": 1,
+      "flatTernaryExpressions": false,
+      "ignoreComments": false
+    }],
+    "operator-linebreak": ["error", "before", { "overrides": { "=": "after" } }],
+    "space-before-function-paren": ["error", "never"],
+    "no-cond-assign": "off",
+    "no-useless-escape": "off",
+    "one-var": "off",
+    "no-control-regex": "off",
     "prefer-const": "error",
     "no-var": "error"
   },
