@@ -13,7 +13,7 @@ var fs = require('fs'),
  * Man Page
  */
 
-function help () {
+function help() {
   var spawn = require('child_process').spawn;
 
   var options = {
@@ -24,15 +24,15 @@ function help () {
   };
 
   spawn('man', [path.resolve(__dirname, '/../man/marked.1')], options)
-    .on('error', function () {
-      fs.readFile(path.resolve(__dirname, '/../man/marked.1.txt'), 'utf8', function (err, data) {
+    .on('error', function() {
+      fs.readFile(path.resolve(__dirname, '/../man/marked.1.txt'), 'utf8', function(err, data) {
         if (err) throw err;
         console.log(data);
       });
     });
 }
 
-function version () {
+function version() {
   var pkg = require('../package.json');
   console.log(pkg.version);
 }
@@ -41,7 +41,7 @@ function version () {
  * Main
  */
 
-function main (argv, callback) {
+function main(argv, callback) {
   var files = [],
       options = {},
       input,
@@ -51,7 +51,7 @@ function main (argv, callback) {
       tokens,
       opt;
 
-  function getarg () {
+  function getarg() {
     var arg = argv.shift();
 
     if (arg.indexOf('--') === 0) {
@@ -65,7 +65,7 @@ function main (argv, callback) {
     } else if (arg[0] === '-') {
       if (arg.length > 2) {
         // e.g. -abc
-        argv = arg.substring(1).split('').map(function (ch) {
+        argv = arg.substring(1).split('').map(function(ch) {
           return '-' + ch;
         }).concat(argv);
         arg = argv.shift();
@@ -128,7 +128,7 @@ function main (argv, callback) {
     }
   }
 
-  function getData (callback) {
+  function getData(callback) {
     if (!input) {
       if (files.length <= 2) {
         if (string) {
@@ -141,7 +141,7 @@ function main (argv, callback) {
     return fs.readFile(input, 'utf8', callback);
   }
 
-  return getData(function (err, data) {
+  return getData(function(err, data) {
     if (err) return callback(err);
 
     data = tokens
@@ -161,21 +161,21 @@ function main (argv, callback) {
  * Helpers
  */
 
-function getStdin (callback) {
+function getStdin(callback) {
   var stdin = process.stdin,
       buff = '';
 
   stdin.setEncoding('utf8');
 
-  stdin.on('data', function (data) {
+  stdin.on('data', function(data) {
     buff += data;
   });
 
-  stdin.on('error', function (err) {
+  stdin.on('error', function(err) {
     return callback(err);
   });
 
-  stdin.on('end', function () {
+  stdin.on('end', function() {
     return callback(null, buff);
   });
 
@@ -186,13 +186,13 @@ function getStdin (callback) {
   }
 }
 
-function camelize (text) {
-  return text.replace(/(\w)-(\w)/g, function (_, a, b) {
+function camelize(text) {
+  return text.replace(/(\w)-(\w)/g, function(_, a, b) {
     return a + b.toUpperCase();
   });
 }
 
-function handleError (err) {
+function handleError(err) {
   if (err.code === 'ENOENT') {
     console.error('marked: output to ' + err.path + ': No such directory');
     return process.exit(1);
@@ -206,7 +206,7 @@ function handleError (err) {
 
 if (!module.parent) {
   process.title = 'marked';
-  main(process.argv.slice(), function (err, code) {
+  main(process.argv.slice(), function(err, code) {
     if (err) return handleError(err);
     return process.exit(code || 0);
   });

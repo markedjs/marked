@@ -7,7 +7,7 @@ if (!window.fetch) {
   window.fetch = unfetch;
 }
 
-onunhandledrejection = function (e) {
+onunhandledrejection = function(e) {
   throw e.reason;
 };
 
@@ -70,7 +70,7 @@ Promise.all([
   setInitialText(),
   setInitialVersion()
     .then(setInitialOptions)
-]).then(function () {
+]).then(function() {
   handleInputChange();
   handleOutputChange();
   checkForChanges();
@@ -79,13 +79,13 @@ Promise.all([
   $mainElem.style.display = 'block';
 });
 
-function setInitialText () {
+function setInitialText() {
   if ('text' in search) {
     $markdownElem.value = search.text;
   } else {
     return fetch('./initial.md')
-      .then(function (res) { return res.text(); })
-      .then(function (text) {
+      .then(function(res) { return res.text(); })
+      .then(function(text) {
         if ($markdownElem.value === '') {
           $markdownElem.value = text;
         }
@@ -93,20 +93,20 @@ function setInitialText () {
   }
 }
 
-function setInitialQuickref () {
+function setInitialQuickref() {
   return fetch('./quickref.md')
-    .then(function (res) { return res.text(); })
-    .then(function (text) {
+    .then(function(res) { return res.text(); })
+    .then(function(text) {
       document.querySelector('#quickref').value = text;
     });
 }
 
-function setInitialVersion () {
+function setInitialVersion() {
   return fetch('https://data.jsdelivr.com/v1/package/npm/marked')
-    .then(function (res) {
+    .then(function(res) {
       return res.json();
     })
-    .then(function (json) {
+    .then(function(json) {
       for (var i = 0; i < json.versions.length; i++) {
         var ver = json.versions[i];
         markedVersions[ver] = 'https://cdn.jsdelivr.net/npm/marked@' + ver + '/lib/marked.js';
@@ -116,20 +116,20 @@ function setInitialVersion () {
         $markedVerElem.appendChild(opt);
       }
     })
-    .then(function () {
+    .then(function() {
       return fetch('https://api.github.com/repos/markedjs/marked/commits')
-        .then(function (res) {
+        .then(function(res) {
           return res.json();
         })
-        .then(function (json) {
+        .then(function(json) {
           markedVersions['master'] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + json[0].sha + '/lib/marked.js';
         })
-        .catch(function () {
+        .catch(function() {
           // do nothing
           // uses url without commit
         });
     })
-    .then(function () {
+    .then(function() {
       if (search.version) {
         if (markedVersions[search.version]) {
           return search.version;
@@ -142,7 +142,7 @@ function setInitialVersion () {
                 return search.version;
               case 'pr':
                 return getPrCommit(match[2])
-                  .then(function (commit) {
+                  .then(function(commit) {
                     if (!commit) {
                       return 'master';
                     }
@@ -156,13 +156,13 @@ function setInitialVersion () {
 
       return 'master';
     })
-    .then(function (version) {
+    .then(function(version) {
       $markedVerElem.value = version;
     })
     .then(updateVersion);
 }
 
-function setInitialOptions () {
+function setInitialOptions() {
   if ('options' in search) {
     $optionsElem.value = search.options;
   } else {
@@ -170,22 +170,22 @@ function setInitialOptions () {
   }
 }
 
-function setInitialOutputType () {
+function setInitialOutputType() {
   if (search.outputType) {
     $outputTypeElem.value = search.outputType;
   }
 }
 
-function handleIframeLoad () {
+function handleIframeLoad() {
   lastInput = '';
   inputDirty = true;
 }
 
-function handleInput () {
+function handleInput() {
   inputDirty = true;
 };
 
-function handleVersionChange () {
+function handleVersionChange() {
   if ($markedVerElem.value === 'commit' || $markedVerElem.value === 'pr') {
     $commitVerElem.style.display = '';
   } else {
@@ -194,14 +194,14 @@ function handleVersionChange () {
   }
 }
 
-function handleClearClick () {
+function handleClearClick() {
   $markdownElem.value = '';
   $markedVerElem.value = 'master';
   $commitVerElem.style.display = 'none';
   updateVersion().then(setDefaultOptions);
 }
 
-function handleAddVersion (e) {
+function handleAddVersion(e) {
   if (e.which === 13) {
     switch ($markedVerElem.value) {
       case 'commit':
@@ -220,7 +220,7 @@ function handleAddVersion (e) {
         $commitVerElem.disabled = true;
         var pr = $commitVerElem.value.replace(/\D/g, '');
         getPrCommit(pr)
-          .then(function (commit) {
+          .then(function(commit) {
             $commitVerElem.disabled = false;
             if (!commit) {
               alert('That is not a valid PR');
@@ -236,16 +236,16 @@ function handleAddVersion (e) {
   }
 }
 
-function handleInputChange () {
+function handleInputChange() {
   handleChange($inputPanes, $inputTypeElem.value);
 }
 
-function handleOutputChange () {
+function handleOutputChange() {
   $activeOutputElem = handleChange($panes, $outputTypeElem.value);
   updateLink();
 }
 
-function handleChange (panes, visiblePane) {
+function handleChange(panes, visiblePane) {
   var active = null;
   for (var i = 0; i < panes.length; i++) {
     if (panes[i].id === visiblePane) {
@@ -258,7 +258,7 @@ function handleChange (panes, visiblePane) {
   return active;
 };
 
-function addCommitVersion (value, text, commit) {
+function addCommitVersion(value, text, commit) {
   if (markedVersions[value]) {
     return;
   }
@@ -269,19 +269,19 @@ function addCommitVersion (value, text, commit) {
   $markedVerElem.insertBefore(opt, $markedVerElem.firstChild);
 }
 
-function getPrCommit (pr) {
+function getPrCommit(pr) {
   return fetch('https://api.github.com/repos/markedjs/marked/pulls/' + pr + '/commits')
-    .then(function (res) {
+    .then(function(res) {
       return res.json();
     })
-    .then(function (json) {
+    .then(function(json) {
       return json[json.length - 1].sha;
-    }).catch(function () {
+    }).catch(function() {
       // return undefined
     });
 }
 
-function setDefaultOptions () {
+function setDefaultOptions() {
   if (window.Worker) {
     messageWorker({
       task: 'defaults',
@@ -293,10 +293,10 @@ function setDefaultOptions () {
   }
 }
 
-function setOptions (opts) {
+function setOptions(opts) {
   $optionsElem.value = JSON.stringify(
     opts,
-    function (key, value) {
+    function(key, value) {
       if (value && typeof value === 'object' && Object.getPrototypeOf(value) !== Object.prototype) {
         return undefined;
       }
@@ -304,7 +304,7 @@ function setOptions (opts) {
     }, ' ');
 }
 
-function searchToObject () {
+function searchToObject() {
   // modified from https://stackoverflow.com/a/7090123/806777
   var pairs = location.search.slice(1).split('&');
   var obj = {};
@@ -322,7 +322,7 @@ function searchToObject () {
   return obj;
 }
 
-function jsonString (input) {
+function jsonString(input) {
   var output = (input + '')
     .replace(/\n/g, '\\n')
     .replace(/\r/g, '\\r')
@@ -333,13 +333,13 @@ function jsonString (input) {
   return '"' + output + '"';
 };
 
-function getScrollSize () {
+function getScrollSize() {
   var e = $activeOutputElem;
 
   return e.scrollHeight - e.clientHeight;
 };
 
-function getScrollPercent () {
+function getScrollPercent() {
   var size = getScrollSize();
 
   if (size <= 0) {
@@ -349,11 +349,11 @@ function getScrollPercent () {
   return $activeOutputElem.scrollTop / size;
 };
 
-function setScrollPercent (percent) {
+function setScrollPercent(percent) {
   $activeOutputElem.scrollTop = percent * getScrollSize();
 };
 
-function updateLink () {
+function updateLink() {
   var outputType = '';
   if ($outputTypeElem.value !== 'preview') {
     outputType = 'outputType=' + $outputTypeElem.value + '&';
@@ -365,7 +365,7 @@ function updateLink () {
   history.replaceState('', document.title, $permalinkElem.href);
 }
 
-function updateVersion () {
+function updateVersion() {
   if (window.Worker) {
     handleInput();
     return Promise.resolve();
@@ -375,13 +375,13 @@ function updateVersion () {
     promise = Promise.resolve(markedVersionCache[$markedVerElem.value]);
   } else {
     promise = fetch(markedVersions[$markedVerElem.value])
-      .then(function (res) { return res.text(); })
-      .then(function (text) {
+      .then(function(res) { return res.text(); })
+      .then(function(text) {
         markedVersionCache[$markedVerElem.value] = text;
         return text;
       });
   }
-  return promise.then(function (text) {
+  return promise.then(function(text) {
     var script = document.createElement('script');
     script.textContent = text;
 
@@ -390,7 +390,7 @@ function updateVersion () {
   }).then(handleInput);
 }
 
-function checkForChanges () {
+function checkForChanges() {
   if (inputDirty && $markedVerElem.value !== 'commit' && $markedVerElem.value !== 'pr' && (typeof marked !== 'undefined' || window.Worker)) {
     inputDirty = false;
 
@@ -448,7 +448,7 @@ function checkForChanges () {
   checkChangeTimeout = window.setTimeout(checkForChanges, delayTime);
 };
 
-function setResponseTime (ms) {
+function setResponseTime(ms) {
   var amount = ms;
   var suffix = 'ms';
   if (ms > 1000 * 60 * 60) {
@@ -464,7 +464,7 @@ function setResponseTime (ms) {
   $responseTimeElem.textContent = amount + suffix;
 }
 
-function setParsed (parsed, lexed) {
+function setParsed(parsed, lexed) {
   try {
     $previewIframe.contentDocument.body.innerHTML = parsed;
   } catch (ex) {}
@@ -472,14 +472,14 @@ function setParsed (parsed, lexed) {
   $lexerElem.value = lexed;
 }
 
-function messageWorker (message) {
+function messageWorker(message) {
   if (!markedWorker || markedWorker.working) {
     if (markedWorker) {
       clearTimeout(markedWorker.timeout);
       markedWorker.terminate();
     }
     markedWorker = new Worker('worker.js');
-    markedWorker.onmessage = function (e) {
+    markedWorker.onmessage = function(e) {
       clearTimeout(markedWorker.timeout);
       markedWorker.working = false;
       switch (e.data.task) {
@@ -500,7 +500,7 @@ function messageWorker (message) {
       delayTime = 10;
       checkForChanges();
     };
-    markedWorker.onerror = markedWorker.onmessageerror = function (err) {
+    markedWorker.onerror = markedWorker.onmessageerror = function(err) {
       clearTimeout(markedWorker.timeout);
       var error = 'There was an error in the Worker';
       if (err) {
@@ -525,8 +525,8 @@ function messageWorker (message) {
   markedWorker.postMessage(message);
 }
 
-function workerTimeout (seconds) {
-  markedWorker.timeout = setTimeout(function () {
+function workerTimeout(seconds) {
+  markedWorker.timeout = setTimeout(function() {
     seconds++;
     markedWorker.onerror('Marked has taken longer than ' + seconds + ' second' + (seconds > 1 ? 's' : '') + ' to respond...');
     workerTimeout(seconds);

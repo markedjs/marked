@@ -23,6 +23,7 @@
       "ignoreComments": false
     }],
     "operator-linebreak": ["error", "before", { "overrides": { "=": "after" } }],
+    "space-before-function-paren": ["error", "never"],
     "no-cond-assign": "off",
     "no-useless-escape": "off",
     "one-var": "off",
@@ -150,7 +151,6 @@
     "rest-spread-spacing": ["error", "never"],
     "semi-spacing": ["error", { "before": false, "after": true }],
     "space-before-blocks": ["error", "always"],
-    "space-before-function-paren": ["error", "always"],
     "space-in-parens": ["error", "never"],
     "space-infix-ops": "error",
     "space-unary-ops": ["error", { "words": true, "nonwords": false }],

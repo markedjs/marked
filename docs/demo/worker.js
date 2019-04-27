@@ -11,21 +11,21 @@ if (!self.fetch) {
 var versionCache = {};
 var currentVersion;
 
-onunhandledrejection = function (e) {
+onunhandledrejection = function(e) {
   throw e.reason;
 };
 
-onmessage = function (e) {
+onmessage = function(e) {
   if (e.data.version === currentVersion) {
     parse(e);
   } else {
-    loadVersion(e.data.version).then(function () {
+    loadVersion(e.data.version).then(function() {
       parse(e);
     });
   }
 };
 
-function parse (e) {
+function parse(e) {
   switch (e.data.task) {
     case 'defaults':
 
@@ -70,7 +70,7 @@ function parse (e) {
   }
 }
 
-function jsonString (input) {
+function jsonString(input) {
   var output = (input + '')
     .replace(/\n/g, '\\n')
     .replace(/\r/g, '\\r')
@@ -81,19 +81,19 @@ function jsonString (input) {
   return '"' + output + '"';
 };
 
-function loadVersion (ver) {
+function loadVersion(ver) {
   var promise;
   if (versionCache[ver]) {
     promise = Promise.resolve(versionCache[ver]);
   } else {
     promise = fetch(ver)
-      .then(function (res) { return res.text(); })
-      .then(function (text) {
+      .then(function(res) { return res.text(); })
+      .then(function(text) {
         versionCache[ver] = text;
         return text;
       });
   }
-  return promise.then(function (text) {
+  return promise.then(function(text) {
     try {
       // eslint-disable-next-line no-new-func
       Function(text)();
