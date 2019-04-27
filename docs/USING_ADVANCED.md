@@ -138,7 +138,7 @@ onmessage = (e) => {
 ```js
 // script.js
 
-const markedWorker = new Worker('markedWorker.js');
+const markedWorker = new Worker('./markedWorker.js');
 
 const markedTimeout = setTimeout(() => {
   markedWorker.terminate();
