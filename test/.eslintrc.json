@@ -8,16 +8,7 @@
     "indent": ["error", 2, {
       "SwitchCase": 1,
       "VariableDeclarator": { "var": 2 },
-      "outerIIFEBody": 0,
-      "MemberExpression": 1,
-      "FunctionDeclaration": { "parameters": 1, "body": 1 },
-      "FunctionExpression": { "parameters": 1, "body": 1 },
-      "CallExpression": { "arguments": 1 },
-      "ArrayExpression": 1,
-      "ObjectExpression": 1,
-      "ImportDeclaration": 1,
-      "flatTernaryExpressions": false,
-      "ignoreComments": false
+      "outerIIFEBody": 0
     }],
     "operator-linebreak": ["error", "before", { "overrides": { "=": "after" } }],
     "space-before-function-paren": ["error", "never"],
