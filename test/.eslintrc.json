@@ -25,6 +25,7 @@
     "no-useless-escape": "off",
     "one-var": "off",
     "no-control-regex": "off",
+
     "prefer-const": "error",
     "no-var": "error"
   },
