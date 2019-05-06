@@ -1,52 +1,42 @@
-function runSpecs(title, file, options) {
-  const json = require(file);
-  let longestName = 0;
-  let maxSpecs = 0;
-  const specs = json.reduce((obj, spec) => {
-    if (!obj[spec.section]) {
-      longestName = Math.max(spec.section.length, longestName);
-      obj[spec.section] = {
-        specs: [],
-        pass: 0,
-        total: 0
-      };
-    }
-    obj[spec.section].total++;
-    maxSpecs = Math.max(obj[spec.section].total, maxSpecs);
-    if (!spec.shouldFail) {
-      obj[spec.section].pass++;
-    }
-    obj[spec.section].specs.push(spec);
-    return obj;
-  }, {});
+const path = require('path');
+const load = require('../helpers/load.js');
+
+function runSpecs(title, dir, showCompletionTable, options) {
+  options = options || {};
+  const specs = load.loadFiles(path.resolve(__dirname, dir));
+
+  if (showCompletionTable) {
+    load.outputCompletionTable(title, specs);
+  }
 
   describe(title, () => {
-    const maxSpecsLen = ('' + maxSpecs).length;
-    const spaces = maxSpecsLen * 2 + longestName + 11;
-    console.log('-'.padEnd(spaces + 4, '-'));
-    console.log(`| ${title.padStart(Math.ceil((spaces + title.length) / 2)).padEnd(spaces)} |`);
-    console.log(`| ${' '.padEnd(spaces)} |`);
     Object.keys(specs).forEach(section => {
-      console.log(`| ${section.padEnd(longestName)} ${('' + specs[section].pass).padStart(maxSpecsLen)} of ${('' + specs[section].total).padStart(maxSpecsLen)} ${(100 * specs[section].pass / specs[section].total).toFixed().padStart(4)}% |`);
       describe(section, () => {
         specs[section].specs.forEach((spec) => {
-          if (options) {
-            spec.options = Object.assign({}, options, (spec.options || {}));
-          }
-          (spec.only ? fit : it)('should ' + (spec.shouldFail ? 'fail' : 'pass') + ' example ' + spec.example, () => {
+          spec.options = Object.assign({}, options, (spec.options || {}));
+          const example = (spec.example ? ' example ' + spec.example : '');
+          const passFail = (spec.shouldFail ? 'fail' : 'pass');
+          (spec.only ? fit : it)('should ' + passFail + example, () => {
+            const before = process.hrtime();
             if (spec.shouldFail) {
               expect(spec).not.toRender(spec.html);
             } else {
               expect(spec).toRender(spec.html);
             }
+            const elapsed = process.hrtime(before);
+            if (elapsed[0] > 0) {
+              const s = (elapsed[0] + elapsed[1] * 1e-9).toFixed(3);
+              fail(`took too long: ${s}s`);
+            }
           });
         });
       });
     });
-    console.log('-'.padEnd(spaces + 4, '-'));
-    console.log();
   });
-};
+}
 
-runSpecs('GFM 0.29', './gfm/gfm.0.29.json', {gfm: true});
-runSpecs('CommonMark 0.29', './commonmark/commonmark.0.29.json', {headerIds: false});
+runSpecs('GFM', './gfm', true, { gfm: true });
+runSpecs('CommonMark', './commonmark', true, { headerIds: false });
+runSpecs('Original', './original', false, { gfm: false });
+runSpecs('New', './new');
+runSpecs('ReDOS', './redos');
