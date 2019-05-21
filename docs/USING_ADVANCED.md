@@ -14,12 +14,12 @@ marked(markdownString [,options] [,callback])
 
 ```js
 // Create reference instance
-var myMarked = require('marked');
+const marked = require('marked');
 
 // Set options
 // `highlight` example uses `highlight.js`
-myMarked.setOptions({
-  renderer: new myMarked.Renderer(),
+marked.setOptions({
+  renderer: new marked.Renderer(),
   highlight: function(code) {
     return require('highlight.js').highlightAuto(code).value;
   },
@@ -34,7 +34,7 @@ myMarked.setOptions({
 });
 
 // Compile
-console.log(myMarked('I am using __markdown__.'));
+console.log(marked(markdownString));
 ```
 
 <h2 id="options">Options</h2>
@@ -64,7 +64,7 @@ console.log(myMarked('I am using __markdown__.'));
 Unlike `highlight.js` the `pygmentize.js` library uses asynchronous highlighting. This example demonstrates that marked is agnostic when it comes to the highlighter you use.
 
 ```js
-myMarked.setOptions({
+marked.setOptions({
   highlight: function(code, lang, callback) {
     require('pygmentize-bundled') ({ lang: lang, format: 'html' }, code, function (err, result) {
       callback(err, result.toString());
@@ -72,7 +72,85 @@ myMarked.setOptions({
   }
 });
 
-console.log(myMarked(markdownString));
+console.log(marked(markdownString));
 ```
 
 In both examples, `code` is a `string` representing the section of code to pass to the highlighter. In this example, `lang` is a `string` informing the highlighter what programming lnaguage to use for the `code` and `callback` is the `function` the asynchronous highlighter will call once complete.
+
+<h2 id="workers">Workers</h2>
+
+To prevent ReDoS attacks you can run marked on a worker and terminate it when parsing takes longer than usual.
+
+Marked can be run in a [worker thread](https://nodejs.org/api/worker_threads.html) on a node server, or a [web worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) in a browser.
+
+### Node Worker Thread
+
+> 🚨 Node Worker Threads are [experimental](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) 🚨
+>
+> This implementation may change.
+
+```js
+// markedWorker.js
+
+const marked = require('marked');
+const { parentPort } = require('worker_threads');
+
+parentPort.on('message', (markdownString) => {
+  parentPort.postMessage(marked(markdownString));
+});
+```
+
+```js
+// index.js
+
+const { Worker } = require('worker_threads');
+const markedWorker = new Worker('./markedWorker.js');
+
+const markedTimeout = setTimeout(() => {
+  markedWorker.terminate();
+  throw new Error('Marked took too long!');
+}, timeoutLimit);
+
+markedWorker.on('message', (html) => {
+  clearTimeout(markedTimeout);
+  console.log(html);
+  markedWorker.terminate();
+});
+
+markedWorker.postMessage(markdownString);
+```
+
+### Web Worker
+
+> **NOTE**: Web Workers send the payload from `postMessage` in an object with the payload in a `.data` property
+
+```js
+// markedWorker.js
+
+importScripts('path/to/marked.min.js');
+
+onmessage = (e) => {
+  const markdownString = e.data
+  postMessage(marked(markdownString));
+};
+```
+
+```js
+// script.js
+
+const markedWorker = new Worker('./markedWorker.js');
+
+const markedTimeout = setTimeout(() => {
+  markedWorker.terminate();
+  throw new Error('Marked took too long!');
+}, timeoutLimit);
+
+markedWorker.onmessage = (e) => {
+  clearTimeout(markedTimeout);
+  const html = e.data;
+  console.log(html);
+  markedWorker.terminate();
+};
+
+markedWorker.postMessage(markdownString);
+```
