@@ -3414,8 +3414,7 @@
     "example": 418,
     "start_line": 6935,
     "end_line": 6939,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "** is not an empty emphasis\n",
@@ -3909,8 +3908,7 @@
     "example": 477,
     "start_line": 7399,
     "end_line": 7403,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "_a `_`_\n",
