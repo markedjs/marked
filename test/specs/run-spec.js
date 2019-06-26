@@ -16,8 +16,9 @@ function runSpecs(title, dir, showCompletionTable, options) {
           spec.options = Object.assign({}, options, (spec.options || {}));
           const example = (spec.example ? ' example ' + spec.example : '');
           const passFail = (spec.shouldFail ? 'fail' : 'pass');
-          if (spec.options.sanitizerRemoveHtml)
+          if (spec.options.sanitizerRemoveHtml) {
             spec.options.sanitizer = () => '';
+          }
           (spec.only ? fit : it)('should ' + passFail + example, () => {
             const before = process.hrtime();
             if (spec.shouldFail) {
@@ -42,4 +43,4 @@ runSpecs('CommonMark', './commonmark', true, { headerIds: false });
 runSpecs('Original', './original', false, { gfm: false });
 runSpecs('New', './new');
 runSpecs('ReDOS', './redos');
-runSpecs('Security', './security', false, { silent: true /* no deprecation warnings */ });
+runSpecs('Security', './security', false, { silent: true }); // silent - do not show deprecation warning
