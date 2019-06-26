@@ -25,7 +25,7 @@ These documentation pages are also rendered using marked 💯
 
 <h2 id="usage">Usage</h2>
 
-### Warning: 🚨 Marked does not [sanitize](https://marked.js.org/#/USING_ADVANCED.md#options) the output HTML by default 🚨
+### Warning: 🚨 Marked does not [sanitize](https://marked.js.org/#/USING_ADVANCED.md#options) the output HTML. Please use e.g. [DOMPurify](https://github.com/cure53/DOMPurify) to sanitize the HTML output! 🚨
 
 **CLI**
 
