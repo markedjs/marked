@@ -16,8 +16,9 @@ function runSpecs(title, dir, showCompletionTable, options) {
           spec.options = Object.assign({}, options, (spec.options || {}));
           const example = (spec.example ? ' example ' + spec.example : '');
           const passFail = (spec.shouldFail ? 'fail' : 'pass');
-          if (spec.options.sanitizerRemoveHtml) {
-            spec.options.sanitizer = () => '';
+          if (spec.options.sanitizer) {
+            // eslint-disable-next-line no-eval
+            spec.options.sanitizer = eval(spec.options.sanitizer);
           }
           (spec.only ? fit : it)('should ' + passFail + example, () => {
             const before = process.hrtime();
