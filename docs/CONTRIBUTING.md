@@ -35,11 +35,13 @@ The following table lists the ticket type labels we use when there is work to be
 
 We try to write test cases to validate output (writing tests based on the [supported specifications](#/README.md#specifications)) and minimize regression (writing tests for issues fixed). Therefore, if you would like to contribute, some things you should know regarding the test harness.
 
-|Location      |Description                                         |
-|:-------------|:---------------------------------------------------|
-|/test/browser |For testing Marked in a client-side implementation. |
-|/test/new     |Tests not related to the original `markdown.pl`.    |
-|/test/original|Tests validating against the original `markdown.pl`.|
+|Location              |Description                                                                                                    |
+|:---------------------|:--------------------------------------------------------------------------------------------------------------|
+|/test/specs/commonmark|Tests for [CommonMark](https://spec.commonmark.org/current/) compliance                                        |
+|/test/specs/gfm       |Tests for [GFM](https://github.github.com/gfm/) compliance                                                     |
+|/test/specs/new       |Tests not related to the original `markdown.pl`.                                                               |
+|/test/specs/original  |Tests validating against the original `markdown.pl`.                                                           |
+|/test/specs/redos     |Tests for [ReDOS](https://www.owasp.org/index.php/Regular_expression_Denial_of_Service_-_ReDoS) vulnerabilities|
 
 If your test uses features or options, assuming `gfm` is set to `false`, for example, you can add [front-matter](https://www.npmjs.com/package/front-matter) to the top of
 your `.md` file
