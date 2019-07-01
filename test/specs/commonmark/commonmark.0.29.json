@@ -505,8 +505,7 @@
     "example": 63,
     "start_line": 1186,
     "end_line": 1196,
-    "section": "Setext headings",
-    "shouldFail": true
+    "section": "Setext headings"
   },
   {
     "markdown": "- Foo\n---\n",
@@ -883,8 +882,7 @@
     "example": 110,
     "start_line": 1908,
     "end_line": 1919,
-    "section": "Fenced code blocks",
-    "shouldFail": true
+    "section": "Fenced code blocks"
   },
   {
     "markdown": "foo\n---\n~~~\nbar\n~~~\n# baz\n",
@@ -1648,8 +1646,7 @@
     "example": 205,
     "start_line": 3464,
     "end_line": 3476,
-    "section": "Block quotes",
-    "shouldFail": true
+    "section": "Block quotes"
   },
   {
     "markdown": ">     foo\n    bar\n",
@@ -2210,8 +2207,7 @@
     "example": 273,
     "start_line": 4928,
     "end_line": 4938,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "The number of windows in my house is\n14.  The number of doors is 6.\n",
@@ -2227,8 +2223,7 @@
     "example": 275,
     "start_line": 5015,
     "end_line": 5023,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- foo\n\n- bar\n\n\n- baz\n",
@@ -2365,8 +2360,7 @@
     "example": 291,
     "start_line": 5379,
     "end_line": 5397,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- a\n",

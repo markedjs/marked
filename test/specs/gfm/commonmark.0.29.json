@@ -358,8 +358,7 @@
     "example": 45,
     "start_line": 915,
     "end_line": 919,
-    "section": "ATX headings",
-    "shouldFail": true
+    "section": "ATX headings"
   },
   {
     "markdown": "### foo \\###\n## foo #\\##\n# foo \\#\n",
@@ -367,8 +366,7 @@
     "example": 46,
     "start_line": 925,
     "end_line": 933,
-    "section": "ATX headings",
-    "shouldFail": true
+    "section": "ATX headings"
   },
   {
     "markdown": "****\n## foo\n****\n",
@@ -507,8 +505,7 @@
     "example": 63,
     "start_line": 1186,
     "end_line": 1196,
-    "section": "Setext headings",
-    "shouldFail": true
+    "section": "Setext headings"
   },
   {
     "markdown": "- Foo\n---\n",
@@ -1649,8 +1646,7 @@
     "example": 205,
     "start_line": 3464,
     "end_line": 3476,
-    "section": "Block quotes",
-    "shouldFail": true
+    "section": "Block quotes"
   },
   {
     "markdown": ">     foo\n    bar\n",
@@ -2219,8 +2215,7 @@
     "example": 274,
     "start_line": 5005,
     "end_line": 5011,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "The number of windows in my house is\n1.  The number of doors is 6.\n",
@@ -2365,8 +2360,7 @@
     "example": 291,
     "start_line": 5379,
     "end_line": 5397,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- a\n",
