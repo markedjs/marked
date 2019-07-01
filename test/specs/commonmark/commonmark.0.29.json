@@ -262,8 +262,7 @@
     "example": 33,
     "start_line": 787,
     "end_line": 791,
-    "section": "ATX headings",
-    "shouldFail": true
+    "section": "ATX headings"
   },
   {
     "markdown": "#5 bolt\n\n#hashtag\n",
@@ -271,8 +270,7 @@
     "example": 34,
     "start_line": 802,
     "end_line": 809,
-    "section": "ATX headings",
-    "shouldFail": true
+    "section": "ATX headings"
   },
   {
     "markdown": "\\## foo\n",
@@ -360,8 +358,7 @@
     "example": 45,
     "start_line": 915,
     "end_line": 919,
-    "section": "ATX headings",
-    "shouldFail": true
+    "section": "ATX headings"
   },
   {
     "markdown": "### foo \\###\n## foo #\\##\n# foo \\#\n",
@@ -369,8 +366,7 @@
     "example": 46,
     "start_line": 925,
     "end_line": 933,
-    "section": "ATX headings",
-    "shouldFail": true
+    "section": "ATX headings"
   },
   {
     "markdown": "****\n## foo\n****\n",
