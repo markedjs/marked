@@ -79,11 +79,14 @@ function loadFiles(dir) {
     switch (ext) {
       case '.md': {
         const content = fm(fs.readFileSync(absFile, 'utf8'));
+        const { skip, only, ...options } = content.attributes;
         specs = [{
           section: name,
           markdown: content.body,
           html: fs.readFileSync(absFile.replace(/[^.]+$/, 'html'), 'utf8'),
-          options: content.attributes
+          options,
+          only,
+          skip
         }];
         break;
       }
