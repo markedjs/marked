@@ -262,8 +262,7 @@
     "example": 33,
     "start_line": 787,
     "end_line": 791,
-    "section": "ATX headings",
-    "shouldFail": true
+    "section": "ATX headings"
   },
   {
     "markdown": "#5 bolt\n\n#hashtag\n",
@@ -271,8 +270,7 @@
     "example": 34,
     "start_line": 802,
     "end_line": 809,
-    "section": "ATX headings",
-    "shouldFail": true
+    "section": "ATX headings"
   },
   {
     "markdown": "\\## foo\n",
@@ -888,8 +886,7 @@
     "example": 110,
     "start_line": 1908,
     "end_line": 1919,
-    "section": "Fenced code blocks",
-    "shouldFail": true
+    "section": "Fenced code blocks"
   },
   {
     "markdown": "foo\n---\n~~~\nbar\n~~~\n# baz\n",
@@ -2215,8 +2212,7 @@
     "example": 273,
     "start_line": 4928,
     "end_line": 4938,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "The number of windows in my house is\n14.  The number of doors is 6.\n",
@@ -2224,7 +2220,8 @@
     "example": 274,
     "start_line": 5005,
     "end_line": 5011,
-    "section": "Lists"
+    "section": "Lists",
+    "shouldFail": true
   },
   {
     "markdown": "The number of windows in my house is\n1.  The number of doors is 6.\n",
@@ -2232,8 +2229,7 @@
     "example": 275,
     "start_line": 5015,
     "end_line": 5023,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- foo\n\n- bar\n\n\n- baz\n",
@@ -4908,7 +4904,8 @@
     "example": 598,
     "start_line": 8787,
     "end_line": 8791,
-    "section": "Autolinks"
+    "section": "Autolinks",
+    "shouldFail": true
   },
   {
     "markdown": "<http://example.com/\\[\\>\n",
@@ -4956,7 +4953,8 @@
     "example": 604,
     "start_line": 8850,
     "end_line": 8854,
-    "section": "Autolinks"
+    "section": "Autolinks",
+    "shouldFail": true
   },
   {
     "markdown": "<m:abc>\n",
@@ -4980,7 +4978,8 @@
     "example": 607,
     "start_line": 8871,
     "end_line": 8875,
-    "section": "Autolinks"
+    "section": "Autolinks",
+    "shouldFail": true
   },
   {
     "markdown": "foo@bar.example.com\n",
@@ -4988,7 +4987,8 @@
     "example": 608,
     "start_line": 8878,
     "end_line": 8882,
-    "section": "Autolinks"
+    "section": "Autolinks",
+    "shouldFail": true
   },
   {
     "markdown": "<a><bab><c2c>\n",
