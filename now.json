@@ -1,0 +1,13 @@
+{
+  "name": "markedjs",
+  "scope": "markedjs",
+  "alias": "markedjs.now.sh",
+  "version": 2,
+  "regions": ["all"],
+  "builds": [
+    { "src": "docs/**", "use": "@now/static" }
+  ],
+  "routes": [ 
+    { "src": "/(.*)", "dest": "/docs/$1" }
+  ]
+}
