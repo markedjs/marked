@@ -16,6 +16,10 @@ function runSpecs(title, dir, showCompletionTable, options) {
           spec.options = Object.assign({}, options, (spec.options || {}));
           const example = (spec.example ? ' example ' + spec.example : '');
           const passFail = (spec.shouldFail ? 'fail' : 'pass');
+          if (spec.options.sanitizer) {
+            // eslint-disable-next-line no-eval
+            spec.options.sanitizer = eval(spec.options.sanitizer);
+          }
           (spec.only ? fit : (spec.skip ? xit : it))('should ' + passFail + example, () => {
             const before = process.hrtime();
             if (spec.shouldFail) {
@@ -40,3 +44,4 @@ runSpecs('CommonMark', './commonmark', true, { gfm: false, pedantic: false, head
 runSpecs('Original', './original', false, { gfm: false, pedantic: true });
 runSpecs('New', './new');
 runSpecs('ReDOS', './redos');
+runSpecs('Security', './security', false, { silent: true }); // silent - do not show deprecation warning
