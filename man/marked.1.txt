@@ -4,10 +4,10 @@ NAME
        marked - a javascript markdown parser
 
 SYNOPSIS
-       marked  [-o  <output>]  [-i  <input>]  [--help]  [--tokens]
-       [--pedantic]  [--gfm]  [--breaks]  [--tables]  [--sanitize]
-       [--smart-lists]  [--lang-prefix <prefix>]  [--no-etc...]  [--silent]
-       [filename]
+       marked  [-o  <output>]  [-i  <input>]  [--help] [--tokens] [--pedantic]
+       [--gfm] [--breaks] [--sanitize]	[--smart-lists]  [--lang-prefix  <pre-
+       fix>] [--no-etc...] [--silent] [filename]
+
 
 DESCRIPTION
        marked is a full-featured javascript markdown parser, built for speed.
@@ -55,9 +55,6 @@ OPTIONS
 
        --breaks
               Enable GFM line breaks. Only works with the gfm option.
-
-       --tables
-              Enable GFM tables. Only works with the gfm option.
 
        --sanitize
               Sanitize output. Ignore any HTML input.

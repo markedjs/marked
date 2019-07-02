@@ -35,7 +35,7 @@ function runSpecs(title, dir, showCompletionTable, options) {
   });
 }
 
-runSpecs('GFM', './gfm', true, { gfm: true, pedantic: false, tables: true, headerIds: false });
+runSpecs('GFM', './gfm', true, { gfm: true, pedantic: false, headerIds: false });
 runSpecs('CommonMark', './commonmark', true, { gfm: false, pedantic: false, headerIds: false });
 runSpecs('Original', './original', false, { gfm: false, pedantic: true });
 runSpecs('New', './new');
