@@ -29,7 +29,6 @@ function runBench(options) {
   // Non-GFM, Non-pedantic
   marked.setOptions({
     gfm: false,
-    tables: false,
     breaks: false,
     pedantic: false,
     sanitize: false,
@@ -43,7 +42,6 @@ function runBench(options) {
   // GFM
   marked.setOptions({
     gfm: true,
-    tables: false,
     breaks: false,
     pedantic: false,
     sanitize: false,
@@ -57,7 +55,6 @@ function runBench(options) {
   // Pedantic
   marked.setOptions({
     gfm: false,
-    tables: false,
     breaks: false,
     pedantic: true,
     sanitize: false,

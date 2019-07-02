@@ -4897,7 +4897,8 @@
     "example": 598,
     "start_line": 8787,
     "end_line": 8791,
-    "section": "Autolinks"
+    "section": "Autolinks",
+    "shouldFail": true
   },
   {
     "markdown": "<http://example.com/\\[\\>\n",
@@ -4945,7 +4946,8 @@
     "example": 604,
     "start_line": 8850,
     "end_line": 8854,
-    "section": "Autolinks"
+    "section": "Autolinks",
+    "shouldFail": true
   },
   {
     "markdown": "<m:abc>\n",
@@ -4969,7 +4971,8 @@
     "example": 607,
     "start_line": 8871,
     "end_line": 8875,
-    "section": "Autolinks"
+    "section": "Autolinks",
+    "shouldFail": true
   },
   {
     "markdown": "foo@bar.example.com\n",
@@ -4977,7 +4980,8 @@
     "example": 608,
     "start_line": 8878,
     "end_line": 8882,
-    "section": "Autolinks"
+    "section": "Autolinks",
+    "shouldFail": true
   },
   {
     "markdown": "<a><bab><c2c>\n",
