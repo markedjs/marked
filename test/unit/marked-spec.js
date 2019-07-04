@@ -1,4 +1,4 @@
-const marked = require('../../lib/marked.js');
+const marked = require('../../dist');
 
 describe('Test heading ID functionality', () => {
   it('should add id attribute by default', () => {

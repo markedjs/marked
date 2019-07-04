@@ -9,7 +9,7 @@ beforeEach(() => {
       return {
         compare: (spec, expected) => {
           const result = {};
-          const actual = marked(spec.markdown, spec.options);
+          const actual = marked.marked(spec.markdown, spec.options);
           result.pass = htmlDiffer.isEqual(expected, actual);
 
           if (result.pass) {

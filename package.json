@@ -29,7 +29,15 @@
     "html"
   ],
   "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-stage-2": "^7.0.0",
     "@markedjs/html-differ": "^2.0.1",
+    "babel-plugin-add-module-exports": "^1.0.2",
     "cheerio": "^1.0.0-rc.3",
     "commonmark": "0.x",
     "eslint": "^5.16.0",
@@ -47,6 +55,7 @@
     "uglify-js": "^3.5.8"
   },
   "scripts": {
+    "compile": "babel lib --out-dir dist",
     "test": "jasmine --config=jasmine.json",
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",

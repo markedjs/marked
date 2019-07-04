@@ -1,1 +1,1 @@
-module.exports = require('./lib/marked');
+module.exports = require('./dist/index.js');
