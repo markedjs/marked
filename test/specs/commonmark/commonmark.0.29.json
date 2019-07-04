@@ -2775,8 +2775,7 @@
     "example": 342,
     "start_line": 6012,
     "end_line": 6016,
-    "section": "Code spans",
-    "shouldFail": true
+    "section": "Code spans"
   },
   {
     "markdown": "`<a href=\"`\">`\n",
@@ -4266,8 +4265,7 @@
     "example": 521,
     "start_line": 7887,
     "end_line": 7891,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[foo<http://example.com/?search=](uri)>\n",
@@ -4368,8 +4366,7 @@
     "example": 533,
     "start_line": 8041,
     "end_line": 8047,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[foo<http://example.com/?search=][ref]>\n\n[ref]: /uri\n",
