@@ -8,6 +8,7 @@
     { "src": "docs/**", "use": "@now/static" }
   ],
   "routes": [ 
+    { "src": "/repo", "status": 302, "headers": { "Location": "https://github.com/markedjs/marked" } },
     { "src": "/(.*)", "dest": "/docs/$1" }
   ]
 }
