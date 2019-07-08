@@ -1,4 +1,4 @@
-/* globals marked, unfetch, ES6Promise, Promise */
+/* globals marked, unfetch, ES6Promise, Promise */ // eslint-disable-line no-redeclare
 
 if (!window.Promise) {
   window.Promise = ES6Promise;

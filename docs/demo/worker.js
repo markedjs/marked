@@ -1,4 +1,4 @@
-/* globals marked, unfetch, ES6Promise, Promise */
+/* globals marked, unfetch, ES6Promise, Promise */ // eslint-disable-line no-redeclare
 if (!self.Promise) {
   self.importScripts('https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.js');
   self.Promise = ES6Promise;
