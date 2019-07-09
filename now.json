@@ -9,6 +9,7 @@
   ],
   "routes": [ 
     { "src": "/repo", "status": 302, "headers": { "Location": "https://github.com/markedjs/marked" } },
+    { "src": "/old", "status": 302, "headers": { "Location": "https://marked.js.org" } },
     { "src": "/(.*)", "dest": "/docs/$1" }
   ]
 }
