@@ -1,6 +1,6 @@
 ## Extending Marked
 
-To champion the single-responsibility and open/closed prinicples, we have tried to make it relatively painless to extend marked. If you are looking to add custom functionality, this is the place to start.
+To champion the single-responsibility and open/closed principles, we have tried to make it relatively painless to extend marked. If you are looking to add custom functionality, this is the place to start.
 
 <h2 id="renderer">The renderer</h2>
 
@@ -10,14 +10,14 @@ The renderer is...
 
 ```js
 // Create reference instance
-var myMarked = require('marked');
+const marked = require('marked');
 
 // Get reference
-var renderer = new myMarked.Renderer();
+const renderer = new marked.Renderer();
 
 // Override function
 renderer.heading = function (text, level) {
-  var escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+  const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 
   return `
           <h${level}>
@@ -29,7 +29,7 @@ renderer.heading = function (text, level) {
 };
 
 // Run marked
-console.log(myMarked('# heading+', { renderer: renderer }));
+console.log(marked('# heading+', { renderer: renderer }));
 ```
 
 **Output:**
@@ -105,13 +105,13 @@ The parser is...
 You also have direct access to the lexer and parser if you so desire.
 
 ``` js
-var tokens = marked.lexer(text, options);
+const tokens = marked.lexer(text, options);
 console.log(marked.parser(tokens));
 ```
 
 ``` js
-var lexer = new marked.Lexer(options);
-var tokens = lexer.lex(text);
+const lexer = new marked.Lexer(options);
+const tokens = lexer.lex(text);
 console.log(tokens);
 console.log(lexer.rules);
 ```
