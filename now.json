@@ -1,0 +1,15 @@
+{
+  "name": "markedjs",
+  "scope": "markedjs",
+  "alias": "markedjs.now.sh",
+  "version": 2,
+  "regions": ["all"],
+  "builds": [
+    { "src": "docs/**", "use": "@now/static" }
+  ],
+  "routes": [ 
+    { "src": "/repo", "status": 302, "headers": { "Location": "https://github.com/markedjs/marked" } },
+    { "src": "/old", "status": 302, "headers": { "Location": "https://marked.js.org" } },
+    { "src": "/(.*)", "dest": "/docs/$1" }
+  ]
+}
