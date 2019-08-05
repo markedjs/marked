@@ -2863,8 +2863,7 @@
     "example": 353,
     "start_line": 6322,
     "end_line": 6326,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "foo*bar*\n",
