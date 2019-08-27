@@ -42,7 +42,7 @@
     "front-matter": "^3.0.2",
     "jasmine": "^3.4.0",
     "markdown": "0.x",
-    "markdown-it": "8.x",
+    "markdown-it": "9.x",
     "node-fetch": "^2.6.0",
     "uglify-js": "^3.6.0"
   },
