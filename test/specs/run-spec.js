@@ -23,12 +23,12 @@ function runSpecs(title, dir, showCompletionTable, options) {
             // eslint-disable-next-line no-eval
             spec.options.sanitizer = eval(spec.options.sanitizer);
           }
-          (spec.only ? fit : (spec.skip ? xit : it))('should ' + passFail + example, () => {
+          (spec.only ? fit : (spec.skip ? xit : it))('should ' + passFail + example, async() => {
             const before = process.hrtime();
             if (spec.shouldFail) {
-              expect(spec).not.toRender(spec.html);
+              await expectAsync(spec).not.toRender(spec.html);
             } else {
-              expect(spec).toRender(spec.html);
+              await expectAsync(spec).toRender(spec.html);
             }
             const elapsed = process.hrtime(before);
             if (elapsed[0] > 0) {
