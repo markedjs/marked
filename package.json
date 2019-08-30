@@ -32,7 +32,7 @@
     "@markedjs/html-differ": "^2.0.1",
     "cheerio": "^1.0.0-rc.3",
     "commonmark": "0.x",
-    "eslint": "^6.2.2",
+    "eslint": "^6.3.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^9.2.0",
