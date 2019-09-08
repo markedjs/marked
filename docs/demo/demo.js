@@ -122,7 +122,7 @@ function setInitialVersion() {
           return res.json();
         })
         .then(function(json) {
-          markedVersions['master'] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + json[0].sha + '/lib/marked.js';
+          markedVersions.master = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + json[0].sha + '/lib/marked.js';
         })
         .catch(function() {
           // do nothing
