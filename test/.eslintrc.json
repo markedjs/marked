@@ -3,6 +3,9 @@
   "plugins": [
     "standard"
   ],
+  "globals": {
+    "expectAsync": "readonly"
+  },
   "rules": {
     "semi": ["error", "always"],
     "indent": ["error", 2, {
