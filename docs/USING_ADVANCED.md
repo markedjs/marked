@@ -83,10 +83,6 @@ Marked can be run in a [worker thread](https://nodejs.org/api/worker_threads.htm
 
 ### Node Worker Thread
 
-> 🚨 Node Worker Threads are [experimental](https://nodejs.org/api/worker_threads.html#worker_threads_worker_threads) 🚨
->
-> This implementation may change.
-
 ```js
 // markedWorker.js
 
