@@ -73,7 +73,7 @@ marked.setOptions({
 console.log(marked(markdownString));
 ```
 
-In both examples, `code` is a `string` representing the section of code to pass to the highlighter. In this example, `lang` is a `string` informing the highlighter what programming lnaguage to use for the `code` and `callback` is the `function` the asynchronous highlighter will call once complete.
+In both examples, `code` is a `string` representing the section of code to pass to the highlighter. In this example, `lang` is a `string` informing the highlighter what programming language to use for the `code` and `callback` is the `function` the asynchronous highlighter will call once complete.
 
 <h2 id="workers">Workers</h2>
 
