@@ -57,7 +57,7 @@
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",
     "test:lint": "eslint bin/marked .",
-    "test:redos": "eslint --plugin vuln-regex-detector --rule '\"vuln-regex-detector/no-vuln-regex\": 2' lib/marked.js",
+    "test:redos": "eslint --plugin vuln-regex-detector --rule '\"vuln-regex-detector/no-vuln-regex\": 2' --no-ignore lib/marked.js",
     "test:update": "node test/update-specs.js",
     "bench": "node test/bench.js",
     "lint": "eslint --fix bin/marked .",
