@@ -4,6 +4,7 @@
   "author": "Christopher Jeffrey",
   "version": "0.7.0",
   "main": "./lib/marked.js",
+  "module": "./src/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
   "files": [
@@ -29,10 +30,12 @@
     "html"
   ],
   "devDependencies": {
+    "@babel/core": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
     "@markedjs/html-differ": "^3.0.0",
     "cheerio": "^1.0.0-rc.3",
     "commonmark": "0.29.x",
-    "eslint": "^6.4.0",
+    "eslint": "^6.6.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^10.0.0",
@@ -44,21 +47,24 @@
     "markdown": "0.5.x",
     "markdown-it": "10.x",
     "node-fetch": "^2.6.0",
-    "uglify-js": "^3.6.0"
+    "rollup": "^1.26.3",
+    "rollup-plugin-babel": "^4.3.3",
+    "uglify-js": "^3.6.7"
   },
   "scripts": {
-    "test": "jasmine --config=jasmine.json",
-    "test:all": "npm test && npm run test:node4 && npm run test:lint",
+    "test": "npm run build && jasmine --config=jasmine.json",
+    "test:all": "npm test && npm run test:lint",
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",
     "test:lint": "eslint bin/marked .",
     "test:redos": "eslint --plugin vuln-regex-detector --rule '\"vuln-regex-detector/no-vuln-regex\": 2' lib/marked.js",
-    "test:node4": "npx node@4 ./node_modules/jasmine/bin/jasmine.js --config=jasmine.json",
     "test:update": "node test/update-specs.js",
     "bench": "node test/bench.js",
     "lint": "eslint --fix bin/marked .",
-    "build": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
-    "preversion": "npm run build && (git diff --quiet || git commit -am 'minify')"
+    "build": "npm run rollup && npm run minify",
+    "rollup": "rollup -c rollup.config.js",
+    "minify": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
+    "preversion": "npm run build && (git diff --quiet || git commit -am 'build')"
   },
   "engines": {
     "node": ">=0.10.0"
