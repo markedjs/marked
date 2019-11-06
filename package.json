@@ -4,6 +4,10 @@
   "author": "Christopher Jeffrey",
   "version": "0.7.0",
   "main": "./src/marked.js",
+  "module": "./lib/marked.esm.js",
+  "browser": {
+    "./src/marked.js": "./lib/marked.js"
+  },
   "bin": "./bin/marked",
   "man": "./man/marked.1",
   "files": [
@@ -40,7 +44,6 @@
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "eslint-plugin-vuln-regex-detector": "^1.0.4",
     "front-matter": "^3.0.2",
     "jasmine": "^3.5.0",
     "markdown": "0.5.x",
@@ -62,8 +65,10 @@
     "bench": "npm run rollup && node test/bench.js",
     "lint": "eslint --fix bin/marked .",
     "build:reset": "git checkout upstream/master lib/marked.js marked.min.js",
-    "build": "npm run build && npm run minify",
-    "rollup": "rollup -c rollup.config.js",
+    "build": "npm run rollup && npm run minify",
+    "rollup": "npm run rollup:umd && npm run rollup:esm",
+    "rollup:umd": "rollup -c rollup.config.js",
+    "rollup:esm": "rollup -c rollup.config.esm.js",
     "minify": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
     "preversion": "npm run build && (git diff --quiet || git commit -am 'build')"
   },
