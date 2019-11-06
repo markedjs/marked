@@ -33,10 +33,6 @@ jobs:
       node_js: lts/*
       if: branch = master AND type = push
 
-    - stage: security scan 🔐
-      script: npm run test:redos
-      node_js: lts/*
-
 cache:
   directories:
     - node_modules
