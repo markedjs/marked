@@ -7,7 +7,7 @@
 - [ ] Create a branch.
 - [ ] Make as small a change as possible.
 - [ ] Run `npm test`, fix any broken things (for linting, you can run `npm run lint` to have the linter fix them for you).
-- [ ] Submit a PR.
+- [ ] Submit a Pull Request.
 
 ## Design principles
 
@@ -91,4 +91,3 @@ To build your own minified version of Marked:
 ```bash
 npm run build
 ```
-

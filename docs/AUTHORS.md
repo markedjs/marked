@@ -1,6 +1,6 @@
 # Authors
 
-Marked takes an encompassing approach to its community. As such, you can think of these as [concentric circles](https://medium.com/the-node-js-collection/healthy-open-source-967fa8be7951), where each group encompases the following groups.
+Marked takes an encompassing approach to its community. As such, you can think of these as [concentric circles](https://medium.com/the-node-js-collection/healthy-open-source-967fa8be7951), where each group encompasses the following groups.
 
 <table>
   <tbody>
@@ -170,7 +170,7 @@ To be removed: You can remove yourself through the [GitHub UI](https://help.gith
 A note on volunteering:
 
 1. Please do not volunteer unless you believe you can demonstrate to your peers you can do the work required.
-2. Please do not overcommit yourself; we count on those committed to the project to be responsive. Really consider, with all you have going on, wehther you able to really commit to it.
+2. Please do not overcommit yourself; we count on those committed to the project to be responsive. Really consider, with all you have going on, whether you able to really commit to it.
 3. Don't let the previous frighten you away, it can always be changed later by you or your peers.
 
 [Details on badges](#badges)
@@ -227,7 +227,7 @@ Badges? If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dr
 		</blockquote>
 	</dd>
   <dt>Dr. Docs</dt>
-  <dd>Someone who has contributed a great deal to the creation and maintainance of the non-code areas of marked.</dd>
+  <dd>Someone who has contributed a great deal to the creation and maintenance of the non-code areas of marked.</dd>
 	<dt>Eye for the CLI</dt>
 	<dd>At this point? Pretty much anyone who can update that `man` file to the current Marked version without regression in the CLI tool itself.</dd>
 	<dt>GitHub Guru</dt>
@@ -259,9 +259,9 @@ Badges? If you *want* 'em, we got 'em, and here's how you get 'em (and&hellip;dr
 
 <dl>
 	<dt>Defibrillator</dt>
-	<dd>A contributor who stepped up to help bring Marked back to life by contriuting solutions to help Marked pass when compared against the CommonMark and GitHub Flavored Markdown specifications.</dd>
+	<dd>A contributor who stepped up to help bring Marked back to life by contributing solutions to help Marked pass when compared against the CommonMark and GitHub Flavored Markdown specifications.</dd>
 	<dt>Maker of the Marked mark</dt>
-	<dd>This badge is given to the person or oganization credited with creating the logo (or logotype) used in Marked communications for a given period of time. **Maker of the Marked mark from 2017 to present**, for example.</dd>
+	<dd>This badge is given to the person or organization credited with creating the logo (or logotype) used in Marked communications for a given period of time. **Maker of the Marked mark from 2017 to present**, for example.</dd>
 	<dt>Release Wrangler</dt>
 	<dd>This is a badge given to all Publishers.</dd>
 	<dt>Snyk's Security Saint</dt>
