@@ -62,6 +62,7 @@
     "test:update": "node test/update-specs.js",
     "bench": "npm run rollup && node test/bench.js",
     "lint": "eslint --fix bin/marked .",
+    "build:reset": "git checkout upstream/master lib/marked.js marked.min.js",
     "build": "npm run rollup && npm run minify",
     "rollup": "rollup -c rollup.config.js",
     "minify": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
