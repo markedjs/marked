@@ -14,7 +14,8 @@ module.exports = class InlineLexer {
     this.options = options || defaults;
     this.links = links;
     this.rules = inline.normal;
-    this.renderer = this.options.renderer || new Renderer();
+    this.options.renderer = this.options.renderer || new Renderer();
+    this.renderer = this.options.renderer;
     this.renderer.options = this.options;
 
     if (!this.links) {
