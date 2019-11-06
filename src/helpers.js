@@ -1,13 +1,6 @@
 /**
- * marked - a markdown parser
- * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT Licensed)
- * https://github.com/markedjs/marked
- */
-
-/**
  * Helpers
  */
-
 function escape(html, encode) {
   if (encode) {
     if (escape.escapeTest.test(html)) {

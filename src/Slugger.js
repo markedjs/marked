@@ -1,13 +1,6 @@
 /**
- * marked - a markdown parser
- * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT Licensed)
- * https://github.com/markedjs/marked
- */
-
-/**
  * Slugger generates header id
  */
-
 module.exports = class Slugger {
   constructor() {
     this.seen = {};

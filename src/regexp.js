@@ -1,9 +1,3 @@
-/**
- * marked - a markdown parser
- * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT Licensed)
- * https://github.com/markedjs/marked
- */
-
 const {
   noop,
   edit,
@@ -13,7 +7,6 @@ const {
 /**
  * Block-Level Grammar
  */
-
 const block = {
   newline: /^\n+/,
   code: /^( {4}[^\n]+\n*)+/,
@@ -136,7 +129,6 @@ block.pedantic = merge({}, block.normal, {
 /**
  * Inline-Level Grammar
  */
-
 const inline = {
   escape: /^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/,
   autolink: /^<(scheme:[^\s\x00-\x1f<>]*|email)>/,

@@ -1,9 +1,3 @@
-/**
- * marked - a markdown parser
- * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT Licensed)
- * https://github.com/markedjs/marked
- */
-
 const { defaults } = require('./defaults.js');
 const { block } = require('./regexp.js');
 const {
@@ -15,7 +9,6 @@ const {
 /**
  * Block Lexer
  */
-
 module.exports = class Lexer {
   constructor(options) {
     this.tokens = [];

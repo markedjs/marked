@@ -1,9 +1,3 @@
-/**
- * marked - a markdown parser
- * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT Licensed)
- * https://github.com/markedjs/marked
- */
-
 const Renderer = require('./Renderer.js');
 const Slugger = require('./Slugger.js');
 const InlineLexer = require('./InlineLexer.js');
@@ -17,7 +11,6 @@ const {
 /**
  * Parsing & Compiling
  */
-
 module.exports = class Parser {
   constructor(options) {
     this.tokens = [];

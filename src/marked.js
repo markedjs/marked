@@ -1,9 +1,3 @@
-/**
- * marked - a markdown parser
- * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT Licensed)
- * https://github.com/markedjs/marked
- */
-
 const Lexer = require('./Lexer.js');
 const Parser = require('./Parser.js');
 const Renderer = require('./Renderer.js');
@@ -24,7 +18,6 @@ const {
 /**
  * Marked
  */
-
 function marked(src, opt, callback) {
   // throw error in case of non string input
   if (typeof src === 'undefined' || src === null) {

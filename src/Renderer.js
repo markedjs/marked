@@ -1,9 +1,3 @@
-/**
- * marked - a markdown parser
- * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT Licensed)
- * https://github.com/markedjs/marked
- */
-
 const { defaults } = require('./defaults.js');
 const {
   cleanUrl,
@@ -13,7 +7,6 @@ const {
 /**
  * Renderer
  */
-
 module.exports = class Renderer {
   constructor(options) {
     this.options = options || defaults;
