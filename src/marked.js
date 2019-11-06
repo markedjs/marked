@@ -4,28 +4,28 @@
  * https://github.com/markedjs/marked
  */
 
-import Lexer from './Lexer.js';
-import Parser from './Parser.js';
-import Renderer from './Renderer.js';
-import TextRenderer from './TextRenderer.js';
-import InlineLexer from './InlineLexer.js';
-import Slugger from './Slugger.js';
-import {
+const Lexer = require('./Lexer.js');
+const Parser = require('./Parser.js');
+const Renderer = require('./Renderer.js');
+const TextRenderer = require('./TextRenderer.js');
+const InlineLexer = require('./InlineLexer.js');
+const Slugger = require('./Slugger.js');
+const {
   merge,
   checkSanitizeDeprecation,
   escape
-} from './helpers.js';
-import {
+} = require('./helpers.js');
+const {
   getDefaults,
   changeDefaults,
   defaults
-} from './defaults.js';
+} = require('./defaults.js');
 
 /**
  * Marked
  */
 
-export default function marked(src, opt, callback) {
+function marked(src, opt, callback) {
   // throw error in case of non string input
   if (typeof src === 'undefined' || src === null) {
     throw new Error('marked(): input parameter is undefined or null');
@@ -43,11 +43,10 @@ export default function marked(src, opt, callback) {
 
     opt = merge({}, marked.defaults, opt || {});
     checkSanitizeDeprecation(opt);
-
     const highlight = opt.highlight;
-    let tokens;
-    let pending;
-    let i = 0;
+    let tokens,
+      pending,
+      i = 0;
 
     try {
       tokens = Lexer.lex(src, opt);
@@ -106,10 +105,9 @@ export default function marked(src, opt, callback) {
     return;
   }
   try {
-    opt = merge({}, marked.defaults, opt || {});
+    if (opt) opt = merge({}, marked.defaults, opt);
     checkSanitizeDeprecation(opt);
-    const t = Lexer.lex(src, opt);
-    return Parser.parse(t, opt);
+    return Parser.parse(Lexer.lex(src, opt), opt);
   } catch (e) {
     e.message += '\nPlease report this to https://github.com/markedjs/marked.';
     if ((opt || marked.defaults).silent) {
@@ -128,20 +126,13 @@ export default function marked(src, opt, callback) {
 marked.options =
 marked.setOptions = function(opt) {
   merge(marked.defaults, opt);
+  changeDefaults(marked.defaults);
   return marked;
 };
 
 marked.getDefaults = getDefaults;
 
-Object.defineProperty(marked, 'defaults', {
-  get() {
-    return defaults;
-  },
-
-  set(value) {
-    changeDefaults(value);
-  }
-});
+marked.defaults = defaults;
 
 /**
  * Expose
@@ -162,3 +153,5 @@ marked.inlineLexer = InlineLexer.output;
 marked.Slugger = Slugger;
 
 marked.parse = marked;
+
+module.exports = marked;

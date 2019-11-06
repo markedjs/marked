@@ -2,7 +2,8 @@ const path = require('path');
 const htmlDiffer = require('./helpers/html-differ.js');
 const { loadFiles } = require('./helpers/load.js');
 
-let marked = require('../');
+let marked = require('../lib/marked.js');
+const es6marked = require('../src/marked.js');
 
 /**
  * Load specs
@@ -26,6 +27,18 @@ function runBench(options) {
   options = options || {};
   const specs = load();
 
+  marked.setOptions({
+    gfm: false,
+    breaks: false,
+    pedantic: false,
+    sanitize: false,
+    smartLists: false
+  });
+  if (options.marked) {
+    marked.setOptions(options.marked);
+  }
+  bench('non marked', specs, marked);
+
   // Non-GFM, Non-pedantic
   marked.setOptions({
     gfm: false,
@@ -37,7 +50,19 @@ function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  bench('marked', specs, marked);
+  bench('es5 marked', specs, marked);
+
+  es6marked.setOptions({
+    gfm: false,
+    breaks: false,
+    pedantic: false,
+    sanitize: false,
+    smartLists: false
+  });
+  if (options.marked) {
+    es6marked.setOptions(options.marked);
+  }
+  bench('es6 marked', specs, es6marked);
 
   // GFM
   marked.setOptions({
@@ -50,7 +75,19 @@ function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  bench('marked (gfm)', specs, marked);
+  bench('es5 marked (gfm)', specs, marked);
+
+  es6marked.setOptions({
+    gfm: true,
+    breaks: false,
+    pedantic: false,
+    sanitize: false,
+    smartLists: false
+  });
+  if (options.marked) {
+    es6marked.setOptions(options.marked);
+  }
+  bench('es6 marked (gfm)', specs, es6marked);
 
   // Pedantic
   marked.setOptions({
@@ -63,7 +100,19 @@ function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  bench('marked (pedantic)', specs, marked);
+  bench('es5 marked (pedantic)', specs, marked);
+
+  es6marked.setOptions({
+    gfm: false,
+    breaks: false,
+    pedantic: true,
+    sanitize: false,
+    smartLists: false
+  });
+  if (options.marked) {
+    es6marked.setOptions(options.marked);
+  }
+  bench('es6 marked (pedantic)', specs, es6marked);
 
   try {
     bench('commonmark', specs, (() => {

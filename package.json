@@ -3,8 +3,7 @@
   "description": "A markdown parser built for speed",
   "author": "Christopher Jeffrey",
   "version": "0.7.0",
-  "main": "./lib/marked.js",
-  "module": "./src/marked.js",
+  "main": "./src/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
   "files": [
@@ -49,7 +48,8 @@
     "node-fetch": "^2.6.0",
     "rollup": "^1.26.3",
     "rollup-plugin-babel": "^4.3.3",
-    "uglify-js": "^3.6.7"
+    "rollup-plugin-commonjs": "^10.1.0",
+    "uglify-js": "^3.6.8"
   },
   "scripts": {
     "test": "npm run build && jasmine --config=jasmine.json",
@@ -57,9 +57,9 @@
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",
     "test:lint": "eslint bin/marked .",
-    "test:redos": "eslint --plugin vuln-regex-detector --rule '\"vuln-regex-detector/no-vuln-regex\": 2' --no-ignore lib/marked.js",
+    "test:redos": "npm run rollup && eslint --plugin vuln-regex-detector --rule '\"vuln-regex-detector/no-vuln-regex\": 2' --no-ignore lib/marked.js",
     "test:update": "node test/update-specs.js",
-    "bench": "node test/bench.js",
+    "bench": "npm run rollup && node test/bench.js",
     "lint": "eslint --fix bin/marked .",
     "build": "npm run rollup && npm run minify",
     "rollup": "rollup -c rollup.config.js",

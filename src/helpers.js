@@ -8,34 +8,34 @@
  * Helpers
  */
 
-export function escape(html, encode) {
-  const escapeTest = /[&<>"']/;
-  const escapeReplace = /[&<>"']/g;
-  const replacements = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-  };
-
-  const escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
-  const escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
-
+function escape(html, encode) {
   if (encode) {
-    if (escapeTest.test(html)) {
-      return html.replace(escapeReplace, function(ch) { return replacements[ch]; });
+    if (escape.escapeTest.test(html)) {
+      return html.replace(escape.escapeReplace, function(ch) { return escape.replacements[ch]; });
     }
   } else {
-    if (escapeTestNoEncode.test(html)) {
-      return html.replace(escapeReplaceNoEncode, function(ch) { return replacements[ch]; });
+    if (escape.escapeTestNoEncode.test(html)) {
+      return html.replace(escape.escapeReplaceNoEncode, function(ch) { return escape.replacements[ch]; });
     }
   }
 
   return html;
 }
 
-export function unescape(html) {
+escape.escapeTest = /[&<>"']/;
+escape.escapeReplace = /[&<>"']/g;
+escape.replacements = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;'
+};
+
+escape.escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
+escape.escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
+
+function unescape(html) {
   // explicitly match decimal, hex, and named HTML entities
   return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig, function(_, n) {
     n = n.toLowerCase();
@@ -49,7 +49,7 @@ export function unescape(html) {
   });
 }
 
-export function edit(regex, opt) {
+function edit(regex, opt) {
   regex = regex.source || regex;
   opt = opt || '';
   return {
@@ -65,7 +65,7 @@ export function edit(regex, opt) {
   };
 }
 
-export function cleanUrl(sanitize, base, href) {
+function cleanUrl(sanitize, base, href) {
   if (sanitize) {
     let prot;
     try {
@@ -79,7 +79,6 @@ export function cleanUrl(sanitize, base, href) {
       return null;
     }
   }
-  const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
   if (base && !originIndependentUrl.test(href)) {
     href = resolveUrl(base, href);
   }
@@ -91,18 +90,18 @@ export function cleanUrl(sanitize, base, href) {
   return href;
 }
 
-export function resolveUrl(base, href) {
-  if (!resolveUrl.baseUrls[' ' + base]) {
+function resolveUrl(base, href) {
+  if (!baseUrls[' ' + base]) {
     // we can ignore everything in base after the last slash of its path component,
     // but we might need to add _that_
     // https://tools.ietf.org/html/rfc3986#section-3
     if (/^[^:]+:\/*[^/]*$/.test(base)) {
-      resolveUrl.baseUrls[' ' + base] = base + '/';
+      baseUrls[' ' + base] = base + '/';
     } else {
-      resolveUrl.baseUrls[' ' + base] = rtrim(base, '/', true);
+      baseUrls[' ' + base] = rtrim(base, '/', true);
     }
   }
-  base = resolveUrl.baseUrls[' ' + base];
+  base = baseUrls[' ' + base];
   const relativeBase = base.indexOf(':') === -1;
 
   if (href.slice(0, 2) === '//') {
@@ -119,15 +118,16 @@ export function resolveUrl(base, href) {
     return base + href;
   }
 }
-resolveUrl.baseUrls = {};
+const baseUrls = {};
+const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 
-export function noop() {}
+function noop() {}
 noop.exec = noop;
 
-export function merge(obj) {
-  let i = 1;
-  let target;
-  let key;
+function merge(obj) {
+  let i = 1,
+    target,
+    key;
 
   for (; i < arguments.length; i++) {
     target = arguments[i];
@@ -141,23 +141,23 @@ export function merge(obj) {
   return obj;
 }
 
-export function splitCells(tableRow, count) {
+function splitCells(tableRow, count) {
   // ensure that every cell-delimiting pipe has a space
   // before it to distinguish it from an escaped pipe
   const row = tableRow.replace(/\|/g, function(match, offset, str) {
-    let escaped = false;
-    let curr = offset;
-    while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
-    if (escaped) {
-      // odd number of slashes means | is escaped
-      // so we leave it alone
-      return '|';
-    } else {
-      // add space before unescaped |
-      return ' |';
-    }
-  });
-  const cells = row.split(/ \|/);
+      let escaped = false,
+        curr = offset;
+      while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
+      if (escaped) {
+        // odd number of slashes means | is escaped
+        // so we leave it alone
+        return '|';
+      } else {
+        // add space before unescaped |
+        return ' |';
+      }
+    }),
+    cells = row.split(/ \|/);
   let i = 0;
 
   if (cells.length > count) {
@@ -176,8 +176,9 @@ export function splitCells(tableRow, count) {
 // Remove trailing 'c's. Equivalent to str.replace(/c*$/, '').
 // /c*$/ is vulnerable to REDOS.
 // invert: Remove suffix of non-c chars instead. Default falsey.
-export function rtrim(str, c, invert) {
-  if (str.length === 0) {
+function rtrim(str, c, invert) {
+  const l = str.length;
+  if (l === 0) {
     return '';
   }
 
@@ -185,8 +186,8 @@ export function rtrim(str, c, invert) {
   let suffLen = 0;
 
   // Step left until we fail to match the invert condition.
-  while (suffLen < str.length) {
-    const currChar = str.charAt(str.length - suffLen - 1);
+  while (suffLen < l) {
+    const currChar = str.charAt(l - suffLen - 1);
     if (currChar === c && !invert) {
       suffLen++;
     } else if (currChar !== c && invert) {
@@ -196,15 +197,17 @@ export function rtrim(str, c, invert) {
     }
   }
 
-  return str.substr(0, str.length - suffLen);
+  return str.substr(0, l - suffLen);
 }
 
-export function findClosingBracket(str, b) {
+function findClosingBracket(str, b) {
   if (str.indexOf(b[1]) === -1) {
     return -1;
   }
-  let level = 0;
-  for (let i = 0; i < str.length; i++) {
+  const l = str.length;
+  let level = 0,
+    i = 0;
+  for (; i < l; i++) {
     if (str[i] === '\\') {
       i++;
     } else if (str[i] === b[0]) {
@@ -219,8 +222,22 @@ export function findClosingBracket(str, b) {
   return -1;
 }
 
-export function checkSanitizeDeprecation(opt) {
+function checkSanitizeDeprecation(opt) {
   if (opt && opt.sanitize && !opt.silent) {
     console.warn('marked(): sanitize and sanitizer parameters are deprecated since version 0.7.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/#/USING_ADVANCED.md#options');
   }
 }
+
+module.exports = {
+  escape,
+  unescape,
+  edit,
+  cleanUrl,
+  resolveUrl,
+  noop,
+  merge,
+  splitCells,
+  rtrim,
+  findClosingBracket,
+  checkSanitizeDeprecation
+};

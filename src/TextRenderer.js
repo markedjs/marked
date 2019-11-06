@@ -9,23 +9,37 @@
  * returns only the textual part of the token
  */
 
-export default function TextRenderer() {}
+module.exports = class TextRenderer {
+  // no need for block level renderers
+  strong(text) {
+    return text;
+  }
 
-// no need for block level renderers
+  em(text) {
+    return text;
+  }
 
-TextRenderer.prototype.strong =
-TextRenderer.prototype.em =
-TextRenderer.prototype.codespan =
-TextRenderer.prototype.del =
-TextRenderer.prototype.text = function(text) {
-  return text;
-};
+  codespan(text) {
+    return text;
+  }
 
-TextRenderer.prototype.link =
-TextRenderer.prototype.image = function(href, title, text) {
-  return '' + text;
-};
+  del(text) {
+    return text;
+  }
 
-TextRenderer.prototype.br = function() {
-  return '';
+  text(text) {
+    return text;
+  }
+
+  link(href, title, text) {
+    return '' + text;
+  }
+
+  image(href, title, text) {
+    return '' + text;
+  }
+
+  br() {
+    return '';
+  }
 };

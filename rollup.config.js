@@ -1,3 +1,6 @@
+const commonjs = require('rollup-plugin-commonjs');
+const babel = require('rollup-plugin-babel');
+
 module.exports = {
   input: 'src/marked.js',
   output: {
@@ -5,7 +8,10 @@ module.exports = {
     format: 'umd',
     name: 'marked'
   },
-  plugins: [require('rollup-plugin-babel')({
-    presets: ['@babel/preset-env']
-  })]
+  plugins: [
+    commonjs(),
+    babel({
+      presets: ['@babel/preset-env']
+    })
+  ]
 };

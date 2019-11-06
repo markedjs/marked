@@ -4,17 +4,17 @@
  * https://github.com/markedjs/marked
  */
 
-import {
+const {
   noop,
   edit,
   merge
-} from './helpers.js';
+} = require('./helpers.js');
 
 /**
  * Block-Level Grammar
  */
 
-export const block = {
+const block = {
   newline: /^\n+/,
   code: /^( {4}[^\n]+\n*)+/,
   fences: /^ {0,3}(`{3,}|~{3,})([^`~\n]*)\n(?:|([\s\S]*?)\n)(?: {0,3}\1[~`]* *(?:\n+|$)|$)/,
@@ -137,7 +137,7 @@ block.pedantic = merge({}, block.normal, {
  * Inline-Level Grammar
  */
 
-export const inline = {
+const inline = {
   escape: /^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/,
   autolink: /^<(scheme:[^\s\x00-\x1f<>]*|email)>/,
   url: noop,
@@ -241,3 +241,8 @@ inline.breaks = merge({}, inline.gfm, {
     .replace(/\{2,\}/g, '*')
     .getRegex()
 });
+
+module.exports = {
+  block,
+  inline
+};

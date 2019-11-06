@@ -1,6 +1,6 @@
-export let defaults = getDefaults();
+let defaults = getDefaults();
 
-export function getDefaults() {
+function getDefaults() {
   return {
     baseUrl: null,
     breaks: false,
@@ -21,6 +21,12 @@ export function getDefaults() {
   };
 }
 
-export function changeDefaults(newDefaults) {
+function changeDefaults(newDefaults) {
   defaults = newDefaults;
 }
+
+module.exports = {
+  defaults,
+  getDefaults,
+  changeDefaults
+};
