@@ -98,7 +98,7 @@ function marked(src, opt, callback) {
     return;
   }
   try {
-    if (opt) opt = merge({}, marked.defaults, opt);
+    opt = merge({}, marked.defaults, opt || {});
     checkSanitizeDeprecation(opt);
     return Parser.parse(Lexer.lex(src, opt), opt);
   } catch (e) {
