@@ -5,8 +5,9 @@
 - [ ] Make sure you are on the `master` branch.
 - [ ] Be sure to run `npm install` or `npm update`.
 - [ ] Create a branch.
-- [ ] Make as small a change as possible.
-- [ ] Run `npm test`, fix any broken things (for linting, you can run `npm run lint` to have the linter fix them for you).
+- [ ] Update code in `src` folder. (`lib` folder is for auto compiled code)
+- [ ] Run `npm run test:all`, fix any broken things (for linting, you can run `npm run lint` to have the linter fix them for you).
+- [ ] Run `npm run build:reset` to remove changes to compiled files.
 - [ ] Submit a Pull Request.
 
 ## Design principles
@@ -30,6 +31,7 @@ The following table lists the ticket type labels we use when there is work to be
 |RR - refactor and re-engineer      |Results in an improvement to developers using Marked (improved readability) or end-users (faster performance) or both.                                                              |
 |NFS - new feature (spec related)   |A capability Marked does not currently provide but is in one of the [supported specifications](#/README.md#specifications)                                                           |
 |NFU - new feature (user requested) |A capability Marked does not currently provide but has been requested by users of Marked.                                                                                           |
+|NFE - new feature (should be an extension) |A capability Marked does not currently provide and is not part of a spec.                                                                                           |
 
 ## Test early, often, and everything
 
@@ -86,7 +88,7 @@ To check for (and fix) standardized syntax (lint):
 npm run lint
 ```
 
-To build your own minified version of Marked:
+To build your own es5, esm, and minified versions of Marked:
 
 ```bash
 npm run build

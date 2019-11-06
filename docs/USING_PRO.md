@@ -106,7 +106,7 @@ You also have direct access to the lexer and parser if you so desire.
 
 ``` js
 const tokens = marked.lexer(text, options);
-console.log(marked.parser(tokens));
+console.log(marked.parser(tokens, options));
 ```
 
 ``` js
