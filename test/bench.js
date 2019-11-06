@@ -27,18 +27,6 @@ function runBench(options) {
   options = options || {};
   const specs = load();
 
-  marked.setOptions({
-    gfm: false,
-    breaks: false,
-    pedantic: false,
-    sanitize: false,
-    smartLists: false
-  });
-  if (options.marked) {
-    marked.setOptions(options.marked);
-  }
-  bench('non marked', specs, marked);
-
   // Non-GFM, Non-pedantic
   marked.setOptions({
     gfm: false,
