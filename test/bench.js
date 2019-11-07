@@ -147,7 +147,7 @@ async function bench(name, specs, engine) {
 
   let correct = 0;
   for (const spec of specs) {
-    if (await htmlDiffer.isEqual(spec.html, engine(spec.markdown))) {
+    if (await htmlDiffer.isEqual(spec.html, await engine(spec.markdown))) {
       correct++;
     }
   }
