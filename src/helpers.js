@@ -4,19 +4,20 @@
 function escape(html, encode) {
   if (encode) {
     if (escape.escapeTest.test(html)) {
-      return html.replace(escape.escapeReplace, function(ch) { return escape.replacements[ch]; });
+      return html.replace(escape.escapeReplace, escape.getReplacement);
     }
   } else {
     if (escape.escapeTestNoEncode.test(html)) {
-      return html.replace(escape.escapeReplaceNoEncode, function(ch) { return escape.replacements[ch]; });
+      return html.replace(escape.escapeReplaceNoEncode, escape.getReplacement);
     }
   }
 
   return html;
 }
-
 escape.escapeTest = /[&<>"']/;
 escape.escapeReplace = /[&<>"']/g;
+escape.escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
+escape.escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
 escape.replacements = {
   '&': '&amp;',
   '<': '&lt;',
@@ -24,13 +25,11 @@ escape.replacements = {
   '"': '&quot;',
   "'": '&#39;'
 };
-
-escape.escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
-escape.escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
+escape.getReplacement = (ch) => escape.replacements[ch];
 
 function unescape(html) {
   // explicitly match decimal, hex, and named HTML entities
-  return html.replace(/&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig, function(_, n) {
+  return html.replace(unescape.unescapeTest, (_, n) => {
     n = n.toLowerCase();
     if (n === 'colon') return ':';
     if (n.charAt(0) === '#') {
@@ -41,29 +40,32 @@ function unescape(html) {
     return '';
   });
 }
+unescape.unescapeTest = /&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig;
 
 function edit(regex, opt) {
   regex = regex.source || regex;
   opt = opt || '';
-  return {
-    replace: function(name, val) {
+  const obj = {
+    replace: (name, val) => {
       val = val.source || val;
-      val = val.replace(/(^|[^\[])\^/g, '$1');
+      val = val.replace(edit.caret, '$1');
       regex = regex.replace(name, val);
-      return this;
+      return obj;
     },
-    getRegex: function() {
+    getRegex: () => {
       return new RegExp(regex, opt);
     }
   };
+  return obj;
 }
+edit.caret = /(^|[^\[])\^/g;
 
 function cleanUrl(sanitize, base, href) {
   if (sanitize) {
     let prot;
     try {
       prot = decodeURIComponent(unescape(href))
-        .replace(/[^\w:]/g, '')
+        .replace(cleanUrl.protocol, '')
         .toLowerCase();
     } catch (e) {
       return null;
@@ -72,7 +74,7 @@ function cleanUrl(sanitize, base, href) {
       return null;
     }
   }
-  if (base && !originIndependentUrl.test(href)) {
+  if (base && !cleanUrl.originIndependentUrl.test(href)) {
     href = resolveUrl(base, href);
   }
   try {
@@ -82,37 +84,41 @@ function cleanUrl(sanitize, base, href) {
   }
   return href;
 }
+cleanUrl.protocol = /[^\w:]/g;
+cleanUrl.originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 
 function resolveUrl(base, href) {
-  if (!baseUrls[' ' + base]) {
+  if (!resolveUrl.baseUrls[' ' + base]) {
     // we can ignore everything in base after the last slash of its path component,
     // but we might need to add _that_
     // https://tools.ietf.org/html/rfc3986#section-3
-    if (/^[^:]+:\/*[^/]*$/.test(base)) {
-      baseUrls[' ' + base] = base + '/';
+    if (resolveUrl.justDomain.test(base)) {
+      resolveUrl.baseUrls[' ' + base] = base + '/';
     } else {
-      baseUrls[' ' + base] = rtrim(base, '/', true);
+      resolveUrl.baseUrls[' ' + base] = rtrim(base, '/', true);
     }
   }
-  base = baseUrls[' ' + base];
+  base = resolveUrl.baseUrls[' ' + base];
   const relativeBase = base.indexOf(':') === -1;
 
-  if (href.slice(0, 2) === '//') {
+  if (href.substring(0, 2) === '//') {
     if (relativeBase) {
       return href;
     }
-    return base.replace(/^([^:]+:)[\s\S]*$/, '$1') + href;
+    return base.replace(resolveUrl.protocol, '$1') + href;
   } else if (href.charAt(0) === '/') {
     if (relativeBase) {
       return href;
     }
-    return base.replace(/^([^:]+:\/*[^/]*)[\s\S]*$/, '$1') + href;
+    return base.replace(resolveUrl.domain, '$1') + href;
   } else {
     return base + href;
   }
 }
-const baseUrls = {};
-const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
+resolveUrl.baseUrls = {};
+resolveUrl.justDomain = /^[^:]+:\/*[^/]*$/;
+resolveUrl.protocol = /^([^:]+:)[\s\S]*$/;
+resolveUrl.domain = /^([^:]+:\/*[^/]*)[\s\S]*$/;
 
 function noop() {}
 noop.exec = noop;
@@ -137,7 +143,7 @@ function merge(obj) {
 function splitCells(tableRow, count) {
   // ensure that every cell-delimiting pipe has a space
   // before it to distinguish it from an escaped pipe
-  const row = tableRow.replace(/\|/g, function(match, offset, str) {
+  const row = tableRow.replace(/\|/g, (match, offset, str) => {
       let escaped = false,
         curr = offset;
       while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
