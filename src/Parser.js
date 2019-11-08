@@ -25,22 +25,22 @@ module.exports = class Parser {
   /**
    * Static Parse Method
    */
-  static parse(src, options) {
+  static parse(tokens, options) {
     const parser = new Parser(options);
-    return parser.parse(src);
+    return parser.parse(tokens);
   };
 
   /**
    * Parse Loop
    */
-  parse(src) {
-    this.inline = new InlineLexer(src.links, this.options);
+  parse(tokens) {
+    this.inline = new InlineLexer(tokens.links, this.options);
     // use an InlineLexer with a TextRenderer to extract pure text
     this.inlineText = new InlineLexer(
-      src.links,
+      tokens.links,
       merge({}, this.options, { renderer: new TextRenderer() })
     );
-    this.tokens = src.reverse();
+    this.tokens = tokens.reverse();
 
     let out = '';
     while (this.next()) {
