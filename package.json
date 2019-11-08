@@ -76,6 +76,6 @@
     "preversion": "npm run build && (git diff --quiet || git commit -am 'build')"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">= 8.16.2"
   }
 }
