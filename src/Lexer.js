@@ -1,5 +1,5 @@
 const { defaults } = require('./defaults.js');
-const { block } = require('./regexp.js');
+const { block } = require('./rules.js');
 const {
   rtrim,
   splitCells,

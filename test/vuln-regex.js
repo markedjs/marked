@@ -1,4 +1,4 @@
-const regexp = require('../src/regexp.js');
+const regexp = require('../src/rules.js');
 const vulnRegexDetector = require('vuln-regex-detector');
 
 const promises = [];

@@ -1,6 +1,6 @@
 const Renderer = require('./Renderer.js');
 const { defaults } = require('./defaults.js');
-const { inline } = require('./regexp.js');
+const { inline } = require('./rules.js');
 const {
   findClosingBracket,
   escape
