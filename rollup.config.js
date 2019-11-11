@@ -19,7 +19,7 @@ The code in this file is generated from files in ./src/
     license({
       banner: `
 marked - a markdown parser
-Copyright (c) 2011-2018, Christopher Jeffrey. (MIT Licensed)
+Copyright (c) 2011-${new Date().getFullYear()}, Christopher Jeffrey. (MIT Licensed)
 https://github.com/markedjs/marked
 `
     }),
