@@ -1,4 +1,4 @@
-const { defaults } = require('./defaults.js');
+const getDefaults = require('./defaults.js');
 const { block } = require('./rules.js');
 const {
   rtrim,
@@ -13,7 +13,7 @@ module.exports = class Lexer {
   constructor(options) {
     this.tokens = [];
     this.tokens.links = Object.create(null);
-    this.options = options || defaults;
+    this.options = options || getDefaults();
     this.rules = block.normal;
 
     if (this.options.pedantic) {

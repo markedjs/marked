@@ -2,7 +2,7 @@ const Renderer = require('./Renderer.js');
 const Slugger = require('./Slugger.js');
 const InlineLexer = require('./InlineLexer.js');
 const TextRenderer = require('./TextRenderer.js');
-const { defaults } = require('./defaults.js');
+const getDefaults = require('./defaults.js');
 const {
   merge,
   unescape
@@ -15,7 +15,7 @@ module.exports = class Parser {
   constructor(options) {
     this.tokens = [];
     this.token = null;
-    this.options = options || defaults;
+    this.options = options || getDefaults();
     this.options.renderer = this.options.renderer || new Renderer();
     this.renderer = this.options.renderer;
     this.renderer.options = this.options;

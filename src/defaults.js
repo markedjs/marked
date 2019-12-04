@@ -1,6 +1,4 @@
-let defaults = getDefaults();
-
-function getDefaults() {
+module.exports = function getDefaults() {
   return {
     baseUrl: null,
     breaks: false,
@@ -19,14 +17,4 @@ function getDefaults() {
     smartypants: false,
     xhtml: false
   };
-}
-
-function changeDefaults(newDefaults) {
-  defaults = newDefaults;
-}
-
-module.exports = {
-  defaults,
-  getDefaults,
-  changeDefaults
 };

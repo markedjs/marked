@@ -1,4 +1,4 @@
-const { defaults } = require('./defaults.js');
+const getDefaults = require('./defaults.js');
 const {
   cleanUrl,
   escape
@@ -9,7 +9,7 @@ const {
  */
 module.exports = class Renderer {
   constructor(options) {
-    this.options = options || defaults;
+    this.options = options || getDefaults();
   }
 
   code(code, infostring, escaped) {

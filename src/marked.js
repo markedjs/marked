@@ -9,11 +9,7 @@ const {
   checkSanitizeDeprecation,
   escape
 } = require('./helpers.js');
-const {
-  getDefaults,
-  changeDefaults,
-  defaults
-} = require('./defaults.js');
+const getDefaults = require('./defaults.js');
 
 /**
  * Marked
@@ -119,13 +115,12 @@ function marked(src, opt, callback) {
 marked.options =
 marked.setOptions = function(opt) {
   merge(marked.defaults, opt);
-  changeDefaults(marked.defaults);
   return marked;
 };
 
 marked.getDefaults = getDefaults;
 
-marked.defaults = defaults;
+marked.defaults = getDefaults();
 
 /**
  * Expose
