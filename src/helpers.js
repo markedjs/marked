@@ -1,35 +1,37 @@
 /**
  * Helpers
  */
-function escape(html, encode) {
-  if (encode) {
-    if (escape.escapeTest.test(html)) {
-      return html.replace(escape.escapeReplace, escape.getReplacement);
-    }
-  } else {
-    if (escape.escapeTestNoEncode.test(html)) {
-      return html.replace(escape.escapeReplaceNoEncode, escape.getReplacement);
-    }
-  }
-
-  return html;
-}
-escape.escapeTest = /[&<>"']/;
-escape.escapeReplace = /[&<>"']/g;
-escape.escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
-escape.escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
-escape.replacements = {
+const escapeTest = /[&<>"']/;
+const escapeReplace = /[&<>"']/g;
+const escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
+const escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
+const escapeReplacements = {
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
   "'": '&#39;'
 };
-escape.getReplacement = (ch) => escape.replacements[ch];
+const getEscapeReplacement = (ch) => escapeReplacements[ch];
+function escape(html, encode) {
+  if (encode) {
+    if (escapeTest.test(html)) {
+      return html.replace(escapeReplace, getEscapeReplacement);
+    }
+  } else {
+    if (escapeTestNoEncode.test(html)) {
+      return html.replace(escapeReplaceNoEncode, getEscapeReplacement);
+    }
+  }
+
+  return html;
+}
+
+const unescapeTest = /&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig;
 
 function unescape(html) {
   // explicitly match decimal, hex, and named HTML entities
-  return html.replace(unescape.unescapeTest, (_, n) => {
+  return html.replace(unescapeTest, (_, n) => {
     n = n.toLowerCase();
     if (n === 'colon') return ':';
     if (n.charAt(0) === '#') {
@@ -40,15 +42,15 @@ function unescape(html) {
     return '';
   });
 }
-unescape.unescapeTest = /&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig;
 
+const caret = /(^|[^\[])\^/g;
 function edit(regex, opt) {
   regex = regex.source || regex;
   opt = opt || '';
   const obj = {
     replace: (name, val) => {
       val = val.source || val;
-      val = val.replace(edit.caret, '$1');
+      val = val.replace(caret, '$1');
       regex = regex.replace(name, val);
       return obj;
     },
@@ -58,14 +60,15 @@ function edit(regex, opt) {
   };
   return obj;
 }
-edit.caret = /(^|[^\[])\^/g;
 
+const nonWordAndColonTest = /[^\w:]/g;
+const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 function cleanUrl(sanitize, base, href) {
   if (sanitize) {
     let prot;
     try {
       prot = decodeURIComponent(unescape(href))
-        .replace(cleanUrl.protocol, '')
+        .replace(nonWordAndColonTest, '')
         .toLowerCase();
     } catch (e) {
       return null;
@@ -74,7 +77,7 @@ function cleanUrl(sanitize, base, href) {
       return null;
     }
   }
-  if (base && !cleanUrl.originIndependentUrl.test(href)) {
+  if (base && !originIndependentUrl.test(href)) {
     href = resolveUrl(base, href);
   }
   try {
@@ -84,44 +87,42 @@ function cleanUrl(sanitize, base, href) {
   }
   return href;
 }
-cleanUrl.protocol = /[^\w:]/g;
-cleanUrl.originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
+
+const baseUrls = {};
+const justDomain = /^[^:]+:\/*[^/]*$/;
+const protocol = /^([^:]+:)[\s\S]*$/;
+const domain = /^([^:]+:\/*[^/]*)[\s\S]*$/;
 
 function resolveUrl(base, href) {
-  if (!resolveUrl.baseUrls[' ' + base]) {
+  if (!baseUrls[' ' + base]) {
     // we can ignore everything in base after the last slash of its path component,
     // but we might need to add _that_
     // https://tools.ietf.org/html/rfc3986#section-3
-    if (resolveUrl.justDomain.test(base)) {
-      resolveUrl.baseUrls[' ' + base] = base + '/';
+    if (justDomain.test(base)) {
+      baseUrls[' ' + base] = base + '/';
     } else {
-      resolveUrl.baseUrls[' ' + base] = rtrim(base, '/', true);
+      baseUrls[' ' + base] = rtrim(base, '/', true);
     }
   }
-  base = resolveUrl.baseUrls[' ' + base];
+  base = baseUrls[' ' + base];
   const relativeBase = base.indexOf(':') === -1;
 
   if (href.substring(0, 2) === '//') {
     if (relativeBase) {
       return href;
     }
-    return base.replace(resolveUrl.protocol, '$1') + href;
+    return base.replace(protocol, '$1') + href;
   } else if (href.charAt(0) === '/') {
     if (relativeBase) {
       return href;
     }
-    return base.replace(resolveUrl.domain, '$1') + href;
+    return base.replace(domain, '$1') + href;
   } else {
     return base + href;
   }
 }
-resolveUrl.baseUrls = {};
-resolveUrl.justDomain = /^[^:]+:\/*[^/]*$/;
-resolveUrl.protocol = /^([^:]+:)[\s\S]*$/;
-resolveUrl.domain = /^([^:]+:\/*[^/]*)[\s\S]*$/;
 
-function noop() {}
-noop.exec = noop;
+const noopTest = { exec: function noopTest() {} };
 
 function merge(obj) {
   let i = 1,
@@ -233,7 +234,7 @@ module.exports = {
   edit,
   cleanUrl,
   resolveUrl,
-  noop,
+  noopTest,
   merge,
   splitCells,
   rtrim,
