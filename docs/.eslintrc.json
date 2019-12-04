@@ -3,6 +3,10 @@
   "plugins": [
     "standard"
   ],
+  "parserOptions": {
+    "ecmaVersion": 5,
+    "sourceType": "script"
+  },
   "rules": {
     "semi": ["error", "always"],
     "indent": ["error", 2, {
@@ -18,10 +22,12 @@
     "no-control-regex": "off",
     "no-prototype-builtins": "off",
 
-    "prefer-const": "error",
-    "no-var": "error"
+    "prefer-const": "off",
+    "no-var": "off"
   },
   "env": {
-    "node": true
+    "node": true,
+    "browser": true,
+    "amd": true
   }
 }

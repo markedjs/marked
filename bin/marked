@@ -5,18 +5,18 @@
  * Copyright (c) 2011-2013, Christopher Jeffrey (MIT License)
  */
 
-var fs = require('fs'),
-    path = require('path'),
-    marked = require('../');
+const fs = require('fs'),
+  path = require('path'),
+  marked = require('../');
 
 /**
  * Man Page
  */
 
 function help() {
-  var spawn = require('child_process').spawn;
+  const spawn = require('child_process').spawn;
 
-  var options = {
+  const options = {
     cwd: process.cwd(),
     env: process.env,
     setsid: false,
@@ -33,7 +33,7 @@ function help() {
 }
 
 function version() {
-  var pkg = require('../package.json');
+  const pkg = require('../package.json');
   console.log(pkg.version);
 }
 
@@ -42,17 +42,17 @@ function version() {
  */
 
 function main(argv, callback) {
-  var files = [],
-      options = {},
-      input,
-      output,
-      string,
-      arg,
-      tokens,
-      opt;
+  const files = [],
+    options = {};
+  let input,
+    output,
+    string,
+    arg,
+    tokens,
+    opt;
 
   function getarg() {
-    var arg = argv.shift();
+    let arg = argv.shift();
 
     if (arg.indexOf('--') === 0) {
       // e.g. --opt
@@ -162,8 +162,8 @@ function main(argv, callback) {
  */
 
 function getStdin(callback) {
-  var stdin = process.stdin,
-      buff = '';
+  const stdin = process.stdin;
+  let buff = '';
 
   stdin.setEncoding('utf8');
 

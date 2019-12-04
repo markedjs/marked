@@ -7,7 +7,7 @@
 
 ## Overall strategy
 
-**Master is always shippable:** We try to merge PRs in such a way that `master` is the only branch to really be concerned about *and* `master` can always be released. This allows smoother flow between new fetures, bug fixes, and so on. (Almost a continuous deployment setup, without automation.)
+**Master is always shippable:** We try to merge PRs in such a way that `master` is the only branch to really be concerned about *and* `master` can always be released. This allows smoother flow between new features, bug fixes, and so on. (Almost a continuous deployment setup, without automation.)
 
 ## Versioning
 
@@ -20,5 +20,5 @@ We follow [semantic versioning](https://semver.org) where the following sequence
 What to expect while Marked is a zero-major (0.x.y):
 
 1. The major will remain at zero; thereby, alerting consumers to the potentially volatile nature of the package.
-2. The minor will tend to be more analagous to a `major` release. 
-3. The patch will tend to be more analagous to a `minor` release or a collection of bug fixes (patches).
+2. The minor will tend to be more analogous to a `major` release.
+3. The patch will tend to be more analogous to a `minor` release or a collection of bug fixes (patches).

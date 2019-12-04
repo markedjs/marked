@@ -2,7 +2,8 @@ const path = require('path');
 const htmlDiffer = require('./helpers/html-differ.js');
 const { loadFiles } = require('./helpers/load.js');
 
-let marked = require('../');
+let marked = require('../lib/marked.js');
+const es6marked = require('../src/marked.js');
 
 /**
  * Load specs
@@ -22,7 +23,7 @@ function load() {
 /**
  * Run all benchmarks
  */
-function runBench(options) {
+async function runBench(options) {
   options = options || {};
   const specs = load();
 
@@ -37,7 +38,19 @@ function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  bench('marked', specs, marked);
+  await bench('es5 marked', specs, marked);
+
+  es6marked.setOptions({
+    gfm: false,
+    breaks: false,
+    pedantic: false,
+    sanitize: false,
+    smartLists: false
+  });
+  if (options.marked) {
+    es6marked.setOptions(options.marked);
+  }
+  await bench('es6 marked', specs, es6marked);
 
   // GFM
   marked.setOptions({
@@ -50,7 +63,19 @@ function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  bench('marked (gfm)', specs, marked);
+  await bench('es5 marked (gfm)', specs, marked);
+
+  es6marked.setOptions({
+    gfm: true,
+    breaks: false,
+    pedantic: false,
+    sanitize: false,
+    smartLists: false
+  });
+  if (options.marked) {
+    es6marked.setOptions(options.marked);
+  }
+  await bench('es6 marked (gfm)', specs, es6marked);
 
   // Pedantic
   marked.setOptions({
@@ -63,10 +88,22 @@ function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  bench('marked (pedantic)', specs, marked);
+  await bench('es5 marked (pedantic)', specs, marked);
+
+  es6marked.setOptions({
+    gfm: false,
+    breaks: false,
+    pedantic: true,
+    sanitize: false,
+    smartLists: false
+  });
+  if (options.marked) {
+    es6marked.setOptions(options.marked);
+  }
+  await bench('es6 marked (pedantic)', specs, es6marked);
 
   try {
-    bench('commonmark', specs, (() => {
+    await bench('commonmark', specs, (() => {
       const commonmark = require('commonmark');
       const parser = new commonmark.Parser();
       const writer = new commonmark.HtmlRenderer();
@@ -79,7 +116,7 @@ function runBench(options) {
   }
 
   try {
-    bench('markdown-it', specs, (() => {
+    await bench('markdown-it', specs, (() => {
       const MarkdownIt = require('markdown-it');
       const md = new MarkdownIt();
       return md.render.bind(md);
@@ -89,7 +126,7 @@ function runBench(options) {
   }
 
   try {
-    bench('markdown.js', specs, (() => {
+    await bench('markdown.js', specs, (() => {
       const md = require('markdown').markdown;
       return md.toHTML.bind(md);
     })());
@@ -98,25 +135,23 @@ function runBench(options) {
   }
 }
 
-function bench(name, specs, engine) {
+async function bench(name, specs, engine) {
   const before = process.hrtime();
   for (let i = 0; i < 1e3; i++) {
     for (const spec of specs) {
-      engine(spec.markdown);
+      await engine(spec.markdown);
     }
   }
   const elapsed = process.hrtime(before);
   const ms = prettyElapsedTime(elapsed).toFixed();
 
-  const results = [];
+  let correct = 0;
   for (const spec of specs) {
-    results.push({
-      expected: spec.html,
-      actual: engine(spec.markdown)
-    });
+    if (await htmlDiffer.isEqual(spec.html, await engine(spec.markdown))) {
+      correct++;
+    }
   }
-  const correct = results.reduce((num, result) => num + (htmlDiffer.isEqual(result.expected, result.actual) ? 1 : 0), 0);
-  const percent = (correct / results.length * 100).toFixed(2);
+  const percent = (correct / specs.length * 100).toFixed(2);
 
   console.log('%s completed in %sms and passed %s%', name, ms, percent);
 }
@@ -124,13 +159,13 @@ function bench(name, specs, engine) {
 /**
  * A simple one-time benchmark
  */
-function time(options) {
+async function time(options) {
   options = options || {};
   const specs = load();
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  bench('marked', specs, marked);
+  await bench('marked', specs, marked);
 }
 
 /**
@@ -226,7 +261,7 @@ function camelize(text) {
 /**
  * Main
  */
-function main(argv) {
+async function main(argv) {
   const opt = parseArg(argv);
 
   if (opt.minified) {
@@ -234,9 +269,9 @@ function main(argv) {
   }
 
   if (opt.time) {
-    time(opt);
+    await time(opt);
   } else {
-    runBench(opt);
+    await runBench(opt);
   }
 }
 
