@@ -25,7 +25,7 @@ https://github.com/markedjs/marked
     }),
     commonjs(),
     babel({
-      presets: ['@babel/preset-env']
+      presets: [['@babel/preset-env', { loose: true }]]
     })
   ]
 };
