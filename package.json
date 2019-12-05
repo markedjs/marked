@@ -5,9 +5,6 @@
   "version": "0.7.0",
   "main": "./src/marked.js",
   "module": "./lib/marked.esm.js",
-  "browser": {
-    "./src/marked.js": "./lib/marked.js"
-  },
   "bin": "./bin/marked",
   "man": "./man/marked.1",
   "files": [
