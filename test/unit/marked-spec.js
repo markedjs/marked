@@ -71,3 +71,12 @@ describe('Test paragraph token type', () => {
     expect(tokens[7].type).toBe('text');
   });
 });
+
+describe('changeDefaults', () => {
+  it('should change global defaults', () => {
+    const { defaults, changeDefaults } = require('../../src/defaults');
+    expect(defaults.test).toBeUndefined();
+    changeDefaults({ test: true });
+    expect(require('../../src/defaults').defaults.test).toBe(true);
+  });
+});
