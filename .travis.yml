@@ -23,8 +23,8 @@ jobs:
       script: |
         npm run build
         if ! git diff --quiet; then
-          git config --global user.email "travis@travis-ci.org"
-          git config --global user.name "Travis-CI"
+          git config --global user.email "<>"
+          git config --global user.name "MarkedJS bot"
           git config credential.helper "store --file=.git/credentials"
           echo "https://${GITHUB_TOKEN}:@github.com" > .git/credentials
           git commit -am '🗜️ build [skip ci]'
