@@ -4,7 +4,6 @@
   "author": "Christopher Jeffrey",
   "version": "0.7.0",
   "main": "./src/marked.js",
-  "module": "./lib/marked.esm.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
   "files": [
@@ -31,14 +30,14 @@
     "html"
   ],
   "devDependencies": {
-    "@babel/core": "^7.7.0",
-    "@babel/preset-env": "^7.7.1",
+    "@babel/core": "^7.7.5",
+    "@babel/preset-env": "^7.7.6",
     "@markedjs/html-differ": "^3.0.0",
     "cheerio": "^1.0.0-rc.3",
     "commonmark": "0.29.x",
-    "eslint": "^6.6.0",
+    "eslint": "^6.7.2",
     "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
@@ -47,11 +46,11 @@
     "markdown": "0.5.x",
     "markdown-it": "10.x",
     "node-fetch": "^2.6.0",
-    "rollup": "^1.26.3",
+    "rollup": "^1.27.11",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-license": "^0.12.1",
-    "uglify-js": "^3.6.8",
+    "rollup-plugin-license": "^0.13.0",
+    "uglify-js": "^3.7.2",
     "vuln-regex-detector": "^1.3.0"
   },
   "scripts": {
