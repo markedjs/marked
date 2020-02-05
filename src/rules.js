@@ -111,8 +111,6 @@ block.gfm.table = edit(block.gfm.table)
   .replace('tag', block._tag) // pars can be interrupted by type (6) html blocks
   .getRegex();
 
-console.log(block.gfm.table);
-
 /**
  * Pedantic grammar (original John Gruber's loose markdown specification)
  */
