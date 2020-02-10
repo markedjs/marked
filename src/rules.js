@@ -104,7 +104,7 @@ block.gfm.table = edit(block.gfm.table)
   .replace('heading', ' {0,3}#{1,6} +')
   .replace('lheading', '([^\\n]+)\\n {0,3}(=+|-+) *(?:\\n+|$)')
   .replace('blockquote', ' {0,3}>')
-  .replace('code', ' {4}[^\\n]+')
+  .replace('code', ' {4}[^\\n]')
   .replace('fences', ' {0,3}(?:`{3,}|~{3,})[^`\\n]*\\n')
   .replace('list', ' {0,3}(?:[*+-]|1[.)]) ') // only lists starting from 1 can interrupt
   .replace('html', '</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|!--)')
