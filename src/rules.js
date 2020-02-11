@@ -69,7 +69,7 @@ block.html = edit(block.html, 'i')
 
 block.paragraph = edit(block._paragraph)
   .replace('hr', block.hr)
-  .replace('heading', ' {0,3}#{1,6} +')
+  .replace('heading', ' {0,3}#{1,6} ')
   .replace('|lheading', '') // setex headings don't interrupt commonmark paragraphs
   .replace('blockquote', ' {0,3}>')
   .replace('fences', ' {0,3}(?:`{3,}|~{3,})[^`\\n]*\\n')
@@ -101,7 +101,7 @@ block.gfm = merge({}, block.normal, {
 
 block.gfm.table = edit(block.gfm.table)
   .replace('hr', block.hr)
-  .replace('heading', ' {0,3}#{1,6} +')
+  .replace('heading', ' {0,3}#{1,6} ')
   .replace('lheading', '([^\\n]+)\\n {0,3}(=+|-+) *(?:\\n+|$)')
   .replace('blockquote', ' {0,3}>')
   .replace('code', ' {4}[^\\n]')
