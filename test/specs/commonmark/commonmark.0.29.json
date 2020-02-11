@@ -930,8 +930,7 @@
     "example": 116,
     "start_line": 1996,
     "end_line": 2003,
-    "section": "Fenced code blocks",
-    "shouldFail": true
+    "section": "Fenced code blocks"
   },
   {
     "markdown": "```\n``` aaa\n```\n",
