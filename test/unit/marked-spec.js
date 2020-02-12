@@ -80,3 +80,14 @@ describe('changeDefaults', () => {
     expect(require('../../src/defaults').defaults.test).toBe(true);
   });
 });
+
+describe('inlineLexer', () => {
+  it('should send html to renderer.html', () => {
+    const renderer = new marked.Renderer();
+    spyOn(renderer, 'html').and.callThrough();
+    const md = 'HTML Image: <img alt="MY IMAGE" src="example.png" />';
+    marked(md, { renderer });
+
+    expect(renderer.html).toHaveBeenCalledWith('<img alt="MY IMAGE" src="example.png" />');
+  });
+});
