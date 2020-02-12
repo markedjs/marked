@@ -23,9 +23,9 @@ function help() {
     stdio: 'inherit'
   };
 
-  spawn('man', [path.resolve(__dirname, '/../man/marked.1')], options)
+  spawn('man', [path.resolve(__dirname, '../man/marked.1')], options)
     .on('error', function() {
-      fs.readFile(path.resolve(__dirname, '/../man/marked.1.txt'), 'utf8', function(err, data) {
+      fs.readFile(path.resolve(__dirname, '../man/marked.1.txt'), 'utf8', function(err, data) {
         if (err) throw err;
         console.log(data);
       });
