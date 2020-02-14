@@ -20,8 +20,10 @@ const marked = require('marked');
 // `highlight` example uses `highlight.js`
 marked.setOptions({
   renderer: new marked.Renderer(),
-  highlight: function(code) {
-    return require('highlight.js').highlightAuto(code).value;
+  highlight: function(code, language) {
+    const hljs = require('highlight.js');
+    const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
+    return hljs.highlight(validLanguage, code).value;
   },
   pedantic: false,
   gfm: true,
