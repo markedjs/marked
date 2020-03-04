@@ -3,7 +3,54 @@
  * returns only the textual part of the token
  */
 module.exports = class TextRenderer {
-  // no need for block level renderers
+  code(code) {
+    return code;
+  }
+
+  blockquote(text) {
+    return text;
+  }
+
+  html() {
+    return '';
+  }
+
+  heading(text) {
+    return text;
+  }
+
+  hr() {
+    return '';
+  }
+
+  list(body) {
+    return body;
+  }
+
+  listitem(text) {
+    return text + '\n';
+  }
+
+  checkbox() {
+    return '';
+  }
+
+  paragraph(text) {
+    return text + '\n';
+  }
+
+  table() {
+    return '';
+  }
+
+  tablerow() {
+    return '';
+  }
+
+  tablecell() {
+    return '';
+  }
+
   strong(text) {
     return text;
   }
@@ -35,4 +82,9 @@ module.exports = class TextRenderer {
   br() {
     return '';
   }
+
+  link(href, title, text) {
+    return '' + text;
+  }
+
 };
