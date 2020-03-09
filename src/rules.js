@@ -95,17 +95,15 @@ block.normal = merge({}, block);
 block.gfm = merge({}, block.normal, {
   nptable: '^ *([^|\\n ].*\\|.*)\\n' // Header
     + ' *([-:]+ *\\|[-| :]*)' // Align
-    + '(?:\\n((?:(?!\\n|hr|heading|lheading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)', // Cells
+    + '(?:\\n((?:(?!\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)', // Cells
   table: '^ *\\|(.+)\\n' // Header
     + ' *\\|?( *[-:]+[-| :]*)' // Align
-    + '(?:\\n *((?:(?!\\n|hr|heading|lheading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)' // Cells
+    + '(?:\\n *((?:(?!\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)' // Cells
 });
 
 block.gfm.nptable = edit(block.gfm.nptable)
   .replace('hr', block.hr)
   .replace('heading', ' {0,3}#{1,6} ')
-  // .replace('lheading', '([^\\n]+)\\n {0,3}(=+|-+) *(?:\\n+|$)')
-  .replace('|lheading', '') // setex headings don't interrupt gfm tables
   .replace('blockquote', ' {0,3}>')
   .replace('code', ' {4}[^\\n]')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n')
@@ -117,8 +115,6 @@ block.gfm.nptable = edit(block.gfm.nptable)
 block.gfm.table = edit(block.gfm.table)
   .replace('hr', block.hr)
   .replace('heading', ' {0,3}#{1,6} ')
-  // .replace('lheading', '([^\\n]+)\\n {0,3}(=+|-+) *(?:\\n+|$)')
-  .replace('|lheading', '') // setex headings don't interrupt gfm tables
   .replace('blockquote', ' {0,3}>')
   .replace('code', ' {4}[^\\n]')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n')
