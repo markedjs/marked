@@ -43,7 +43,7 @@ console.log(marked(markdownString));
 |Member      |Type      |Default  |Since    |Notes         |
 |:-----------|:---------|:--------|:--------|:-------------|
 |baseUrl     |`string`  |`null`   |0.3.9    |A prefix url for any relative link. |
-|breaks      |`boolean` |`false`  |v0.2.7   |If true, add `<br>` on a single line break (copies GitHub comments). Requires `gfm` be `true`.|
+|breaks      |`boolean` |`false`  |v0.2.7   |If true, add `<br>` on a single line break (copies GitHub behavior on comments, but not on rendered markdown files). Requires `gfm` be `true`.|
 |gfm         |`boolean` |`true`   |v0.2.1   |If true, use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).|
 |headerIds   |`boolean` |`true`   |v0.4.0   |If true, include an `id` attribute when emitting headings (h1, h2, h3, etc).|
 |headerPrefix|`string`  |`''`     |v0.3.0   |A string to prefix the `id` attribute when emitting headings (h1, h2, h3, etc).|
