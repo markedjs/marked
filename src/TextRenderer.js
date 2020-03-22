@@ -20,6 +20,10 @@ module.exports = class TextRenderer {
     return text;
   }
 
+  html(text) {
+    return text;
+  }
+
   text(text) {
     return text;
   }
