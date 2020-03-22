@@ -2,7 +2,7 @@
   "name": "marked",
   "description": "A markdown parser built for speed",
   "author": "Christopher Jeffrey",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "main": "./src/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
