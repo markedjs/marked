@@ -44,8 +44,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-      - name: Install Node
-        run: nvm lts/*
       - name: Install Dependencies
         run: npm ci
       - name: Build 🗜️
