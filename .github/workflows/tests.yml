@@ -21,9 +21,9 @@ jobs:
           node-version: ${{ matrix.node_version }}
       - name: Install Dependencies
         run: npm ci
-      - name: Run Unit Tests
+      - name: Run Unit Tests 👩🏽‍💻
         run: npm run test:unit
-      - name: Run Spec Tests
+      - name: Run Spec Tests 👩🏽‍💻
         run: npm run test:specs
 
   Lint:
@@ -48,7 +48,7 @@ jobs:
         run: nvm lts/*
       - name: Install Dependencies
         run: npm ci
-      - name: Build 🧱
+      - name: Build 🗜️
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
