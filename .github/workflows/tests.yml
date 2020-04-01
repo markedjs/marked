@@ -53,10 +53,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm run build
-          if ! git diff --quiet -- dist ; then
+          if ! git diff --quiet; then
             git config --global user.email "<>"
-            git config --global user.name "GitHub Actions"
-            git commit -m 'chore(build): 🧱 build [skip ci]' --no-verify -- dist
+            git config --global user.name "MarkedJS bot"
+            git commit -am "🗜️ build [skip ci]"
             git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/markedjs/marked.git" HEAD:master
           fi
 
