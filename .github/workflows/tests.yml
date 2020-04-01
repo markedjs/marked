@@ -24,7 +24,7 @@ jobs:
       - name: Run Unit Tests
         run: npm run test:unit
       - name: Run Spec Tests
-        run: npm run test:spec
+        run: npm run test:specs
 
   Lint:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
@@ -32,8 +32,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-      - name: Install Node
-        run: nvm lts/*
       - name: Install Dependencies
         run: npm ci
       - name: Lint ✨
