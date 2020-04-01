@@ -1,0 +1,68 @@
+name: "Tests"
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  Test:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    strategy:
+      matrix:
+        node_version: ['lts/*', 'node']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Install Node
+        uses: dcodeIO/setup-node-nvm@master
+        with:
+          node-version: ${{ matrix.node_version }}
+      - name: Install Dependencies
+        run: npm ci
+      - name: Run Unit Tests 👩🏽‍💻
+        run: npm run test:unit
+      - name: Run Spec Tests 👩🏽‍💻
+        run: npm run test:specs
+
+  Lint:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: npm ci
+      - name: Lint ✨
+        run: npm run test:lint
+
+  Build:
+    needs: [Test, Lint]
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Install Node
+        run: nvm lts/*
+      - name: Install Dependencies
+        run: npm ci
+      - name: Build 🗜️
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm run build
+          if ! git diff --quiet; then
+            git config --global user.email "<>"
+            git config --global user.name "MarkedJS bot"
+            git commit -am "🗜️ build [skip ci]"
+            git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/markedjs/marked.git" HEAD:master
+          fi
+
+  Skip:
+    if: contains(github.event.head_commit.message, '[skip ci]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip CI 🚫
+        run: echo skip ci
