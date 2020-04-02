@@ -85,6 +85,8 @@ module.exports = class Lexer {
       isordered,
       istask,
       ischecked,
+      lastToken,
+      addBack,
       raw;
 
     while (src) {
@@ -102,7 +104,7 @@ module.exports = class Lexer {
 
       // code
       if (cap = this.rules.block.code.exec(src)) {
-        const lastToken = tokens[tokens.length - 1];
+        lastToken = tokens[tokens.length - 1];
         src = src.substring(cap[0].length);
         raw = cap[0];
         // An indented code block cannot interrupt a paragraph.
@@ -262,7 +264,7 @@ module.exports = class Lexer {
             b = block.bullet.exec(cap[i + 1])[0];
             if (bull.length > 1 ? b.length === 1
               : (b.length > 1 || (this.options.smartLists && b !== bull))) {
-              const addBack = cap.slice(i + 1).join('\n');
+              addBack = cap.slice(i + 1).join('\n');
               src = addBack + src;
               list.raw = list.raw.substring(list.raw.length - addBack.length);
               i = l - 1;
@@ -501,6 +503,9 @@ module.exports = class Lexer {
       title,
       cap,
       prevCapZero,
+      lastParenIndex,
+      start,
+      linkLen,
       raw;
 
     while (src) {
@@ -551,10 +556,10 @@ module.exports = class Lexer {
 
       // link
       if (cap = this.rules.inline.link.exec(src)) {
-        const lastParenIndex = findClosingBracket(cap[2], '()');
+        lastParenIndex = findClosingBracket(cap[2], '()');
         if (lastParenIndex > -1) {
-          const start = cap[0].indexOf('!') === 0 ? 5 : 4;
-          const linkLen = start + cap[1].length + lastParenIndex;
+          start = cap[0].indexOf('!') === 0 ? 5 : 4;
+          linkLen = start + cap[1].length + lastParenIndex;
           cap[2] = cap[2].substring(0, lastParenIndex);
           cap[0] = cap[0].substring(0, linkLen).trim();
           cap[3] = '';

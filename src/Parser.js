@@ -32,11 +32,27 @@ module.exports = class Parser {
    */
   parse(tokens, top = true) {
     let out = '',
+      i,
+      j,
+      k,
+      l2,
+      l3,
+      row,
+      cell,
+      header,
       body,
-      token;
+      token,
+      ordered,
+      start,
+      loose,
+      itemBody,
+      item,
+      checked,
+      task,
+      checkbox;
 
     const l = tokens.length;
-    for (let i = 0; i < l; i++) {
+    for (i = 0; i < l; i++) {
       token = tokens[i];
       switch (token.type) {
         case 'space': {
@@ -61,36 +77,30 @@ module.exports = class Parser {
           continue;
         }
         case 'table': {
-          let header = '',
-            i,
-            row,
-            cell,
-            j,
-            l2,
-            l3;
+          header = '';
 
           // header
           cell = '';
           l2 = token.header.length;
-          for (i = 0; i < l2; i++) {
+          for (j = 0; j < l2; j++) {
             cell += this.renderer.tablecell(
-              this.parseInline(token.tokens.header[i]),
-              { header: true, align: token.align[i] }
+              this.parseInline(token.tokens.header[j]),
+              { header: true, align: token.align[j] }
             );
           }
           header += this.renderer.tablerow(cell);
 
           body = '';
           l2 = token.cells.length;
-          for (i = 0; i < l2; i++) {
-            row = token.tokens.cells[i];
+          for (j = 0; j < l2; j++) {
+            row = token.tokens.cells[j];
 
             cell = '';
             l3 = row.length;
-            for (j = 0; j < l3; j++) {
+            for (k = 0; k < l3; k++) {
               cell += this.renderer.tablecell(
-                this.parseInline(row[j]),
-                { header: false, align: token.align[j] }
+                this.parseInline(row[k]),
+                { header: false, align: token.align[k] }
               );
             }
 
@@ -105,21 +115,20 @@ module.exports = class Parser {
           continue;
         }
         case 'list': {
-          const ordered = token.ordered,
-            start = token.start,
-            loose = token.loose,
-            l2 = token.items.length;
-          let itemBody;
+          ordered = token.ordered;
+          start = token.start;
+          loose = token.loose;
+          l2 = token.items.length;
 
           body = '';
-          for (let j = 0; j < l2; j++) {
-            const item = token.items[j];
-            const checked = item.checked;
-            const task = item.task;
+          for (j = 0; j < l2; j++) {
+            item = token.items[j];
+            checked = item.checked;
+            task = item.task;
 
             itemBody = '';
             if (item.task) {
-              const checkbox = this.renderer.checkbox(checked);
+              checkbox = this.renderer.checkbox(checked);
               if (loose) {
                 if (item.tokens[0].type === 'text') {
                   item.tokens[0].text = checkbox + ' ' + item.tokens[0].text;
@@ -230,7 +239,7 @@ module.exports = class Parser {
           break;
         }
         default: {
-          const errMsg = 'Inline token with "' + this.token.type + '" type was not found.';
+          const errMsg = 'Token with "' + this.token.type + '" type was not found.';
           if (this.options.silent) {
             console.error(errMsg);
           } else {
