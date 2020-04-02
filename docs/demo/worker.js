@@ -68,7 +68,7 @@ function getLexedList(lexed, level) {
   for (var i = 0; i < lexed.length; i++) {
     var lexedLine = [];
     for (var j in lexed[i]) {
-      if (j === 'tokens') {
+      if (j === 'tokens' || j === 'items') {
         lexedLine.push(j + ': [\n' + getLexedList(lexed[i][j], level + 1) + '\n]');
       } else {
         lexedLine.push(j + ':' + jsonString(lexed[i][j]));
