@@ -59,7 +59,7 @@ module.exports = class Lexer {
       .replace(/\r\n|\r/g, '\n')
       .replace(/\t/g, '    ');
 
-    this.blockTokens(this.tokens, src, true);
+    this.blockTokens(this.tokens, src);
 
     this.inlineTokens(this.tokens);
 
@@ -69,7 +69,7 @@ module.exports = class Lexer {
   /**
    * Lexing
    */
-  blockTokens(tokens, src, top) {
+  blockTokens(tokens, src, top = true) {
     src = src.replace(/^ +$/gm, '');
     let next,
       loose,
