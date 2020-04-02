@@ -4,7 +4,7 @@ To champion the single-responsibility and open/closed principles, we have tried 
 
 <h2 id="renderer">The renderer</h2>
 
-The renderer is...
+The renderer defines the output of the parser.
 
 **Example:** Overriding default heading token by adding an embedded anchor tag like on GitHub.
 
@@ -91,29 +91,36 @@ slugger.slug('foo-1') // foo-1-2
 
 <h2 id="lexer">The lexer</h2>
 
-The lexer is...
+The lexer turns a markdown string into block level tokens.
 
+<h2 id="inlinelexer">The inline lexer</h2>
+
+The inline lexer adds inline tokens to the block level tokens.
 
 <h2 id="parser">The parser</h2>
 
-The parser is...
+The parser takes tokens as input and calls the renderer functions that are accosiated with those tokens.
 
 ***
 
 <h2 id="extend">Access to lexer and parser</h2>
 
-You also have direct access to the lexer and parser if you so desire.
+You also have direct access to the lexer, inline lexer, and parser if you so desire.
 
 ``` js
-const tokens = marked.lexer(text, options);
+const blocks = marked.lexer(markdown, options);
+const tokens = marked.inlineLexer(blocks, options);
 console.log(marked.parser(tokens, options));
 ```
 
 ``` js
 const lexer = new marked.Lexer(options);
-const tokens = lexer.lex(text);
+const inlineLexer = new marked.InlineLexer(options);
+const blocks = lexer.lex(markdown);
+const tokens = inlineLexer.lex(blocks);
 console.log(tokens);
-console.log(lexer.rules);
+console.log(lexer.rules); // block level rules
+console.log(inlineLexer.rules); // inline level rules
 ```
 
 ``` bash
@@ -126,8 +133,8 @@ $ node
   links: {} ]
 ```
 
-The Lexers build an array of tokens, which will be passed to their respective
-Parsers. The Parsers process each token in the token arrays,
+The Lexer and InlineLexer build an array of tokens, which will be passed to the Parser.
+The Parser processes each token in the token array,
 which are removed from the array of tokens:
 
 ``` js
@@ -141,7 +148,8 @@ const md = `
   [1]: #heading "heading"
 `;
 
-const tokens = marked.lexer(md);
+const blocks = marked.lexer(md);
+const tokens = marked.inlineLexer(blocks);
 console.log(tokens);
 
 const html = marked.parser(tokens);

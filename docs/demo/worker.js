@@ -1,4 +1,5 @@
 /* globals marked, unfetch, ES6Promise, Promise */ // eslint-disable-line no-redeclare
+
 if (!self.Promise) {
   self.importScripts('https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.js');
   self.Promise = ES6Promise;
@@ -48,26 +49,42 @@ function parse(e) {
     case 'parse':
       var startTime = new Date();
       var lexed = marked.lexer(e.data.markdown, e.data.options);
-      var lexedList = [];
-      for (var i = 0; i < lexed.length; i++) {
-        var lexedLine = [];
-        for (var j in lexed[i]) {
-          lexedLine.push(j + ':' + jsonString(lexed[i][j]));
-        }
-        lexedList.push('{' + lexedLine.join(', ') + '}');
-      }
+      var lexedList = getLexedList(lexed);
       var parsed = marked.parser(lexed, e.data.options);
       var endTime = new Date();
-      // setTimeout(function () {
       postMessage({
         task: e.data.task,
-        lexed: lexedList.join('\n'),
+        lexed: lexedList,
         parsed: parsed,
         time: endTime - startTime
       });
-      // }, 10000);
       break;
   }
+}
+
+function getLexedList(lexed, level) {
+  level = level || 0;
+  var lexedList = [];
+  for (var i = 0; i < lexed.length; i++) {
+    var lexedLine = [];
+    for (var j in lexed[i]) {
+      if (j === 'tokens') {
+        lexedLine.push(j + ': [\n' + getLexedList(lexed[i][j], level + 1) + '\n]');
+      } else {
+        lexedLine.push(j + ':' + jsonString(lexed[i][j]));
+      }
+    }
+    lexedList.push(stringRepeat(' ', 2 * level) + '{' + lexedLine.join(', ') + '}');
+  }
+  return lexedList.join('\n');
+}
+
+function stringRepeat(char, times) {
+  var s = '';
+  for (var i = 0; i < times; i++) {
+    s += char;
+  }
+  return s;
 }
 
 function jsonString(input) {
@@ -79,7 +96,7 @@ function jsonString(input) {
     .replace(/[\\"']/g, '\\$&')
     .replace(/\u0000/g, '\\0');
   return '"' + output + '"';
-};
+}
 
 function loadVersion(ver) {
   var promise;
