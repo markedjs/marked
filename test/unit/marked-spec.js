@@ -58,6 +58,11 @@ describe('Test slugger functionality', () => {
     const slugger = new marked.Slugger();
     expect(slugger.slug('file.txt')).toBe('filetxt');
   });
+
+  it('should remove html tags', () => {
+    const slugger = new marked.Slugger();
+    expect(slugger.slug('<em>html</em>')).toBe('html');
+  });
 });
 
 describe('Test paragraph token type', () => {
@@ -67,8 +72,8 @@ describe('Test paragraph token type', () => {
     const tokens = marked.lexer(md);
 
     expect(tokens[0].type).toBe('paragraph');
-    expect(tokens[3].type).toBe('paragraph');
-    expect(tokens[7].type).toBe('text');
+    expect(tokens[2].tokens[0].type).toBe('paragraph');
+    expect(tokens[3].items[0].tokens[0].type).toBe('text');
   });
 });
 
