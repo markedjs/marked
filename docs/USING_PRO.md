@@ -29,7 +29,7 @@ renderer.heading = function (text, level) {
 };
 
 // Run marked
-console.log(marked('# heading+', { renderer: renderer }));
+console.log(marked('# heading+', { renderer }));
 ```
 
 **Output:**
@@ -91,51 +91,59 @@ slugger.slug('foo-1') // foo-1-2
 
 <h2 id="lexer">The lexer</h2>
 
-The lexer turns a markdown string into block level tokens.
-
-<h2 id="inlinelexer">The inline lexer</h2>
-
-The inline lexer adds inline tokens to the block level tokens.
+The lexer turns a markdown string into tokens.
 
 <h2 id="parser">The parser</h2>
 
-The parser takes tokens as input and calls the renderer functions that are accosiated with those tokens.
+The parser takes tokens as input and calls the renderer functions.
 
 ***
 
 <h2 id="extend">Access to lexer and parser</h2>
 
-You also have direct access to the lexer, inline lexer, and parser if you so desire.
+You also have direct access to the lexer and parser if you so desire.
 
 ``` js
-const blocks = marked.lexer(markdown, options);
-const tokens = marked.inlineLexer(blocks, options);
+const tokens = marked.lexer(markdown, options);
 console.log(marked.parser(tokens, options));
 ```
 
 ``` js
 const lexer = new marked.Lexer(options);
-const inlineLexer = new marked.InlineLexer(options);
-const blocks = lexer.lex(markdown);
-const tokens = inlineLexer.lex(blocks);
+const tokens = lexer.lex(markdown);
 console.log(tokens);
-console.log(lexer.rules); // block level rules
-console.log(inlineLexer.rules); // inline level rules
+console.log(lexer.rules.block); // block level rules
+console.log(lexer.rules.inline); // inline level rules
 ```
 
 ``` bash
 $ node
-> require('marked').lexer('> i am using marked.')
-[ { type: 'blockquote_start' },
-  { type: 'paragraph',
-    text: 'i am using marked.' },
-  { type: 'blockquote_end' },
-  links: {} ]
+> require('marked').lexer('> I am using marked.')
+[
+  {
+    type: "blockquote",
+    raw: "> I am using marked.",
+    tokens: [
+      {
+        type: "paragraph",
+        raw: "I am using marked.",
+        text: "I am using marked.",
+        tokens: [
+          {
+            type: "text",
+            raw: "I am using marked.",
+            text: "I am using marked."
+          }
+        ]
+      }
+    ]
+  },
+  links: {}
+]
 ```
 
-The Lexer and InlineLexer build an array of tokens, which will be passed to the Parser.
-The Parser processes each token in the token array,
-which are removed from the array of tokens:
+The Lexer builds an array of tokens, which will be passed to the Parser.
+The Parser processes each token in the token array:
 
 ``` js
 const marked = require('marked');
@@ -148,24 +156,65 @@ const md = `
   [1]: #heading "heading"
 `;
 
-const blocks = marked.lexer(md);
-const tokens = marked.inlineLexer(blocks);
+const tokens = marked.lexer(md);
 console.log(tokens);
 
 const html = marked.parser(tokens);
 console.log(html);
-
-console.log(tokens);
 ```
 
 ``` bash
-[ { type: 'heading', depth: 1, text: 'heading' },
-  { type: 'paragraph', text: '  [link][1]' },
-  { type: 'space' },
-  links: { '1': { href: '#heading', title: 'heading' } } ]
-
+[
+  {
+    type: "heading",
+    raw: "  # heading\n\n",
+    depth: 1,
+    text: "heading",
+    tokens: [
+      {
+        type: "text",
+        raw: "heading",
+        text: "heading"
+      }
+    ]
+  },
+  {
+    type: "paragraph",
+    raw: "  [link][1]",
+    text: "  [link][1]",
+    tokens: [
+      {
+        type: "text",
+        raw: "  ",
+        text: "  "
+      },
+      {
+        type: "link",
+        raw: "[link][1]",
+        text: "link",
+        href: "#heading",
+        title: "heading",
+        tokens: [
+          {
+            type: "text",
+            raw: "link",
+            text: "link"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    type: "space",
+    raw: "\n\n"
+  },
+  links: {
+    "1": {
+      href: "#heading",
+      title: "heading"
+    }
+  }
+]
 <h1 id="heading">heading</h1>
 <p>  <a href="#heading" title="heading">link</a></p>
-
-[ links: { '1': { href: '#heading', title: 'heading' } } ]
 ```
