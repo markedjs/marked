@@ -2,7 +2,6 @@ const Lexer = require('./Lexer.js');
 const Parser = require('./Parser.js');
 const Renderer = require('./Renderer.js');
 const TextRenderer = require('./TextRenderer.js');
-const InlineLexer = require('./InlineLexer.js');
 const Slugger = require('./Slugger.js');
 const {
   merge,
@@ -139,9 +138,6 @@ marked.TextRenderer = TextRenderer;
 
 marked.Lexer = Lexer;
 marked.lexer = Lexer.lex;
-
-marked.InlineLexer = InlineLexer;
-marked.inlineLexer = InlineLexer.output;
 
 marked.Slugger = Slugger;
 

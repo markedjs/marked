@@ -29,5 +29,5 @@ module.exports = class Slugger {
     this.seen[slug] = 0;
 
     return slug;
-  };
+  }
 };
