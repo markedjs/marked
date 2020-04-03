@@ -14,8 +14,8 @@ module.exports = class Parser {
     this.options = options || defaults;
     this.options.renderer = this.options.renderer || new Renderer();
     this.renderer = this.options.renderer;
-    this.textRenderer = new TextRenderer();
     this.renderer.options = this.options;
+    this.textRenderer = new TextRenderer();
     this.slugger = new Slugger();
   }
 
@@ -175,6 +175,7 @@ module.exports = class Parser {
           const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
             console.error(errMsg);
+            return;
           } else {
             throw new Error(errMsg);
           }
@@ -242,6 +243,7 @@ module.exports = class Parser {
           const errMsg = 'Token with "' + this.token.type + '" type was not found.';
           if (this.options.silent) {
             console.error(errMsg);
+            return;
           } else {
             throw new Error(errMsg);
           }
