@@ -9,15 +9,12 @@ function expectTokens({ md, options, tokens = [], links = {} }) {
   expect(actual).toEqual(expected);
 }
 
-function expectInlineTokens({ md, options, output = jasmine.any(String), tokens = jasmine.any(Array), links = {} }) {
+function expectInlineTokens({ md, options, tokens = jasmine.any(Array), links = {} }) {
   const lexer = new Lexer(options);
   lexer.tokens.links = links;
   const outTokens = [];
-  const outOutput = lexer.inlineTokens(md, outTokens);
-  expect({
-    output: outOutput,
-    tokens: outTokens
-  }).toEqual({ output, tokens });
+  lexer.inlineTokens(md, outTokens);
+  expect(outTokens).toEqual(tokens);
 }
 
 function expectInline({ token, options, tokens }) {
@@ -321,7 +318,7 @@ a | b
                 }]
               },
               {
-                raw: '- item 2',
+                raw: '- item 2\n',
                 task: false,
                 checked: undefined,
                 loose: false,
@@ -355,7 +352,7 @@ a | b
                 raw: '1. item 1'
               }),
               jasmine.objectContaining({
-                raw: '2. item 2'
+                raw: '2. item 2\n'
               })
             ]
           })
@@ -380,7 +377,7 @@ a | b
                 raw: '2. item 1'
               }),
               jasmine.objectContaining({
-                raw: '3. item 2'
+                raw: '3. item 2\n'
               })
             ]
           })
@@ -422,7 +419,7 @@ a | b
                 checked: false
               }),
               jasmine.objectContaining({
-                raw: '- [x] item 2',
+                raw: '- [x] item 2\n',
                 task: true,
                 checked: true
               })
@@ -504,7 +501,7 @@ a | b
   });
 
   describe('inline', () => {
-    describe('tokens', () => {
+    describe('inline', () => {
       it('paragraph', () => {
         expectInline({
           token: { type: 'paragraph', text: 'text' },
@@ -563,11 +560,10 @@ a | b
       });
     });
 
-    describe('output', () => {
+    describe('inlineTokens', () => {
       it('escape', () => {
         expectInlineTokens({
           md: '\\>',
-          output: '&gt;',
           tokens: [
             { type: 'escape', raw: '\\>', text: '&gt;' }
           ]
@@ -577,7 +573,6 @@ a | b
       it('html', () => {
         expectInlineTokens({
           md: '<div>html</div>',
-          output: '<div>html</div>',
           tokens: [
             { type: 'html', raw: '<div>', text: '<div>' },
             { type: 'text', raw: 'html', text: 'html' },
@@ -590,7 +585,6 @@ a | b
         expectInlineTokens({
           md: '<div>html</div>',
           options: { sanitize: true },
-          output: '&lt;div&gt;html&lt;/div&gt;',
           tokens: [
             { type: 'text', raw: '<div>', text: '&lt;div&gt;' },
             { type: 'text', raw: 'html', text: 'html' },
@@ -602,12 +596,10 @@ a | b
       it('link', () => {
         expectInlineTokens({
           md: '[link](https://example.com)',
-          output: 'link',
           tokens: [
             {
               type: 'link',
               raw: '[link](https://example.com)',
-              text: 'link',
               href: 'https://example.com',
               title: null,
               tokens: [
@@ -621,12 +613,10 @@ a | b
       it('link title', () => {
         expectInlineTokens({
           md: '[link](https://example.com "title")',
-          output: 'link',
           tokens: [
             {
               type: 'link',
               raw: '[link](https://example.com "title")',
-              text: 'link',
               href: 'https://example.com',
               title: 'title',
               tokens: [
@@ -640,7 +630,6 @@ a | b
       it('image', () => {
         expectInlineTokens({
           md: '![image](https://example.com/image.png)',
-          output: 'image',
           tokens: [
             {
               type: 'image',
@@ -656,7 +645,6 @@ a | b
       it('image title', () => {
         expectInlineTokens({
           md: '![image](https://example.com/image.png "title")',
-          output: 'image',
           tokens: [
             {
               type: 'image',
@@ -676,12 +664,10 @@ a | b
             links: {
               link: { href: 'https://example.com', title: 'title' }
             },
-            output: 'link',
             tokens: [
               {
                 type: 'link',
                 raw: '[link][]',
-                text: 'link',
                 href: 'https://example.com',
                 title: 'title',
                 tokens: [{
@@ -700,12 +686,10 @@ a | b
             links: {
               link: { href: 'https://example.com', title: 'title' }
             },
-            output: 'link',
             tokens: [
               {
                 type: 'link',
                 raw: '[link]',
-                text: 'link',
                 href: 'https://example.com',
                 title: 'title',
                 tokens: [{
@@ -721,7 +705,6 @@ a | b
         it('no def', () => {
           expectInlineTokens({
             md: '[link]',
-            output: '[link]',
             tokens: [
               { type: 'text', raw: '[', text: '[' },
               { type: 'text', raw: 'link]', text: 'link]' }
@@ -733,12 +716,10 @@ a | b
       it('strong', () => {
         expectInlineTokens({
           md: '**strong**',
-          output: 'strong',
           tokens: [
             {
               type: 'strong',
               raw: '**strong**',
-              text: 'strong',
               tokens: [
                 { type: 'text', raw: 'strong', text: 'strong' }
               ]
@@ -750,12 +731,10 @@ a | b
       it('em', () => {
         expectInlineTokens({
           md: '*em*',
-          output: 'em',
           tokens: [
             {
               type: 'em',
               raw: '*em*',
-              text: 'em',
               tokens: [
                 { type: 'text', raw: 'em', text: 'em' }
               ]
@@ -767,7 +746,6 @@ a | b
       it('code', () => {
         expectInlineTokens({
           md: '`code`',
-          output: 'code',
           tokens: [
             { type: 'codespan', raw: '`code`', text: 'code' }
           ]
@@ -778,7 +756,6 @@ a | b
         expectInlineTokens({
           md: 'a\nb',
           options: { gfm: true, breaks: true },
-          output: 'a\nb',
           tokens: jasmine.arrayContaining([
             { type: 'br', raw: '\n' }
           ])
@@ -788,12 +765,10 @@ a | b
       it('del', () => {
         expectInlineTokens({
           md: '~~del~~',
-          output: 'del',
           tokens: [
             {
               type: 'del',
               raw: '~~del~~',
-              text: 'del',
               tokens: [
                 { type: 'text', raw: 'del', text: 'del' }
               ]
@@ -806,7 +781,6 @@ a | b
         it('autolink', () => {
           expectInlineTokens({
             md: '<https://example.com>',
-            output: 'https://example.com',
             tokens: [
               {
                 type: 'link',
@@ -825,7 +799,6 @@ a | b
           expectInlineTokens({
             md: '<test@example.com>',
             options: { mangle: false },
-            output: 'test@example.com',
             tokens: [
               {
                 type: 'link',
@@ -844,7 +817,6 @@ a | b
           expectInlineTokens({
             md: '<test@example.com>',
             options: { mangle: true },
-            output: jasmine.stringMatching('&#'),
             tokens: [
               {
                 type: 'link',
@@ -866,7 +838,6 @@ a | b
         it('url', () => {
           expectInlineTokens({
             md: 'https://example.com',
-            output: 'https://example.com',
             tokens: [
               {
                 type: 'link',
@@ -885,7 +856,6 @@ a | b
           expectInlineTokens({
             md: 'test@example.com',
             options: { gfm: true, mangle: false },
-            output: 'test@example.com',
             tokens: [
               {
                 type: 'link',
@@ -904,7 +874,6 @@ a | b
           expectInlineTokens({
             md: 'test@example.com',
             options: { gfm: true, mangle: true },
-            output: jasmine.stringMatching('&#'),
             tokens: [
               {
                 type: 'link',
@@ -927,7 +896,6 @@ a | b
       it('text', () => {
         expectInlineTokens({
           md: 'text',
-          output: 'text',
           tokens: [
             {
               type: 'text',
@@ -943,7 +911,6 @@ a | b
           expectInlineTokens({
             md: "'single quotes'",
             options: { smartypants: true },
-            output: '‘single quotes’',
             tokens: [
               {
                 type: 'text',
@@ -958,7 +925,6 @@ a | b
           expectInlineTokens({
             md: '"double quotes"',
             options: { smartypants: true },
-            output: '“double quotes”',
             tokens: [
               {
                 type: 'text',
@@ -973,7 +939,6 @@ a | b
           expectInlineTokens({
             md: 'ellipses...',
             options: { smartypants: true },
-            output: 'ellipses…',
             tokens: [
               {
                 type: 'text',
@@ -988,7 +953,6 @@ a | b
           expectInlineTokens({
             md: 'en--dash',
             options: { smartypants: true },
-            output: 'en–dash',
             tokens: [
               {
                 type: 'text',
@@ -1003,7 +967,6 @@ a | b
           expectInlineTokens({
             md: 'em---dash',
             options: { smartypants: true },
-            output: 'em—dash',
             tokens: [
               {
                 type: 'text',

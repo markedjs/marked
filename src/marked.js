@@ -1,5 +1,6 @@
 const Lexer = require('./Lexer.js');
 const Parser = require('./Parser.js');
+const Tokenizer = require('./Tokenizer.js');
 const Renderer = require('./Renderer.js');
 const TextRenderer = require('./TextRenderer.js');
 const Slugger = require('./Slugger.js');
@@ -138,6 +139,8 @@ marked.TextRenderer = TextRenderer;
 
 marked.Lexer = Lexer;
 marked.lexer = Lexer.lex;
+
+marked.Tokenizer = Tokenizer;
 
 marked.Slugger = Slugger;
 
