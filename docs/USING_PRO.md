@@ -16,7 +16,7 @@ const marked = require('marked');
 const renderer = new marked.Renderer();
 
 // Override function
-renderer.heading = function (text, level) {
+renderer.heading = function(text, level) {
   const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 
   return `
@@ -58,7 +58,7 @@ console.log(marked('# heading+', { renderer }));
 - tablerow(*string* content)
 - tablecell(*string* content, *object* flags)
 
-`slugger` has the `slug` method to create an unique id from value:
+`slugger` has the `slug` method to create a unique id from value:
 
 ```js
 slugger.slug('foo')   // foo
@@ -89,9 +89,82 @@ slugger.slug('foo-1') // foo-1-2
 - image(*string* href, *string* title, *string* text)
 - text(*string* text)
 
+<h2 id="tokenizer">The tokenizer</h2>
+
+The tokenizer defines how to turn markdown text into tokens.
+
+**Example:** Overriding default `codespan` tokenizer to include latex.
+
+```js
+// Create reference instance
+const marked = require('marked');
+
+// Get reference
+const tokenizer = new marked.Tokenizer();
+const originalCodespan = tokenizer.codespan;
+// Override function
+tokenizer.codespan = function(lexer, src) {
+  const match = src.match(/\$+([^\$\n]+?)\$+/);
+  if (match) {
+    return {
+      type: 'codespan',
+      raw: match[0],
+      text: match[1].trim()
+    };
+  }
+  return originalCodespan.apply(this, arguments);
+};
+
+// Run marked
+console.log(marked('$ latext code $', { tokenizer }));
+```
+
+**Output:**
+
+```html
+<p><code>latext code</code></p>
+```
+
+### Block level tokenizer methods
+
+- space(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- code(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- fences(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- heading(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- nptable(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- hr(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- blockquote(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- list(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- html(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- def(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- table(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- lheading(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- paragraph(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+- text(*Lxer* lexer, *string* src, *array* tokens, *bool* top)
+
+### Inline level tokenizer methods
+
+- escape(*Lxer* lexer, *string* src, *array* tokens)
+- tag(*Lxer* lexer, *string* src, *array* tokens)
+- link(*Lxer* lexer, *string* src, *array* tokens)
+- reflink(*Lxer* lexer, *string* src, *array* tokens)
+- strong(*Lxer* lexer, *string* src, *array* tokens)
+- em(*Lxer* lexer, *string* src, *array* tokens)
+- codespan(*Lxer* lexer, *string* src, *array* tokens)
+- br(*Lxer* lexer, *string* src, *array* tokens)
+- del(*Lxer* lexer, *string* src, *array* tokens)
+- autolink(*Lxer* lexer, *string* src, *array* tokens)
+- url(*Lxer* lexer, *string* src, *array* tokens)
+- inlineText(*Lxer* lexer, *string* src, *array* tokens)
+
+### Other tokenizer methods
+
+- smartypants(*string* text)
+- mangle(*string* text)
+
 <h2 id="lexer">The lexer</h2>
 
-The lexer turns a markdown string into tokens.
+The lexer takes a markdown string and calls the tokenizer functions.
 
 <h2 id="parser">The parser</h2>
 
