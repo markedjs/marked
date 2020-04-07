@@ -59,9 +59,9 @@ module.exports = class Lexer {
       .replace(/\r\n|\r/g, '\n')
       .replace(/\t/g, '    ');
 
-    this.blockTokens(this.tokens, src);
+    this.blockTokens(src, this.tokens);
 
-    this.inlineTokens(this.tokens);
+    this.inline(this.tokens);
 
     return this.tokens;
   }
@@ -69,7 +69,7 @@ module.exports = class Lexer {
   /**
    * Lexing
    */
-  blockTokens(tokens, src, top = true) {
+  blockTokens(src, tokens, top = true) {
     src = src.replace(/^ +$/gm, '');
     let next,
       loose,
@@ -210,7 +210,7 @@ module.exports = class Lexer {
         tokens.push({
           type: 'blockquote',
           raw,
-          tokens: this.blockTokens([], cap, top)
+          tokens: this.blockTokens(cap, [], top)
         });
 
         continue;
@@ -297,7 +297,7 @@ module.exports = class Lexer {
             task: istask,
             checked: ischecked,
             loose: loose,
-            tokens: this.blockTokens([], item, false)
+            tokens: this.blockTokens(item, [], false)
           });
         }
 
@@ -426,7 +426,7 @@ module.exports = class Lexer {
     return tokens;
   }
 
-  inlineTokens(tokens) {
+  inline(tokens) {
     let i,
       j,
       k,
@@ -442,7 +442,7 @@ module.exports = class Lexer {
         case 'text':
         case 'heading': {
           token.tokens = [];
-          this.inlineOutput(token.text, token.tokens);
+          this.inlineTokens(token.text, token.tokens);
           break;
         }
         case 'table': {
@@ -455,7 +455,7 @@ module.exports = class Lexer {
           l2 = token.header.length;
           for (j = 0; j < l2; j++) {
             token.tokens.header[j] = [];
-            this.inlineOutput(token.header[j], token.tokens.header[j]);
+            this.inlineTokens(token.header[j], token.tokens.header[j]);
           }
 
           // cells
@@ -465,20 +465,20 @@ module.exports = class Lexer {
             token.tokens.cells[j] = [];
             for (k = 0; k < row.length; k++) {
               token.tokens.cells[j][k] = [];
-              this.inlineOutput(row[k], token.tokens.cells[j][k]);
+              this.inlineTokens(row[k], token.tokens.cells[j][k]);
             }
           }
 
           break;
         }
         case 'blockquote': {
-          this.inlineTokens(token.tokens);
+          this.inline(token.tokens);
           break;
         }
         case 'list': {
           l2 = token.items.length;
           for (j = 0; j < l2; j++) {
-            this.inlineTokens(token.items[j].tokens);
+            this.inline(token.items[j].tokens);
           }
           break;
         }
@@ -494,7 +494,7 @@ module.exports = class Lexer {
   /**
    * Lexing/Compiling
    */
-  inlineOutput(src, tokens) {
+  inlineTokens(src, tokens) {
     let out = '',
       link,
       text,
@@ -618,7 +618,7 @@ module.exports = class Lexer {
         src = src.substring(cap[0].length);
         raw = cap[0];
         newTokens = tokens ? [] : null;
-        text = this.inlineOutput(cap[4] || cap[3] || cap[2] || cap[1], newTokens);
+        text = this.inlineTokens(cap[4] || cap[3] || cap[2] || cap[1], newTokens);
 
         tokens.push({
           type: 'strong',
@@ -635,7 +635,7 @@ module.exports = class Lexer {
         src = src.substring(cap[0].length);
         raw = cap[0];
         newTokens = tokens ? [] : null;
-        text = this.inlineOutput(cap[6] || cap[5] || cap[4] || cap[3] || cap[2] || cap[1], newTokens);
+        text = this.inlineTokens(cap[6] || cap[5] || cap[4] || cap[3] || cap[2] || cap[1], newTokens);
         tokens.push({
           type: 'em',
           raw,
@@ -677,7 +677,7 @@ module.exports = class Lexer {
         src = src.substring(cap[0].length);
         raw = cap[0];
         newTokens = tokens ? [] : null;
-        text = this.inlineOutput(cap[1], newTokens);
+        text = this.inlineTokens(cap[1], newTokens);
         tokens.push({
           type: 'del',
           raw,
@@ -797,7 +797,7 @@ module.exports = class Lexer {
     const newTokens = tokens ? [] : null;
 
     if (cap[0].charAt(0) !== '!') {
-      const text = this.inlineOutput(cap[1], newTokens);
+      const text = this.inlineTokens(cap[1], newTokens);
       tokens.push({
         type: 'link',
         raw,

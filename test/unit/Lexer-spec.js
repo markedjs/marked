@@ -9,20 +9,20 @@ function expectTokens({ md, options, tokens = [], links = {} }) {
   expect(actual).toEqual(expected);
 }
 
-function expectInlineOutput({ md, options, output = jasmine.any(String), tokens = jasmine.any(Array), links = {} }) {
+function expectInlineTokens({ md, options, output = jasmine.any(String), tokens = jasmine.any(Array), links = {} }) {
   const lexer = new Lexer(options);
   lexer.tokens.links = links;
   const outTokens = [];
-  const outOutput = lexer.inlineOutput(md, outTokens);
+  const outOutput = lexer.inlineTokens(md, outTokens);
   expect({
     output: outOutput,
     tokens: outTokens
   }).toEqual({ output, tokens });
 }
 
-function expectInlineTokens({ token, options, tokens }) {
+function expectInline({ token, options, tokens }) {
   const lexer = new Lexer(options);
-  lexer.inlineTokens([token]);
+  lexer.inline([token]);
   expect(token.tokens).toEqual(tokens);
 }
 
@@ -506,7 +506,7 @@ a | b
   describe('inline', () => {
     describe('tokens', () => {
       it('paragraph', () => {
-        expectInlineTokens({
+        expectInline({
           token: { type: 'paragraph', text: 'text' },
           tokens: [
             { type: 'text', raw: 'text', text: 'text' }
@@ -515,7 +515,7 @@ a | b
       });
 
       it('text', () => {
-        expectInlineTokens({
+        expectInline({
           token: { type: 'text', text: 'text' },
           tokens: [
             { type: 'text', raw: 'text', text: 'text' }
@@ -524,7 +524,7 @@ a | b
       });
 
       it('heading', () => {
-        expectInlineTokens({
+        expectInline({
           token: { type: 'heading', text: 'text' },
           tokens: [
             { type: 'text', raw: 'text', text: 'text' }
@@ -533,7 +533,7 @@ a | b
       });
 
       it('table', () => {
-        expectInlineTokens({
+        expectInline({
           token: {
             type: 'table',
             header: ['a', 'b'],
@@ -556,7 +556,7 @@ a | b
       });
 
       it('code no inline tokens', () => {
-        expectInlineTokens({
+        expectInline({
           token: { type: 'code', text: 'code' },
           tokens: undefined
         });
@@ -565,7 +565,7 @@ a | b
 
     describe('output', () => {
       it('escape', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: '\\>',
           output: '&gt;',
           tokens: [
@@ -575,7 +575,7 @@ a | b
       });
 
       it('html', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: '<div>html</div>',
           output: '<div>html</div>',
           tokens: [
@@ -587,7 +587,7 @@ a | b
       });
 
       it('html sanitize', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: '<div>html</div>',
           options: { sanitize: true },
           output: '&lt;div&gt;html&lt;/div&gt;',
@@ -600,7 +600,7 @@ a | b
       });
 
       it('link', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: '[link](https://example.com)',
           output: 'link',
           tokens: [
@@ -619,7 +619,7 @@ a | b
       });
 
       it('link title', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: '[link](https://example.com "title")',
           output: 'link',
           tokens: [
@@ -638,7 +638,7 @@ a | b
       });
 
       it('image', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: '![image](https://example.com/image.png)',
           output: 'image',
           tokens: [
@@ -654,7 +654,7 @@ a | b
       });
 
       it('image title', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: '![image](https://example.com/image.png "title")',
           output: 'image',
           tokens: [
@@ -671,7 +671,7 @@ a | b
 
       describe('reflink', () => {
         it('reflink', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: '[link][]',
             links: {
               link: { href: 'https://example.com', title: 'title' }
@@ -695,7 +695,7 @@ a | b
         });
 
         it('nolink', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: '[link]',
             links: {
               link: { href: 'https://example.com', title: 'title' }
@@ -719,7 +719,7 @@ a | b
         });
 
         it('no def', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: '[link]',
             output: '[link]',
             tokens: [
@@ -731,7 +731,7 @@ a | b
       });
 
       it('strong', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: '**strong**',
           output: 'strong',
           tokens: [
@@ -748,7 +748,7 @@ a | b
       });
 
       it('em', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: '*em*',
           output: 'em',
           tokens: [
@@ -765,7 +765,7 @@ a | b
       });
 
       it('code', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: '`code`',
           output: 'code',
           tokens: [
@@ -775,7 +775,7 @@ a | b
       });
 
       it('br', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: 'a\nb',
           options: { gfm: true, breaks: true },
           output: 'a\nb',
@@ -786,7 +786,7 @@ a | b
       });
 
       it('del', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: '~~del~~',
           output: 'del',
           tokens: [
@@ -804,7 +804,7 @@ a | b
 
       describe('url', () => {
         it('autolink', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: '<https://example.com>',
             output: 'https://example.com',
             tokens: [
@@ -822,7 +822,7 @@ a | b
         });
 
         it('autolink email', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: '<test@example.com>',
             options: { mangle: false },
             output: 'test@example.com',
@@ -841,7 +841,7 @@ a | b
         });
 
         it('autolink mangle email', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: '<test@example.com>',
             options: { mangle: true },
             output: jasmine.stringMatching('&#'),
@@ -864,7 +864,7 @@ a | b
         });
 
         it('url', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: 'https://example.com',
             output: 'https://example.com',
             tokens: [
@@ -882,7 +882,7 @@ a | b
         });
 
         it('url email', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: 'test@example.com',
             options: { gfm: true, mangle: false },
             output: 'test@example.com',
@@ -901,7 +901,7 @@ a | b
         });
 
         it('url mangle email', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: 'test@example.com',
             options: { gfm: true, mangle: true },
             output: jasmine.stringMatching('&#'),
@@ -925,7 +925,7 @@ a | b
       });
 
       it('text', () => {
-        expectInlineOutput({
+        expectInlineTokens({
           md: 'text',
           output: 'text',
           tokens: [
@@ -940,7 +940,7 @@ a | b
 
       describe('smartypants', () => {
         it('single quotes', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: "'single quotes'",
             options: { smartypants: true },
             output: '‘single quotes’',
@@ -955,7 +955,7 @@ a | b
         });
 
         it('double quotes', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: '"double quotes"',
             options: { smartypants: true },
             output: '“double quotes”',
@@ -970,7 +970,7 @@ a | b
         });
 
         it('ellipses', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: 'ellipses...',
             options: { smartypants: true },
             output: 'ellipses…',
@@ -985,7 +985,7 @@ a | b
         });
 
         it('en-dash', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: 'en--dash',
             options: { smartypants: true },
             output: 'en–dash',
@@ -1000,7 +1000,7 @@ a | b
         });
 
         it('em-dash', () => {
-          expectInlineOutput({
+          expectInlineTokens({
             md: 'em---dash',
             options: { smartypants: true },
             output: 'em—dash',
