@@ -240,7 +240,7 @@ module.exports = class Parser {
           break;
         }
         default: {
-          const errMsg = 'Token with "' + this.token.type + '" type was not found.';
+          const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
             console.error(errMsg);
             return;
