@@ -21,6 +21,22 @@ beforeEach(() => {
           return result;
         }
       };
+    },
+    toEqualHtml: () => {
+      return {
+        compare: async(actual, expected) => {
+          const result = {};
+          result.pass = await htmlDiffer.isEqual(expected, actual);
+
+          if (result.pass) {
+            result.message = `Expected '${actual}' not to equal '${expected}'`;
+          } else {
+            const diff = await htmlDiffer.firstDiff(actual, expected);
+            result.message = `Expected: ${diff.expected}\n  Actual: ${diff.actual}`;
+          }
+          return result;
+        }
+      };
     }
   });
 });
