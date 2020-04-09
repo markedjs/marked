@@ -49,7 +49,7 @@ function parse(e) {
     case 'parse':
       var startTime = new Date();
       var lexed = marked.lexer(e.data.markdown, e.data.options);
-      var lexedList = tokenList(lexed);
+      var lexedList = jsonString(lexed);
       var parsed = marked.parser(lexed, e.data.options);
       var endTime = new Date();
       postMessage({
@@ -62,15 +62,6 @@ function parse(e) {
   }
 }
 
-function tokenList(lexed, level) {
-  level = level || 0;
-  var lexedList = [];
-  for (var i = 0; i < lexed.length; i++) {
-    lexedList.push(stringRepeat(' ', 2 * level) + jsonString(lexed[i], level));
-  }
-  return '[\n' + lexedList.join('\n') + '\n]';
-}
-
 function stringRepeat(char, times) {
   var s = '';
   for (var i = 0; i < times; i++) {
@@ -80,15 +71,20 @@ function stringRepeat(char, times) {
 }
 
 function jsonString(input, level) {
+  level = level || 0;
   if (Array.isArray(input)) {
     if (input.length === 0) {
       return '[]';
     }
+    var items = [],
+        i;
     if (!Array.isArray(input[0]) && typeof input[0] === 'object' && input[0] !== null) {
-      return tokenList(input, level + 1);
+      for (i = 0; i < input.length; i++) {
+        items.push(stringRepeat(' ', 2 * level) + jsonString(input[i], level + 1));
+      }
+      return '[\n' + items.join('\n') + '\n]';
     }
-    var items = [];
-    for (var i = 0; i < input.length; i++) {
+    for (i = 0; i < input.length; i++) {
       items.push(jsonString(input[i], level));
     }
     return '[' + items.join(', ') + ']';
