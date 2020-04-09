@@ -49,7 +49,7 @@ function parse(e) {
     case 'parse':
       var startTime = new Date();
       var lexed = marked.lexer(e.data.markdown, e.data.options);
-      var lexedList = getLexedList(lexed);
+      var lexedList = tokenList(lexed);
       var parsed = marked.parser(lexed, e.data.options);
       var endTime = new Date();
       postMessage({
@@ -62,7 +62,7 @@ function parse(e) {
   }
 }
 
-function getLexedList(lexed, level) {
+function tokenList(lexed, level) {
   level = level || 0;
   var lexedList = [];
   for (var i = 0; i < lexed.length; i++) {
@@ -85,7 +85,7 @@ function jsonString(input, level) {
       return '[]';
     }
     if (!Array.isArray(input[0]) && typeof input[0] === 'object' && input[0] !== null) {
-      return '[\n' + getLexedList(input, level + 1) + '\n]';
+      return tokenList(input, level + 1);
     }
     var items = [];
     for (var i = 0; i < input.length; i++) {
