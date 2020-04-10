@@ -17,6 +17,7 @@
     "one-var": "off",
     "no-control-regex": "off",
     "no-prototype-builtins": "off",
+    "no-extra-semi": "error",
 
     "prefer-const": "error",
     "no-var": "error"

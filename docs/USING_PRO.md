@@ -4,7 +4,7 @@ To champion the single-responsibility and open/closed principles, we have tried 
 
 <h2 id="renderer">The renderer</h2>
 
-The renderer is...
+The renderer defines the output of the parser.
 
 **Example:** Overriding default heading token by adding an embedded anchor tag like on GitHub.
 
@@ -29,7 +29,7 @@ renderer.heading = function (text, level) {
 };
 
 // Run marked
-console.log(marked('# heading+', { renderer: renderer }));
+console.log(marked('# heading+', { renderer }));
 ```
 
 **Output:**
@@ -91,12 +91,11 @@ slugger.slug('foo-1') // foo-1-2
 
 <h2 id="lexer">The lexer</h2>
 
-The lexer is...
-
+The lexer turns a markdown string into tokens.
 
 <h2 id="parser">The parser</h2>
 
-The parser is...
+The parser takes tokens as input and calls the renderer functions.
 
 ***
 
@@ -105,30 +104,46 @@ The parser is...
 You also have direct access to the lexer and parser if you so desire.
 
 ``` js
-const tokens = marked.lexer(text, options);
+const tokens = marked.lexer(markdown, options);
 console.log(marked.parser(tokens, options));
 ```
 
 ``` js
 const lexer = new marked.Lexer(options);
-const tokens = lexer.lex(text);
+const tokens = lexer.lex(markdown);
 console.log(tokens);
-console.log(lexer.rules);
+console.log(lexer.rules.block); // block level rules
+console.log(lexer.rules.inline); // inline level rules
 ```
 
 ``` bash
 $ node
-> require('marked').lexer('> i am using marked.')
-[ { type: 'blockquote_start' },
-  { type: 'paragraph',
-    text: 'i am using marked.' },
-  { type: 'blockquote_end' },
-  links: {} ]
+> require('marked').lexer('> I am using marked.')
+[
+  {
+    type: "blockquote",
+    raw: "> I am using marked.",
+    tokens: [
+      {
+        type: "paragraph",
+        raw: "I am using marked.",
+        text: "I am using marked.",
+        tokens: [
+          {
+            type: "text",
+            raw: "I am using marked.",
+            text: "I am using marked."
+          }
+        ]
+      }
+    ]
+  },
+  links: {}
+]
 ```
 
-The Lexers build an array of tokens, which will be passed to their respective
-Parsers. The Parsers process each token in the token arrays,
-which are removed from the array of tokens:
+The Lexer builds an array of tokens, which will be passed to the Parser.
+The Parser processes each token in the token array:
 
 ``` js
 const marked = require('marked');
@@ -146,18 +161,60 @@ console.log(tokens);
 
 const html = marked.parser(tokens);
 console.log(html);
-
-console.log(tokens);
 ```
 
 ``` bash
-[ { type: 'heading', depth: 1, text: 'heading' },
-  { type: 'paragraph', text: '  [link][1]' },
-  { type: 'space' },
-  links: { '1': { href: '#heading', title: 'heading' } } ]
-
+[
+  {
+    type: "heading",
+    raw: "  # heading\n\n",
+    depth: 1,
+    text: "heading",
+    tokens: [
+      {
+        type: "text",
+        raw: "heading",
+        text: "heading"
+      }
+    ]
+  },
+  {
+    type: "paragraph",
+    raw: "  [link][1]",
+    text: "  [link][1]",
+    tokens: [
+      {
+        type: "text",
+        raw: "  ",
+        text: "  "
+      },
+      {
+        type: "link",
+        raw: "[link][1]",
+        text: "link",
+        href: "#heading",
+        title: "heading",
+        tokens: [
+          {
+            type: "text",
+            raw: "link",
+            text: "link"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    type: "space",
+    raw: "\n\n"
+  },
+  links: {
+    "1": {
+      href: "#heading",
+      title: "heading"
+    }
+  }
+]
 <h1 id="heading">heading</h1>
 <p>  <a href="#heading" title="heading">link</a></p>
-
-[ links: { '1': { href: '#heading', title: 'heading' } } ]
 ```

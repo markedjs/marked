@@ -183,7 +183,7 @@ function handleIframeLoad() {
 
 function handleInput() {
   inputDirty = true;
-};
+}
 
 function handleVersionChange() {
   if ($markedVerElem.value === 'commit' || $markedVerElem.value === 'pr') {
@@ -256,7 +256,7 @@ function handleChange(panes, visiblePane) {
     }
   }
   return active;
-};
+}
 
 function addCommitVersion(value, text, commit) {
   if (markedVersions[value]) {
@@ -331,13 +331,13 @@ function jsonString(input) {
     .replace(/[\\"']/g, '\\$&')
     .replace(/\u0000/g, '\\0');
   return '"' + output + '"';
-};
+}
 
 function getScrollSize() {
   var e = $activeOutputElem;
 
   return e.scrollHeight - e.clientHeight;
-};
+}
 
 function getScrollPercent() {
   var size = getScrollSize();
@@ -347,11 +347,11 @@ function getScrollPercent() {
   }
 
   return $activeOutputElem.scrollTop / size;
-};
+}
 
 function setScrollPercent(percent) {
   $activeOutputElem.scrollTop = percent * getScrollSize();
-};
+}
 
 function updateLink() {
   var outputType = '';
@@ -446,7 +446,7 @@ function checkForChanges() {
     }
   }
   checkChangeTimeout = window.setTimeout(checkForChanges, delayTime);
-};
+}
 
 function setResponseTime(ms) {
   var amount = ms;
