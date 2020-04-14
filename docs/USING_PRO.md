@@ -157,6 +157,22 @@ console.log(marked('$ latex code $', { tokenizer }));
 - url(*string* src, *function* mangle)
 - inlineText(*string* src, *bool* inRawBlock, *function* smartypants)
 
+`mangle` is a method that changes text to HTML character references:
+
+```js
+mangle('test@example.com')
+// "&#x74;&#101;&#x73;&#116;&#x40;&#101;&#120;&#x61;&#x6d;&#112;&#108;&#101;&#46;&#x63;&#111;&#x6d;"
+```
+
+`smartypants` is a method that translates plain ASCII punctuation characters into “smart” typographic punctuation HTML entities:
+
+https://daringfireball.net/projects/smartypants/
+
+```js
+smartypants('"this ... string"')
+// "“this … string”"
+```
+
 <h2 id="lexer">The lexer</h2>
 
 The lexer takes a markdown string and calls the tokenizer functions.
