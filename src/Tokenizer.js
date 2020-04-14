@@ -7,7 +7,7 @@ const {
 } = require('./helpers.js');
 const { block, inline } = require('./rules.js');
 
-function outputLink(cap, link, tokens, raw, lexer) {
+function outputLink(cap, link, raw) {
   const href = link.href;
   const title = link.title ? escape(link.title) : null;
 
@@ -17,7 +17,7 @@ function outputLink(cap, link, tokens, raw, lexer) {
       raw,
       href,
       title,
-      tokens: lexer.inlineTokens(cap[1])
+      text: cap[1]
     };
   } else {
     return {
@@ -40,9 +40,6 @@ module.exports = class Tokenizer {
   }
 
   initialize() {
-    this.inLink = false;
-    this.inRawBlock = false;
-
     this.rules = {
       block: block.normal,
       inline: inline.normal
@@ -71,7 +68,7 @@ module.exports = class Tokenizer {
     };
   }
 
-  space(lexer, src, tokens, top) {
+  space(src) {
     const cap = this.rules.block.newline.exec(src);
     if (cap) {
       if (cap[0].length > 1) {
@@ -84,7 +81,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  code(lexer, src, tokens, top) {
+  code(src, tokens) {
     const cap = this.rules.block.code.exec(src);
     if (cap) {
       const lastToken = tokens[tokens.length - 1];
@@ -108,7 +105,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  fences(lexer, src, tokens, top) {
+  fences(src) {
     const cap = this.rules.block.fences.exec(src);
     if (cap) {
       return {
@@ -120,7 +117,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  heading(lexer, src, tokens, top) {
+  heading(src) {
     const cap = this.rules.block.heading.exec(src);
     if (cap) {
       return {
@@ -132,7 +129,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  nptable(lexer, src, tokens, top) {
+  nptable(src) {
     const cap = this.rules.block.nptable.exec(src);
     if (cap) {
       const item = {
@@ -168,7 +165,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  hr(lexer, src, tokens, top) {
+  hr(src) {
     const cap = this.rules.block.hr.exec(src);
     if (cap) {
       return {
@@ -178,7 +175,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  blockquote(lexer, src, tokens, top) {
+  blockquote(src) {
     const cap = this.rules.block.blockquote.exec(src);
     if (cap) {
       const text = cap[0].replace(/^ *> ?/gm, '');
@@ -186,12 +183,12 @@ module.exports = class Tokenizer {
       return {
         type: 'blockquote',
         raw: cap[0],
-        tokens: lexer.blockTokens(text, [], top)
+        text
       };
     }
   }
 
-  list(lexer, src, tokens, top) {
+  list(src) {
     const cap = this.rules.block.list.exec(src);
     if (cap) {
       let raw = cap[0];
@@ -276,7 +273,7 @@ module.exports = class Tokenizer {
           task: istask,
           checked: ischecked,
           loose: loose,
-          tokens: lexer.blockTokens(item, [], false)
+          text: item
         });
       }
 
@@ -284,7 +281,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  html(lexer, src, tokens, top) {
+  html(src) {
     const cap = this.rules.block.html.exec(src);
     if (cap) {
       return {
@@ -299,7 +296,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  def(lexer, src, tokens, top) {
+  def(src) {
     const cap = this.rules.block.def.exec(src);
     if (cap) {
       if (cap[3]) cap[3] = cap[3].substring(1, cap[3].length - 1);
@@ -313,7 +310,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  table(lexer, src, tokens, top) {
+  table(src) {
     const cap = this.rules.block.table.exec(src);
     if (cap) {
       const item = {
@@ -352,7 +349,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  lheading(lexer, src, tokens, top) {
+  lheading(src) {
     const cap = this.rules.block.lheading.exec(src);
     if (cap) {
       return {
@@ -364,7 +361,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  paragraph(lexer, src, tokens, top) {
+  paragraph(src) {
     const cap = this.rules.block.paragraph.exec(src);
     if (cap) {
       return {
@@ -377,7 +374,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  text(lexer, src, tokens, top) {
+  text(src) {
     const cap = this.rules.block.text.exec(src);
     if (cap) {
       return {
@@ -388,7 +385,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  escape(lexer, src, tokens) {
+  escape(src) {
     const cap = this.rules.inline.escape.exec(src);
     if (cap) {
       return {
@@ -399,18 +396,18 @@ module.exports = class Tokenizer {
     }
   }
 
-  tag(lexer, src, tokens) {
+  tag(src, inLink, inRawBlock) {
     const cap = this.rules.inline.tag.exec(src);
     if (cap) {
-      if (!this.inLink && /^<a /i.test(cap[0])) {
-        this.inLink = true;
-      } else if (this.inLink && /^<\/a>/i.test(cap[0])) {
-        this.inLink = false;
+      if (!inLink && /^<a /i.test(cap[0])) {
+        inLink = true;
+      } else if (inLink && /^<\/a>/i.test(cap[0])) {
+        inLink = false;
       }
-      if (!this.inRawBlock && /^<(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
-        this.inRawBlock = true;
-      } else if (this.inRawBlock && /^<\/(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
-        this.inRawBlock = false;
+      if (!inRawBlock && /^<(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+        inRawBlock = true;
+      } else if (inRawBlock && /^<\/(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+        inRawBlock = false;
       }
 
       return {
@@ -418,6 +415,8 @@ module.exports = class Tokenizer {
           ? 'text'
           : 'html',
         raw: cap[0],
+        inLink,
+        inRawBlock,
         text: this.options.sanitize
           ? (this.options.sanitizer
             ? this.options.sanitizer(cap[0])
@@ -427,7 +426,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  link(lexer, src, tokens) {
+  link(src) {
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
       const lastParenIndex = findClosingBracket(cap[2], '()');
@@ -438,7 +437,6 @@ module.exports = class Tokenizer {
         cap[0] = cap[0].substring(0, linkLen).trim();
         cap[3] = '';
       }
-      this.inLink = true;
       let href = cap[2];
       let title = '';
       if (this.options.pedantic) {
@@ -457,18 +455,17 @@ module.exports = class Tokenizer {
       const token = outputLink(cap, {
         href: href ? href.replace(this.rules.inline._escapes, '$1') : href,
         title: title ? title.replace(this.rules.inline._escapes, '$1') : title
-      }, tokens, cap[0], lexer);
-      this.inLink = false;
+      }, cap[0]);
       return token;
     }
   }
 
-  reflink(lexer, src, tokens) {
+  reflink(src, links) {
     let cap;
     if ((cap = this.rules.inline.reflink.exec(src))
         || (cap = this.rules.inline.nolink.exec(src))) {
       let link = (cap[2] || cap[1]).replace(/\s+/g, ' ');
-      link = lexer.tokens.links[link.toLowerCase()];
+      link = links[link.toLowerCase()];
       if (!link || !link.href) {
         const text = cap[0].charAt(0);
         return {
@@ -477,36 +474,34 @@ module.exports = class Tokenizer {
           text
         };
       }
-      this.inLink = true;
-      const token = outputLink(cap, link, tokens, cap[0], lexer);
-      this.inLink = false;
+      const token = outputLink(cap, link, cap[0]);
       return token;
     }
   }
 
-  strong(lexer, src, tokens) {
+  strong(src) {
     const cap = this.rules.inline.strong.exec(src);
     if (cap) {
       return {
         type: 'strong',
         raw: cap[0],
-        tokens: lexer.inlineTokens(cap[4] || cap[3] || cap[2] || cap[1])
+        text: cap[4] || cap[3] || cap[2] || cap[1]
       };
     }
   }
 
-  em(lexer, src, tokens) {
+  em(src) {
     const cap = this.rules.inline.em.exec(src);
     if (cap) {
       return {
         type: 'em',
         raw: cap[0],
-        tokens: lexer.inlineTokens(cap[6] || cap[5] || cap[4] || cap[3] || cap[2] || cap[1])
+        text: cap[6] || cap[5] || cap[4] || cap[3] || cap[2] || cap[1]
       };
     }
   }
 
-  codespan(lexer, src, tokens) {
+  codespan(src) {
     const cap = this.rules.inline.code.exec(src);
     if (cap) {
       return {
@@ -517,7 +512,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  br(lexer, src, tokens) {
+  br(src) {
     const cap = this.rules.inline.br.exec(src);
     if (cap) {
       return {
@@ -527,18 +522,18 @@ module.exports = class Tokenizer {
     }
   }
 
-  del(lexer, src, tokens) {
+  del(src) {
     const cap = this.rules.inline.del.exec(src);
     if (cap) {
       return {
         type: 'del',
         raw: cap[0],
-        tokens: lexer.inlineTokens(cap[1])
+        text: cap[1]
       };
     }
   }
 
-  autolink(lexer, src, tokens) {
+  autolink(src) {
     const cap = this.rules.inline.autolink.exec(src);
     if (cap) {
       let text, href;
@@ -566,9 +561,9 @@ module.exports = class Tokenizer {
     }
   }
 
-  url(lexer, src, tokens) {
+  url(src) {
     let cap;
-    if (!this.inLink && (cap = this.rules.inline.url.exec(src))) {
+    if (cap = this.rules.inline.url.exec(src)) {
       let text, href;
       if (cap[2] === '@') {
         text = escape(this.options.mangle ? this.mangle(cap[0]) : cap[0]);
@@ -603,11 +598,11 @@ module.exports = class Tokenizer {
     }
   }
 
-  inlineText(lexer, src, tokens) {
+  inlineText(src, inRawBlock) {
     const cap = this.rules.inline.text.exec(src);
     if (cap) {
       let text;
-      if (this.inRawBlock) {
+      if (inRawBlock) {
         text = this.options.sanitize ? (this.options.sanitizer ? this.options.sanitizer(cap[0]) : escape(cap[0])) : cap[0];
       } else {
         text = escape(this.options.smartypants ? this.smartypants(cap[0]) : cap[0]);

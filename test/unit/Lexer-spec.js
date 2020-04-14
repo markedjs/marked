@@ -276,6 +276,7 @@ a | b
           {
             type: 'blockquote',
             raw: '> blockquote',
+            text: 'blockquote',
             tokens: [{
               type: 'paragraph',
               raw: 'blockquote',
@@ -310,6 +311,7 @@ a | b
                 task: false,
                 checked: undefined,
                 loose: false,
+                text: 'item 1',
                 tokens: [{
                   type: 'text',
                   raw: 'item 1',
@@ -322,6 +324,7 @@ a | b
                 task: false,
                 checked: undefined,
                 loose: false,
+                text: 'item 2\n',
                 tokens: [{
                   type: 'text',
                   raw: 'item 2',
@@ -574,9 +577,9 @@ a | b
         expectInlineTokens({
           md: '<div>html</div>',
           tokens: [
-            { type: 'html', raw: '<div>', text: '<div>' },
+            { type: 'html', raw: '<div>', inLink: false, inRawBlock: false, text: '<div>' },
             { type: 'text', raw: 'html', text: 'html' },
-            { type: 'html', raw: '</div>', text: '</div>' }
+            { type: 'html', raw: '</div>', inLink: false, inRawBlock: false, text: '</div>' }
           ]
         });
       });
@@ -586,9 +589,9 @@ a | b
           md: '<div>html</div>',
           options: { sanitize: true },
           tokens: [
-            { type: 'text', raw: '<div>', text: '&lt;div&gt;' },
+            { type: 'text', raw: '<div>', inLink: false, inRawBlock: false, text: '&lt;div&gt;' },
             { type: 'text', raw: 'html', text: 'html' },
-            { type: 'text', raw: '</div>', text: '&lt;/div&gt;' }
+            { type: 'text', raw: '</div>', inLink: false, inRawBlock: false, text: '&lt;/div&gt;' }
           ]
         });
       });
@@ -602,6 +605,7 @@ a | b
               raw: '[link](https://example.com)',
               href: 'https://example.com',
               title: null,
+              text: 'link',
               tokens: [
                 { type: 'text', raw: 'link', text: 'link' }
               ]
@@ -619,6 +623,7 @@ a | b
               raw: '[link](https://example.com "title")',
               href: 'https://example.com',
               title: 'title',
+              text: 'link',
               tokens: [
                 { type: 'text', raw: 'link', text: 'link' }
               ]
@@ -670,6 +675,7 @@ a | b
                 raw: '[link][]',
                 href: 'https://example.com',
                 title: 'title',
+                text: 'link',
                 tokens: [{
                   type: 'text',
                   raw: 'link',
@@ -692,6 +698,7 @@ a | b
                 raw: '[link]',
                 href: 'https://example.com',
                 title: 'title',
+                text: 'link',
                 tokens: [{
                   type: 'text',
                   raw: 'link',
@@ -720,6 +727,7 @@ a | b
             {
               type: 'strong',
               raw: '**strong**',
+              text: 'strong',
               tokens: [
                 { type: 'text', raw: 'strong', text: 'strong' }
               ]
@@ -735,6 +743,7 @@ a | b
             {
               type: 'em',
               raw: '*em*',
+              text: 'em',
               tokens: [
                 { type: 'text', raw: 'em', text: 'em' }
               ]
@@ -769,6 +778,7 @@ a | b
             {
               type: 'del',
               raw: '~~del~~',
+              text: 'del',
               tokens: [
                 { type: 'text', raw: 'del', text: 'del' }
               ]
