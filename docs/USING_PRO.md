@@ -103,7 +103,7 @@ const marked = require('marked');
 const tokenizer = new marked.Tokenizer();
 const originalCodespan = tokenizer.codespan;
 // Override function
-tokenizer.codespan = function(lexer, src) {
+tokenizer.codespan = function(src) {
   const match = src.match(/\$+([^\$\n]+?)\$+/);
   if (match) {
     return {
