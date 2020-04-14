@@ -200,7 +200,7 @@ module.exports = class Parser {
       token = tokens[i];
       switch (token.type) {
         case 'escape': {
-          out += token.text;
+          out += renderer.text(token.text);
           break;
         }
         case 'html': {
