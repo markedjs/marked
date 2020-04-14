@@ -116,7 +116,7 @@ tokenizer.codespan = function(lexer, src) {
 };
 
 // Run marked
-console.log(marked('$ latext code $', { tokenizer }));
+console.log(marked('$ latex code $', { tokenizer }));
 ```
 
 **Output:**
