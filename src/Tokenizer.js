@@ -5,7 +5,6 @@ const {
   escape,
   findClosingBracket
 } = require('./helpers.js');
-const { block, inline } = require('./rules.js');
 
 function outputLink(cap, link, raw) {
   const href = link.href;
@@ -36,36 +35,6 @@ function outputLink(cap, link, raw) {
 module.exports = class Tokenizer {
   constructor(options) {
     this.options = options || defaults;
-    this.initialize();
-  }
-
-  initialize() {
-    this.rules = {
-      block: block.normal,
-      inline: inline.normal
-    };
-
-    if (this.options.pedantic) {
-      this.rules.block = block.pedantic;
-      this.rules.inline = inline.pedantic;
-    } else if (this.options.gfm) {
-      this.rules.block = block.gfm;
-      if (this.options.breaks) {
-        this.rules.inline = inline.breaks;
-      } else {
-        this.rules.inline = inline.gfm;
-      }
-    }
-  }
-
-  /**
-   * Expose Block Rules
-   */
-  static get rules() {
-    return {
-      block,
-      inline
-    };
   }
 
   space(src) {
@@ -533,12 +502,12 @@ module.exports = class Tokenizer {
     }
   }
 
-  autolink(src) {
+  autolink(src, mangle) {
     const cap = this.rules.inline.autolink.exec(src);
     if (cap) {
       let text, href;
       if (cap[2] === '@') {
-        text = escape(this.options.mangle ? this.mangle(cap[1]) : cap[1]);
+        text = escape(this.options.mangle ? mangle(cap[1]) : cap[1]);
         href = 'mailto:' + text;
       } else {
         text = escape(cap[1]);
@@ -561,12 +530,12 @@ module.exports = class Tokenizer {
     }
   }
 
-  url(src) {
+  url(src, mangle) {
     let cap;
     if (cap = this.rules.inline.url.exec(src)) {
       let text, href;
       if (cap[2] === '@') {
-        text = escape(this.options.mangle ? this.mangle(cap[0]) : cap[0]);
+        text = escape(this.options.mangle ? mangle(cap[0]) : cap[0]);
         href = 'mailto:' + text;
       } else {
         // do extended autolink path validation
@@ -598,14 +567,14 @@ module.exports = class Tokenizer {
     }
   }
 
-  inlineText(src, inRawBlock) {
+  inlineText(src, inRawBlock, smartypants) {
     const cap = this.rules.inline.text.exec(src);
     if (cap) {
       let text;
       if (inRawBlock) {
         text = this.options.sanitize ? (this.options.sanitizer ? this.options.sanitizer(cap[0]) : escape(cap[0])) : cap[0];
       } else {
-        text = escape(this.options.smartypants ? this.smartypants(cap[0]) : cap[0]);
+        text = escape(this.options.smartypants ? smartypants(cap[0]) : cap[0]);
       }
       return {
         type: 'text',
@@ -613,46 +582,5 @@ module.exports = class Tokenizer {
         text
       };
     }
-  }
-
-  /**
-   * Smartypants Transformations
-   */
-  smartypants(text) {
-    return text
-      // em-dashes
-      .replace(/---/g, '\u2014')
-      // en-dashes
-      .replace(/--/g, '\u2013')
-      // opening singles
-      .replace(/(^|[-\u2014/(\[{"\s])'/g, '$1\u2018')
-      // closing singles & apostrophes
-      .replace(/'/g, '\u2019')
-      // opening doubles
-      .replace(/(^|[-\u2014/(\[{\u2018\s])"/g, '$1\u201c')
-      // closing doubles
-      .replace(/"/g, '\u201d')
-      // ellipses
-      .replace(/\.{3}/g, '\u2026');
-  }
-
-  /**
-   * Mangle Links
-   */
-  mangle(text) {
-    let out = '',
-      i,
-      ch;
-
-    const l = text.length;
-    for (i = 0; i < l; i++) {
-      ch = text.charCodeAt(i);
-      if (Math.random() > 0.5) {
-        ch = 'x' + ch.toString(16);
-      }
-      out += '&#' + ch + ';';
-    }
-
-    return out;
   }
 };

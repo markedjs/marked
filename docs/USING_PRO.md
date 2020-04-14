@@ -153,14 +153,9 @@ console.log(marked('$ latext code $', { tokenizer }));
 - codespan(*string* src)
 - br(*string* src)
 - del(*string* src)
-- autolink(*string* src)
-- url(*string* src)
-- inlineText(*string* src, *bool* inRawBlock)
-
-### Other tokenizer methods
-
-- smartypants(*string* text)
-- mangle(*string* text)
+- autolink(*string* src, *function* mangle)
+- url(*string* src, *function* mangle)
+- inlineText(*string* src, *bool* inRawBlock, *function* smartypants)
 
 <h2 id="lexer">The lexer</h2>
 

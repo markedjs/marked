@@ -1,5 +1,47 @@
 const Tokenizer = require('./Tokenizer.js');
 const { defaults } = require('./defaults.js');
+const { block, inline } = require('./rules.js');
+
+/**
+ * smartypants text replacement
+ */
+function smartypants(text) {
+  return text
+    // em-dashes
+    .replace(/---/g, '\u2014')
+    // en-dashes
+    .replace(/--/g, '\u2013')
+    // opening singles
+    .replace(/(^|[-\u2014/(\[{"\s])'/g, '$1\u2018')
+    // closing singles & apostrophes
+    .replace(/'/g, '\u2019')
+    // opening doubles
+    .replace(/(^|[-\u2014/(\[{\u2018\s])"/g, '$1\u201c')
+    // closing doubles
+    .replace(/"/g, '\u201d')
+    // ellipses
+    .replace(/\.{3}/g, '\u2026');
+}
+
+/**
+ * mangle email addresses
+ */
+function mangle(text) {
+  let out = '',
+    i,
+    ch;
+
+  const l = text.length;
+  for (i = 0; i < l; i++) {
+    ch = text.charCodeAt(i);
+    if (Math.random() > 0.5) {
+      ch = 'x' + ch.toString(16);
+    }
+    out += '&#' + ch + ';';
+  }
+
+  return out;
+}
 
 /**
  * Block Lexer
@@ -12,14 +54,34 @@ module.exports = class Lexer {
     this.options.tokenizer = this.options.tokenizer || new Tokenizer();
     this.tokenizer = this.options.tokenizer;
     this.tokenizer.options = this.options;
-    this.tokenizer.initialize();
+
+    const rules = {
+      block: block.normal,
+      inline: inline.normal
+    };
+
+    if (this.options.pedantic) {
+      rules.block = block.pedantic;
+      rules.inline = inline.pedantic;
+    } else if (this.options.gfm) {
+      rules.block = block.gfm;
+      if (this.options.breaks) {
+        rules.inline = inline.breaks;
+      } else {
+        rules.inline = inline.gfm;
+      }
+    }
+    this.tokenizer.rules = rules;
   }
 
   /**
-   * Expose Block Rules
+   * Expose Rules
    */
   static get rules() {
-    return Tokenizer.rules;
+    return {
+      block,
+      inline
+    };
   }
 
   /**
@@ -324,21 +386,21 @@ module.exports = class Lexer {
       }
 
       // autolink
-      if (token = this.tokenizer.autolink(src)) {
+      if (token = this.tokenizer.autolink(src, mangle)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
 
       // url (gfm)
-      if (!inLink && (token = this.tokenizer.url(src))) {
+      if (!inLink && (token = this.tokenizer.url(src, mangle))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
 
       // text
-      if (token = this.tokenizer.inlineText(src, inRawBlock)) {
+      if (token = this.tokenizer.inlineText(src, inRawBlock, smartypants)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
