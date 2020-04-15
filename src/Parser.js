@@ -3,7 +3,8 @@ const TextRenderer = require('./TextRenderer.js');
 const Slugger = require('./Slugger.js');
 const { defaults } = require('./defaults.js');
 const {
-  unescape
+  unescape,
+  indentCodeCompensation
 } = require('./helpers.js');
 
 /**
@@ -71,7 +72,8 @@ module.exports = class Parser {
           continue;
         }
         case 'code': {
-          out += this.renderer.code(token.text,
+          const text = indentCodeCompensation(token.raw, token.text);
+          out += this.renderer.code(text,
             token.lang,
             token.escaped);
           continue;
