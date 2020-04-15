@@ -196,8 +196,10 @@ console.log(marked.parser(tokens, options));
 const lexer = new marked.Lexer(options);
 const tokens = lexer.lex(markdown);
 console.log(tokens);
-console.log(lexer.rules.block); // block level rules
-console.log(lexer.rules.inline); // inline level rules
+console.log(lexer.tokenizer.rules.block); // block level rules used
+console.log(lexer.tokenizer.rules.inline); // inline level rules used
+console.log(marked.Lexer.rules.block); // all block level rules
+console.log(marked.Lexer.rules.inline); // all inline level rules
 ```
 
 ``` bash
