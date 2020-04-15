@@ -240,7 +240,7 @@ function indentCodeCompensation(raw, text) {
   }
 
   const [indentToCode] = matchIndentToCode.reverse();
-  
+
   return text
     .split('\n')
     .map(node => {
@@ -252,12 +252,12 @@ function indentCodeCompensation(raw, text) {
       const [indentInNode] = matchIndentInNode;
 
       if (indentInNode.length > indentToCode.length) {
-        return node.slice(indentToCode.length)
+        return node.slice(indentToCode.length);
       }
 
       return node;
     })
-    .join('\n')
+    .join('\n');
 }
 
 module.exports = {
