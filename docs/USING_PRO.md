@@ -93,7 +93,7 @@ slugger.slug('foo-1') // foo-1-2
 
 The tokenizer defines how to turn markdown text into tokens.
 
-**Example:** Overriding default `codespan` tokenizer to include latex.
+**Example:** Overriding default `codespan` tokenizer to include LaTeX.
 
 ```js
 // Create reference instance
