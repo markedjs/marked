@@ -1,3 +1,6 @@
+---
+deepEqual: true
+---
 This is some text.
 
 1. This is a list element.
