@@ -251,7 +251,7 @@ function indentCodeCompensation(raw, text) {
 
       const [indentInNode] = matchIndentInNode;
 
-      if (indentInNode.length > indentToCode.length) {
+      if (indentInNode.length >= indentToCode.length) {
         return node.slice(indentToCode.length);
       }
 
