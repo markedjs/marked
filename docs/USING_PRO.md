@@ -16,7 +16,7 @@ const marked = require('marked');
 const renderer = new marked.Renderer();
 
 // Override function
-renderer.heading = function (text, level) {
+renderer.heading = function(text, level) {
   const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 
   return `
@@ -58,7 +58,7 @@ console.log(marked('# heading+', { renderer }));
 - tablerow(*string* content)
 - tablecell(*string* content, *object* flags)
 
-`slugger` has the `slug` method to create an unique id from value:
+`slugger` has the `slug` method to create a unique id from value:
 
 ```js
 slugger.slug('foo')   // foo
@@ -89,9 +89,93 @@ slugger.slug('foo-1') // foo-1-2
 - image(*string* href, *string* title, *string* text)
 - text(*string* text)
 
+<h2 id="tokenizer">The tokenizer</h2>
+
+The tokenizer defines how to turn markdown text into tokens.
+
+**Example:** Overriding default `codespan` tokenizer to include LaTeX.
+
+```js
+// Create reference instance
+const marked = require('marked');
+
+// Get reference
+const tokenizer = new marked.Tokenizer();
+const originalCodespan = tokenizer.codespan;
+// Override function
+tokenizer.codespan = function(src) {
+  const match = src.match(/\$+([^\$\n]+?)\$+/);
+  if (match) {
+    return {
+      type: 'codespan',
+      raw: match[0],
+      text: match[1].trim()
+    };
+  }
+  return originalCodespan.apply(this, arguments);
+};
+
+// Run marked
+console.log(marked('$ latex code $', { tokenizer }));
+```
+
+**Output:**
+
+```html
+<p><code>latext code</code></p>
+```
+
+### Block level tokenizer methods
+
+- space(*string* src)
+- code(*string* src, *array* tokens)
+- fences(*string* src)
+- heading(*string* src)
+- nptable(*string* src)
+- hr(*string* src)
+- blockquote(*string* src)
+- list(*string* src)
+- html(*string* src)
+- def(*string* src)
+- table(*string* src)
+- lheading(*string* src)
+- paragraph(*string* src)
+- text(*string* src)
+
+### Inline level tokenizer methods
+
+- escape(*string* src)
+- tag(*string* src, *bool* inLink, *bool* inRawBlock)
+- link(*string* src)
+- reflink(*string* src, *object* links)
+- strong(*string* src)
+- em(*string* src)
+- codespan(*string* src)
+- br(*string* src)
+- del(*string* src)
+- autolink(*string* src, *function* mangle)
+- url(*string* src, *function* mangle)
+- inlineText(*string* src, *bool* inRawBlock, *function* smartypants)
+
+`mangle` is a method that changes text to HTML character references:
+
+```js
+mangle('test@example.com')
+// "&#x74;&#101;&#x73;&#116;&#x40;&#101;&#120;&#x61;&#x6d;&#112;&#108;&#101;&#46;&#x63;&#111;&#x6d;"
+```
+
+`smartypants` is a method that translates plain ASCII punctuation characters into “smart” typographic punctuation HTML entities:
+
+https://daringfireball.net/projects/smartypants/
+
+```js
+smartypants('"this ... string"')
+// "“this … string”"
+```
+
 <h2 id="lexer">The lexer</h2>
 
-The lexer turns a markdown string into tokens.
+The lexer takes a markdown string and calls the tokenizer functions.
 
 <h2 id="parser">The parser</h2>
 
@@ -112,8 +196,10 @@ console.log(marked.parser(tokens, options));
 const lexer = new marked.Lexer(options);
 const tokens = lexer.lex(markdown);
 console.log(tokens);
-console.log(lexer.rules.block); // block level rules
-console.log(lexer.rules.inline); // inline level rules
+console.log(lexer.tokenizer.rules.block); // block level rules used
+console.log(lexer.tokenizer.rules.inline); // inline level rules used
+console.log(marked.Lexer.rules.block); // all block level rules
+console.log(marked.Lexer.rules.inline); // all inline level rules
 ```
 
 ``` bash

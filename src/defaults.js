@@ -15,6 +15,7 @@ function getDefaults() {
     silent: false,
     smartLists: false,
     smartypants: false,
+    tokenizer: null,
     xhtml: false
   };
 }
