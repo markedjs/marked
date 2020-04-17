@@ -43,7 +43,7 @@ beforeEach(() => {
       compare: async(spec, expected) => {
         const result = {};
         const actual = marked(spec.markdown, spec.options);
-        
+
         result.pass = assert.deepStrictEqual(expected, actual) === undefined;
 
         return result;
