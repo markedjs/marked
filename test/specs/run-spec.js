@@ -30,8 +30,8 @@ function runSpecs(title, dir, showCompletionTable, options) {
             const before = process.hrtime();
             if (spec.shouldFail) {
               await expectAsync(spec).not.toRender(spec.html);
-            } else if (spec.options.deepEqual) {
-              await expectAsync(spec).toDeepEqual(spec.html);
+            } else if (spec.options.renderExact) {
+              await expectAsync(spec).toRenderExact(spec.html);
             } else {
               await expectAsync(spec).toRender(spec.html);
             }

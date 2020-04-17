@@ -1,5 +1,5 @@
 ---
-deepEqual: true
+renderExact: true
 ---
 This is some text.
 

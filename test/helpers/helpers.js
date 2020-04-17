@@ -39,7 +39,7 @@ beforeEach(() => {
         }
       };
     },
-    toDeepEqual: () => ({
+    toRenderExact: () => ({
       compare: async(spec, expected) => {
         const result = {};
         const actual = marked(spec.markdown, spec.options);
