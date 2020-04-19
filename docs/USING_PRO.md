@@ -12,24 +12,25 @@ The renderer defines the output of the parser.
 // Create reference instance
 const marked = require('marked');
 
-// Get reference
-const renderer = new marked.Renderer();
-
 // Override function
-renderer.heading = function(text, level) {
-  const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+const renderer = {
+  heading(text, level) {
+    const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 
-  return `
-          <h${level}>
-            <a name="${escapedText}" class="anchor" href="#${escapedText}">
-              <span class="header-link"></span>
-            </a>
-            ${text}
-          </h${level}>`;
+    return `
+            <h${level}>
+              <a name="${escapedText}" class="anchor" href="#${escapedText}">
+                <span class="header-link"></span>
+              </a>
+              ${text}
+            </h${level}>`;
+  }
 };
 
+marked.use({ renderer });
+
 // Run marked
-console.log(marked('# heading+', { renderer }));
+console.log(marked('# heading+'));
 ```
 
 **Output:**
@@ -99,30 +100,33 @@ The tokenizer defines how to turn markdown text into tokens.
 // Create reference instance
 const marked = require('marked');
 
-// Get reference
-const tokenizer = new marked.Tokenizer();
-const originalCodespan = tokenizer.codespan;
 // Override function
-tokenizer.codespan = function(src) {
-  const match = src.match(/\$+([^\$\n]+?)\$+/);
-  if (match) {
-    return {
-      type: 'codespan',
-      raw: match[0],
-      text: match[1].trim()
-    };
+const tokenizer = {
+  codespan(src) {
+    const match = src.match(/\$+([^\$\n]+?)\$+/);
+    if (match) {
+      return {
+        type: 'codespan',
+        raw: match[0],
+        text: match[1].trim()
+      };
+    }
+    const originalTokenizer = new marked.Tokenizer(this.options);
+    return originalTokenizer.codespan.apply(this, arguments);
   }
-  return originalCodespan.apply(this, arguments);
 };
 
+marked.use({ tokenizer });
+
 // Run marked
-console.log(marked('$ latex code $', { tokenizer }));
+console.log(marked('$ latex code $\n\n` other code `'));
 ```
 
 **Output:**
 
 ```html
-<p><code>latext code</code></p>
+<p><code>latex code</code></p>
+<p><code>other code</code></p>
 ```
 
 ### Block level tokenizer methods
