@@ -128,6 +128,29 @@ marked.getDefaults = getDefaults;
 marked.defaults = defaults;
 
 /**
+ * Use Extension
+ */
+
+marked.use = function(extension) {
+  const opts = merge({}, extension);
+  if (extension.renderer) {
+    const renderer = marked.defaults.renderer || new Renderer();
+    for (const prop in extension.renderer) {
+      renderer[prop] = extension.renderer[prop];
+    }
+    opts.renderer = renderer;
+  }
+  if (extension.tokenizer) {
+    const tokenizer = marked.defaults.tokenizer || new Tokenizer();
+    for (const prop in extension.tokenizer) {
+      tokenizer[prop] = extension.tokenizer[prop];
+    }
+    opts.tokenizer = tokenizer;
+  }
+  marked.setOptions(opts);
+};
+
+/**
  * Expose
  */
 
