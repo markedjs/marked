@@ -112,7 +112,7 @@ const tokenizer = {
       };
     }
 
-    // return false to use original codespan renderer
+    // return false to use original codespan tokenizer
     return false;
   }
 };
