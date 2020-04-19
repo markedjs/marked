@@ -111,8 +111,9 @@ const tokenizer = {
         text: match[1].trim()
       };
     }
-    const originalTokenizer = new marked.Tokenizer(this.options);
-    return originalTokenizer.codespan.apply(this, arguments);
+
+    // return false to use original codespan renderer
+    return false;
   }
 };
 

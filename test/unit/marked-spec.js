@@ -171,6 +171,39 @@ paragraph
     expect(html).toBe('extension2 paragraph\nextension1 html\n<h1 id="heading">heading</h1>\n');
   });
 
+  it('should use previous extension when returning false', () => {
+    const extension1 = {
+      renderer: {
+        paragraph(text) {
+          if (text !== 'original') {
+            return 'extension1 paragraph\n';
+          }
+          return false;
+        }
+      }
+    };
+    const extension2 = {
+      renderer: {
+        paragraph(text) {
+          if (text !== 'extension1' && text !== 'original') {
+            return 'extension2 paragraph\n';
+          }
+          return false;
+        }
+      }
+    };
+    marked.use(extension1);
+    marked.use(extension2);
+    const html = marked(`
+paragraph
+
+extension1
+
+original
+`);
+    expect(html).toBe('extension2 paragraph\nextension1 paragraph\n<p>original</p>\n');
+  });
+
   it('should get options with this.options', () => {
     const extension = {
       renderer: {
