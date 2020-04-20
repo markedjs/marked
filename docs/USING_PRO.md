@@ -2,6 +2,16 @@
 
 To champion the single-responsibility and open/closed principles, we have tried to make it relatively painless to extend marked. If you are looking to add custom functionality, this is the place to start.
 
+<h2 id="use">marked.use()</h2>
+
+`marked.use(options)` is the recommended way to extend marked. The options object can contain any [option](#/USING_ADVANCED.md#options) available in marked.
+
+The `renderer` and `tokenizer` options can be an object with functions that will be merged into the `renderer` and `tokenizer` respectively.
+
+The `renderer` and `tokenizer` functions can return false to fallback to the previous function.
+
+All other options will overwrite previously set options.
+
 <h2 id="renderer">The renderer</h2>
 
 The renderer defines the output of the parser.
