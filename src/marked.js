@@ -128,6 +128,43 @@ marked.getDefaults = getDefaults;
 marked.defaults = defaults;
 
 /**
+ * Use Extension
+ */
+
+marked.use = function(extension) {
+  const opts = merge({}, extension);
+  if (extension.renderer) {
+    const renderer = marked.defaults.renderer || new Renderer();
+    for (const prop in extension.renderer) {
+      const prevRenderer = renderer[prop];
+      renderer[prop] = (...args) => {
+        let ret = extension.renderer[prop].apply(renderer, args);
+        if (ret === false) {
+          ret = prevRenderer.apply(renderer, args);
+        }
+        return ret;
+      };
+    }
+    opts.renderer = renderer;
+  }
+  if (extension.tokenizer) {
+    const tokenizer = marked.defaults.tokenizer || new Tokenizer();
+    for (const prop in extension.tokenizer) {
+      const prevTokenizer = tokenizer[prop];
+      tokenizer[prop] = (...args) => {
+        let ret = extension.tokenizer[prop].apply(tokenizer, args);
+        if (ret === false) {
+          ret = prevTokenizer.apply(tokenizer, args);
+        }
+        return ret;
+      };
+    }
+    opts.tokenizer = tokenizer;
+  }
+  marked.setOptions(opts);
+};
+
+/**
  * Expose
  */
 
