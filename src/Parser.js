@@ -3,8 +3,7 @@ const TextRenderer = require('./TextRenderer.js');
 const Slugger = require('./Slugger.js');
 const { defaults } = require('./defaults.js');
 const {
-  unescape,
-  indentCodeCompensation
+  unescape
 } = require('./helpers.js');
 
 /**
@@ -55,7 +54,6 @@ module.exports = class Parser {
     const l = tokens.length;
     for (i = 0; i < l; i++) {
       token = tokens[i];
-      token.text = indentCodeCompensation(token.raw, token.text);
       switch (token.type) {
         case 'space': {
           continue;

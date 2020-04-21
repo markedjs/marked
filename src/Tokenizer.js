@@ -3,7 +3,8 @@ const {
   rtrim,
   splitCells,
   escape,
-  findClosingBracket
+  findClosingBracket,
+  indentCodeCompensation
 } = require('./helpers.js');
 
 function outputLink(cap, link, raw) {
@@ -77,11 +78,14 @@ module.exports = class Tokenizer {
   fences(src) {
     const cap = this.rules.block.fences.exec(src);
     if (cap) {
+      const raw = cap[0];
+      const text = indentCodeCompensation(raw, cap[3] || '');
+
       return {
         type: 'code',
-        raw: cap[0],
+        raw,
         lang: cap[2] ? cap[2].trim() : cap[2],
-        text: cap[3] || ''
+        text
       };
     }
   }
