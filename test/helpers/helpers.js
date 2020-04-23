@@ -1,6 +1,6 @@
 const marked = require('../../src/marked.js');
 const htmlDiffer = require('./html-differ.js');
-const assert = require('assert').strict;
+const assert = require('assert');
 
 beforeEach(() => {
   marked.setOptions(marked.getDefaults());
@@ -44,7 +44,7 @@ beforeEach(() => {
         const result = {};
         const actual = marked(spec.markdown, spec.options);
 
-        result.pass = assert.deepStrictEqual(expected, actual) === undefined;
+        result.pass = assert.strictEqual(expected, actual) === undefined;
 
         return result;
       }
