@@ -481,7 +481,13 @@ module.exports = class Tokenizer {
   codespan(src) {
     const cap = this.rules.inline.code.exec(src);
     if (cap) {
-      const text = escape(cap[2].trim(), true);
+      let text = cap[2];
+      const hasNonSpaceChars = /\S/.test(text);
+      const hasSpaceCharsOnBothEnds = /^\s/.test(text) && /\s$/.test(text);
+      if (hasNonSpaceChars && hasSpaceCharsOnBothEnds) {
+        text = text.substring(1, text.length - 1);
+      }
+      text = escape(text, true);
       return {
         type: 'codespan',
         raw: cap[0],

@@ -752,12 +752,50 @@ a | b
         });
       });
 
-      it('code', () => {
-        expectInlineTokens({
-          md: '`code`',
-          tokens: [
-            { type: 'codespan', raw: '`code`', text: 'code' }
-          ]
+      describe('codespan', () => {
+        it('code', () => {
+          expectInlineTokens({
+            md: '`code`',
+            tokens: [
+              { type: 'codespan', raw: '`code`', text: 'code' }
+            ]
+          });
+        });
+
+        it('only spaces', () => {
+          expectInlineTokens({
+            md: '`   `',
+            tokens: [
+              { type: 'codespan', raw: '`   `', text: '   ' }
+            ]
+          });
+        });
+
+        it('beginning space', () => {
+          expectInlineTokens({
+            md: '` a`',
+            tokens: [
+              { type: 'codespan', raw: '` a`', text: ' a' }
+            ]
+          });
+        });
+
+        it('end space', () => {
+          expectInlineTokens({
+            md: '`a `',
+            tokens: [
+              { type: 'codespan', raw: '`a `', text: 'a ' }
+            ]
+          });
+        });
+
+        it('begin and end space', () => {
+          expectInlineTokens({
+            md: '` a `',
+            tokens: [
+              { type: 'codespan', raw: '` a `', text: 'a' }
+            ]
+          });
         });
       });
 
