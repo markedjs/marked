@@ -56,21 +56,21 @@ module.exports = class Tokenizer {
       const lastToken = tokens[tokens.length - 1];
       // An indented code block cannot interrupt a paragraph.
       if (lastToken && lastToken.type === 'paragraph') {
-        tokens.pop();
-        lastToken.text += '\n' + cap[0].trimRight();
-        lastToken.raw += '\n' + cap[0];
-        return lastToken;
-      } else {
-        const text = cap[0].replace(/^ {4}/gm, '');
         return {
-          type: 'code',
           raw: cap[0],
-          codeBlockStyle: 'indented',
-          text: !this.options.pedantic
-            ? rtrim(text, '\n')
-            : text
+          text: cap[0].trimRight()
         };
       }
+
+      const text = cap[0].replace(/^ {4}/gm, '');
+      return {
+        type: 'code',
+        raw: cap[0],
+        codeBlockStyle: 'indented',
+        text: !this.options.pedantic
+          ? rtrim(text, '\n')
+          : text
+      };
     }
   }
 
@@ -343,9 +343,17 @@ module.exports = class Tokenizer {
     }
   }
 
-  text(src) {
+  text(src, tokens) {
     const cap = this.rules.block.text.exec(src);
     if (cap) {
+      const lastToken = tokens[tokens.length - 1];
+      if (lastToken && lastToken.type === 'text') {
+        return {
+          raw: cap[0],
+          text: cap[0]
+        };
+      }
+
       return {
         type: 'text',
         raw: cap[0],
@@ -473,10 +481,13 @@ module.exports = class Tokenizer {
   codespan(src) {
     const cap = this.rules.inline.code.exec(src);
     if (cap) {
+      const text = escape(cap[2].trim(), true);
       return {
         type: 'codespan',
         raw: cap[0],
-        text: escape(cap[2].trim(), true)
+        text: !this.options.pedantic
+          ? text.replace(/\n/g, ' ')
+          : text
       };
     }
   }
