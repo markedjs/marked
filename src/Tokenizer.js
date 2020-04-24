@@ -3,8 +3,7 @@ const {
   rtrim,
   splitCells,
   escape,
-  findClosingBracket,
-  indentCodeCompensation
+  findClosingBracket
 } = require('./helpers.js');
 
 function outputLink(cap, link, raw) {
@@ -28,6 +27,38 @@ function outputLink(cap, link, raw) {
       title
     };
   }
+}
+
+function indentCodeCompensation(raw, text) {
+  if (raw === undefined) {
+    return text;
+  }
+
+  const matchIndentToCode = raw.match(/^(\s+)(?:```)/);
+
+  if (matchIndentToCode === null) {
+    return text;
+  }
+
+  const indentToCode = matchIndentToCode[matchIndentToCode.length - 1];
+
+  return text
+    .split('\n')
+    .map(node => {
+      const matchIndentInNode = node.match(/^\s+/);
+      if (matchIndentInNode === null) {
+        return node;
+      }
+
+      const [indentInNode] = matchIndentInNode;
+
+      if (indentInNode.length >= indentToCode.length) {
+        return node.slice(indentToCode.length);
+      }
+
+      return node;
+    })
+    .join('\n');
 }
 
 /**

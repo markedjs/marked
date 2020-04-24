@@ -228,38 +228,6 @@ function checkSanitizeDeprecation(opt) {
   }
 }
 
-function indentCodeCompensation(raw, text) {
-  if (raw === undefined) {
-    return text;
-  }
-
-  const matchIndentToCode = raw.match(/^(\s+)(?:```)/);
-
-  if (matchIndentToCode === null) {
-    return text;
-  }
-
-  const [indentToCode] = matchIndentToCode.reverse();
-
-  return text
-    .split('\n')
-    .map(node => {
-      const matchIndentInNode = node.match(/^\s+/);
-      if (matchIndentInNode === null) {
-        return node;
-      }
-
-      const [indentInNode] = matchIndentInNode;
-
-      if (indentInNode.length >= indentToCode.length) {
-        return node.slice(indentToCode.length);
-      }
-
-      return node;
-    })
-    .join('\n');
-}
-
 module.exports = {
   escape,
   unescape,
@@ -271,6 +239,5 @@ module.exports = {
   splitCells,
   rtrim,
   findClosingBracket,
-  checkSanitizeDeprecation,
-  indentCodeCompensation
+  checkSanitizeDeprecation
 };
