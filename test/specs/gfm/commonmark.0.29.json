@@ -2850,7 +2850,7 @@
   },
   {
     "markdown": "a*\"foo\"*\n",
-    "html": "<p>a*&quot;foo&quot;*</p>\n",
+    "html": "<p>a<em>&quot;foo&quot;</em></p>\n",
     "example": 352,
     "start_line": 6313,
     "end_line": 6317,
