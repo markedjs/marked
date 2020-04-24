@@ -481,9 +481,9 @@ module.exports = class Tokenizer {
   codespan(src) {
     const cap = this.rules.inline.code.exec(src);
     if (cap) {
-      let text = cap[2];
-      const hasNonSpaceChars = /\S/.test(text);
-      const hasSpaceCharsOnBothEnds = /^\s/.test(text) && /\s$/.test(text);
+      let text = cap[2].replace(/\n/g, ' ');
+      const hasNonSpaceChars = /[^ ]/.test(text);
+      const hasSpaceCharsOnBothEnds = text.startsWith(' ') && text.endsWith(' ');
       if (hasNonSpaceChars && hasSpaceCharsOnBothEnds) {
         text = text.substring(1, text.length - 1);
       }
@@ -491,9 +491,7 @@ module.exports = class Tokenizer {
       return {
         type: 'codespan',
         raw: cap[0],
-        text: !this.options.pedantic
-          ? text.replace(/\n/g, ' ')
-          : text
+        text
       };
     }
   }

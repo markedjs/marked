@@ -762,7 +762,7 @@ a | b
           });
         });
 
-        it('only spaces', () => {
+        it('only spaces not stripped', () => {
           expectInlineTokens({
             md: '`   `',
             tokens: [
@@ -771,7 +771,7 @@ a | b
           });
         });
 
-        it('beginning space', () => {
+        it('beginning space only not stripped', () => {
           expectInlineTokens({
             md: '` a`',
             tokens: [
@@ -780,7 +780,7 @@ a | b
           });
         });
 
-        it('end space', () => {
+        it('end space only not stripped', () => {
           expectInlineTokens({
             md: '`a `',
             tokens: [
@@ -789,7 +789,7 @@ a | b
           });
         });
 
-        it('begin and end space', () => {
+        it('begin and end spaces are stripped', () => {
           expectInlineTokens({
             md: '` a `',
             tokens: [
@@ -798,7 +798,34 @@ a | b
           });
         });
 
-        it('begin and end multiple space', () => {
+        it('begin and end newlines are stripped', () => {
+          expectInlineTokens({
+            md: '`\na\n`',
+            tokens: [
+              { type: 'codespan', raw: '`\na\n`', text: 'a' }
+            ]
+          });
+        });
+
+        it('begin and end tabs are not stripped', () => {
+          expectInlineTokens({
+            md: '`\ta\t`',
+            tokens: [
+              { type: 'codespan', raw: '`\ta\t`', text: '\ta\t' }
+            ]
+          });
+        });
+
+        it('begin and end newlines', () => {
+          expectInlineTokens({
+            md: '`\na\n`',
+            tokens: [
+              { type: 'codespan', raw: '`\na\n`', text: 'a' }
+            ]
+          });
+        });
+
+        it('begin and end multiple spaces only one stripped', () => {
           expectInlineTokens({
             md: '`  a  `',
             tokens: [
