@@ -806,6 +806,15 @@ a | b
             ]
           });
         });
+
+        it('newline to space', () => {
+          expectInlineTokens({
+            md: '`a\nb`',
+            tokens: [
+              { type: 'codespan', raw: '`a\nb`', text: 'a b' }
+            ]
+          });
+        });
       });
 
       it('br', () => {
