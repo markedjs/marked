@@ -797,6 +797,15 @@ a | b
             ]
           });
         });
+
+        it('begin and end multiple space', () => {
+          expectInlineTokens({
+            md: '`  a  `',
+            tokens: [
+              { type: 'codespan', raw: '`  a  `', text: ' a ' }
+            ]
+          });
+        });
       });
 
       it('br', () => {
