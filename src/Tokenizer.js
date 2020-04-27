@@ -40,7 +40,7 @@ function indentCodeCompensation(raw, text) {
     return text;
   }
 
-  const indentToCode = matchIndentToCode[matchIndentToCode.length - 1];
+  const indentToCode = matchIndentToCode[1];
 
   return text
     .split('\n')
