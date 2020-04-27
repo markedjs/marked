@@ -2850,11 +2850,12 @@
   },
   {
     "markdown": "a*\"foo\"*\n",
-    "html": "<p>a<em>&quot;foo&quot;</em></p>\n",
+    "html": "<p>a*&quot;foo&quot;*</p>\n",
     "example": 352,
     "start_line": 6313,
     "end_line": 6317,
-    "section": "Emphasis and strong emphasis"
+    "section": "Emphasis and strong emphasis",
+    "shouldFail": true
   },
   {
     "markdown": "* a *\n",
