@@ -30,10 +30,6 @@ function outputLink(cap, link, raw) {
 }
 
 function indentCodeCompensation(raw, text) {
-  if (raw === undefined) {
-    return text;
-  }
-
   const matchIndentToCode = raw.match(/^(\s+)(?:```)/);
 
   if (matchIndentToCode === null) {
