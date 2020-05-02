@@ -16,17 +16,22 @@ function runSpecs(title, dir, showCompletionTable, options) {
           spec.options = Object.assign({}, options, (spec.options || {}));
           const example = (spec.example ? ' example ' + spec.example : '');
           const passFail = (spec.shouldFail ? 'fail' : 'pass');
+
           if (typeof spec.options.silent === 'undefined') {
             spec.options.silent = true;
           }
+
           if (spec.options.sanitizer) {
             // eslint-disable-next-line no-eval
             spec.options.sanitizer = eval(spec.options.sanitizer);
           }
+
           (spec.only ? fit : (spec.skip ? xit : it))('should ' + passFail + example, async() => {
             const before = process.hrtime();
             if (spec.shouldFail) {
               await expectAsync(spec).not.toRender(spec.html);
+            } else if (spec.options.renderExact) {
+              await expectAsync(spec).toRenderExact(spec.html);
             } else {
               await expectAsync(spec).toRender(spec.html);
             }

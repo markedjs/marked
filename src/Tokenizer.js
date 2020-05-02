@@ -29,6 +29,34 @@ function outputLink(cap, link, raw) {
   }
 }
 
+function indentCodeCompensation(raw, text) {
+  const matchIndentToCode = raw.match(/^(\s+)(?:```)/);
+
+  if (matchIndentToCode === null) {
+    return text;
+  }
+
+  const indentToCode = matchIndentToCode[1];
+
+  return text
+    .split('\n')
+    .map(node => {
+      const matchIndentInNode = node.match(/^\s+/);
+      if (matchIndentInNode === null) {
+        return node;
+      }
+
+      const [indentInNode] = matchIndentInNode;
+
+      if (indentInNode.length >= indentToCode.length) {
+        return node.slice(indentToCode.length);
+      }
+
+      return node;
+    })
+    .join('\n');
+}
+
 /**
  * Tokenizer
  */
@@ -77,11 +105,14 @@ module.exports = class Tokenizer {
   fences(src) {
     const cap = this.rules.block.fences.exec(src);
     if (cap) {
+      const raw = cap[0];
+      const text = indentCodeCompensation(raw, cap[3] || '');
+
       return {
         type: 'code',
-        raw: cap[0],
+        raw,
         lang: cap[2] ? cap[2].trim() : cap[2],
-        text: cap[3] || ''
+        text
       };
     }
   }
