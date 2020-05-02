@@ -4,6 +4,7 @@
   "author": "Christopher Jeffrey",
   "version": "1.0.0",
   "main": "./src/marked.js",
+  "browser": "./lib/marked.js",
   "bin": "./bin/marked",
   "man": "./man/marked.1",
   "files": [
