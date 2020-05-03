@@ -752,12 +752,95 @@ a | b
         });
       });
 
-      it('code', () => {
-        expectInlineTokens({
-          md: '`code`',
-          tokens: [
-            { type: 'codespan', raw: '`code`', text: 'code' }
-          ]
+      describe('codespan', () => {
+        it('code', () => {
+          expectInlineTokens({
+            md: '`code`',
+            tokens: [
+              { type: 'codespan', raw: '`code`', text: 'code' }
+            ]
+          });
+        });
+
+        it('only spaces not stripped', () => {
+          expectInlineTokens({
+            md: '`   `',
+            tokens: [
+              { type: 'codespan', raw: '`   `', text: '   ' }
+            ]
+          });
+        });
+
+        it('beginning space only not stripped', () => {
+          expectInlineTokens({
+            md: '` a`',
+            tokens: [
+              { type: 'codespan', raw: '` a`', text: ' a' }
+            ]
+          });
+        });
+
+        it('end space only not stripped', () => {
+          expectInlineTokens({
+            md: '`a `',
+            tokens: [
+              { type: 'codespan', raw: '`a `', text: 'a ' }
+            ]
+          });
+        });
+
+        it('begin and end spaces are stripped', () => {
+          expectInlineTokens({
+            md: '` a `',
+            tokens: [
+              { type: 'codespan', raw: '` a `', text: 'a' }
+            ]
+          });
+        });
+
+        it('begin and end newlines are stripped', () => {
+          expectInlineTokens({
+            md: '`\na\n`',
+            tokens: [
+              { type: 'codespan', raw: '`\na\n`', text: 'a' }
+            ]
+          });
+        });
+
+        it('begin and end tabs are not stripped', () => {
+          expectInlineTokens({
+            md: '`\ta\t`',
+            tokens: [
+              { type: 'codespan', raw: '`\ta\t`', text: '\ta\t' }
+            ]
+          });
+        });
+
+        it('begin and end newlines', () => {
+          expectInlineTokens({
+            md: '`\na\n`',
+            tokens: [
+              { type: 'codespan', raw: '`\na\n`', text: 'a' }
+            ]
+          });
+        });
+
+        it('begin and end multiple spaces only one stripped', () => {
+          expectInlineTokens({
+            md: '`  a  `',
+            tokens: [
+              { type: 'codespan', raw: '`  a  `', text: ' a ' }
+            ]
+          });
+        });
+
+        it('newline to space', () => {
+          expectInlineTokens({
+            md: '`a\nb`',
+            tokens: [
+              { type: 'codespan', raw: '`a\nb`', text: 'a b' }
+            ]
+          });
         });
       });
 

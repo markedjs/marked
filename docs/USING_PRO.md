@@ -155,7 +155,7 @@ console.log(marked('$ latex code $\n\n` other code `'));
 - table(*string* src)
 - lheading(*string* src)
 - paragraph(*string* src)
-- text(*string* src)
+- text(*string* src, *array* tokens)
 
 ### Inline level tokenizer methods
 

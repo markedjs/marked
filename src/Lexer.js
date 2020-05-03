@@ -112,7 +112,7 @@ module.exports = class Lexer {
    */
   blockTokens(src, tokens = [], top = true) {
     src = src.replace(/^ +$/gm, '');
-    let token, i, l;
+    let token, i, l, lastToken;
 
     while (src) {
       // newline
@@ -127,7 +127,13 @@ module.exports = class Lexer {
       // code
       if (token = this.tokenizer.code(src, tokens)) {
         src = src.substring(token.raw.length);
-        tokens.push(token);
+        if (token.type) {
+          tokens.push(token);
+        } else {
+          lastToken = tokens[tokens.length - 1];
+          lastToken.raw += '\n' + token.raw;
+          lastToken.text += '\n' + token.text;
+        }
         continue;
       }
 
@@ -219,9 +225,15 @@ module.exports = class Lexer {
       }
 
       // text
-      if (token = this.tokenizer.text(src)) {
+      if (token = this.tokenizer.text(src, tokens)) {
         src = src.substring(token.raw.length);
-        tokens.push(token);
+        if (token.type) {
+          tokens.push(token);
+        } else {
+          lastToken = tokens[tokens.length - 1];
+          lastToken.raw += '\n' + token.raw;
+          lastToken.text += '\n' + token.text;
+        }
         continue;
       }
 
