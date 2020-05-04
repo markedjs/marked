@@ -28,18 +28,17 @@ function marked(src, opt, callback) {
       + Object.prototype.toString.call(src) + ', string expected');
   }
 
-  if (callback || typeof opt === 'function') {
-    if (!callback) {
-      callback = opt;
-      opt = null;
-    }
+  if (typeof opt === 'function') {
+    callback = opt;
+    opt = null;
+  }
 
-    opt = merge({}, marked.defaults, opt || {});
-    checkSanitizeDeprecation(opt);
+  opt = merge({}, marked.defaults, opt || {});
+  checkSanitizeDeprecation(opt);
+
+  if (callback) {
     const highlight = opt.highlight;
-    let tokens,
-      pending,
-      i = 0;
+    let tokens;
 
     try {
       tokens = Lexer.lex(src, opt);
@@ -47,20 +46,15 @@ function marked(src, opt, callback) {
       return callback(e);
     }
 
-    pending = tokens.length;
-
     const done = function(err) {
-      if (err) {
-        opt.highlight = highlight;
-        return callback(err);
-      }
-
       let out;
 
-      try {
-        out = Parser.parse(tokens, opt);
-      } catch (e) {
-        err = e;
+      if (!err) {
+        try {
+          out = Parser.parse(tokens, opt);
+        } catch (e) {
+          err = e;
+        }
       }
 
       opt.highlight = highlight;
@@ -76,34 +70,30 @@ function marked(src, opt, callback) {
 
     delete opt.highlight;
 
-    if (!pending) return done();
+    if (!tokens.length) return done();
 
-    for (; i < tokens.length; i++) {
-      (function(token) {
-        if (token.type !== 'code') {
-          return --pending || done();
-        }
-        return highlight(token.text, token.lang, function(err, code) {
-          if (err) return done(err);
-          if (code == null || code === token.text) {
-            return --pending || done();
+    marked.iterateTokens(tokens, function(token) {
+      if (token.type === 'code') {
+        highlight(token.text, token.lang, function(err, code) {
+          if (err) {
+            return done(err);
           }
-          token.text = code;
-          token.escaped = true;
-          --pending || done();
+          if (code != null && code !== token.text) {
+            token.text = code;
+            token.escaped = true;
+          }
         });
-      })(tokens[i]);
-    }
+      }
+    });
 
-    return;
+    return done();
   }
+
   try {
-    opt = merge({}, marked.defaults, opt || {});
-    checkSanitizeDeprecation(opt);
     return Parser.parse(Lexer.lex(src, opt), opt);
   } catch (e) {
     e.message += '\nPlease report this to https://github.com/markedjs/marked.';
-    if ((opt || marked.defaults).silent) {
+    if (opt.silent) {
       return '<p>An error occurred:</p><pre>'
         + escape(e.message + '', true)
         + '</pre>';
@@ -162,6 +152,50 @@ marked.use = function(extension) {
     opts.tokenizer = tokenizer;
   }
   marked.setOptions(opts);
+};
+
+/**
+ * Iterate over every token
+ */
+
+marked.iterateTokens = function(tokens, callback) {
+  let ret;
+  for (const token of tokens) {
+    ret = callback(token);
+    if (ret === false) {
+      return false;
+    }
+    switch (token.type) {
+      case 'table': {
+        ret = marked.iterateTokens(token.tokens.header, callback);
+        if (ret === false) {
+          return false;
+        }
+        for (const row of token.tokens.cell) {
+          ret = marked.iterateTokens(row, callback);
+          if (ret === false) {
+            return false;
+          }
+        }
+        break;
+      }
+      case 'list': {
+        ret = marked.iterateTokens(token.items, callback);
+        if (ret === false) {
+          return false;
+        }
+        break;
+      }
+      default: {
+        if (token.tokens) {
+          ret = marked.iterateTokens(token.tokens, callback);
+          if (ret === false) {
+            return false;
+          }
+        }
+      }
+    }
+  }
 };
 
 /**
