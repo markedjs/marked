@@ -229,3 +229,167 @@ paragraph
     expect(html).toBe('arrow no options\nfunction options\nshorthand options\n');
   });
 });
+
+describe('async highlight', () => {
+  let highlight, markdown;
+  beforeEach(() => {
+    highlight = jasmine.createSpy('highlight', (text, lang, callback) => {
+      setImmediate(() => {
+        callback(null, `async ${text || ''}`);
+      });
+    });
+    markdown = `
+\`\`\`lang1
+text 1
+\`\`\`
+
+> \`\`\`lang2
+> text 2
+> \`\`\`
+
+- \`\`\`lang3
+  text 3
+  \`\`\`
+`;
+  });
+
+  it('should highlight codeblocks async', (done) => {
+    highlight.and.callThrough();
+
+    marked(markdown, { highlight }, (err, html) => {
+      if (err) {
+        fail(err);
+      }
+
+      expect(html).toBe(`<pre><code class="language-lang1">async text 1</code></pre>
+<blockquote>
+<pre><code class="language-lang2">async text 2</code></pre>
+</blockquote>
+<ul>
+<li><pre><code class="language-lang3">async text 3</code></pre>
+</li>
+</ul>
+`);
+      done();
+    });
+  });
+
+  it('should call callback for each error in highlight', (done) => {
+    highlight.and.callFake((lang, text, callback) => {
+      callback(new Error('highlight error'));
+    });
+
+    let numErrors = 0;
+    marked(markdown, { highlight }, (err, html) => {
+      expect(err).toBeTruthy();
+      expect(html).toBeUndefined();
+
+      if (err) {
+        numErrors++;
+      }
+
+      if (numErrors === 3) {
+        done();
+      }
+    });
+  });
+});
+
+describe('iterateTokens', () => {
+  it('should iterate over every token', () => {
+    const markdown = `
+paragraph
+
+---
+
+# heading
+
+\`\`\`
+code
+\`\`\`
+
+| a | b |
+|---|---|
+| 1 | 2 |
+| 3 | 4 |
+
+> blockquote
+
+- list
+
+<div>html</div>
+
+[link](https://example.com)
+
+![image](https://example.com/image.jpg)
+
+**strong**
+
+*em*
+
+\`codespan\`
+
+~~del~~
+
+br
+br
+`;
+    const tokens = marked.lexer(markdown, { ...marked.getDefaults(), breaks: true });
+    const tokensSeen = [];
+    marked.iterateTokens(tokens, (token) => {
+      tokensSeen.push([token.type, (token.raw || '').replace(/\n/g, '')]);
+    });
+
+    expect(tokensSeen).toEqual([
+      ['paragraph', 'paragraph'],
+      ['text', 'paragraph'],
+      ['space', ''],
+      ['hr', '---'],
+      ['heading', '# heading'],
+      ['text', 'heading'],
+      ['code', '```code```'],
+      ['table', '| a | b ||---|---|| 1 | 2 || 3 | 4 |'],
+      ['text', 'a'],
+      ['text', 'b'],
+      ['text', '1'],
+      ['text', '2'],
+      ['text', '3'],
+      ['text', '4'],
+      ['blockquote', '> blockquote'],
+      ['paragraph', 'blockquote'],
+      ['text', 'blockquote'],
+      ['list', '- list'],
+      ['list_item', '- list'],
+      ['text', 'list'],
+      ['text', 'list'],
+      ['space', ''],
+      ['html', '<div>html</div>'],
+      ['paragraph', '[link](https://example.com)'],
+      ['link', '[link](https://example.com)'],
+      ['text', 'link'],
+      ['space', ''],
+      ['paragraph', '![image](https://example.com/image.jpg)'],
+      ['image', '![image](https://example.com/image.jpg)'],
+      ['space', ''],
+      ['paragraph', '**strong**'],
+      ['strong', '**strong**'],
+      ['text', 'strong'],
+      ['space', ''],
+      ['paragraph', '*em*'],
+      ['em', '*em*'],
+      ['text', 'em'],
+      ['space', ''],
+      ['paragraph', '`codespan`'],
+      ['codespan', '`codespan`'],
+      ['space', ''],
+      ['paragraph', '~~del~~'],
+      ['del', '~~del~~'],
+      ['text', 'del'],
+      ['space', ''],
+      ['paragraph', 'brbr'],
+      ['text', 'br'],
+      ['br', ''],
+      ['text', 'br']
+    ]);
+  });
+});

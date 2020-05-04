@@ -72,8 +72,10 @@ function marked(src, opt, callback) {
 
     if (!tokens.length) return done();
 
+    let pending = 0;
     marked.iterateTokens(tokens, function(token) {
       if (token.type === 'code') {
+        pending++;
         highlight(token.text, token.lang, function(err, code) {
           if (err) {
             return done(err);
@@ -82,11 +84,20 @@ function marked(src, opt, callback) {
             token.text = code;
             token.escaped = true;
           }
+
+          pending--;
+          if (pending === 0) {
+            done();
+          }
         });
       }
     });
 
-    return done();
+    if (pending === 0) {
+      done();
+    }
+
+    return;
   }
 
   try {
@@ -167,14 +178,18 @@ marked.iterateTokens = function(tokens, callback) {
     }
     switch (token.type) {
       case 'table': {
-        ret = marked.iterateTokens(token.tokens.header, callback);
-        if (ret === false) {
-          return false;
-        }
-        for (const row of token.tokens.cell) {
-          ret = marked.iterateTokens(row, callback);
+        for (const cell of token.tokens.header) {
+          ret = marked.iterateTokens(cell, callback);
           if (ret === false) {
             return false;
+          }
+        }
+        for (const row of token.tokens.cells) {
+          for (const cell of row) {
+            ret = marked.iterateTokens(cell, callback);
+            if (ret === false) {
+              return false;
+            }
           }
         }
         break;
