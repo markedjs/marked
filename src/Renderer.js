@@ -25,7 +25,7 @@ module.exports = class Renderer {
     if (!lang) {
       return '<pre><code>'
         + (escaped ? code : escape(code, true))
-        + '</code></pre>';
+        + '</code></pre>\n';
     }
 
     return '<pre><code class="'
