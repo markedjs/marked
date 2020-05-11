@@ -85,7 +85,7 @@ function marked(src, opt, callback) {
         }
         return highlight(token.text, token.lang, function(err, code) {
           if (err) return done(err);
-          if (code == null || code === token.text) {
+          if (code == null) {
             return --pending || done();
           }
           token.text = code;

@@ -47,7 +47,7 @@ console.log(marked(markdownString));
 |gfm         |`boolean` |`true`   |v0.2.1   |If true, use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).|
 |headerIds   |`boolean` |`true`   |v0.4.0   |If true, include an `id` attribute when emitting headings (h1, h2, h3, etc).|
 |headerPrefix|`string`  |`''`     |v0.3.0   |A string to prefix the `id` attribute when emitting headings (h1, h2, h3, etc).|
-|highlight   |`function`|`null`   |v0.3.0   |A function to highlight code blocks, see <a href="#highlight">Asynchronous highlighting</a>.|
+|highlight   |`function`|`null`   |v0.3.0   |A function to highlight code blocks, see <a href="#highlight">Highlighting</a>.|
 |langPrefix  |`string`  |`'language-'`|v0.3.0|A string to prefix the className in a `<code>` block. Useful for syntax highlighting.|
 |mangle      |`boolean` |`true`   |v0.3.4   |If true, autolinked email address is escaped with HTML character references.|
 |pedantic    |`boolean` |`false`  |v0.2.1   |If true, conform to the original `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`.|
@@ -60,9 +60,32 @@ console.log(marked(markdownString));
 |tokenizer    |`object`  |`new Tokenizer()`|v1.0.0|An object containing functions to create tokens from markdown. See [extensibility](/#/USING_PRO.md) for more details.|
 |xhtml       |`boolean` |`false`  |v0.3.2   |If true, emit self-closing HTML tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.|
 
-<h2 id="highlight">Asynchronous highlighting</h2>
+<h2 id="highlight">Highlighting</h2>
 
-Unlike `highlight.js` the `pygmentize.js` library uses asynchronous highlighting. This example demonstrates that marked is agnostic when it comes to the highlighter you use.
+The `highlight` function allows highlighting code blocks.
+
+`highlight(code, lang[, callback])`
+ 
+- `code` is a `string` representing the section of code to pass to the highlighter
+- `lang` is a `string` informing the highlighter what programming language to use for the `code`
+- `callback(err, highlightedCode)` is an optional Node-style callback the asynchronous highlighter should call once complete
+- Return value is a `string` for the synchronous highlighter containing the highlighted code.
+
+The highlighted code is a string or `null` if highlighting is not necessary.
+
+Below is the example of a synchronous highlighter implementation using `highlight.js`:
+
+```js
+marked.setOptions({
+  highlight: function(code, language) {
+    const hljs = require('highlight.js');
+    const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
+    return hljs.highlight(validLanguage, code).value;
+  }
+})
+```
+
+Unlike `highlight.js` the `pygmentize.js` library uses asynchronous highlighting. This example demonstrates how to implement an asynchronous highlighter:
 
 ```js
 marked.setOptions({
@@ -72,11 +95,9 @@ marked.setOptions({
     });
   }
 });
-
-console.log(marked(markdownString));
 ```
 
-In both examples, `code` is a `string` representing the section of code to pass to the highlighter. In this example, `lang` is a `string` informing the highlighter what programming language to use for the `code` and `callback` is the `function` the asynchronous highlighter will call once complete.
+Note: `marked` assumes that highlighter performs all necessary escaping and therefore will not attempt any future transformations on the highlighter result.
 
 <h2 id="workers">Workers</h2>
 
