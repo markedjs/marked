@@ -130,7 +130,7 @@ module.exports = class Parser {
             if (item.task) {
               checkbox = this.renderer.checkbox(checked);
               if (loose) {
-                if (item.tokens[0].type === 'text') {
+                if (item.tokens.length > 0 && item.tokens[0].type === 'text') {
                   item.tokens[0].text = checkbox + ' ' + item.tokens[0].text;
                   if (item.tokens[0].tokens && item.tokens[0].tokens.length > 0 && item.tokens[0].tokens[0].type === 'text') {
                     item.tokens[0].tokens[0].text = checkbox + ' ' + item.tokens[0].tokens[0].text;
