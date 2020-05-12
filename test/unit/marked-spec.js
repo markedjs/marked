@@ -295,8 +295,8 @@ text 1
   });
 });
 
-describe('iterateTokens', () => {
-  it('should iterate over every token', () => {
+describe('walkTokens', () => {
+  it('should walk over every token', () => {
     const markdown = `
 paragraph
 
@@ -336,7 +336,7 @@ br
 `;
     const tokens = marked.lexer(markdown, { ...marked.getDefaults(), breaks: true });
     const tokensSeen = [];
-    marked.iterateTokens(tokens, (token) => {
+    marked.walkTokens(tokens, (token) => {
       tokensSeen.push([token.type, (token.raw || '').replace(/\n/g, '')]);
     });
 

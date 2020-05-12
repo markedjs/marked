@@ -73,7 +73,7 @@ function marked(src, opt, callback) {
     if (!tokens.length) return done();
 
     let pending = 0;
-    marked.iterateTokens(tokens, function(token) {
+    marked.walkTokens(tokens, function(token) {
       if (token.type === 'code') {
         pending++;
         highlight(token.text, token.lang, function(err, code) {
@@ -101,7 +101,11 @@ function marked(src, opt, callback) {
   }
 
   try {
-    return Parser.parse(Lexer.lex(src, opt), opt);
+    const tokens = Lexer.lex(src, opt);
+    if (opt.walkTokens) {
+      marked.walkTokens(tokens, opt.walkTokens);
+    }
+    return Parser.parse(tokens, opt);
   } catch (e) {
     e.message += '\nPlease report this to https://github.com/markedjs/marked.';
     if (opt.silent) {
@@ -162,6 +166,15 @@ marked.use = function(extension) {
     }
     opts.tokenizer = tokenizer;
   }
+  if (extension.walkTokens) {
+    const walkTokens = marked.defaults.walkTokens;
+    opts.walkTokens = (token) => {
+      extension.walkTokens(token);
+      if (walkTokens) {
+        walkTokens(token);
+      }
+    };
+  }
   marked.setOptions(opts);
 };
 
@@ -169,7 +182,7 @@ marked.use = function(extension) {
  * Iterate over every token
  */
 
-marked.iterateTokens = function(tokens, callback) {
+marked.walkTokens = function(tokens, callback) {
   let ret;
   for (const token of tokens) {
     ret = callback(token);
@@ -179,14 +192,14 @@ marked.iterateTokens = function(tokens, callback) {
     switch (token.type) {
       case 'table': {
         for (const cell of token.tokens.header) {
-          ret = marked.iterateTokens(cell, callback);
+          ret = marked.walkTokens(cell, callback);
           if (ret === false) {
             return false;
           }
         }
         for (const row of token.tokens.cells) {
           for (const cell of row) {
-            ret = marked.iterateTokens(cell, callback);
+            ret = marked.walkTokens(cell, callback);
             if (ret === false) {
               return false;
             }
@@ -195,7 +208,7 @@ marked.iterateTokens = function(tokens, callback) {
         break;
       }
       case 'list': {
-        ret = marked.iterateTokens(token.items, callback);
+        ret = marked.walkTokens(token.items, callback);
         if (ret === false) {
           return false;
         }
@@ -203,7 +216,7 @@ marked.iterateTokens = function(tokens, callback) {
       }
       default: {
         if (token.tokens) {
-          ret = marked.iterateTokens(token.tokens, callback);
+          ret = marked.walkTokens(token.tokens, callback);
           if (ret === false) {
             return false;
           }
