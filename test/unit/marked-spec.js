@@ -132,6 +132,18 @@ describe('use extension', () => {
     expect(html).toBe('<p>extension</p>\n');
   });
 
+  it('should use walkTokens', () => {
+    let walked = 0;
+    const extension = {
+      walkTokens(token) {
+        walked++;
+      }
+    };
+    marked.use(extension);
+    marked('text');
+    expect(walked).toBe(2);
+  });
+
   it('should use options from extension', () => {
     const extension = {
       headerIds: false
@@ -139,6 +151,29 @@ describe('use extension', () => {
     marked.use(extension);
     const html = marked('# heading');
     expect(html).toBe('<h1>heading</h1>\n');
+  });
+
+  it('should call all walkTokens in reverse order', () => {
+    let walkedOnce = 0;
+    let walkedTwice = 0;
+    const extension1 = {
+      walkTokens(token) {
+        if (token.walkedOnce) {
+          walkedTwice++;
+        }
+      }
+    };
+    const extension2 = {
+      walkTokens(token) {
+        walkedOnce++;
+        token.walkedOnce = true;
+      }
+    };
+    marked.use(extension1);
+    marked.use(extension2);
+    marked('text');
+    expect(walkedOnce).toBe(2);
+    expect(walkedTwice).toBe(2);
   });
 
   it('should use last extension function and not override others', () => {
