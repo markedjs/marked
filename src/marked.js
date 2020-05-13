@@ -179,47 +179,31 @@ marked.use = function(extension) {
 };
 
 /**
- * Iterate over every token
+ * Run callback for every token
  */
 
 marked.walkTokens = function(tokens, callback) {
-  let ret;
   for (const token of tokens) {
-    ret = callback(token);
-    if (ret === false) {
-      return false;
-    }
+    callback(token);
     switch (token.type) {
       case 'table': {
         for (const cell of token.tokens.header) {
-          ret = marked.walkTokens(cell, callback);
-          if (ret === false) {
-            return false;
-          }
+          marked.walkTokens(cell, callback);
         }
         for (const row of token.tokens.cells) {
           for (const cell of row) {
-            ret = marked.walkTokens(cell, callback);
-            if (ret === false) {
-              return false;
-            }
+            marked.walkTokens(cell, callback);
           }
         }
         break;
       }
       case 'list': {
-        ret = marked.walkTokens(token.items, callback);
-        if (ret === false) {
-          return false;
-        }
+        marked.walkTokens(token.items, callback);
         break;
       }
       default: {
         if (token.tokens) {
-          ret = marked.walkTokens(token.tokens, callback);
-          if (ret === false) {
-            return false;
-          }
+          marked.walkTokens(token.tokens, callback);
         }
       }
     }
