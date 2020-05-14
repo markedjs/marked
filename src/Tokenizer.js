@@ -269,6 +269,7 @@ module.exports = class Tokenizer {
         }
 
         list.items.push({
+          type: 'list_item',
           raw,
           task: istask,
           checked: ischecked,

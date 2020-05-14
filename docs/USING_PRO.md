@@ -10,6 +10,8 @@ The `renderer` and `tokenizer` options can be an object with functions that will
 
 The `renderer` and `tokenizer` functions can return false to fallback to the previous function.
 
+The `walkTokens` option can be a function that will be called with every token before rendering. When calling `use` multiple times with different `walkTokens` functions each function will be called in the **reverse** order in which they were assigned.
+
 All other options will overwrite previously set options.
 
 <h2 id="renderer">The renderer</h2>
@@ -186,6 +188,35 @@ https://daringfireball.net/projects/smartypants/
 ```js
 smartypants('"this ... string"')
 // "“this … string”"
+```
+
+<h2 id="walk-tokens">Walk Tokens</h2>
+
+The walkTokens function gets called with every token. Child tokens are called before moving on to sibling tokens. Each token is passed by reference so updates are persisted when passed to the parser. The return value of the function is ignored.
+
+**Example:** Overriding heading tokens to start at h2.
+
+```js
+const marked = require('marked');
+
+// Override function
+const walkTokens = (token) => {
+  if (token.type === 'heading') {
+    token.depth += 1;
+  }
+};
+
+marked.use({ walkTokens });
+
+// Run marked
+console.log(marked('# heading 2\n\n## heading 3'));
+```
+
+**Output:**
+
+```html
+<h2 id="heading-2">heading 2</h2>
+<h3 id="heading-3">heading 3</h3>
 ```
 
 <h2 id="lexer">The lexer</h2>

@@ -28,18 +28,17 @@ function marked(src, opt, callback) {
       + Object.prototype.toString.call(src) + ', string expected');
   }
 
-  if (callback || typeof opt === 'function') {
-    if (!callback) {
-      callback = opt;
-      opt = null;
-    }
+  if (typeof opt === 'function') {
+    callback = opt;
+    opt = null;
+  }
 
-    opt = merge({}, marked.defaults, opt || {});
-    checkSanitizeDeprecation(opt);
+  opt = merge({}, marked.defaults, opt || {});
+  checkSanitizeDeprecation(opt);
+
+  if (callback) {
     const highlight = opt.highlight;
-    let tokens,
-      pending,
-      i = 0;
+    let tokens;
 
     try {
       tokens = Lexer.lex(src, opt);
@@ -47,20 +46,15 @@ function marked(src, opt, callback) {
       return callback(e);
     }
 
-    pending = tokens.length;
-
     const done = function(err) {
-      if (err) {
-        opt.highlight = highlight;
-        return callback(err);
-      }
-
       let out;
 
-      try {
-        out = Parser.parse(tokens, opt);
-      } catch (e) {
-        err = e;
+      if (!err) {
+        try {
+          out = Parser.parse(tokens, opt);
+        } catch (e) {
+          err = e;
+        }
       }
 
       opt.highlight = highlight;
@@ -76,34 +70,45 @@ function marked(src, opt, callback) {
 
     delete opt.highlight;
 
-    if (!pending) return done();
+    if (!tokens.length) return done();
 
-    for (; i < tokens.length; i++) {
-      (function(token) {
-        if (token.type !== 'code') {
-          return --pending || done();
-        }
-        return highlight(token.text, token.lang, function(err, code) {
-          if (err) return done(err);
-          if (code == null || code === token.text) {
-            return --pending || done();
+    let pending = 0;
+    marked.walkTokens(tokens, function(token) {
+      if (token.type === 'code') {
+        pending++;
+        highlight(token.text, token.lang, function(err, code) {
+          if (err) {
+            return done(err);
           }
-          token.text = code;
-          token.escaped = true;
-          --pending || done();
+          if (code != null && code !== token.text) {
+            token.text = code;
+            token.escaped = true;
+          }
+
+          pending--;
+          if (pending === 0) {
+            done();
+          }
         });
-      })(tokens[i]);
+      }
+    });
+
+    if (pending === 0) {
+      done();
     }
 
     return;
   }
+
   try {
-    opt = merge({}, marked.defaults, opt || {});
-    checkSanitizeDeprecation(opt);
-    return Parser.parse(Lexer.lex(src, opt), opt);
+    const tokens = Lexer.lex(src, opt);
+    if (opt.walkTokens) {
+      marked.walkTokens(tokens, opt.walkTokens);
+    }
+    return Parser.parse(tokens, opt);
   } catch (e) {
     e.message += '\nPlease report this to https://github.com/markedjs/marked.';
-    if ((opt || marked.defaults).silent) {
+    if (opt.silent) {
       return '<p>An error occurred:</p><pre>'
         + escape(e.message + '', true)
         + '</pre>';
@@ -161,7 +166,48 @@ marked.use = function(extension) {
     }
     opts.tokenizer = tokenizer;
   }
+  if (extension.walkTokens) {
+    const walkTokens = marked.defaults.walkTokens;
+    opts.walkTokens = (token) => {
+      extension.walkTokens(token);
+      if (walkTokens) {
+        walkTokens(token);
+      }
+    };
+  }
   marked.setOptions(opts);
+};
+
+/**
+ * Run callback for every token
+ */
+
+marked.walkTokens = function(tokens, callback) {
+  for (const token of tokens) {
+    callback(token);
+    switch (token.type) {
+      case 'table': {
+        for (const cell of token.tokens.header) {
+          marked.walkTokens(cell, callback);
+        }
+        for (const row of token.tokens.cells) {
+          for (const cell of row) {
+            marked.walkTokens(cell, callback);
+          }
+        }
+        break;
+      }
+      case 'list': {
+        marked.walkTokens(token.items, callback);
+        break;
+      }
+      default: {
+        if (token.tokens) {
+          marked.walkTokens(token.tokens, callback);
+        }
+      }
+    }
+  }
 };
 
 /**

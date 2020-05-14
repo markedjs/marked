@@ -16,6 +16,7 @@ function getDefaults() {
     smartLists: false,
     smartypants: false,
     tokenizer: null,
+    walkTokens: null,
     xhtml: false
   };
 }

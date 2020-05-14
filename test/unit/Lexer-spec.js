@@ -307,6 +307,7 @@ a | b
             loose: false,
             items: [
               {
+                type: 'list_item',
                 raw: '- item 1',
                 task: false,
                 checked: undefined,
@@ -320,6 +321,7 @@ a | b
                 }]
               },
               {
+                type: 'list_item',
                 raw: '- item 2\n',
                 task: false,
                 checked: undefined,
