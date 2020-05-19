@@ -157,7 +157,7 @@ Images work exactly like links, but they have exclamation points in front.  They
 
 ![Google Logo](http://www.google.com/images/errors/logo_sm.gif) and ![Happy].
 
-[Happy]: http://www.wpclipart.com/smiley/simple_smiley/smiley_face_simple_green_small.png ("Smiley face")
+[Happy]: https://wpclipart.com/smiley/happy/simple_colors/smiley_face_simple_green_small.png ("Smiley face")
 
 
 Inline HTML
