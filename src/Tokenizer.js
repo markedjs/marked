@@ -9,6 +9,7 @@ const {
 function outputLink(cap, link, raw) {
   const href = link.href;
   const title = link.title ? escape(link.title) : null;
+  const text = cap[1].replace(/\\([\[\]])/g, '$1');
 
   if (cap[0].charAt(0) !== '!') {
     return {
@@ -16,15 +17,15 @@ function outputLink(cap, link, raw) {
       raw,
       href,
       title,
-      text: cap[1]
+      text
     };
   } else {
     return {
       type: 'image',
       raw,
-      text: escape(cap[1]),
       href,
-      title
+      title,
+      text: escape(text)
     };
   }
 }
