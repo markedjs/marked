@@ -14,7 +14,7 @@ First thing is first.  You can use *stars* or _underscores_ for italics.  **Doub
 Paragraphs are pretty easy too.  Just have a blank line between chunks of text.
 
 > This chunk of text is in a block quote.  Its multiple lines will all be
-> indended a bit from the rest of the text.
+> indented a bit from the rest of the text.
 >
 > > Multiple levels of block quotes also work.
 
@@ -23,10 +23,13 @@ Sometimes you want to include some code, such as when you are explaining how `<h
 If you want to include some code and have
 newlines preserved, indent the line with a tab
 or at least four spaces.
+
     Extra spaces work here too.
 This is also called preformatted text and it is useful for showing examples.
-The text will stay as text, so any *markdown* or <u>HTML</u> you add will
-not show up formatted.  This way you can show markdown examples in a
+
+    The text will stay as text, so any *markdown* or <u>HTML</u> you add will
+    not show up formatted.  
+This way you can show markdown examples in a
 markdown document.
 
 >     You can also use preformatted text with your blockquotes
@@ -109,15 +112,15 @@ You might want a few advanced lists:
 them on the next line with no indentation.
 
 - Alternately, if that looks ugly, you can also
-indent the next line a bit for a prettier look.
+  indent the next line a bit for a prettier look.
 
 - You can put large blocks of text in your list by just indenting with four spaces.
 
-This is formatted the same as code, but you can inspect the HTML
+    This is formatted the same as code, but you can inspect the HTML
 and find that it's just wrapped in a `<p>` tag and *won't* be shown
 as preformatted text.
 
-You can keep adding more and more paragraphs to a single
+    You can keep adding more and more paragraphs to a single
 list item by adding the traditional blank line and then keep
 on indenting the paragraphs with four spaces.  You really need
 to only indent the first line, but that looks ugly.
@@ -130,7 +133,7 @@ to only indent the first line, but that looks ugly.
 
 - Lists support preformatted text
 
-    You just need to indent eight spaces.
+      You just need to indent eight spaces.
 
 
 Even More
@@ -145,7 +148,7 @@ If you need a horizontal rule you just need to put at least three hyphens, aster
 ****************************
 _ _ _ _ _ _ _
 
-Those three all produced horizontal lines.  Keep in mind that three hyphens under any text turns that text into a heading, so add a blank like if you use hyphens.
+Those three all produced horizontal lines.  Keep in mind that three hyphens under any text turns that text into a heading, so add a blank line if you use hyphens.
 
 Images
 ------
