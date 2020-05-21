@@ -310,7 +310,7 @@ text 1
   });
 
   it('should call callback for each error in highlight', (done) => {
-    highlight.and.callFake((lang, text, callback) => {
+    highlight.and.callFake((text, lang, callback) => {
       callback(new Error('highlight error'));
     });
 
@@ -326,6 +326,29 @@ text 1
       if (numErrors === 3) {
         done();
       }
+    });
+  });
+
+  it('should highlight codeblocks when not async', (done) => {
+    highlight.and.callFake((text, lang, callback) => {
+      callback(null, `async ${text || ''}`);
+    });
+
+    marked(markdown, { highlight }, (err, html) => {
+      if (err) {
+        fail(err);
+      }
+
+      expect(html).toBe(`<pre><code class="language-lang1">async text 1</code></pre>
+<blockquote>
+<pre><code class="language-lang2">async text 2</code></pre>
+</blockquote>
+<ul>
+<li><pre><code class="language-lang3">async text 3</code></pre>
+</li>
+</ul>
+`);
+      done();
     });
   });
 });
