@@ -267,7 +267,7 @@ module.exports = class Lexer {
         case 'text':
         case 'heading': {
           token.tokens = [];
-          this.inlineTokens(token.text, token.tokens);
+          this.inlineTokens(token.text, token.tokens, undefined, undefined, );
           break;
         }
         case 'table': {
@@ -319,7 +319,7 @@ module.exports = class Lexer {
   /**
    * Lexing/Compiling
    */
-  inlineTokens(src, tokens = [], inLink = false, inRawBlock = false) {
+  inlineTokens(src, tokens = [], inLink = false, inRawBlock = false, prevChar = '') {
     let token;
 
     while (src) {
@@ -360,7 +360,7 @@ module.exports = class Lexer {
       }
 
       // strong
-      if (token = this.tokenizer.strong(src)) {
+      if (token = this.tokenizer.strong(src, prevChar)) {
         src = src.substring(token.raw.length);
         token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
         tokens.push(token);
@@ -368,7 +368,7 @@ module.exports = class Lexer {
       }
 
       // em
-      if (token = this.tokenizer.em(src)) {
+      if (token = this.tokenizer.em(src, prevChar)) {
         src = src.substring(token.raw.length);
         token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
         tokens.push(token);
@@ -414,6 +414,7 @@ module.exports = class Lexer {
       // text
       if (token = this.tokenizer.inlineText(src, inRawBlock, smartypants)) {
         src = src.substring(token.raw.length);
+        prevChar = token.raw.slice(-1);
         tokens.push(token);
         continue;
       }

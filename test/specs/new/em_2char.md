@@ -22,8 +22,6 @@ _ 123_
 
 _1__
 
-*1**
-
 It’s levi*OH*sa, not levio*SAH.*
 
 __ test [test](https://test.com/_)

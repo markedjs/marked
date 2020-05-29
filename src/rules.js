@@ -169,9 +169,9 @@ const inline = {
   reflink: /^!?\[(label)\]\[(?!\s*\])((?:\\[\[\]]?|[^\[\]\\])+)\]/,
   nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
   strong: /^__([^\s_])__(?!_)|^\*\*([^\s*])\*\*(?!\*)|^__([^\s][\s\S]*?[^\s])__(?!_)|^\*\*([^\s][\s\S]*?[^\s])\*\*(?!\*)/,
-  //em: /^_([^\s_])_(?!_)|^_([^\s_<][\s\S]*?[^\s_])_(?!_|[^\s,punctuation])|^_([^\s_<][\s\S]*?[^\s])_(?!_|[^\s,punctuation])|^\*([^\s*<\[])\*(?!\*)|^\*([\s\S]*?[^\s\[\*])\*(?![\]`punctuation])|^\*([^\s*"<\[][\s\S]*[^\s])\*(?!\*)/,
-  em: /^_([^\s_])_(?!_)|^_([^\s_<][\s\S]*?[^\s_])_(?!_|[^\s,punctuation])|^_([^\s_<][\s\S]*?[^\s])_(?!_|[^\s,punctuation])|^\*([^\s*<\[])\*(?!\*)|^(?:\*(?![\s`punctuation])|(?<=[\s`punctuation])\*(?=[`punctuation]))([\s\S]*?[^\s\[\*])\*(?![\]`punctuation])|^\*([^\s*"<\[][\s\S]*[^\s])\*(?!\*)/,
-  //em: /^_([^\s_])_(?!_)|^_([^\s_<][\s\S]*?[^\s_])_(?!_|[^\s,punctuation])|^_([^\s_<][\s\S]*?[^\s])_(?!_|[^\s,punctuation])|(?:^\*(?![\s\[`punctuation])|^(?<=[\s\[`punctuation])\*(?=[\[`punctuation]))([\s\S]*?)(?:(?<![\s\[`punctuation])\*|(?<=[\[`punctuation'])\*(?=[\s\[`punctuation]))/,
+  //==> (1) returns if starts w/ punctuation     | (2)  ⬐ Check groups [],``,<> to escape        ⬐ escape if needed  ⬐ repeated logic in case inner *'s exist           inner *'s must occur in pairs⬎     Either: ⬐ last char can't be punct OR ⬐ final * must also be followed by punct (or endline) | (3) Underscores | (4) Underscores                                | (5) Underscores
+  em: /^(?:(\*(?=[`\]punctuation]))|\*)(?![\*\s])((?:(?:(?!\[.*?\]|`.*?`|<.*?>)(?:[^\*]|[\\\s]\*)|\[.*?\]|`.*?`|<.*?>)|(?:(?:(?!\[.*?\]|`.*?`|<.*?>)(?:[^\*]|[\\\s]\*)|\[.*?\]|`.*?`|<.*?>)*?(?<!\\)\*){2})*?)(?:(?<![`\s\]punctuation])\*(?!\*)|(?<=[`\]punctuation])\*(?!\*)(?:(?=[`\s\]punctuation]|$)))|^_([^\s_])_(?!_)|^_([^\s_<][\s\S]*?[^\s_])_(?!_|[^\s,punctuation])|^_([^\s_<][\s\S]*?[^\s])_(?!_|[^\s,punctuation])/,
+
   code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
   br: /^( {2,}|\\)\n(?!\s*$)/,
   del: noopTest,
@@ -179,9 +179,9 @@ const inline = {
 };
 
 // list of punctuation marks from common mark spec
-// without ` and ] to workaround Rule 17 (inline code blocks/links)
+// without `, *, and ] to workaround Rule 17 and others
 // without , to work around example 393
-inline._punctuation = '!"#$%&\'()*+\\-./:;<=>?@\\[^_{|}~';
+inline._punctuation = '!"#$%&\'()+\\-./:;<=>?@\\[^_{|}~';
 inline.em = edit(inline.em).replace(/punctuation/g, inline._punctuation).getRegex();
 
 inline._escapes = /\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/g;

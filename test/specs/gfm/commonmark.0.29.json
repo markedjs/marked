@@ -2766,7 +2766,7 @@
     "start_line": 6003,
     "end_line": 6007,
     "section": "Code spans",
-    "shouldFail": true
+    "shouldFail": false
   },
   {
     "markdown": "[not a `link](/foo`)\n",
@@ -2976,7 +2976,7 @@
     "start_line": 6455,
     "end_line": 6459,
     "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "shouldFail":false
   },
   {
     "markdown": "*(*foo*)*\n",
@@ -2985,7 +2985,7 @@
     "start_line": 6465,
     "end_line": 6469,
     "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "shouldFail": false
   },
   {
     "markdown": "*foo*bar\n",
@@ -3394,7 +3394,7 @@
     "start_line": 6928,
     "end_line": 6932,
     "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "shouldFail": false
   },
   {
     "markdown": "*foo [*bar*](/url)*\n",
