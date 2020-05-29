@@ -175,13 +175,16 @@ const inline = {
   code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
   br: /^( {2,}|\\)\n(?!\s*$)/,
   del: noopTest,
-  text: /^(`+|[^`])(?:[\s\S]*?(?:(?=[\\<!\[`*]|\b_|$)|[^ ](?= {2,}\n))|(?= {2,}\n))/
+  text: /^(`+|[^`])(?:[\s\S]*?(?:(?=[\\<!\[`*]|\b_|$)|[^ ](?= {2,}\n))|(?= {2,}\n))/,
+  punctuation: /^(['\s\]punctuation])/
 };
 
 // list of punctuation marks from common mark spec
-// without `, *, and ] to workaround Rule 17 and others
+// without `, *, and ] to workaround Rule 17 (inline code blocks/links) and others
 // without , to work around example 393
 inline._punctuation = '!"#$%&\'()+\\-./:;<=>?@\\[^_{|}~';
+inline.punctuation = edit(inline.punctuation).replace(/punctuation/g, inline._punctuation).getRegex();
+
 inline.em = edit(inline.em).replace(/punctuation/g, inline._punctuation).getRegex();
 
 inline._escapes = /\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/g;
