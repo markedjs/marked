@@ -225,7 +225,7 @@ module.exports = class Tokenizer {
         // Remove the list item's bullet
         // so it is seen as the next token.
         space = item.length;
-        item = item.replace(/^ *([*+-)]|\d+\.) */, '');
+        item = item.replace(/^ *([*+-]|\d+(?:\.|\))) */, '');
 
         // Outdent whatever the
         // list item contains. Hacky.
