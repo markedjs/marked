@@ -3010,7 +3010,7 @@
     "start_line": 6497,
     "end_line": 6501,
     "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "shouldFail": false
   },
   {
     "markdown": "_(_foo_)_\n",
@@ -3019,7 +3019,7 @@
     "start_line": 6506,
     "end_line": 6510,
     "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "shouldFail": false
   },
   {
     "markdown": "_foo_bar\n",
@@ -3301,7 +3301,7 @@
     "start_line": 6824,
     "end_line": 6828,
     "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "shouldFail": false
   },
   {
     "markdown": "__foo_ bar_\n",

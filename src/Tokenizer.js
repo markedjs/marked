@@ -507,7 +507,7 @@ module.exports = class Tokenizer {
         return {
           type: 'em',
           raw: cap[0],
-          text: cap[8] || cap[7] || cap[6] || cap[5] || cap[4] || cap[3] || cap[2]
+          text: cap[3] || cap[2]
         };
       }
     }

@@ -169,8 +169,8 @@ const inline = {
   reflink: /^!?\[(label)\]\[(?!\s*\])((?:\\[\[\]]?|[^\[\]\\])+)\]/,
   nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
   strong: /^__([^\s_])__(?!_)|^\*\*([^\s*])\*\*(?!\*)|^__([^\s][\s\S]*?[^\s])__(?!_)|^\*\*([^\s][\s\S]*?[^\s])\*\*(?!\*)/,
-  //       (1) returns if starts w/ punctuation  | (2)  ⬐Check groups to skip over ⬐ skip if needed  ⬐repeat logic for inner *'s (must be in pairs)⬎           ⬐last char can't be punct OR  ⬐final * must also be followed by punct (or endline)  | (3) Underscores | (4) Underscores                                | (5) Underscores
-  em: /^(?:(\*(?=[`\]punctuation]))|\*)(?![\*\s])((?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})*?)(?:(?<![`\s\]punctuation])\*(?!\*)|(?<=[`\]punctuation])\*(?!\*)(?:(?=[`\s\]punctuation]|$)))|^_([^\s_])_(?!_)|^_([^\s_<][\s\S]*?[^\s_])_(?!_|[^\s,punctuation])|^_([^\s_<][\s\S]*?[^\s])_(?!_|[^\s,punctuation])/,
+  //       (1) returns if starts w/ punctuation  | (2)  ⬐Check groups to skip over ⬐ skip if needed  ⬐repeat logic for inner *'s (must be in pairs)⬎           ⬐last char can't be punct OR  ⬐final * must also be followed by punct (or endline)  | (3) Underscores   ⬐Check groups to skip over ⬐ skip if needed  ⬐repeat logic for inner _'s (must be in pairs)⬎     ⬐last char can't be a space, and final _ must be followed by punct (or endline)
+  em: /^(?:(\*(?=[`\]punctuation]))|\*)(?![\*\s])((?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})*?)(?:(?<![`\s\]punctuation])\*(?!\*)|(?<=[`\]punctuation])\*(?!\*)(?:(?=[`\s\]punctuation]|$)))|^_(?![_\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})*?)(?:(?<![\s])_(?!_)(?:(?=[`\s\]punctuation])|$))/,
   code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
   br: /^( {2,}|\\)\n(?!\s*$)/,
   del: noopTest,
@@ -179,9 +179,8 @@ const inline = {
 };
 
 // list of punctuation marks from common mark spec
-// without `, *, and ] to workaround Rule 17 (inline code blocks/links) and others
-// without , to work around example 393
-inline._punctuation = '!"#$%&\'()+\\-./:;<=>?@\\[^_{|}~';
+// without * and _ to workaround cases with double emphasis
+inline._punctuation = '!"#$%&\'()+\\-.,/:;<=>?@\\[\\]`^{|}~';
 inline.punctuation = edit(inline.punctuation).replace(/punctuation/g, inline._punctuation).getRegex();
 
 // sequences em should skip over [reflink], [title][reflink], [title](link), `code`, <html>
