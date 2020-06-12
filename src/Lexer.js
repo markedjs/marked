@@ -1,6 +1,7 @@
 const Tokenizer = require('./Tokenizer.js');
 const { defaults } = require('./defaults.js');
 const { block, inline } = require('./rules.js');
+const { edit } = require('./helpers.js');
 
 /**
  * smartypants text replacement
@@ -101,6 +102,12 @@ module.exports = class Lexer {
       .replace(/\t/g, '    ');
 
     this.blockTokens(src, this.tokens, true);
+
+    //Insert known reflinks into em rules to properly skip over them
+    var rep = Object.keys(this.tokens.links).join('|').replace(/\*/g,'\\*');
+    this.tokenizer.rules.inline.em = edit(inline.em)
+      .replace(/reflink/g, rep)
+      .getRegex();
 
     this.inline(this.tokens);
 
@@ -368,7 +375,7 @@ module.exports = class Lexer {
       }
 
       // em
-      if (token = this.tokenizer.em(src, prevChar)) {
+      if (token = this.tokenizer.em(src, prevChar, this.tokens.links)) {
         src = src.substring(token.raw.length);
         token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
         tokens.push(token);

@@ -169,8 +169,8 @@ const inline = {
   reflink: /^!?\[(label)\]\[(?!\s*\])((?:\\[\[\]]?|[^\[\]\\])+)\]/,
   nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
   strong: /^__([^\s_])__(?!_)|^\*\*([^\s*])\*\*(?!\*)|^__([^\s][\s\S]*?[^\s])__(?!_)|^\*\*([^\s][\s\S]*?[^\s])\*\*(?!\*)/,
-  //==> (1) returns if starts w/ punctuation     | (2)  ⬐ Check groups [],``,<> to escape        ⬐ escape if needed  ⬐ repeated logic in case inner *'s exist           inner *'s must occur in pairs⬎     Either: ⬐ last char can't be punct OR ⬐ final * must also be followed by punct (or endline) | (3) Underscores | (4) Underscores                                | (5) Underscores
-  em: /^(?:(\*(?=[`\]punctuation]))|\*)(?![\*\s])((?:(?:(?!\[.*?\]|`.*?`|<.*?>)(?:[^\*]|[\\\s]\*)|\[.*?\]|`.*?`|<.*?>)|(?:(?:(?!\[.*?\]|`.*?`|<.*?>)(?:[^\*]|[\\\s]\*)|\[.*?\]|`.*?`|<.*?>)*?(?<!\\)\*){2})*?)(?:(?<![`\s\]punctuation])\*(?!\*)|(?<=[`\]punctuation])\*(?!\*)(?:(?=[`\s\]punctuation]|$)))|^_([^\s_])_(?!_)|^_([^\s_<][\s\S]*?[^\s_])_(?!_|[^\s,punctuation])|^_([^\s_<][\s\S]*?[^\s])_(?!_|[^\s,punctuation])/,
+  //==> (1) returns if starts w/ punctuation     | (2)  ⬐Check groups to skip over ⬐ skip if needed  ⬐repeat logic for inner *'s (must be in pairs)⬎           ⬐last char can't be punct OR  ⬐final * must also be followed by punct (or endline)  | (3) Underscores | (4) Underscores                                | (5) Underscores
+  em: /^(?:(\*(?=[`\]punctuation]))|\*)(?![\*\s])((?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})*?)(?:(?<![`\s\]punctuation])\*(?!\*)|(?<=[`\]punctuation])\*(?!\*)(?:(?=[`\s\]punctuation]|$)))|^_([^\s_])_(?!_)|^_([^\s_<][\s\S]*?[^\s_])_(?!_|[^\s,punctuation])|^_([^\s_<][\s\S]*?[^\s])_(?!_|[^\s,punctuation])/,
 
   code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
   br: /^( {2,}|\\)\n(?!\s*$)/,
@@ -185,7 +185,13 @@ const inline = {
 inline._punctuation = '!"#$%&\'()+\\-./:;<=>?@\\[^_{|}~';
 inline.punctuation = edit(inline.punctuation).replace(/punctuation/g, inline._punctuation).getRegex();
 
-inline.em = edit(inline.em).replace(/punctuation/g, inline._punctuation).getRegex();
+// sequences em should skip over [reflink], [title][reflink], [title](link), `code`, <html>
+inline._emSkip = '\\[reflink\\]|\\[.*?\\]\\[reflink\\]|\\[.*?\\]\\(.*?\\)|`.*?`|<.*?>';
+
+inline.em = edit(inline.em)
+  .replace(/punctuation/g, inline._punctuation)
+  .replace(/emSkip/g, inline._emSkip)
+  .getRegex();
 
 inline._escapes = /\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/g;
 
