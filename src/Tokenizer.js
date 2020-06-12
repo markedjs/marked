@@ -489,7 +489,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  strong(src, prevChar='') {
+  strong(src, prevChar = '') {
     const cap = this.rules.inline.strong.exec(src);
     if (cap) {
       return {
@@ -500,10 +500,10 @@ module.exports = class Tokenizer {
     }
   }
 
-  em(src, prevChar='') {
+  em(src, prevChar = '') {
     const cap = this.rules.inline.em.exec(src);
     if (cap) {
-      if(!cap[1] || (cap[1] && (prevChar == '' || this.rules.inline.punctuation.exec(prevChar)))) {
+      if (!cap[1] || (cap[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar)))) {
         return {
           type: 'em',
           raw: cap[0],
