@@ -168,7 +168,8 @@ const inline = {
   link: /^!?\[(label)\]\(\s*(href)(?:\s+(title))?\s*\)/,
   reflink: /^!?\[(label)\]\[(?!\s*\])((?:\\[\[\]]?|[^\[\]\\])+)\]/,
   nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
-  strong: /^__([^\s_])__(?!_)|^\*\*([^\s*])\*\*(?!\*)|^__([^\s][\s\S]*?[^\s])__(?!_)|^\*\*([^\s][\s\S]*?[^\s])\*\*(?!\*)/,
+  preStrong: /^(?:\*\*)|(?:__)/,
+  strong: /^(?:(\*\*(?=[`\]\*punctuation]))|\*\*)(?![\s])((?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})+?)(?:(?<![`\s\]punctuation])\*\*(?!\*)|(?<=[`\]punctuation])\*\*(?!\*)(?:(?=[`\s\]punctuation]|$)))|^__(?![\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})+?)(?:(?<![\s])__(?!_)(?:(?=[`\s\]punctuation])|$))/,
   preEm: /^[\*_]/,
   //       (1) returns if starts w/ punctuation  | (2)  ⬐Check groups to skip over ⬐ skip if needed  ⬐repeat logic for inner *'s (must be in pairs)⬎           ⬐last char can't be punct OR  ⬐final * must also be followed by punct (or endline)  | (3) Underscores   ⬐Check groups to skip over ⬐ skip if needed  ⬐repeat logic for inner _'s (must be in pairs)⬎     ⬐last char can't be a space, and final _ must be followed by punct (or endline)
   em: /^(?:(\*(?=[`\]punctuation]))|\*)(?![\*\s])((?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})*?)(?:(?<![`\s\]punctuation])\*(?!\*)|(?<=[`\]punctuation])\*(?!\*)(?:(?=[`\s\]punctuation]|$)))|^_(?![_\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})*?)(?:(?<![\s])_(?!_)(?:(?=[`\s\]punctuation])|$))/,
@@ -176,7 +177,7 @@ const inline = {
   br: /^( {2,}|\\)\n(?!\s*$)/,
   del: noopTest,
   text: /^(`+|[^`])(?:[\s\S]*?(?:(?=[\\<!\[`*]|\b_|$)|[^ ](?= {2,}\n))|(?= {2,}\n))/,
-  punctuation: /^(['\s\]punctuation])/
+  punctuation: /^(['\s\]\*punctuation])/
 };
 
 // list of punctuation marks from common mark spec
@@ -188,6 +189,11 @@ inline.punctuation = edit(inline.punctuation).replace(/punctuation/g, inline._pu
 inline._emSkip = '\\[.*?\\]\\(.*?\\)|`.*?`|<.*?>';
 
 inline.em = edit(inline.em)
+  .replace(/punctuation/g, inline._punctuation)
+  .replace(/emSkip/g, inline._emSkip)
+  .getRegex();
+
+inline.strong = edit(inline.strong)
   .replace(/punctuation/g, inline._punctuation)
   .replace(/emSkip/g, inline._emSkip)
   .getRegex();

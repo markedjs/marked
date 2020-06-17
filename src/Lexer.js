@@ -360,7 +360,7 @@ module.exports = class Lexer {
       }
 
       // strong
-      if (token = this.tokenizer.strong(src, prevChar)) {
+      if (token = this.tokenizer.strong(src, prevChar, this.tokens.links)) {
         src = src.substring(token.raw.length);
         token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
         tokens.push(token);
