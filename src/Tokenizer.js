@@ -500,15 +500,33 @@ module.exports = class Tokenizer {
     }
   }
 
-  em(src, prevChar = '') {
-    const cap = this.rules.inline.em.exec(src);
+  em(src, prevChar = '', links) {
+    let cap = this.rules.inline.preEm.exec(src);
+
     if (cap) {
-      if (!cap[1] || (cap[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar)))) {
-        return {
-          type: 'em',
-          raw: cap[0],
-          text: cap[3] || cap[2]
-        };
+      let text = src;
+
+      if (links) {
+        links = Object.keys(links);
+        const reg = /(?:\[.*?\]\[.*?\])|(?:\[.*?\](?!\())/g;
+        let match;
+        while ((match = reg.exec(text)) != null) {
+          if (links.includes(match[0].slice(match[0].lastIndexOf('[') + 1, -1))) {
+            text = text.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + text.slice(reg.lastIndex);
+          }
+        }
+      }
+
+      cap = this.rules.inline.em.exec(text);
+
+      if (cap) {
+        if (!cap[1] || (cap[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar)))) {
+          return {
+            type: 'em',
+            raw: src.slice(0, cap[0].length),
+            text: src.slice(1, cap[0].length - 1)
+          };
+        }
       }
     }
   }
