@@ -195,12 +195,13 @@ module.exports = class Tokenizer {
       let raw = cap[0];
       const bull = cap[2];
       const isordered = bull.length > 1;
+      const isparen = bull[bull.length - 1] === ')';
 
       const list = {
         type: 'list',
         raw,
         ordered: isordered,
-        start: isordered ? +bull : '',
+        start: isordered ? +bull.slice(0, -1) : '',
         loose: false,
         items: []
       };
@@ -225,7 +226,7 @@ module.exports = class Tokenizer {
         // Remove the list item's bullet
         // so it is seen as the next token.
         space = item.length;
-        item = item.replace(/^ *([*+-]|\d+\.) */, '');
+        item = item.replace(/^ *([*+-]|\d+[.)]) */, '');
 
         // Outdent whatever the
         // list item contains. Hacky.
@@ -240,7 +241,7 @@ module.exports = class Tokenizer {
         // Backpedal if it does not belong in this list.
         if (i !== l - 1) {
           b = this.rules.block.bullet.exec(itemMatch[i + 1])[0];
-          if (bull.length > 1 ? b.length === 1
+          if (isordered ? b.length === 1 || (!isparen && b[b.length - 1] === ')')
             : (b.length > 1 || (this.options.smartLists && b !== bull))) {
             addBack = itemMatch.slice(i + 1).join('\n');
             list.raw = list.raw.substring(0, list.raw.length - addBack.length);
