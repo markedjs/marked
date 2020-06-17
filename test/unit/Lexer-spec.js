@@ -351,7 +351,7 @@ a | b
         tokens: jasmine.arrayContaining([
           jasmine.objectContaining({
             type: 'list',
-            raw: '1. item 1\n2. item 2\n',
+            raw: '1. item 1\n2. item 2\n3. item 3\n4. item 4\n',
             ordered: true,
             start: 1,
             items: [
@@ -360,6 +360,12 @@ a | b
               }),
               jasmine.objectContaining({
                 raw: '2. item 2\n'
+              })
+              jasmine.objectContaining({
+                raw: '3. item 3\n'
+              }),
+              jasmine.objectContaining({
+                raw: '4. item 4\n'
               })
             ]
           })
