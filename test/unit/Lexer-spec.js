@@ -360,7 +360,7 @@ a | b
               }),
               jasmine.objectContaining({
                 raw: '2. item 2\n'
-              })
+              }),
               jasmine.objectContaining({
                 raw: '3. item 3\n'
               }),
