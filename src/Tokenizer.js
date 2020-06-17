@@ -504,7 +504,7 @@ module.exports = class Tokenizer {
           }
         }
       }
-      
+
       cap = this.rules.inline.strong.exec(text);
 
       if (cap) {
