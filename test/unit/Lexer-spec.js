@@ -5,7 +5,7 @@ function expectTokens({ md, options, tokens = [], links = {} }) {
   const actual = lexer.lex(md);
   const expected = tokens;
   expected.links = links;
-  console.log(JSON.stringify(actual, null, 2));
+  // console.log(JSON.stringify(actual, null, 2));
   expect(actual).toEqual(expected);
 }
 
@@ -345,13 +345,11 @@ a | b
         md: `
 1. item 1
 2. item 2
-3) item 3
-4) item 4
 `,
         tokens: jasmine.arrayContaining([
           jasmine.objectContaining({
             type: 'list',
-            raw: '1. item 1\n2. item 2\n3) item 3\n4) item 4\n',
+            raw: '1. item 1\n2. item 2\n',
             ordered: true,
             start: 1,
             items: [
@@ -359,13 +357,32 @@ a | b
                 raw: '1. item 1'
               }),
               jasmine.objectContaining({
-                raw: '2. item 2'
+                raw: '2. item 2\n'
+              })
+            ]
+          })
+        ])
+      });
+    });
+
+    it('ordered with parenthesis', () => {
+      expectTokens({
+        md: `
+1) item 1
+2) item 2
+`,
+        tokens: jasmine.arrayContaining([
+          jasmine.objectContaining({
+            type: 'list',
+            raw: '1) item 1\n2) item 2\n',
+            ordered: true,
+            start: 1,
+            items: [
+              jasmine.objectContaining({
+                raw: '1) item 1'
               }),
               jasmine.objectContaining({
-                raw: '3) item 3'
-              }),
-              jasmine.objectContaining({
-                raw: '4) item 4\n'
+                raw: '2) item 2\n'
               })
             ]
           })

@@ -2146,8 +2146,7 @@
     "example": 266,
     "start_line": 4595,
     "end_line": 4606,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "10) foo\n   - bar\n",
@@ -2197,8 +2196,7 @@
     "example": 272,
     "start_line": 4909,
     "end_line": 4921,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "Foo\n- bar\n- baz\n",
