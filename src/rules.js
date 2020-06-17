@@ -42,7 +42,7 @@ block.def = edit(block.def)
   .replace('title', block._title)
   .getRegex();
 
-block.bullet = /(?:[*+-]|\d{1,9}\.)/;
+block.bullet = /(?:[*+-]|\d{1,9}(?:\.|\)))/;
 block.item = /^( *)(bull) ?[^\n]*(?:\n(?!\1bull ?)[^\n]*)*/;
 block.item = edit(block.item, 'gm')
   .replace(/bull/g, block.bullet)

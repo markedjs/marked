@@ -5,7 +5,7 @@ function expectTokens({ md, options, tokens = [], links = {} }) {
   const actual = lexer.lex(md);
   const expected = tokens;
   expected.links = links;
-  // console.log(JSON.stringify(actual, null, 2));
+  console.log(JSON.stringify(actual, null, 2));
   expect(actual).toEqual(expected);
 }
 
@@ -359,10 +359,10 @@ a | b
                 raw: '1. item 1'
               }),
               jasmine.objectContaining({
-                raw: '2. item 2\n'
+                raw: '2. item 2'
               }),
               jasmine.objectContaining({
-                raw: '3) item 3\n'
+                raw: '3) item 3'
               }),
               jasmine.objectContaining({
                 raw: '4) item 4\n'
