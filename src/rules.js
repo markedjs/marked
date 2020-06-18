@@ -168,16 +168,16 @@ const inline = {
   link: /^!?\[(label)\]\(\s*(href)(?:\s+(title))?\s*\)/,
   reflink: /^!?\[(label)\]\[(?!\s*\])((?:\\[\[\]]?|[^\[\]\\])+)\]/,
   nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
-  preStrong: /^(?:\*\*)|(?:__)/,
-  strong: /^(?:(\*\*(?=[`\]\*punctuation]))|\*\*)(?![\s])((?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})+?)(?:(?<![`\s\]punctuation])\*\*(?!\*)|(?<=[`\]punctuation])\*\*(?!\*)(?:(?=[`\s\]punctuation]|$)))|^__(?![\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})+?)(?:(?<![\s])__(?!_)(?:(?=[`\s\]punctuation])|$))/,
-  preEm: /^[\*_]/,
-  //       (1) returns if starts w/ punctuation  | (2)  ⬐Check groups to skip over ⬐ skip if needed  ⬐repeat logic for inner *'s (must be in pairs)⬎           ⬐last char can't be punct OR  ⬐final * must also be followed by punct (or endline)  | (3) Underscores   ⬐Check groups to skip over ⬐ skip if needed  ⬐repeat logic for inner _'s (must be in pairs)⬎     ⬐last char can't be a space, and final _ must be followed by punct (or endline)
-  em: /^(?:(\*(?=[`\]punctuation]))|\*)(?![\*\s])((?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^\*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})*?)(?:(?<![`\s\]punctuation])\*(?!\*)|(?<=[`\]punctuation])\*(?!\*)(?:(?=[`\s\]punctuation]|$)))|^_(?![_\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})*?)(?:(?<![\s])_(?!_)(?:(?=[`\s\]punctuation])|$))/,
+  preStrong: /^(?:\*\*|__)/,
+  strong: /^(?:(\*\*(?=[*punctuation]))|\*\*)(?![\s])((?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})+?)(?:(?<![punctuation\s])\*\*(?!\*)|(?<=[punctuation])\*\*(?!\*)(?:(?=[punctuation\s]|$)))|^__(?![\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})+?)(?:(?<![\s])__(?!_)(?:(?=[punctuation\s])|$))/,
+  preEm: /^[*_]/,
+  // (1) returns if starts w/ punctuation  | (2)   ⬐Check groups to skip over ⬐ skip if needed ⬐repeat logic for inner *'s (must be in pairs)⬎     ⬐last char can't be punct OR final * must also be followed by punct (or endline)  | (3) Underscores ⬐Check groups to skip over ⬐skip if needed ⬐repeat logic for inner _'s (must be in pairs)⬎  ⬐last char can't be a space, and final _ must preceed punct or \s (or endline)
+  em: /^(?:(\*(?=[punctuation]))|\*)(?![*\s])((?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})*?)(?:(?<![punctuation\s])\*(?!\*)|(?<=[punctuation])\*(?!\*)(?:(?=[punctuation\s]|$)))|^_(?![_\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})*?)(?:(?<![\s])_(?!_)(?:(?=[punctuation\s])|$))/,
   code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
   br: /^( {2,}|\\)\n(?!\s*$)/,
   del: noopTest,
   text: /^(`+|[^`])(?:[\s\S]*?(?:(?=[\\<!\[`*]|\b_|$)|[^ ](?= {2,}\n))|(?= {2,}\n))/,
-  punctuation: /^(['\s\]\*punctuation])/
+  punctuation: /^([\s*punctuation])/
 };
 
 // list of punctuation marks from common mark spec
