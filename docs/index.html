@@ -198,7 +198,7 @@
         var renderedPage = '';
 
         function hashChange() {
-            var hash = location.hash.slice(1);
+            var hash = decodeURIComponent(location.hash.slice(1));
             if (!hash) {
                 hash = 'README.md';
             }
