@@ -58,21 +58,6 @@ function indentCodeCompensation(raw, text) {
     .join('\n');
 }
 
-function maskReflinks(text, links) {
-  if (links) {
-    links = Object.keys(links).filter(l => l.match(/[*_]/));
-    if (links.length > 0) {
-      let match;
-      while ((match = this.rules.inline.reflinkSearch.exec(text)) != null) {
-        if (links.includes(match[0].slice(match[0].lastIndexOf('[') + 1, -1))) {
-          text = text.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + text.slice(this.rules.inline.reflinkSearch.lastIndex);
-        }
-      }
-    }
-  }
-  return text;
-}
-
 /**
  * Tokenizer
  */
@@ -504,13 +489,12 @@ module.exports = class Tokenizer {
     }
   }
 
-  strong(src, prevChar = '', links) {
+  strong(src, maskedSrc, prevChar = '') {
     let cap = this.rules.inline.preStrong.exec(src);
 
     if (cap) {
-      const text = maskReflinks(src, links);
-
-      cap = this.rules.inline.strong.exec(text);
+      maskedSrc = maskedSrc.slice(-1*src.length);
+      cap = this.rules.inline.strong.exec(maskedSrc);
 
       if (cap) {
         if (!cap[1] || (cap[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar)))) {
@@ -524,13 +508,12 @@ module.exports = class Tokenizer {
     }
   }
 
-  em(src, prevChar = '', links) {
+  em(src, maskedSrc, prevChar = '') {
     let cap = this.rules.inline.preEm.exec(src);
 
     if (cap) {
-      const text = maskReflinks(src, links);
-
-      cap = this.rules.inline.em.exec(text);
+      maskedSrc = maskedSrc.slice(-1*src.length);
+      cap = this.rules.inline.em.exec(maskedSrc);
 
       if (cap) {
         if (!cap[1] || (cap[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar)))) {

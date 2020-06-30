@@ -322,6 +322,20 @@ module.exports = class Lexer {
   inlineTokens(src, tokens = [], inLink = false, inRawBlock = false, prevChar = '') {
     let token;
 
+    // String with links masked to avoid interference with em and strong
+    let maskedSrc = src;
+    if (this.tokens.links) {
+      const links = Object.keys(this.tokens.links);
+      if (links.length > 0) {
+        let match;
+        while ((match = this.tokenizer.rules.inline.reflinkSearch.exec(maskedSrc)) != null) {
+          if (links.includes(match[0].slice(match[0].lastIndexOf('[') + 1, -1))) {
+            maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
+          }
+        }
+      }
+    }
+
     while (src) {
       // escape
       if (token = this.tokenizer.escape(src)) {
@@ -360,7 +374,7 @@ module.exports = class Lexer {
       }
 
       // strong
-      if (token = this.tokenizer.strong(src, prevChar, this.tokens.links)) {
+      if (token = this.tokenizer.strong(src, maskedSrc, prevChar)) {
         src = src.substring(token.raw.length);
         token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
         tokens.push(token);
@@ -368,7 +382,7 @@ module.exports = class Lexer {
       }
 
       // em
-      if (token = this.tokenizer.em(src, prevChar, this.tokens.links)) {
+      if (token = this.tokenizer.em(src, maskedSrc, prevChar)) {
         src = src.substring(token.raw.length);
         token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
         tokens.push(token);

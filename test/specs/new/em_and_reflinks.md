@@ -8,4 +8,8 @@
 
 *Hello [reflink*bottom] guys*!
 
+*Hello [reflinknoem] guys*!
+
 [reflink*bottom]: theaddress
+
+[reflinknoem]: theaddress
