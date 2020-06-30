@@ -493,7 +493,7 @@ module.exports = class Tokenizer {
     let cap = this.rules.inline.preStrong.exec(src);
 
     if (cap) {
-      maskedSrc = maskedSrc.slice(-1*src.length);
+      maskedSrc = maskedSrc.slice(-1 * src.length);
       cap = this.rules.inline.strong.exec(maskedSrc);
 
       if (cap) {
@@ -512,7 +512,7 @@ module.exports = class Tokenizer {
     let cap = this.rules.inline.preEm.exec(src);
 
     if (cap) {
-      maskedSrc = maskedSrc.slice(-1*src.length);
+      maskedSrc = maskedSrc.slice(-1 * src.length);
       cap = this.rules.inline.em.exec(maskedSrc);
 
       if (cap) {
