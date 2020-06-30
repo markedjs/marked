@@ -168,6 +168,7 @@ const inline = {
   link: /^!?\[(label)\]\(\s*(href)(?:\s+(title))?\s*\)/,
   reflink: /^!?\[(label)\]\[(?!\s*\])((?:\\[\[\]]?|[^\[\]\\])+)\]/,
   nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
+  reflinkSearch: 'reflink|nolink(?!\\()',
   preStrong: /^(?:\*\*|__)/,
   strong: /^(?:(\*\*(?=[*punctuation]))|\*\*)(?![\s])((?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})+?)(?:(?<![punctuation\s])\*\*(?!\*)|(?<=[punctuation])\*\*(?!\*)(?:(?=[punctuation\s]|$)))|^__(?![\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})+?)(?:(?<![\s])__(?!_)(?:(?=[punctuation\s])|$))/,
   preEm: /^[*_]/,
@@ -226,6 +227,11 @@ inline.link = edit(inline.link)
 
 inline.reflink = edit(inline.reflink)
   .replace('label', inline._label)
+  .getRegex();
+
+inline.reflinkSearch = edit(inline.reflinkSearch, 'g')
+  .replace('reflink', inline.reflink)
+  .replace('nolink', inline.nolink)
   .getRegex();
 
 /**
