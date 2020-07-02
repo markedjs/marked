@@ -173,7 +173,7 @@ const inline = {
   strong: /^(?:(\*\*(?=[*punctuation]))|\*\*)(?![\s])((?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})+?)(?:(?<![punctuation\s])\*\*(?!\*)|(?<=[punctuation])\*\*(?!\*)(?:(?=[punctuation\s]|$)))|^__(?![\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})+?)(?:(?<![\s])__(?!_)(?:(?=[punctuation\s])|$))/,
   preEm: /^[*_]/,
   // (1) returns if starts w/ punctuation  | (2)   ⬐Check groups to skip over ⬐ skip if needed ⬐repeat logic for inner *'s (must be in pairs)⬎     ⬐last char can't be punct OR final * must also be followed by punct (or endline)  | (3) Underscores ⬐Check groups to skip over ⬐skip if needed ⬐repeat logic for inner _'s (must be in pairs)⬎  ⬐last char can't be a space, and final _ must preceed punct or \s (or endline)
-  em: /^(?:(\*(?=[punctuation]))|\*)(?![*\s])((?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})*?)(?:(?<![punctuation\s])\*(?!\*)|(?<=[punctuation])\*(?!\*)(?:(?=[punctuation\s]|$)))|^_(?![_\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})*?)(?:(?<![\s])_(?!_)(?:(?=[punctuation\s])|$))/,
+  em: /^(?:(\*(?=[punctuation]))|\*)(?![*\s])(?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})*?(?:(?<![punctuation\s])\*(?!\*)|(?<=[punctuation])\*(?!\*)(?:(?=[punctuation\s]|$)))|^_(?![_\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})*?)(?:(?<![\s])_(?!_)(?:(?=[punctuation\s])|$))/,
   code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
   br: /^( {2,}|\\)\n(?!\s*$)/,
   del: noopTest,
@@ -187,7 +187,7 @@ inline._punctuation = '!"#$%&\'()+\\-.,/:;<=>?@\\[\\]`^{|}~';
 inline.punctuation = edit(inline.punctuation).replace(/punctuation/g, inline._punctuation).getRegex();
 
 // sequences em should skip over [title](link), `code`, <html>
-inline._emSkip = '\\[.*?\\]\\(.*?\\)|`.*?`|<.*?>';
+inline._emSkip = '\\[[^\\]]*?\\]\\([^\\)]*?\\)|`[^`]*?`|<[^>]*?>';
 
 inline.em = edit(inline.em)
   .replace(/punctuation/g, inline._punctuation)
