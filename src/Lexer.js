@@ -324,16 +324,22 @@ module.exports = class Lexer {
 
     // String with links masked to avoid interference with em and strong
     let maskedSrc = src;
+    let match;
+
+    // Mask out reflinks
     if (this.tokens.links) {
       const links = Object.keys(this.tokens.links);
       if (links.length > 0) {
-        let match;
         while ((match = this.tokenizer.rules.inline.reflinkSearch.exec(maskedSrc)) != null) {
           if (links.includes(match[0].slice(match[0].lastIndexOf('[') + 1, -1))) {
             maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
           }
         }
       }
+    }
+    // Mask out other blocks
+    while ((match = this.tokenizer.rules.inline.emSkip.exec(maskedSrc)) != null) {
+      maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.emSkip.lastIndex);
     }
 
     while (src) {

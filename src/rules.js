@@ -169,11 +169,15 @@ const inline = {
   reflink: /^!?\[(label)\]\[(?!\s*\])((?:\\[\[\]]?|[^\[\]\\])+)\]/,
   nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
   reflinkSearch: 'reflink|nolink(?!\\()',
-  preStrong: /^(?:\*\*|__)/,
-  strong: /^(?:(\*\*(?=[*punctuation]))|\*\*)(?![\s])((?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})+?)(?:(?<![punctuation\s])\*\*(?!\*)|(?<=[punctuation])\*\*(?!\*)(?:(?=[punctuation\s]|$)))|^__(?![\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})+?)(?:(?<![\s])__(?!_)(?:(?=[punctuation\s])|$))/,
-  preEm: /^[*_]/,
+  strStart: /^\*\*|__/,
+  strEndAst: /[^punctuation\s]\*\*(?!\*)|[punctuation]\*\*(?!\*)(?:(?=[punctuation\s]|$))/,
+  strEndUnd: /[^\s]__(?!_)(?:(?=[punctuation\s])|$)/,
+  strong: /^(?:(\*\*(?=[*punctuation]))|\*\*)(?![\s])((?:(?:(?!evSkip)(?:[^*]|\\\*)|evSkip)|(?:(?:(?!evSkip)(?:[^*]|\\\*)|evSkip)*?(?<!\\)\*){2})+?)\*\*$|^__(?![\s])((?:(?:(?!evSkip)(?:[^_]|\\_)|evSkip)|(?:(?:(?!evSkip)(?:[^_]|\\_)|evSkip)*?(?<!\\)_){2})+?)__$/,
+  emStart: /^[*_]/,
+  emEndAst: /[^punctuation\s]\*(?!\*)|[punctuation]\*(?!\*)(?:(?=[punctuation\s]|$))/,
+  emEndUnd: /[^\s]_(?!_)(?:(?=[punctuation\s])|$)/,
   // (1) returns if starts w/ punctuation  | (2)   ⬐Check groups to skip over ⬐ skip if needed ⬐repeat logic for inner *'s (must be in pairs)⬎     ⬐last char can't be punct OR final * must also be followed by punct (or endline)  | (3) Underscores ⬐Check groups to skip over ⬐skip if needed ⬐repeat logic for inner _'s (must be in pairs)⬎  ⬐last char can't be a space, and final _ must preceed punct or \s (or endline)
-  em: /^(?:(\*(?=[punctuation]))|\*)(?![*\s])(?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)|(?:(?:(?!emSkip)(?:[^*]|[\\\s]\*)|emSkip)*?(?<!\\)\*){2})*?(?:(?<![punctuation\s])\*(?!\*)|(?<=[punctuation])\*(?!\*)(?:(?=[punctuation\s]|$)))|^_(?![_\s])((?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)|(?:(?:(?!emSkip)(?:[^_]|[\\\s]_)|emSkip)*?(?<!\\)_){2})*?)(?:(?<![\s])_(?!_)(?:(?=[punctuation\s])|$))/,
+  em: /^(?:(\*(?=[punctuation]))|\*)(?![*\s])(?:(?:(?!evSkip)(?:[^*]|\\\*)|evSkip)|\*(?:(?!evSkip)(?:[^*]|\\\*)|evSkip)*?\*)*?\*$|^_(?![_\s])(?:(?:(?!evSkip)(?:[^_]|\\_)|evSkip)|(?:(?:(?!evSkip)(?:[^_]|\\_)|evSkip)*?_){2})*?_$/,
   code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
   br: /^( {2,}|\\)\n(?!\s*$)/,
   del: noopTest,
@@ -188,15 +192,39 @@ inline.punctuation = edit(inline.punctuation).replace(/punctuation/g, inline._pu
 
 // sequences em should skip over [title](link), `code`, <html>
 inline._emSkip = '\\[[^\\]]*?\\]\\([^\\)]*?\\)|`[^`]*?`|<[^>]*?>';
+inline._strSkip = '\\[[^\\]]*?\\]\\([^\\)]*?\\)|`[^`]*?`|<[^>]*?>';
+inline._evSkip = '__[^_]*?__';
 
 inline.em = edit(inline.em)
   .replace(/punctuation/g, inline._punctuation)
-  .replace(/emSkip/g, inline._emSkip)
+  .replace(/evSkip/g, inline._evSkip)
+  .getRegex();
+
+inline.emEndAst = edit(inline.emEndAst, 'g')
+  .replace(/punctuation/g, inline._punctuation)
+  .getRegex();
+
+inline.emEndUnd = edit(inline.emEndUnd, 'g')
+  .replace(/punctuation/g, inline._punctuation)
+  .getRegex();
+
+inline.emSkip = edit(inline._emSkip, 'g')
+  .getRegex();
+
+inline.evSkip = edit(inline._evSkip, 'g')
   .getRegex();
 
 inline.strong = edit(inline.strong)
   .replace(/punctuation/g, inline._punctuation)
   .replace(/emSkip/g, inline._emSkip)
+  .getRegex();
+
+inline.strEndAst = edit(inline.strEndAst, 'g')
+  .replace(/punctuation/g, inline._punctuation)
+  .getRegex();
+
+inline.strEndUnd = edit(inline.strEndUnd, 'g')
+  .replace(/punctuation/g, inline._punctuation)
   .getRegex();
 
 inline._escapes = /\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/g;

@@ -490,11 +490,25 @@ module.exports = class Tokenizer {
   }
 
   strong(src, maskedSrc, prevChar = '') {
-    let cap = this.rules.inline.preStrong.exec(src);
+    let match = this.rules.inline.strStart.exec(src);
 
-    if (cap) {
+    if (match) {
       maskedSrc = maskedSrc.slice(-1 * src.length);
-      cap = this.rules.inline.strong.exec(maskedSrc);
+      let strEnd;
+
+      if(match[0] == "**")
+        strEnd = this.rules.inline.strEndAst;
+      else
+        strEnd = this.rules.inline.strEndUnd;
+
+      strEnd.lastIndex = 0;
+
+      let cap;
+      while ((match = strEnd.exec(maskedSrc)) != null) {
+        cap = this.rules.inline.strong.exec(maskedSrc.slice(0,match.index+3));
+        if (cap)
+          break;
+      }
 
       if (cap) {
         if (!cap[1] || (cap[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar)))) {
@@ -509,11 +523,25 @@ module.exports = class Tokenizer {
   }
 
   em(src, maskedSrc, prevChar = '') {
-    let cap = this.rules.inline.preEm.exec(src);
+    let match = this.rules.inline.emStart.exec(src);
 
-    if (cap) {
+    if (match) {
       maskedSrc = maskedSrc.slice(-1 * src.length);
-      cap = this.rules.inline.em.exec(maskedSrc);
+      let emEnd;
+
+      if(match[0] == "*")
+        emEnd = this.rules.inline.emEndAst;
+      else
+        emEnd = this.rules.inline.emEndUnd;
+
+      emEnd.lastIndex = 0;
+
+      let cap;
+      while ((match = emEnd.exec(maskedSrc)) != null) {
+        cap = this.rules.inline.em.exec(maskedSrc.slice(0,match.index+2));
+        if (cap)
+          break;
+      }
 
       if (cap) {
         if (!cap[1] || (cap[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar)))) {
