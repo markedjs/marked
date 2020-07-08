@@ -491,8 +491,8 @@ module.exports = class Tokenizer {
 
   strong(src, maskedSrc, prevChar = '') {
     let match = this.rules.inline.strStart.exec(src);
-
-    if (match) {
+    
+    if (match && (!match[1] || (match[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar))))) {
       maskedSrc = maskedSrc.slice(-1 * src.length);
       let strEnd;
 
@@ -511,13 +511,11 @@ module.exports = class Tokenizer {
       }
 
       if (cap) {
-        if (!cap[1] || (cap[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar)))) {
-          return {
-            type: 'strong',
-            raw: src.slice(0, cap[0].length),
-            text: src.slice(2, cap[0].length - 2)
-          };
-        }
+        return {
+          type: 'strong',
+          raw: src.slice(0, cap[0].length),
+          text: src.slice(2, cap[0].length - 2)
+        };
       }
     }
   }
@@ -525,7 +523,7 @@ module.exports = class Tokenizer {
   em(src, maskedSrc, prevChar = '') {
     let match = this.rules.inline.emStart.exec(src);
 
-    if (match) {
+    if (match && (!match[1] || (match[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar))))) {
       maskedSrc = maskedSrc.slice(-1 * src.length);
       let emEnd;
 
@@ -544,13 +542,11 @@ module.exports = class Tokenizer {
       }
 
       if (cap) {
-        if (!cap[1] || (cap[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar)))) {
-          return {
-            type: 'em',
-            raw: src.slice(0, cap[0].length),
-            text: src.slice(1, cap[0].length - 1)
-          };
-        }
+        return {
+          type: 'em',
+          raw: src.slice(0, cap[0].length),
+          text: src.slice(1, cap[0].length - 1)
+        };
       }
     }
   }

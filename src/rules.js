@@ -169,15 +169,15 @@ const inline = {
   reflink: /^!?\[(label)\]\[(?!\s*\])((?:\\[\[\]]?|[^\[\]\\])+)\]/,
   nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
   reflinkSearch: 'reflink|nolink(?!\\()',
-  strStart: /^\*\*|__/,
-  strEndAst: /[^punctuation\s]\*\*(?!\*)|[punctuation]\*\*(?!\*)(?:(?=[punctuation\s]|$))/,
-  strEndUnd: /[^\s]__(?!_)(?:(?=[punctuation\s])|$)/,
-  strong: /^(?:(\*\*(?=[*punctuation]))|\*\*)(?![\s])((?:(?:(?!evSkip)(?:[^*]|\\\*)|evSkip)|(?:(?:(?!evSkip)(?:[^*]|\\\*)|evSkip)*?(?<!\\)\*){2})+?)\*\*$|^__(?![\s])((?:(?:(?!evSkip)(?:[^_]|\\_)|evSkip)|(?:(?:(?!evSkip)(?:[^_]|\\_)|evSkip)*?(?<!\\)_){2})+?)__$/,
-  emStart: /^[*_]/,
-  emEndAst: /[^punctuation\s]\*(?!\*)|[punctuation]\*(?!\*)(?:(?=[punctuation\s]|$))/,
-  emEndUnd: /[^\s]_(?!_)(?:(?=[punctuation\s])|$)/,
-  // (1) returns if starts w/ punctuation  | (2)   ⬐Check groups to skip over ⬐ skip if needed ⬐repeat logic for inner *'s (must be in pairs)⬎     ⬐last char can't be punct OR final * must also be followed by punct (or endline)  | (3) Underscores ⬐Check groups to skip over ⬐skip if needed ⬐repeat logic for inner _'s (must be in pairs)⬎  ⬐last char can't be a space, and final _ must preceed punct or \s (or endline)
-  em: /^(?:(\*(?=[punctuation]))|\*)(?![*\s])(?:(?:(?!evSkip)(?:[^*]|\\\*)|evSkip)|\*(?:(?!evSkip)(?:[^*]|\\\*)|evSkip)*?\*)*?\*$|^_(?![_\s])(?:(?:(?!evSkip)(?:[^_]|\\_)|evSkip)|(?:(?:(?!evSkip)(?:[^_]|\\_)|evSkip)*?_){2})*?_$/,
+  strStart: /^(?:(\*\*(?=[*punctuation]))|\*\*)(?![\s])|__/, // (1) returns if starts w/ punctuation
+  strEndAst: /[^punctuation\s]\*\*(?!\*)|[punctuation]\*\*(?!\*)(?:(?=[punctuation\s]|$))/, // last char can't be punct, or final * must also be followed by punct (or endline)
+  strEndUnd: /[^\s]__(?!_)(?:(?=[punctuation\s])|$)/, // last char can't be a space, and final _ must preceed punct or \s (or endline)
+  strong: /^\*\*(?:(?:(?!overlapSkip)(?:[^*]|\\\*)|overlapSkip)|\*(?:(?!overlapSkip)(?:[^*]|\\\*)|overlapSkip)*?\*)+?\*\*$|^__(?![\s])((?:(?:(?!overlapSkip)(?:[^_]|\\_)|overlapSkip)|_(?:(?!overlapSkip)(?:[^_]|\\_)|overlapSkip)*?_)+?)__$/,
+  emStart: /^(?:(\*(?=[punctuation]))|\*)(?![*\s])|_/, // (1) returns if starts w/ punctuation
+  emEndAst: /[^punctuation\s]\*(?!\*)|[punctuation]\*(?!\*)(?:(?=[punctuation\s]|$))/, // last char can't be punct, or final * must also be followed by punct (or endline)
+  emEndUnd: /[^\s]_(?!_)(?:(?=[punctuation\s])|$)/, // last char can't be a space, and final _ must preceed punct or \s (or endline)
+    //            ⬐ skip overlapping Strong    ⬐repeat logic for inner *'s (must be in pairs)| Underscores        ⬐ skip overlapping Strong ⬐repeat logic for inner _'s (must be in pairs)⬎
+  em: /^\*(?:(?:(?!overlapSkip)(?:[^*]|\\\*)|overlapSkip)|\*(?:(?!overlapSkip)(?:[^*]|\\\*)|overlapSkip)*?\*)+?\*$|^_(?![_\s])(?:(?:(?!overlapSkip)(?:[^_]|\\_)|overlapSkip)|_(?:(?!overlapSkip)(?:[^_]|\\_)|overlapSkip)*?_)+?_$/,
   code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
   br: /^( {2,}|\\)\n(?!\s*$)/,
   del: noopTest,
@@ -191,14 +191,17 @@ inline._punctuation = '!"#$%&\'()+\\-.,/:;<=>?@\\[\\]`^{|}~';
 inline.punctuation = edit(inline.punctuation).replace(/punctuation/g, inline._punctuation).getRegex();
 
 // sequences em should skip over [title](link), `code`, <html>
-inline._emSkip = '\\[[^\\]]*?\\]\\([^\\)]*?\\)|`[^`]*?`|<[^>]*?>';
-inline._strSkip = '\\[[^\\]]*?\\]\\([^\\)]*?\\)|`[^`]*?`|<[^>]*?>';
-inline._evSkip = '__[^_]*?__';
+inline._blockSkip = '\\[[^\\]]*?\\]\\([^\\)]*?\\)|`[^`]*?`|<[^>]*?>';
+inline._overlapSkip = '__[^_]*?__|\\*\\*\\[^\\*\\]*?\\*\\*';
 
 inline.em = edit(inline.em)
   .replace(/punctuation/g, inline._punctuation)
-  .replace(/evSkip/g, inline._evSkip)
+  .replace(/overlapSkip/g, inline._overlapSkip)
   .getRegex();
+
+inline.emStart = edit(inline.emStart)
+    .replace(/punctuation/g, inline._punctuation)
+    .getRegex();
 
 inline.emEndAst = edit(inline.emEndAst, 'g')
   .replace(/punctuation/g, inline._punctuation)
@@ -208,16 +211,20 @@ inline.emEndUnd = edit(inline.emEndUnd, 'g')
   .replace(/punctuation/g, inline._punctuation)
   .getRegex();
 
-inline.emSkip = edit(inline._emSkip, 'g')
+inline.blockSkip = edit(inline._blockSkip, 'g')
   .getRegex();
 
-inline.evSkip = edit(inline._evSkip, 'g')
+inline.overlapSkip = edit(inline._overlapSkip, 'g')
   .getRegex();
 
 inline.strong = edit(inline.strong)
   .replace(/punctuation/g, inline._punctuation)
-  .replace(/emSkip/g, inline._emSkip)
+  .replace(/blockSkip/g, inline._blockSkip)
   .getRegex();
+
+inline.strStart = edit(inline.strStart)
+    .replace(/punctuation/g, inline._punctuation)
+    .getRegex();
 
 inline.strEndAst = edit(inline.strEndAst, 'g')
   .replace(/punctuation/g, inline._punctuation)
