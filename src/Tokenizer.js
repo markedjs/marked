@@ -491,31 +491,25 @@ module.exports = class Tokenizer {
 
   strong(src, maskedSrc, prevChar = '') {
     let match = this.rules.inline.strStart.exec(src);
-    
+
     if (match && (!match[1] || (match[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar))))) {
       maskedSrc = maskedSrc.slice(-1 * src.length);
       let strEnd;
 
-      if(match[0] == "**")
-        strEnd = this.rules.inline.strEndAst;
-      else
-        strEnd = this.rules.inline.strEndUnd;
+      if (match[0] === '**') { strEnd = this.rules.inline.strEndAst; } else { strEnd = this.rules.inline.strEndUnd; }
 
       strEnd.lastIndex = 0;
 
       let cap;
       while ((match = strEnd.exec(maskedSrc)) != null) {
-        cap = this.rules.inline.strong.exec(maskedSrc.slice(0,match.index+3));
-        if (cap)
-          break;
-      }
-
-      if (cap) {
-        return {
-          type: 'strong',
-          raw: src.slice(0, cap[0].length),
-          text: src.slice(2, cap[0].length - 2)
-        };
+        cap = this.rules.inline.strong.exec(maskedSrc.slice(0, match.index + 3));
+        if (cap) {
+          return {
+            type: 'strong',
+            raw: src.slice(0, cap[0].length),
+            text: src.slice(2, cap[0].length - 2)
+          };
+        }
       }
     }
   }
@@ -527,26 +521,20 @@ module.exports = class Tokenizer {
       maskedSrc = maskedSrc.slice(-1 * src.length);
       let emEnd;
 
-      if(match[0] == "*")
-        emEnd = this.rules.inline.emEndAst;
-      else
-        emEnd = this.rules.inline.emEndUnd;
+      if (match[0] === '*') { emEnd = this.rules.inline.emEndAst; } else { emEnd = this.rules.inline.emEndUnd; }
 
       emEnd.lastIndex = 0;
 
       let cap;
       while ((match = emEnd.exec(maskedSrc)) != null) {
-        cap = this.rules.inline.em.exec(maskedSrc.slice(0,match.index+2));
-        if (cap)
-          break;
-      }
-
-      if (cap) {
-        return {
-          type: 'em',
-          raw: src.slice(0, cap[0].length),
-          text: src.slice(1, cap[0].length - 1)
-        };
+        cap = this.rules.inline.em.exec(maskedSrc.slice(0, match.index + 2));
+        if (cap) {
+          return {
+            type: 'em',
+            raw: src.slice(0, cap[0].length),
+            text: src.slice(1, cap[0].length - 1)
+          };
+        }
       }
     }
   }

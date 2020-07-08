@@ -176,7 +176,7 @@ const inline = {
   emStart: /^(?:(\*(?=[punctuation]))|\*)(?![*\s])|_/, // (1) returns if starts w/ punctuation
   emEndAst: /[^punctuation\s]\*(?!\*)|[punctuation]\*(?!\*)(?:(?=[punctuation\s]|$))/, // last char can't be punct, or final * must also be followed by punct (or endline)
   emEndUnd: /[^\s]_(?!_)(?:(?=[punctuation\s])|$)/, // last char can't be a space, and final _ must preceed punct or \s (or endline)
-    //            ⬐ skip overlapping Strong    ⬐repeat logic for inner *'s (must be in pairs)| Underscores        ⬐ skip overlapping Strong ⬐repeat logic for inner _'s (must be in pairs)⬎
+  //            ⬐ skip overlapping Strong    ⬐repeat logic for inner *'s (must be in pairs)| Underscores        ⬐ skip overlapping Strong ⬐repeat logic for inner _'s (must be in pairs)⬎
   em: /^\*(?:(?:(?!overlapSkip)(?:[^*]|\\\*)|overlapSkip)|\*(?:(?!overlapSkip)(?:[^*]|\\\*)|overlapSkip)*?\*)+?\*$|^_(?![_\s])(?:(?:(?!overlapSkip)(?:[^_]|\\_)|overlapSkip)|_(?:(?!overlapSkip)(?:[^_]|\\_)|overlapSkip)*?_)+?_$/,
   code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
   br: /^( {2,}|\\)\n(?!\s*$)/,
@@ -200,8 +200,8 @@ inline.em = edit(inline.em)
   .getRegex();
 
 inline.emStart = edit(inline.emStart)
-    .replace(/punctuation/g, inline._punctuation)
-    .getRegex();
+  .replace(/punctuation/g, inline._punctuation)
+  .getRegex();
 
 inline.emEndAst = edit(inline.emEndAst, 'g')
   .replace(/punctuation/g, inline._punctuation)
@@ -223,8 +223,8 @@ inline.strong = edit(inline.strong)
   .getRegex();
 
 inline.strStart = edit(inline.strStart)
-    .replace(/punctuation/g, inline._punctuation)
-    .getRegex();
+  .replace(/punctuation/g, inline._punctuation)
+  .getRegex();
 
 inline.strEndAst = edit(inline.strEndAst, 'g')
   .replace(/punctuation/g, inline._punctuation)
