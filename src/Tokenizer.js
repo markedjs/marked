@@ -494,9 +494,7 @@ module.exports = class Tokenizer {
 
     if (match && (!match[1] || (match[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar))))) {
       maskedSrc = maskedSrc.slice(-1 * src.length);
-      let endReg;
-
-      if (match[0] === '**') { endReg = this.rules.inline.strong.endAst; } else { endReg = this.rules.inline.strong.endUnd; }
+      const endReg = match[0] === '**' ? this.rules.inline.strong.endAst : this.rules.inline.strong.endUnd;
 
       endReg.lastIndex = 0;
 
@@ -519,9 +517,7 @@ module.exports = class Tokenizer {
 
     if (match && (!match[1] || (match[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar))))) {
       maskedSrc = maskedSrc.slice(-1 * src.length);
-      let endReg;
-
-      if (match[0] === '*') { endReg = this.rules.inline.em.endAst; } else { endReg = this.rules.inline.em.endUnd; }
+      const endReg = match[0] === '*' ? this.rules.inline.em.endAst : this.rules.inline.em.endUnd;
 
       endReg.lastIndex = 0;
 
