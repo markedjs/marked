@@ -365,6 +365,31 @@ a | b
       });
     });
 
+    it('ordered with parenthesis', () => {
+      expectTokens({
+        md: `
+1) item 1
+2) item 2
+`,
+        tokens: jasmine.arrayContaining([
+          jasmine.objectContaining({
+            type: 'list',
+            raw: '1) item 1\n2) item 2\n',
+            ordered: true,
+            start: 1,
+            items: [
+              jasmine.objectContaining({
+                raw: '1) item 1'
+              }),
+              jasmine.objectContaining({
+                raw: '2) item 2\n'
+              })
+            ]
+          })
+        ])
+      });
+    });
+
     it('start', () => {
       expectTokens({
         md: `

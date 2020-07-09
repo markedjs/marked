@@ -69,11 +69,11 @@ Marked offers [advanced configurations](#/USING_ADVANCED.md) and [extensibility]
 
 We actively support the features of the following [Markdown flavors](https://github.com/commonmark/CommonMark/wiki/Markdown-Flavors).
 
-|Flavor                                                     |Version    |
-|:----------------------------------------------------------|:----------|
-|The original markdown.pl                                   |--         |
-|[CommonMark](http://spec.commonmark.org/0.29/)             |0.29       |
-|[GitHub Flavored Markdown](https://github.github.com/gfm/) |0.29       |
+| Flavor                                                     | Version | Status                                                             |
+| :--------------------------------------------------------- | :------ | :----------------------------------------------------------------- |
+| The original markdown.pl                                   | --      |                                                                    |
+| [CommonMark](http://spec.commonmark.org/0.29/)             | 0.29    | [Work in progress](https://github.com/markedjs/marked/issues/1202) |
+| [GitHub Flavored Markdown](https://github.github.com/gfm/) | 0.29    | [Work in progress](https://github.com/markedjs/marked/issues/1202) |
 
 By supporting the above Markdown flavors, it's possible that Marked can help you use other flavors as well; however, these are not actively supported by the community.
 
