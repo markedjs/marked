@@ -16,8 +16,8 @@
   ],
   "exports": {
     ".": {
-      "import": "lib/marked.esm.js",
-      "require": "lib/marked.js"
+      "import": "./lib/marked.esm.mjs",
+      "require": "./src/marked.js"
     }
   },
   "repository": "git://github.com/markedjs/marked.git",
