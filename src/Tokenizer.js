@@ -494,9 +494,7 @@ module.exports = class Tokenizer {
 
     if (match && (!match[1] || (match[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar))))) {
       maskedSrc = maskedSrc.slice(-1 * src.length);
-      let strEnd;
-
-      if (match[0] === '**') { strEnd = this.rules.inline.strEndAst; } else { strEnd = this.rules.inline.strEndUnd; }
+      const strEnd = match[0] === '**' ? this.rules.inline.strEndAst : this.rules.inline.strEndUnd;
 
       strEnd.lastIndex = 0;
 
