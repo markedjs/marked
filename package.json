@@ -62,6 +62,7 @@
     "test:lint": "eslint bin/marked .",
     "test:redos": "node test/vuln-regex.js",
     "test:update": "node test/update-specs.js",
+    "rules": "node test/rules.js",
     "bench": "npm run rollup && node test/bench.js",
     "lint": "eslint --fix bin/marked .",
     "build:reset": "git checkout upstream/master lib/marked.js lib/marked.esm.js marked.min.js",

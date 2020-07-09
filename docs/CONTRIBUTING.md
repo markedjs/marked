@@ -82,6 +82,31 @@ To see time comparisons between Marked and other popular Markdown libraries:
 npm run bench
 ```
 
+To see the compiled rules from `src/rules.js`:
+
+```bash
+npm run rules
+```
+
+You can specify one or more `rule path`s to only show certain rules:
+
+```bash
+npm run rules -- block.gfm.item inline.pedantic.br
+
+{
+  block: {
+    gfm: {
+      item: /^( *)((?:[*+-]|\\d{1,9}\\.)) ?[^\\n]*(?:\\n(?!\\1(?:[*+-]|\\d{1,9}\\.) ?)[^\\n]*)*/gm
+    }
+  },
+  inline: {
+    pedantic: {
+      br: /^( {2,}|\\\\)\\n(?!\\s*$)/
+    }
+  }
+}
+```
+
 To check for (and fix) standardized syntax (lint):
 
 ```bash
