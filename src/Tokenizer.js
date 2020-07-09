@@ -490,19 +490,19 @@ module.exports = class Tokenizer {
   }
 
   strong(src, maskedSrc, prevChar = '') {
-    let match = this.rules.inline.strStart.exec(src);
+    let match = this.rules.inline.strong.start.exec(src);
 
     if (match && (!match[1] || (match[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar))))) {
       maskedSrc = maskedSrc.slice(-1 * src.length);
-      let strEnd;
+      let endReg;
 
-      if (match[0] === '**') { strEnd = this.rules.inline.strEndAst; } else { strEnd = this.rules.inline.strEndUnd; }
+      if (match[0] === '**') { endReg = this.rules.inline.strong.endAst; } else { endReg = this.rules.inline.strong.endUnd; }
 
-      strEnd.lastIndex = 0;
+      endReg.lastIndex = 0;
 
       let cap;
-      while ((match = strEnd.exec(maskedSrc)) != null) {
-        cap = this.rules.inline.strong.exec(maskedSrc.slice(0, match.index + 3));
+      while ((match = endReg.exec(maskedSrc)) != null) {
+        cap = this.rules.inline.strong.middle.exec(maskedSrc.slice(0, match.index + 3));
         if (cap) {
           return {
             type: 'strong',
@@ -515,19 +515,19 @@ module.exports = class Tokenizer {
   }
 
   em(src, maskedSrc, prevChar = '') {
-    let match = this.rules.inline.emStart.exec(src);
+    let match = this.rules.inline.em.start.exec(src);
 
     if (match && (!match[1] || (match[1] && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar))))) {
       maskedSrc = maskedSrc.slice(-1 * src.length);
-      let emEnd;
+      let endReg;
 
-      if (match[0] === '*') { emEnd = this.rules.inline.emEndAst; } else { emEnd = this.rules.inline.emEndUnd; }
+      if (match[0] === '*') { endReg = this.rules.inline.em.endAst; } else { endReg = this.rules.inline.em.endUnd; }
 
-      emEnd.lastIndex = 0;
+      endReg.lastIndex = 0;
 
       let cap;
-      while ((match = emEnd.exec(maskedSrc)) != null) {
-        cap = this.rules.inline.em.exec(maskedSrc.slice(0, match.index + 2));
+      while ((match = endReg.exec(maskedSrc)) != null) {
+        cap = this.rules.inline.em.middle.exec(maskedSrc.slice(0, match.index + 2));
         if (cap) {
           return {
             type: 'em',
