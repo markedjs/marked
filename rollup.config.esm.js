@@ -2,7 +2,7 @@ const commonjs = require('rollup-plugin-commonjs');
 const license = require('rollup-plugin-license');
 
 module.exports = {
-  input: 'src/new/marked.js',
+  input: 'src/marked.js',
   output: {
     file: 'lib/marked.esm.mjs',
     format: 'esm'
