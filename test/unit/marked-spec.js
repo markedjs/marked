@@ -63,6 +63,12 @@ describe('Test slugger functionality', () => {
     const slugger = new marked.Slugger();
     expect(slugger.slug('<em>html</em>')).toBe('html');
   });
+
+  it('should not increment seen when just getting text', () => {
+    const slugger = new marked.Slugger();
+    slugger.slugText('<h1>This Section</h1>');
+    expect(slugger.slug('<h1>This Section</h1>')).toBe('this-section');
+  });
 });
 
 describe('Test paragraph token type', () => {
