@@ -82,13 +82,13 @@ slugger.slug('foo-1') // foo-1-2
 ...
 ```
 
-`slugger` also has a stateless method `slugText` which does not update the internal accumulator:
+`slugger.slug` can also be called with the `dryrun` option for stateless operation:
 ```js
-slugger.slug('foo')      // foo
-slugger.slugText('foo')  // foo-1
-slugger.slug('foo')      // foo-1
-slugger.slugText('foo')  // foo-2
-slugger.slug('foo')      // foo-2
+slugger.slug('foo')                    // foo
+slugger.slug('foo', { dryrun: true })  // foo-1
+slugger.slug('foo')                    // foo-1
+slugger.slug('foo', { dryrun: true })  // foo-2
+slugger.slug('foo')                    // foo-2
 ...
 ```
 

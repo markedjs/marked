@@ -64,10 +64,16 @@ describe('Test slugger functionality', () => {
     expect(slugger.slug('<em>html</em>')).toBe('html');
   });
 
-  it('should not increment seen when just getting text', () => {
+  it('should not increment seen when using dryrun option', () => {
     const slugger = new marked.Slugger();
-    slugger.slugText('<h1>This Section</h1>');
+    slugger.slug('<h1>This Section</h1>', { dryrun: true });
     expect(slugger.slug('<h1>This Section</h1>')).toBe('this-section');
+  });
+
+  it('should still return the next unique id when using dryrun', () => {
+    const slugger = new marked.Slugger();
+    expect(slugger.slug('<h1>This Section</h1>')).toBe('this-section');
+    expect(slugger.slug('<h1>This Section</h1>', { dryrun: true })).toBe('this-section-1');
   });
 });
 

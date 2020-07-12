@@ -39,17 +39,11 @@ module.exports = class Slugger {
 
   /**
    * Convert string to unique id
+   * @param {object} options
+   * @param {boolean} options.dryrun Generates the next unique slug without updating the internal accumulator.
    */
-  slug(value) {
+  slug(value, options = {}) {
     const slug = this.serialize(value);
-    return this.getNextSafeSlug(slug);
-  }
-
-  /**
-   * Get slug text without incrementing accumulator
-   */
-  slugText(value) {
-    const slug = this.serialize(value);
-    return this.getNextSafeSlug(slug, true);
+    return this.getNextSafeSlug(slug, options.dryrun);
   }
 };
