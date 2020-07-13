@@ -69,7 +69,7 @@ This is the [inline link](https://www.bing.com "Bing") with a "Bing" title.
 You can also go to [W3C] [2] and maybe visit a [friend].
 
 [2]: https://w3c.org (The W3C puts out specs for web-based things)
-[Friend]: https://facebook.com/ "Facebook!"
+[Friend]: https://facebook.com "Facebook!"
 
 Email addresses in plain text are not linked: test@example.com.
 Email addresses wrapped in angle brackets are linked: <test@example.com>.
