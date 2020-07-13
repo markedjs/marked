@@ -319,8 +319,28 @@ module.exports = class Lexer {
   /**
    * Lexing/Compiling
    */
-  inlineTokens(src, tokens = [], inLink = false, inRawBlock = false) {
+  inlineTokens(src, tokens = [], inLink = false, inRawBlock = false, prevChar = '') {
     let token;
+
+    // String with links masked to avoid interference with em and strong
+    let maskedSrc = src;
+    let match;
+
+    // Mask out reflinks
+    if (this.tokens.links) {
+      const links = Object.keys(this.tokens.links);
+      if (links.length > 0) {
+        while ((match = this.tokenizer.rules.inline.reflinkSearch.exec(maskedSrc)) != null) {
+          if (links.includes(match[0].slice(match[0].lastIndexOf('[') + 1, -1))) {
+            maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
+          }
+        }
+      }
+    }
+    // Mask out other blocks
+    while ((match = this.tokenizer.rules.inline.blockSkip.exec(maskedSrc)) != null) {
+      maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
+    }
 
     while (src) {
       // escape
@@ -360,7 +380,7 @@ module.exports = class Lexer {
       }
 
       // strong
-      if (token = this.tokenizer.strong(src)) {
+      if (token = this.tokenizer.strong(src, maskedSrc, prevChar)) {
         src = src.substring(token.raw.length);
         token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
         tokens.push(token);
@@ -368,7 +388,7 @@ module.exports = class Lexer {
       }
 
       // em
-      if (token = this.tokenizer.em(src)) {
+      if (token = this.tokenizer.em(src, maskedSrc, prevChar)) {
         src = src.substring(token.raw.length);
         token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
         tokens.push(token);
@@ -414,6 +434,7 @@ module.exports = class Lexer {
       // text
       if (token = this.tokenizer.inlineText(src, inRawBlock, smartypants)) {
         src = src.substring(token.raw.length);
+        prevChar = token.raw.slice(-1);
         tokens.push(token);
         continue;
       }
