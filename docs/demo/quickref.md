@@ -61,8 +61,8 @@ Next is an inline link to [Google](https://www.google.com). A little nicer.
 This is a reference-style link to [Wikipedia] [1].
 Lastly, here's a pretty link to [Yahoo]. The reference-style and pretty links both automatically use the links defined below, but they could be defined *anywhere* in the markdown and are removed from the HTML. The names are also case insensitive, so you can use [YaHoO] and have it link properly.
 
-[1]: https://www.wikipedia.org/
-[Yahoo]: https://www.yahoo.com/
+[1]: https://www.wikipedia.org
+[Yahoo]: https://www.yahoo.com
 
 Title attributes may be added to links by adding text after a link.
 This is the [inline link](https://www.bing.com "Bing") with a "Bing" title.
