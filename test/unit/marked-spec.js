@@ -75,6 +75,17 @@ describe('Test slugger functionality', () => {
     expect(slugger.slug('<h1>This Section</h1>')).toBe('this-section');
     expect(slugger.slug('<h1>This Section</h1>', { dryrun: true })).toBe('this-section-1');
   });
+
+  it('should be repeatable in a sequence', () => {
+    const slugger = new marked.Slugger();
+    expect(slugger.slug('foo')).toBe('foo');
+    expect(slugger.slug('foo')).toBe('foo-1');
+    expect(slugger.slug('foo')).toBe('foo-2');
+    expect(slugger.slug('foo', { dryrun: true })).toBe('foo-3');
+    expect(slugger.slug('foo', { dryrun: true })).toBe('foo-3');
+    expect(slugger.slug('foo')).toBe('foo-3');
+    expect(slugger.slug('foo')).toBe('foo-4');
+  });
 });
 
 describe('Test paragraph token type', () => {
