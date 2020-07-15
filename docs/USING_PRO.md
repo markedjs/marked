@@ -85,10 +85,12 @@ slugger.slug('foo-1') // foo-1-2
 `slugger.slug` can also be called with the `dryrun` option for stateless operation:
 ```js
 slugger.slug('foo')                    // foo
-slugger.slug('foo', { dryrun: true })  // foo-1
 slugger.slug('foo')                    // foo-1
-slugger.slug('foo', { dryrun: true })  // foo-2
 slugger.slug('foo')                    // foo-2
+slugger.slug('foo', { dryrun: true })  // foo-3
+slugger.slug('foo', { dryrun: true })  // foo-3
+slugger.slug('foo')                    // foo-3
+slugger.slug('foo')                    // foo-4
 ...
 ```
 
