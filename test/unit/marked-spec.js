@@ -66,7 +66,7 @@ describe('Test slugger functionality', () => {
 
   it('should not increment seen when using dryrun option', () => {
     const slugger = new marked.Slugger();
-    slugger.slug('<h1>This Section</h1>', { dryrun: true });
+    expect(slugger.slug('<h1>This Section</h1>', { dryrun: true })).toBe('this-section');
     expect(slugger.slug('<h1>This Section</h1>')).toBe('this-section');
   });
 
