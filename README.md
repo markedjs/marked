@@ -37,6 +37,8 @@ Also read about:
 
 **In-browser:** `npm install marked`
 
+**Homebrew:** `brew install marked`
+
 ## Usage
 
 ### Warning: 🚨 Marked does not [sanitize](https://marked.js.org/#/USING_ADVANCED.md#options) the output HTML. Please use a sanitize library, like [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [sanitize-html](https://github.com/apostrophecms/sanitize-html) or [insane](https://github.com/bevacqua/insane) on the output HTML! 🚨
