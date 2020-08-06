@@ -5280,5 +5280,11 @@
     "start_line": 9365,
     "end_line": 9369,
     "section": "Textual content"
+  },
+  {
+    "markdown": "foo <!-- this is a\ncomment - with hyphen --!>\n",
+    "html": "<p>foo <!-- this is a\ncomment - with hyphen --!></p>\n",
+    "example": 650,
+    "section": "Raw HTML"
   }
 ]
