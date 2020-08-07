@@ -18,9 +18,9 @@ const block = {
   html: '^ {0,3}(?:' // optional indentation
     + '<(script|pre|style)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n+|$)' // (1)
     + '|comment[^\\n]*(\\n+|$)' // (2)
-    + '|<\\?[\\s\\S]*?\\?>\\n*' // (3)
-    + '|<![A-Z][\\s\\S]*?>\\n*' // (4)
-    + '|<!\\[CDATA\\[[\\s\\S]*?\\]\\]>\\n*' // (5)
+    + '|<\\?[\\s\\S]*?(?:\\?>\\n*|$)' // (3)
+    + '|<![A-Z][\\s\\S]*?(?:>\\n*|$)' // (4)
+    + '|<!\\[CDATA\\[[\\s\\S]*?(?:\\]\\]>\\n*|$)' // (5)
     + '|</?(tag)(?: +|\\n|/?>)[\\s\\S]*?(?:\\n{2,}|$)' // (6)
     + '|<(?!script|pre|style)([a-z][\\w-]*)(?:attribute)*? */?>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:\\n{2,}|$)' // (7) open tag
     + '|</(?!script|pre|style)[a-z][\\w-]*\\s*>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:\\n{2,}|$)' // (7) closing tag
@@ -60,7 +60,7 @@ block._tag = 'address|article|aside|base|basefont|blockquote|body|caption'
   + '|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option'
   + '|p|param|section|source|summary|table|tbody|td|tfoot|th|thead|title|tr'
   + '|track|ul';
-block._comment = /<!--(?!-?>)[\s\S]*?-->/;
+block._comment = /<!--(?!-?>)[\s\S]*?(?:-->|$)/;
 block.html = edit(block.html, 'i')
   .replace('comment', block._comment)
   .replace('tag', block._tag)
@@ -197,6 +197,8 @@ inline.punctuation = edit(inline.punctuation).replace(/punctuation/g, inline._pu
 inline._blockSkip = '\\[[^\\]]*?\\]\\([^\\)]*?\\)|`[^`]*?`|<[^>]*?>';
 inline._overlapSkip = '__[^_]*?__|\\*\\*\\[^\\*\\]*?\\*\\*';
 
+inline._comment = edit(block._comment).replace('(?:-->|$)', '-->').getRegex();
+
 inline.em.start = edit(inline.em.start)
   .replace(/punctuation/g, inline._punctuation)
   .getRegex();
@@ -249,7 +251,7 @@ inline.autolink = edit(inline.autolink)
 inline._attribute = /\s+[a-zA-Z:_][\w.:-]*(?:\s*=\s*"[^"]*"|\s*=\s*'[^']*'|\s*=\s*[^\s"'=<>`]+)?/;
 
 inline.tag = edit(inline.tag)
-  .replace('comment', block._comment)
+  .replace('comment', inline._comment)
   .replace('attribute', inline._attribute)
   .getRegex();
 

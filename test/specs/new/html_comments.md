@@ -54,3 +54,9 @@ comment
 <!---> not a comment -->
 
 <!-- <!-- not a comment? --> -->
+
+### Example 13
+
+<!-- block ends at the end of the document since --!>
+
+*is not a valid comment ending*
