@@ -1,5 +1,8 @@
 const HtmlDiffer = require('@markedjs/html-differ').HtmlDiffer;
-const htmlDiffer = new HtmlDiffer({ ignoreSelfClosingSlash: true });
+const htmlDiffer = new HtmlDiffer({
+  ignoreSelfClosingSlash: true,
+  ignoreComments: false
+});
 
 module.exports = {
   isEqual: htmlDiffer.isEqual.bind(htmlDiffer),
