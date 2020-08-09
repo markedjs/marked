@@ -7,3 +7,4 @@
 !lib/**
 !src
 !src/**
+!package.json
