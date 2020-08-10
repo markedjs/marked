@@ -1,6 +1,6 @@
 const marked = require('../');
 const version = require('../package.json').version;
-const name = 'Marked.js';
+const name = 'Marked';
 
 module.exports = (req, res) => {
   if (req.method !== 'GET') {
