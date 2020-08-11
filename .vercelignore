@@ -1,0 +1,10 @@
+*
+!api
+!api/**
+!docs
+!docs/**
+!lib
+!lib/**
+!src
+!src/**
+!package.json
