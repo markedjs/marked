@@ -94,10 +94,10 @@ block.normal = merge({}, block);
 
 block.gfm = merge({}, block.normal, {
   nptable: '^ *([^|\\n ].*\\|.*)\\n' // Header
-    + ' *([-:]+ *\\|[-| :]*)' // Align
+    + ' {0,3}([-:]+ *\\|[-| :]*)' // Align
     + '(?:\\n((?:(?!\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)', // Cells
   table: '^ *\\|(.+)\\n' // Header
-    + ' *\\|?( *[-:]+[-| :]*)' // Align
+    + ' {0,3}\\|?( *[-:]+[-| :]*)' // Align
     + '(?:\\n *((?:(?!\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)' // Cells
 });
 
