@@ -4,7 +4,7 @@ To champion the single-responsibility and open/closed principles, we have tried 
 
 <h2 id="use">marked.use()</h2>
 
-`marked.use(options)` is the recommended way to extend marked. The options object can contain any [option](#/USING_ADVANCED.md#options) available in marked.
+`marked.use(options)` is the recommended way to extend marked. The options object can contain any [option](/using_advanced.html#options) available in marked.
 
 The `renderer` and `tokenizer` options can be an object with functions that will be merged into the `renderer` and `tokenizer` respectively.
 

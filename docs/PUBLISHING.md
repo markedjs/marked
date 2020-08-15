@@ -1,6 +1,6 @@
 # Releasing Marked
 
-- [ ] See [contributing](#/CONTRIBUTING.md)
+- [ ] See [contributing](/contributing.html)
 - [ ] Create release branch from `master` (`release-x.y.z`)
 - [ ] Submit PR with minimal name: Release x.y.z
 - [ ] Complete PR checklists

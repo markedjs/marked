@@ -125,7 +125,7 @@
     </a>
     <div id="container">
         <header>
-            <a href="#/README.md">
+            <a href="/">
                 <img src="img/logo-black.svg" height="64px" width="64px" />
             </a>
             <h1>Marked Documentation</h1>
@@ -134,45 +134,45 @@
             <nav>
                 <ul>
                     <li>
-                        <a href="#/README.md">Getting Started</a>
+                        <a href="/">Getting Started</a>
                         <ul>
-                            <li><a href="#/README.md#demo">Demo</a></li>
-                            <li><a href="#/README.md#installation">Installation</a></li>
-                            <li><a href="#/README.md#usage">Usage</a></li>
-                            <li><a href="#/README.md#specifications">Specs</a></li>
-                            <li><a href="#/README.md#security">Security</a></li>
+                            <li><a href="/#demo">Demo</a></li>
+                            <li><a href="/#installation">Installation</a></li>
+                            <li><a href="/#usage">Usage</a></li>
+                            <li><a href="/#specifications">Specs</a></li>
+                            <li><a href="/#security">Security</a></li>
                         </ul>
                     </li>
                     <li>
-                        <a href="#/USING_ADVANCED.md">Advanced Usage</a>
+                        <a href="/using_advanced.html">Advanced Usage</a>
                         <ul>
-                            <li><a href="#/USING_ADVANCED.md#options">Options</a></li>
-                            <li><a href="#/USING_ADVANCED.md#highlight">Highlighting</a></li>
-                            <li><a href="#/USING_ADVANCED.md#workers">Workers</a></li>
+                            <li><a href="/using_advanced.html#options">Options</a></li>
+                            <li><a href="/using_advanced.html#highlight">Highlighting</a></li>
+                            <li><a href="/using_advanced.html#workers">Workers</a></li>
                         </ul>
                     </li>
                     <li>
-                        <a href="#/USING_PRO.md">Extensibility</a>
+                        <a href="/using_pro.html">Extensibility</a>
                         <ul>
-                            <li><a href="#/USING_PRO.md#use">marked.use()</a></li>
-                            <li><a href="#/USING_PRO.md#renderer">Renderer</a></li>
-                            <li><a href="#/USING_PRO.md#tokenizer">Tokenizer</a></li>
-                            <li><a href="#/USING_PRO.md#walk-tokens">Walk Tokens</a></li>
-                            <li><a href="#/USING_PRO.md#lexer">Lexer</a></li>
-                            <li><a href="#/USING_PRO.md#parser">Parser</a></li>
+                            <li><a href="/using_pro.html#use">marked.use()</a></li>
+                            <li><a href="/using_pro.html#renderer">Renderer</a></li>
+                            <li><a href="/using_pro.html#tokenizer">Tokenizer</a></li>
+                            <li><a href="/using_pro.html#walk-tokens">Walk Tokens</a></li>
+                            <li><a href="/using_pro.html#lexer">Lexer</a></li>
+                            <li><a href="/using_pro.html#parser">Parser</a></li>
                         </ul>
                     </li>
                     <li>
-                        <a href="#/CONTRIBUTING.md">Contributing</a>
+                        <a href="/contributing.html">Contributing</a>
                         <ul>
-                            <li><a href="#/CONTRIBUTING.md#design-principles">Design Principles</a></li>
-                            <li><a href="#/CONTRIBUTING.md#priorities">Priorities</a></li>
-                            <li><a href="#/CONTRIBUTING.md#test-early-often-and-everything">Testing</a></li>
+                            <li><a href="/contributing.html#design-principles">Design Principles</a></li>
+                            <li><a href="/contributing.html#priorities">Priorities</a></li>
+                            <li><a href="/contributing.html#test-early-often-and-everything">Testing</a></li>
                         </ul>
                     </li>
-                    <li><a href="#/CODE_OF_CONDUCT.md">Code of Conduct</a></li>
-                    <li><a href="#/AUTHORS.md">Authors</a></li>
-                    <li><a href="#/PUBLISHING.md">Publishing</a></li>
+                    <li><a href="/code_of_conduct.html">Code of Conduct</a></li>
+                    <li><a href="/authors.html">Authors</a></li>
+                    <li><a href="/publishing.html">Publishing</a></li>
                     <li><a href="https://github.com/markedjs/marked/blob/master/LICENSE.md">License</a></li>
                 </ul>
             </nav>
@@ -186,32 +186,7 @@
 
         function hashChange() {
             var hash = decodeURIComponent(location.hash.slice(1));
-            if (!hash) {
-                hash = 'README.md';
-            }
-
-            var uri = hash.split('#');
-
-            if (uri[0].match(/^\//)) {
-                currentPage = uri[0].slice(1);
-                if (uri.length > 1) {
-                    currentHash = uri[1];
-                } else {
-                    currentHash = '';
-                }
-            } else {
-                currentHash = uri[0];
-            }
-
-
-            var url = '#/' + currentPage + (currentHash ? '#' + currentHash : '');
-            var fullUrl = window.location.origin + '/' + url;
-
-            navLinks.forEach(function(link) {
-                link.className = link.href === fullUrl ? 'selected' : '';
-            });
-
-            history.replaceState('', document.title, url);
+            console.log('Found hash ' + hash);
         }
 
         window.addEventListener('hashchange', function (e) {

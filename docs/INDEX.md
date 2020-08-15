@@ -25,7 +25,7 @@ These documentation pages are also rendered using marked 💯
 
 <h2 id="usage">Usage</h2>
 
-### Warning: 🚨 Marked does not [sanitize](https://marked.js.org/#/USING_ADVANCED.md#options) the output HTML. Please use a sanitize library, like [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [sanitize-html](https://github.com/apostrophecms/sanitize-html) or [insane](https://github.com/bevacqua/insane) on the output HTML! 🚨
+### Warning: 🚨 Marked does not [sanitize](/using_advanced.html#options) the output HTML. Please use a sanitize library, like [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [sanitize-html](https://github.com/apostrophecms/sanitize-html) or [insane](https://github.com/bevacqua/insane) on the output HTML! 🚨
 
 **CLI**
 
@@ -63,7 +63,7 @@ $ marked -s "*hello world*"
 ```
 
 
-Marked offers [advanced configurations](#/USING_ADVANCED.md) and [extensibility](#/USING_PRO.md) as well.
+Marked offers [advanced configurations](/using_advanced.html) and [extensibility](/using_pro.html) as well.
 
 <h2 id="specifications">Supported Markdown specifications</h2>
 
@@ -81,5 +81,5 @@ By supporting the above Markdown flavors, it's possible that Marked can help you
 
 The only completely secure system is the one that doesn't exist in the first place. Having said that, we take the security of Marked very seriously.
 
-Therefore, please disclose potential security issues by email to the project [committers](#/AUTHORS.md) as well as the [listed owners within NPM](https://docs.npmjs.com/cli/owner). We will provide an initial assessment of security reports within 48 hours and should apply patches within 2 weeks (also, feel free to contribute a fix for the issue).
+Therefore, please disclose potential security issues by email to the project [committers](/authors.html) as well as the [listed owners within NPM](https://docs.npmjs.com/cli/owner). We will provide an initial assessment of security reports within 48 hours and should apply patches within 2 weeks (also, feel free to contribute a fix for the issue).
 
