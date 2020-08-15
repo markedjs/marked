@@ -2,4 +2,5 @@
 .vercel
 node_modules/
 test/compiled_tests
+public
 
