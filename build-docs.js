@@ -1,4 +1,4 @@
-const { mkdir, rmdir, readdir, stat, readFile, writeFile } = require('fs').promises;
+const { mkdir, rmdir, readdir, stat, readFile, writeFile, copyFile } = require('fs').promises;
 const { join, dirname } = require('path');
 const marked = require('./');
 const { highlight, highlightAuto } = require('highlight.js');
@@ -11,6 +11,7 @@ async function init() {
   console.log('Cleaning up output directory ' + outputDir);
   await rmdir(outputDir, { recursive: true });
   await mkdir(outputDir);
+  await copyFile(join(cwd, 'LICENSE.md'), join(inputDir, 'LICENSE.md'));
   const tmpl = await readFile(templateFile, 'utf8');
   console.log('Building markdown...');
   await build(inputDir, tmpl);
@@ -27,7 +28,7 @@ async function build(currentDir, tmpl) {
       //console.log('Found directory ' + filename);
       await build(filename, tmpl);
     } else {
-      //console.log('Reading file ' + filename);
+      console.log('Reading file ' + filename);
       let contents = await readFile(filename, 'utf8');
       if (filename.endsWith('.md')) {
         const html = marked(contents, {
