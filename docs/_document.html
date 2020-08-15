@@ -176,26 +176,13 @@
                     <li><a href="https://github.com/markedjs/marked/blob/master/LICENSE.md">License</a></li>
                 </ul>
             </nav>
-            <div id="content"></div>
+            <div id="content"><!--{{content}}--></div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/unfetch/dist/unfetch.umd.js"></script>
     <script>
-        if (!window.Promise) {
-          window.Promise = ES6Promise;
-        }
-        if (!window.fetch) {
-          window.fetch = unfetch;
-        }
-
         var content = document.querySelector('#content');
         var body = document.querySelector('html');
         var navLinks = document.querySelectorAll('nav a');
-        var currentPage = 'README.md';
-        var currentHash = '';
-        var renderedPage = '';
 
         function hashChange() {
             var hash = decodeURIComponent(location.hash.slice(1));
@@ -216,9 +203,6 @@
                 currentHash = uri[0];
             }
 
-            fetchPage(currentPage).then(function () {
-                fetchAnchor(currentHash)
-            });
 
             var url = '#/' + currentPage + (currentHash ? '#' + currentHash : '');
             var fullUrl = window.location.origin + '/' + url;
@@ -228,38 +212,6 @@
             });
 
             history.replaceState('', document.title, url);
-        }
-
-        function fetchAnchor(anchor) {
-            if (!anchor) {
-                return;
-            }
-
-            var hashElement = document.getElementById(anchor);
-            if (hashElement) {
-                hashElement.scrollIntoView();
-            }
-        }
-
-        function fetchPage(page) {
-            if (page === renderedPage) {
-                return Promise.resolve();
-            }
-            return fetch(page)
-                .then(function (res) {
-                    if (!res.ok) {
-                        throw new Error('Error ' + res.status + ': ' + res.statusText);
-                    }
-                    return res.text();
-                })
-                .then(function (text) {
-                    renderedPage = page;
-                    content.innerHTML = marked(text);
-                    body.scrollTop = 0;
-                }).catch(function (e) {
-                    content.innerHTML = '<p>Oops! There was a problem rendering the page.</p>'
-                        + '<p>' + e.message + '</p>';
-                });
         }
 
         window.addEventListener('hashchange', function (e) {

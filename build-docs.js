@@ -5,17 +5,19 @@ const { highlight, highlightAuto } = require('highlight.js');
 const cwd = process.cwd();
 const inputDir = join(cwd, 'docs');
 const outputDir = join(cwd, 'public');
+const templateFile = join(inputDir, '_document.html');
 
 async function init() {
   console.log('Cleaning up output directory ' + outputDir);
   await rmdir(outputDir, { recursive: true });
   await mkdir(outputDir);
+  const tmpl = await readFile(templateFile, 'utf8');
   console.log('Building markdown...');
-  await build(inputDir);
+  await build(inputDir, tmpl);
   console.log('Build complete!');
 }
 
-async function build(currentDir) {
+async function build(currentDir, tmpl) {
   const files = await readdir(currentDir);
   for (const file of files) {
     const filename = join(currentDir, file);
@@ -23,12 +25,12 @@ async function build(currentDir) {
     const { mode } = stats;
     if (stats.isDirectory()) {
       //console.log('Found directory ' + filename);
-      await build(filename);
+      await build(filename, tmpl);
     } else {
       //console.log('Reading file ' + filename);
       let contents = await readFile(filename, 'utf8');
-      if (file.endsWith('.md')) {
-        contents = marked(contents, {
+      if (filename.endsWith('.md')) {
+        const html = marked(contents, {
           highlight: (code, lang) => {
             if (!lang) {
               return highlightAuto(code).value;
@@ -36,6 +38,7 @@ async function build(currentDir) {
             return highlight(lang, code).value;
           },
         });
+        contents = tmpl.replace('<!--{{content}}-->', html);
       }
       const outfile = filename.replace(inputDir, outputDir).replace('.md', '.html').toLowerCase();
       //console.log('Ensure directory ' + dirname(outfile));
