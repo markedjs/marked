@@ -26,10 +26,10 @@ async function build(currentDir, tmpl) {
     const stats = await stat(filename);
     const { mode } = stats;
     if (stats.isDirectory()) {
-      //console.log('Found directory ' + filename);
+      // console.log('Found directory ' + filename);
       await build(filename, tmpl);
     } else {
-      //console.log('Reading file ' + filename);
+      // console.log('Reading file ' + filename);
       let contents = await readFile(filename, 'utf8');
       const parsed = parse(filename);
       if (parsed.ext === '.md' && isUppercase(parsed.name)) {
@@ -39,16 +39,16 @@ async function build(currentDir, tmpl) {
               return highlightAuto(code).value;
             }
             return highlight(lang, code).value;
-          },
+          }
         });
         contents = tmpl.replace('<!--{{content}}-->', html);
-        parsed.ext = '.html'
+        parsed.ext = '.html';
         parsed.name = parsed.name.toLowerCase();
         delete parsed.base;
       }
       parsed.dir = parsed.dir.replace(inputDir, outputDir);
       const outfile = format(parsed);
-      //console.log('Ensure directory ' + dirname(outfile));
+      // console.log('Ensure directory ' + dirname(outfile));
       await mkdir(dirname(outfile), { recursive: true });
       console.log('Writing file ' + outfile);
       await writeFile(outfile, contents, { mode });
