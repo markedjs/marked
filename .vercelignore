@@ -8,3 +8,4 @@
 !src
 !src/**
 !package.json
+!build-docs.js
