@@ -71,13 +71,14 @@
         </div>
     </div>
     <script>
-        var content = document.querySelector('#content');
-        var body = document.querySelector('html');
         var navLinks = document.querySelectorAll('nav a');
 
         function hashChange() {
-            var hash = decodeURIComponent(location.hash.slice(1));
-            console.log('Found hash ' + hash);
+            var fullUrl = window.location.href;
+
+            navLinks.forEach(function(link) {
+                link.className = link.href === fullUrl ? 'selected' : '';
+            });
         }
 
         window.addEventListener('hashchange', function (e) {
