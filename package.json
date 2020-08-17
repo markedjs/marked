@@ -68,7 +68,7 @@
     "lint": "eslint --fix bin/marked .",
     "build:reset": "git checkout upstream/master lib/marked.js lib/marked.esm.js marked.min.js",
     "build": "npm run rollup && npm run minify",
-    "vercel-build": "node build-docs.js",
+    "build:docs": "node build-docs.js",
     "rollup": "npm run rollup:umd && npm run rollup:esm",
     "rollup:umd": "rollup -c rollup.config.js",
     "rollup:esm": "rollup -c rollup.config.esm.js",
