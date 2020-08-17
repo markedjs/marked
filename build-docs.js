@@ -6,7 +6,7 @@ const cwd = process.cwd();
 const inputDir = join(cwd, 'docs');
 const outputDir = join(cwd, 'public');
 const templateFile = join(inputDir, '_document.html');
-const isUppercase = str => /(A-Z_)+/.test(str);
+const isUppercase = str => /[A-Z_]+/.test(str);
 
 async function init() {
   console.log('Cleaning up output directory ' + outputDir);
@@ -29,7 +29,7 @@ async function build(currentDir, tmpl) {
       //console.log('Found directory ' + filename);
       await build(filename, tmpl);
     } else {
-      console.log('Reading file ' + filename);
+      //console.log('Reading file ' + filename);
       let contents = await readFile(filename, 'utf8');
       const parsed = parse(filename);
       if (parsed.ext === '.md' && isUppercase(parsed.name)) {
@@ -50,7 +50,7 @@ async function build(currentDir, tmpl) {
       const outfile = format(parsed);
       //console.log('Ensure directory ' + dirname(outfile));
       await mkdir(dirname(outfile), { recursive: true });
-      //console.log('Writing file ' + outfile);
+      console.log('Writing file ' + outfile);
       await writeFile(outfile, contents, { mode });
     }
   }
