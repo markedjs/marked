@@ -1,11 +1,12 @@
 const { mkdir, rmdir, readdir, stat, readFile, writeFile, copyFile } = require('fs').promises;
-const { join, dirname } = require('path');
+const { join, dirname, parse, format } = require('path');
 const marked = require('./');
 const { highlight, highlightAuto } = require('highlight.js');
 const cwd = process.cwd();
 const inputDir = join(cwd, 'docs');
 const outputDir = join(cwd, 'public');
 const templateFile = join(inputDir, '_document.html');
+const isUppercase = str => /(A-Z_)+/.test(str);
 
 async function init() {
   console.log('Cleaning up output directory ' + outputDir);
@@ -30,7 +31,8 @@ async function build(currentDir, tmpl) {
     } else {
       console.log('Reading file ' + filename);
       let contents = await readFile(filename, 'utf8');
-      if (filename.endsWith('.md')) {
+      const parsed = parse(filename);
+      if (parsed.ext === '.md' && isUppercase(parsed.name)) {
         const html = marked(contents, {
           highlight: (code, lang) => {
             if (!lang) {
@@ -40,8 +42,12 @@ async function build(currentDir, tmpl) {
           },
         });
         contents = tmpl.replace('<!--{{content}}-->', html);
+        parsed.ext = '.html'
+        parsed.name = parsed.name.toLowerCase();
+        delete parsed.base;
       }
-      const outfile = filename.replace(inputDir, outputDir).replace('.md', '.html').toLowerCase();
+      parsed.dir = parsed.dir.replace(inputDir, outputDir);
+      const outfile = format(parsed);
       //console.log('Ensure directory ' + dirname(outfile));
       await mkdir(dirname(outfile), { recursive: true });
       //console.log('Writing file ' + outfile);
