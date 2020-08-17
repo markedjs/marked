@@ -2,11 +2,13 @@ const { mkdir, rmdir, readdir, stat, readFile, writeFile, copyFile } = require('
 const { join, dirname, parse, format } = require('path');
 const marked = require('./');
 const { highlight, highlightAuto } = require('highlight.js');
+const titleize = require('titleize');
 const cwd = process.cwd();
 const inputDir = join(cwd, 'docs');
 const outputDir = join(cwd, 'public');
 const templateFile = join(inputDir, '_document.html');
 const isUppercase = str => /[A-Z_]+/.test(str);
+const getTitle = str => str === 'INDEX' ? '' : titleize(str.replace(/_/g, ' ')) + ' - ';
 
 async function init() {
   console.log('Cleaning up output directory ' + outputDir);
@@ -41,7 +43,9 @@ async function build(currentDir, tmpl) {
             return highlight(lang, code).value;
           }
         });
-        contents = tmpl.replace('<!--{{content}}-->', html);
+        contents = tmpl
+          .replace('<!--{{title}}-->', getTitle(parsed.name))
+          .replace('<!--{{content}}-->', html);
         parsed.ext = '.html';
         parsed.name = parsed.name.toLowerCase();
         delete parsed.base;
