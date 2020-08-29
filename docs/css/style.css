@@ -62,7 +62,6 @@ nav .selected:hover {
 
 header {
     display: flex;
-    height: 50px;
 }
 
 header h1 { margin: 0; }
