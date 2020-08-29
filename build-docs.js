@@ -46,7 +46,7 @@ async function build(currentDir, tmpl) {
         buffer = Buffer.from(tmpl
           .replace('<!--{{title}}-->', getTitle(parsed.name))
           .replace('<!--{{content}}-->', html),
-          'utf8'
+        'utf8'
         );
         parsed.ext = '.html';
         parsed.name = parsed.name.toLowerCase();
