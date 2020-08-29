@@ -32,10 +32,10 @@ async function build(currentDir, tmpl) {
       await build(filename, tmpl);
     } else {
       // console.log('Reading file ' + filename);
-      let contents = await readFile(filename, 'utf8');
+      let buffer = await readFile(filename);
       const parsed = parse(filename);
       if (parsed.ext === '.md' && isUppercase(parsed.name)) {
-        const html = marked(contents, {
+        const html = marked(buffer.toString('utf8'), {
           highlight: (code, lang) => {
             if (!lang) {
               return highlightAuto(code).value;
@@ -43,9 +43,11 @@ async function build(currentDir, tmpl) {
             return highlight(lang, code).value;
           }
         });
-        contents = tmpl
+        buffer = Buffer.from(tmpl
           .replace('<!--{{title}}-->', getTitle(parsed.name))
-          .replace('<!--{{content}}-->', html);
+          .replace('<!--{{content}}-->', html),
+          'utf8'
+        );
         parsed.ext = '.html';
         parsed.name = parsed.name.toLowerCase();
         delete parsed.base;
@@ -55,7 +57,7 @@ async function build(currentDir, tmpl) {
       // console.log('Ensure directory ' + dirname(outfile));
       await mkdir(dirname(outfile), { recursive: true });
       console.log('Writing file ' + outfile);
-      await writeFile(outfile, contents, { mode });
+      await writeFile(outfile, buffer, { mode });
     }
   }
 }
