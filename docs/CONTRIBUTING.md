@@ -26,16 +26,16 @@ The following table lists the ticket type labels we use when there is work to be
 |Ticket type label                  |Description                                                                                                                                                                         |
 |:----------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |L0 - security                      |A security vulnerability within the Marked library is discovered.                                                                                                                   |
-|L1 - broken                        |Valid usage results in incorrect output compared to [supported specifications](#/README.md#specifications) OR causes marked to crash AND there is no known workaround for the issue. |
+|L1 - broken                        |Valid usage results in incorrect output compared to [supported specifications](/#specifications) OR causes marked to crash AND there is no known workaround for the issue. |
 |L2 - annoying                      |Similar to L1 - broken only there is a known workaround available for the issue.                                                                                                   |
 |RR - refactor and re-engineer      |Results in an improvement to developers using Marked (improved readability) or end-users (faster performance) or both.                                                              |
-|NFS - new feature (spec related)   |A capability Marked does not currently provide but is in one of the [supported specifications](#/README.md#specifications)                                                           |
+|NFS - new feature (spec related)   |A capability Marked does not currently provide but is in one of the [supported specifications](/#specifications)                                                           |
 |NFU - new feature (user requested) |A capability Marked does not currently provide but has been requested by users of Marked.                                                                                           |
 |NFE - new feature (should be an extension) |A capability Marked does not currently provide and is not part of a spec.                                                                                           |
 
 ## Test early, often, and everything
 
-We try to write test cases to validate output (writing tests based on the [supported specifications](#/README.md#specifications)) and minimize regression (writing tests for issues fixed). Therefore, if you would like to contribute, some things you should know regarding the test harness.
+We try to write test cases to validate output (writing tests based on the [supported specifications](/#specifications)) and minimize regression (writing tests for issues fixed). Therefore, if you would like to contribute, some things you should know regarding the test harness.
 
 |Location              |Description                                                                                                    |
 |:---------------------|:--------------------------------------------------------------------------------------------------------------|

@@ -55,7 +55,7 @@ further defined and clarified by project maintainers.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team by submitting a PR with changes to the [AUTHORS](#/AUTHORS.md) page (or emailing josh@8fold.com). All
+reported by contacting the project team by submitting a PR with changes to the [AUTHORS](/authors) page (or emailing josh@8fold.com). All
 complaints will be reviewed and investigated and will result in a response that
 is deemed necessary and appropriate to the circumstances. The project team is
 obligated to maintain confidentiality with regard to the reporter of an incident.
