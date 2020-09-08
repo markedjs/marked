@@ -222,7 +222,7 @@ inline.strong.start = edit(inline.strong.start)
 
 inline.strong.middle = edit(inline.strong.middle)
   .replace(/punctuation/g, inline._punctuation)
-  .replace(/blockSkip/g, inline._blockSkip)
+  .replace(/overlapSkip/g, inline._overlapSkip)
   .getRegex();
 
 inline.strong.endAst = edit(inline.strong.endAst, 'g')
