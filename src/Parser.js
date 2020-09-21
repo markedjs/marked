@@ -28,6 +28,14 @@ module.exports = class Parser {
   }
 
   /**
+   * Static Parse Inline Method
+   */
+  static parseInline(tokens, options) {
+    const parser = new Parser(options);
+    return parser.parseInline(tokens);
+  }
+
+  /**
    * Parse Loop
    */
   parse(tokens, top = true) {
