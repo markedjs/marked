@@ -66,7 +66,11 @@ console.log(marked(markdownString));
 You can parse inline markdown by running markdown through `marked.parseInline`.
 
 ```js
-marked.parseInline(markdownString, options)
+const blockHtml = marked('**strong** _em_');
+console.log(blockHtml); // '<p><strong>strong</strong> <em>em</em></p>'
+
+const inlineHtml = marked.parseInline('**strong** _em_');
+console.log(inlineHtml); // '<strong>strong</strong> <em>em</em>'
 ```
 
 <h2 id="highlight">Asynchronous highlighting</h2>
