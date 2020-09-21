@@ -120,7 +120,7 @@ describe('inlineLexer', () => {
   });
 });
 
-fdescribe('parseInline', () => {
+describe('parseInline', () => {
   it('should parse inline tokens', () => {
     const md = '**strong** _em_';
     const html = marked.parseInline(md);
