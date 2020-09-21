@@ -93,6 +93,14 @@ module.exports = class Lexer {
   }
 
   /**
+   * Static Lex Inline Method
+   */
+  static lexInline(src, options) {
+    const lexer = new Lexer(options);
+    return lexer.inlineTokens(src);
+  }
+
+  /**
    * Preprocessing
    */
   lex(src) {
