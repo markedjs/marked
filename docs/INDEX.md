@@ -66,7 +66,7 @@ $ marked -s "*hello world*"
 
 ```js
 const marked = require("marked");
-const html = marked('# Marked in browser\n\nRendered by **marked**.');
+const html = marked('# Marked in Node.js\n\nRendered by **marked**.');
 ```
 
 
