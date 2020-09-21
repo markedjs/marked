@@ -62,7 +62,7 @@ $ marked -s "*hello world*"
 </html>
 ```
 
-**Node**
+**Node.js**
 
 ```js
 const marked = require("marked");
