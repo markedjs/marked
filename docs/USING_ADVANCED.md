@@ -61,6 +61,18 @@ console.log(marked(markdownString));
 |walkTokens   |`function`  |`null`|v1.1.0|A function which is called for every token. See [extensibility](/using_pro) for more details.|
 |xhtml       |`boolean` |`false`  |v0.3.2   |If true, emit self-closing HTML tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.|
 
+<h2 id="inline">Inline Markdown</h2>
+
+You can parse inline markdown by running markdown through `marked.parseInline`.
+
+```js
+const blockHtml = marked('**strong** _em_');
+console.log(blockHtml); // '<p><strong>strong</strong> <em>em</em></p>'
+
+const inlineHtml = marked.parseInline('**strong** _em_');
+console.log(inlineHtml); // '<strong>strong</strong> <em>em</em>'
+```
+
 <h2 id="highlight">Asynchronous highlighting</h2>
 
 Unlike `highlight.js` the `pygmentize.js` library uses asynchronous highlighting. This example demonstrates that marked is agnostic when it comes to the highlighter you use.

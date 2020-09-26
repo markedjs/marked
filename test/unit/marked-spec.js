@@ -120,6 +120,22 @@ describe('inlineLexer', () => {
   });
 });
 
+describe('parseInline', () => {
+  it('should parse inline tokens', () => {
+    const md = '**strong** _em_';
+    const html = marked.parseInline(md);
+
+    expect(html).toBe('<strong>strong</strong> <em>em</em>');
+  });
+
+  it('should not parse block tokens', () => {
+    const md = '# header\n\n_em_';
+    const html = marked.parseInline(md);
+
+    expect(html).toBe('# header\n\n<em>em</em>');
+  });
+});
+
 describe('use extension', () => {
   it('should use renderer', () => {
     const extension = {
