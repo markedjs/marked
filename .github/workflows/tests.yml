@@ -60,7 +60,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx sematic-release
+        run: npx semantic-release
 
   Skip:
     if: contains(github.event.head_commit.message, '[skip ci]')
