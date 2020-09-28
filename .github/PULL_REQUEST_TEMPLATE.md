@@ -46,6 +46,5 @@ Describe what code combination got you there
 
 In most cases, this should be a different person than the contributor.
 
-- [ ] Draft GitHub release notes have been updated.
 - [ ] CI is green (no forced merge required).
-- [ ] Merge PR
+- [ ] Squash and Merge PR following [conventional commit guidelines](https://www.conventionalcommits.org/).
