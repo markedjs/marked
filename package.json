@@ -34,7 +34,6 @@
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.11.5",
     "@markedjs/html-differ": "^3.0.3",
-    "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/commit-analyzer": "^8.0.1",
     "@semantic-release/git": "^9.0.0",
     "@semantic-release/github": "^7.1.1",
