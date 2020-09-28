@@ -50,7 +50,7 @@ module.exports = class Lexer {
   constructor(options) {
     this.tokens = [];
     this.tokens.links = Object.create(null);
-    this.options = options || defaults;
+    this.options = Object.assign(defaults, options);
     this.options.tokenizer = this.options.tokenizer || new Tokenizer();
     this.tokenizer = this.options.tokenizer;
     this.tokenizer.options = this.options;
