@@ -1,13 +1,10 @@
 # Releasing Marked
 
-- [ ] See [contributing](/contributing)
-- [ ] Create release branch from `master` (`release-x.y.z`)
-- [ ] Submit PR with minimal name: Release x.y.z
-- [ ] Complete PR checklists
+Marked uses [semantic-release](https://github.com/semantic-release/semantic-release) to release new versions. All PRs should use the "Squash and merge" strategy and the commit message should follow the [conventional commit guidelines](https://www.conventionalcommits.org/).
 
 ## Overall strategy
 
-**Master is always shippable:** We try to merge PRs in such a way that `master` is the only branch to really be concerned about *and* `master` can always be released. This allows smoother flow between new features, bug fixes, and so on. (Almost a continuous deployment setup, without automation.)
+**Master is always shippable:** We try to merge PRs in such a way that `master` is the only branch to really be concerned about *and* `master` can always be released. This allows smoother flow between new features, bug fixes, and so on.
 
 ## Versioning
 
