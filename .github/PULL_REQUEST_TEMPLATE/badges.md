@@ -6,9 +6,9 @@
 - [ ] Add a badge
 - [ ] Remove a badge
 
-<!-- 
+<!--
 
-	Explain your reasoning behind tagging that person. 
+	Explain your reasoning behind tagging that person.
 
 	Preferably by citing objective examples, like PRs, Issues, and so on.
 
