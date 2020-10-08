@@ -2,9 +2,9 @@
 
 **Markdown flavor:** Markdown.pl|CommonMark|GitHub Flavored Markdown|n/a
 
-<!-- The NPM version or commit hash having the issue --> 
+<!-- The NPM version or commit hash having the issue -->
 
-<!-- 
+<!--
 
 	If submitting something other than a defect with Marked itself, please use the following:
 
@@ -34,7 +34,7 @@
 
 <!-- Describe what code combination got you there -->
 
-<!-- 
+<!--
 	If error is thrown add the following:
 
 ## Call stack & console log

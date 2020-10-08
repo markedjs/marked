@@ -3,6 +3,7 @@ name: Bug report
 about: Marked says it does this thing but does not
 
 ---
+**Marked version:**
 
 **Describe the bug**
 A clear and concise description of what the bug is.
