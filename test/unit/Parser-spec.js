@@ -360,7 +360,7 @@ describe('Parser', () => {
             title: 'title'
           }
         ],
-        html: '<img src="image.png" alt="image" title="title">'
+        html: '<img src="image.png" alt="image" loading="lazy" title="title">'
       });
     });
 

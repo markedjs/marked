@@ -150,7 +150,7 @@ module.exports = class Renderer {
       return text;
     }
 
-    let out = '<img src="' + href + '" alt="' + text + '"';
+    let out = '<img src="' + href + '" alt="' + text + '" loading="lazy"';
     if (title) {
       out += ' title="' + title + '"';
     }

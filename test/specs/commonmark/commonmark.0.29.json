@@ -4164,7 +4164,7 @@
   },
   {
     "markdown": "[![moon](moon.jpg)](/uri)\n",
-    "html": "<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>\n",
+    "html": "<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" loading=\"lazy\" /></a></p>\n",
     "example": 513,
     "start_line": 7820,
     "end_line": 7824,
@@ -4190,7 +4190,7 @@
   },
   {
     "markdown": "![[[foo](uri1)](uri2)](uri3)\n",
-    "html": "<p><img src=\"uri3\" alt=\"[foo](uri2)\" /></p>\n",
+    "html": "<p><img src=\"uri3\" alt=\"[foo](uri2)\" loading=\"lazy\" /></p>\n",
     "example": 516,
     "start_line": 7843,
     "end_line": 7847,
@@ -4282,7 +4282,7 @@
   },
   {
     "markdown": "[![moon](moon.jpg)][ref]\n\n[ref]: /uri\n",
-    "html": "<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>\n",
+    "html": "<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" loading=\"lazy\" /></a></p>\n",
     "example": 527,
     "start_line": 7976,
     "end_line": 7982,
@@ -4614,7 +4614,7 @@
   },
   {
     "markdown": "![foo](/url \"title\")\n",
-    "html": "<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>\n",
+    "html": "<p><img src=\"/url\" alt=\"foo\" loading=\"lazy\" title=\"title\" /></p>\n",
     "example": 568,
     "start_line": 8483,
     "end_line": 8487,
@@ -4622,7 +4622,7 @@
   },
   {
     "markdown": "![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"\n",
-    "html": "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>\n",
+    "html": "<p><img src=\"train.jpg\" alt=\"foo bar\" loading=\"lazy\" title=\"train &amp; tracks\" /></p>\n",
     "example": 569,
     "start_line": 8490,
     "end_line": 8496,
@@ -4631,7 +4631,7 @@
   },
   {
     "markdown": "![foo ![bar](/url)](/url2)\n",
-    "html": "<p><img src=\"/url2\" alt=\"foo bar\" /></p>\n",
+    "html": "<p><img src=\"/url2\" alt=\"foo bar\" loading=\"lazy\" /></p>\n",
     "example": 570,
     "start_line": 8499,
     "end_line": 8503,
@@ -4640,7 +4640,7 @@
   },
   {
     "markdown": "![foo [bar](/url)](/url2)\n",
-    "html": "<p><img src=\"/url2\" alt=\"foo bar\" /></p>\n",
+    "html": "<p><img src=\"/url2\" alt=\"foo bar\" loading=\"lazy\" /></p>\n",
     "example": 571,
     "start_line": 8506,
     "end_line": 8510,
@@ -4649,7 +4649,7 @@
   },
   {
     "markdown": "![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"\n",
-    "html": "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>\n",
+    "html": "<p><img src=\"train.jpg\" alt=\"foo bar\" loading=\"lazy\" title=\"train &amp; tracks\" /></p>\n",
     "example": 572,
     "start_line": 8520,
     "end_line": 8526,
@@ -4658,7 +4658,7 @@
   },
   {
     "markdown": "![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"\n",
-    "html": "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>\n",
+    "html": "<p><img src=\"train.jpg\" alt=\"foo bar\" loading=\"lazy\" title=\"train &amp; tracks\" /></p>\n",
     "example": 573,
     "start_line": 8529,
     "end_line": 8535,
@@ -4667,7 +4667,7 @@
   },
   {
     "markdown": "![foo](train.jpg)\n",
-    "html": "<p><img src=\"train.jpg\" alt=\"foo\" /></p>\n",
+    "html": "<p><img src=\"train.jpg\" alt=\"foo\" loading=\"lazy\" /></p>\n",
     "example": 574,
     "start_line": 8538,
     "end_line": 8542,
@@ -4675,7 +4675,7 @@
   },
   {
     "markdown": "My ![foo bar](/path/to/train.jpg  \"title\"   )\n",
-    "html": "<p>My <img src=\"/path/to/train.jpg\" alt=\"foo bar\" title=\"title\" /></p>\n",
+    "html": "<p>My <img src=\"/path/to/train.jpg\" alt=\"foo bar\" loading=\"lazy\" title=\"title\" /></p>\n",
     "example": 575,
     "start_line": 8545,
     "end_line": 8549,
@@ -4683,7 +4683,7 @@
   },
   {
     "markdown": "![foo](<url>)\n",
-    "html": "<p><img src=\"url\" alt=\"foo\" /></p>\n",
+    "html": "<p><img src=\"url\" alt=\"foo\" loading=\"lazy\" /></p>\n",
     "example": 576,
     "start_line": 8552,
     "end_line": 8556,
@@ -4691,7 +4691,7 @@
   },
   {
     "markdown": "![](/url)\n",
-    "html": "<p><img src=\"/url\" alt=\"\" /></p>\n",
+    "html": "<p><img src=\"/url\" alt=\"\" loading=\"lazy\" /></p>\n",
     "example": 577,
     "start_line": 8559,
     "end_line": 8563,
@@ -4699,7 +4699,7 @@
   },
   {
     "markdown": "![foo][bar]\n\n[bar]: /url\n",
-    "html": "<p><img src=\"/url\" alt=\"foo\" /></p>\n",
+    "html": "<p><img src=\"/url\" alt=\"foo\" loading=\"lazy\" /></p>\n",
     "example": 578,
     "start_line": 8568,
     "end_line": 8574,
@@ -4707,7 +4707,7 @@
   },
   {
     "markdown": "![foo][bar]\n\n[BAR]: /url\n",
-    "html": "<p><img src=\"/url\" alt=\"foo\" /></p>\n",
+    "html": "<p><img src=\"/url\" alt=\"foo\" loading=\"lazy\" /></p>\n",
     "example": 579,
     "start_line": 8577,
     "end_line": 8583,
@@ -4715,7 +4715,7 @@
   },
   {
     "markdown": "![foo][]\n\n[foo]: /url \"title\"\n",
-    "html": "<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>\n",
+    "html": "<p><img src=\"/url\" alt=\"foo\" title=\"title\" loading=\"lazy\" /></p>\n",
     "example": 580,
     "start_line": 8588,
     "end_line": 8594,
@@ -4723,7 +4723,7 @@
   },
   {
     "markdown": "![*foo* bar][]\n\n[*foo* bar]: /url \"title\"\n",
-    "html": "<p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>\n",
+    "html": "<p><img src=\"/url\" alt=\"foo bar\" loading=\"lazy\" title=\"title\" /></p>\n",
     "example": 581,
     "start_line": 8597,
     "end_line": 8603,
@@ -4732,7 +4732,7 @@
   },
   {
     "markdown": "![Foo][]\n\n[foo]: /url \"title\"\n",
-    "html": "<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>\n",
+    "html": "<p><img src=\"/url\" alt=\"Foo\" loading=\"lazy\" title=\"title\" /></p>\n",
     "example": 582,
     "start_line": 8608,
     "end_line": 8614,
@@ -4740,7 +4740,7 @@
   },
   {
     "markdown": "![foo] \n[]\n\n[foo]: /url \"title\"\n",
-    "html": "<p><img src=\"/url\" alt=\"foo\" title=\"title\" />\n[]</p>\n",
+    "html": "<p><img src=\"/url\" alt=\"foo\" loading=\"lazy\" title=\"title\" />\n[]</p>\n",
     "example": 583,
     "start_line": 8620,
     "end_line": 8628,
@@ -4748,7 +4748,7 @@
   },
   {
     "markdown": "![foo]\n\n[foo]: /url \"title\"\n",
-    "html": "<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>\n",
+    "html": "<p><img src=\"/url\" alt=\"foo\" loading=\"lazy\" title=\"title\" /></p>\n",
     "example": 584,
     "start_line": 8633,
     "end_line": 8639,
@@ -4756,7 +4756,7 @@
   },
   {
     "markdown": "![*foo* bar]\n\n[*foo* bar]: /url \"title\"\n",
-    "html": "<p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>\n",
+    "html": "<p><img src=\"/url\" alt=\"foo bar\" loading=\"lazy\" title=\"title\" /></p>\n",
     "example": 585,
     "start_line": 8642,
     "end_line": 8648,
@@ -4773,7 +4773,7 @@
   },
   {
     "markdown": "![Foo]\n\n[foo]: /url \"title\"\n",
-    "html": "<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>\n",
+    "html": "<p><img src=\"/url\" alt=\"Foo\" loading=\"lazy\" title=\"title\" /></p>\n",
     "example": 587,
     "start_line": 8665,
     "end_line": 8671,
