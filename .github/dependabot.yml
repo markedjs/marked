@@ -5,6 +5,7 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "npm"
+    versioning-strategy: "increase"
     directory: "/"
     schedule:
       interval: "weekly"
