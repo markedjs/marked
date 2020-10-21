@@ -53,7 +53,7 @@
     "markdown": "0.5.x",
     "markdown-it": "11.0.1",
     "node-fetch": "^2.6.1",
-    "rollup": "^2.28.2",
+    "rollup": "^2.32.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-license": "^2.2.0",
