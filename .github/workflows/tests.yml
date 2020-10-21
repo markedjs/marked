@@ -37,9 +37,11 @@ jobs:
       - name: Lint ✨
         run: npm run test:lint
 
-  Build:
+  Release:
     needs: [Test, Lint]
-    if: github.ref == 'refs/heads/master'
+    if: |
+      github.ref == 'refs/heads/master' &&
+      github.event.repository.fork == false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -47,16 +49,18 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Build 🗜️
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm run build
           if ! git diff --quiet; then
             git config --global user.email "<>"
             git config --global user.name "MarkedJS bot"
             git commit -am "🗜️ build [skip ci]"
-            git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/markedjs/marked.git" HEAD:master
           fi
+      - name: Release 🎉
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
 
   Skip:
     if: contains(github.event.head_commit.message, '[skip ci]')
