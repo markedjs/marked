@@ -1,6 +1,7 @@
 const Tokenizer = require('./Tokenizer.js');
 const { defaults } = require('./defaults.js');
 const { block, inline } = require('./rules.js');
+const { repeatString } = require('./helpers.js');
 
 /**
  * smartypants text replacement
@@ -340,14 +341,14 @@ module.exports = class Lexer {
       if (links.length > 0) {
         while ((match = this.tokenizer.rules.inline.reflinkSearch.exec(maskedSrc)) != null) {
           if (links.includes(match[0].slice(match[0].lastIndexOf('[') + 1, -1))) {
-            maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
+            maskedSrc = maskedSrc.slice(0, match.index) + '[' + repeatString('a', match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
           }
         }
       }
     }
     // Mask out other blocks
     while ((match = this.tokenizer.rules.inline.blockSkip.exec(maskedSrc)) != null) {
-      maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
+      maskedSrc = maskedSrc.slice(0, match.index) + '[' + repeatString('a', match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
     }
 
     while (src) {
