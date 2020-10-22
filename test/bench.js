@@ -124,15 +124,6 @@ async function runBench(options) {
   } catch (e) {
     console.error('Could not bench markdown-it. (Error: %s)', e.message);
   }
-
-  try {
-    await bench('markdown.js', specs, (() => {
-      const md = require('markdown').markdown;
-      return md.toHTML.bind(md);
-    })());
-  } catch (e) {
-    console.error('Could not bench markdown.js. (Error: %s)', e.message);
-  }
 }
 
 async function bench(name, specs, engine) {
