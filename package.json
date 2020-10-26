@@ -60,7 +60,7 @@
     "rollup-plugin-license": "^2.2.0",
     "semantic-release": "^17.2.1",
     "titleize": "^2.1.0",
-    "uglify-js": "^3.11.3",
+    "uglify-js": "^3.11.4",
     "vuln-regex-detector": "^1.3.0"
   },
   "scripts": {
