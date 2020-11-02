@@ -195,7 +195,7 @@ module.exports = class Tokenizer {
       let raw = cap[0];
       const bull = cap[2];
       const isordered = bull.length > 1;
-      const isparen = bull[bull.length - 1] === ')';
+      const beginningBulletRegex = /^( *)([*+-]|\d+[.)])/;
 
       const list = {
         type: 'list',
@@ -212,16 +212,44 @@ module.exports = class Tokenizer {
       let next = false,
         item,
         space,
-        b,
+        bcurr,
+        bnext,
         addBack,
         loose,
         istask,
         ischecked;
 
-      const l = itemMatch.length;
+      let l = itemMatch.length;
+      bcurr = beginningBulletRegex.exec(itemMatch[0]);
       for (let i = 0; i < l; i++) {
         item = itemMatch[i];
         raw = item;
+
+        // Determine whether the next list item belongs here.
+        // Backpedal if it does not belong in this list.
+        if (i !== l - 1) {
+          bnext = beginningBulletRegex.exec(itemMatch[i + 1]);
+
+          if (bnext[1].length > bcurr[0].length || bnext[1].length > 3) {
+            // nested list
+            itemMatch.splice(i, 2, item + '\n' + itemMatch[i + 1]);
+            i--;
+            l--;
+            continue;
+          } else {
+            if (
+              // different bullet style
+              !this.options.pedantic || this.options.smartLists
+                ? bnext[2][bnext[2].length - 1] !== bull[bull.length - 1]
+                : isordered === (bnext[2].length === 1)
+            ) {
+              addBack = itemMatch.slice(i + 1).join('\n');
+              list.raw = list.raw.substring(0, list.raw.length - addBack.length);
+              i = l - 1;
+            }
+            bcurr = bnext;
+          }
+        }
 
         // Remove the list item's bullet
         // so it is seen as the next token.
@@ -235,18 +263,6 @@ module.exports = class Tokenizer {
           item = !this.options.pedantic
             ? item.replace(new RegExp('^ {1,' + space + '}', 'gm'), '')
             : item.replace(/^ {1,4}/gm, '');
-        }
-
-        // Determine whether the next list item belongs here.
-        // Backpedal if it does not belong in this list.
-        if (i !== l - 1) {
-          b = this.rules.block.bullet.exec(itemMatch[i + 1])[0];
-          if (isordered ? b.length === 1 || (!isparen && b[b.length - 1] === ')')
-            : (b.length > 1 || (this.options.smartLists && b !== bull))) {
-            addBack = itemMatch.slice(i + 1).join('\n');
-            list.raw = list.raw.substring(0, list.raw.length - addBack.length);
-            i = l - 1;
-          }
         }
 
         // Determine whether item is loose or not.
