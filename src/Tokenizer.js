@@ -221,6 +221,9 @@ module.exports = class Tokenizer {
       let l = itemMatch.length;
       bcurr = this.rules.block.listItemStart.exec(itemMatch[0]);
       for (let i = 0; i < l; i++) {
+        item = itemMatch[i];
+        raw = item;
+
         // Determine whether the next list item belongs here.
         // Backpedal if it does not belong in this list.
         if (i !== l - 1) {
@@ -246,9 +249,6 @@ module.exports = class Tokenizer {
           }
           bcurr = bnext;
         }
-
-        item = itemMatch[i];
-        raw = item;
 
         // Remove the list item's bullet
         // so it is seen as the next token.
