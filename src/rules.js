@@ -48,6 +48,10 @@ block.item = edit(block.item, 'gm')
   .replace(/bull/g, block.bullet)
   .getRegex();
 
+block.listItemStart = edit(/^( *)(bull)/)
+  .replace('bull', block.bullet)
+  .getRegex();
+
 block.list = edit(block.list)
   .replace(/bull/g, block.bullet)
   .replace('hr', '\\n+(?=\\1?(?:(?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$))')

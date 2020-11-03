@@ -195,7 +195,6 @@ module.exports = class Tokenizer {
       let raw = cap[0];
       const bull = cap[2];
       const isordered = bull.length > 1;
-      const beginningBulletRegex = /^( *)([*+-]|\d+[.)])/;
 
       const list = {
         type: 'list',
@@ -220,7 +219,7 @@ module.exports = class Tokenizer {
         ischecked;
 
       let l = itemMatch.length;
-      bcurr = beginningBulletRegex.exec(itemMatch[0]);
+      bcurr = this.rules.block.listItemStart.exec(itemMatch[0]);
       for (let i = 0; i < l; i++) {
         item = itemMatch[i];
         raw = item;
@@ -228,7 +227,7 @@ module.exports = class Tokenizer {
         // Determine whether the next list item belongs here.
         // Backpedal if it does not belong in this list.
         if (i !== l - 1) {
-          bnext = beginningBulletRegex.exec(itemMatch[i + 1]);
+          bnext = this.rules.block.listItemStart.exec(itemMatch[i + 1]);
 
           if (bnext[1].length > bcurr[0].length || bnext[1].length > 3) {
             // nested list
