@@ -2136,8 +2136,7 @@
     "example": 265,
     "start_line": 4578,
     "end_line": 4590,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "10) foo\n    - bar\n",
@@ -2153,8 +2152,7 @@
     "example": 267,
     "start_line": 4611,
     "end_line": 4621,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "- - foo\n",
@@ -2186,8 +2184,7 @@
     "example": 271,
     "start_line": 4894,
     "end_line": 4906,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "1. foo\n2. bar\n3) baz\n",
@@ -2261,8 +2258,7 @@
     "example": 280,
     "start_line": 5132,
     "end_line": 5150,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "1. a\n\n  2. b\n\n   3. c\n",
@@ -2270,8 +2266,7 @@
     "example": 281,
     "start_line": 5153,
     "end_line": 5171,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- a\n - b\n  - c\n   - d\n    - e\n",
