@@ -279,11 +279,10 @@ if (!module.parent) {
   process.title = 'marked bench';
   main(process.argv.slice());
 } else {
-  exports = main;
-  exports.main = main;
-  exports.time = time;
-  exports.runBench = runBench;
-  exports.load = load;
-  exports.bench = bench;
-  module.exports = exports;
+  module.exports = main;
+  module.exports.main = main;
+  module.exports.time = time;
+  module.exports.runBench = runBench;
+  module.exports.load = load;
+  module.exports.bench = bench;
 }
