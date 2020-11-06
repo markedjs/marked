@@ -322,15 +322,45 @@ function searchToObject() {
   return obj;
 }
 
-function jsonString(input) {
-  var output = (input + '')
-    .replace(/\n/g, '\\n')
-    .replace(/\r/g, '\\r')
-    .replace(/\t/g, '\\t')
-    .replace(/\f/g, '\\f')
-    .replace(/[\\"']/g, '\\$&')
-    .replace(/\u0000/g, '\\0');
-  return '"' + output + '"';
+function isArray(arr) {
+  return Object.prototype.toString.call(arr) === '[object Array]';
+}
+
+function stringRepeat(char, times) {
+  var s = '';
+  for (var i = 0; i < times; i++) {
+    s += char;
+  }
+  return s;
+}
+
+function jsonString(input, level) {
+  level = level || 0;
+  if (isArray(input)) {
+    if (input.length === 0) {
+      return '[]';
+    }
+    var items = [],
+        i;
+    if (!isArray(input[0]) && typeof input[0] === 'object' && input[0] !== null) {
+      for (i = 0; i < input.length; i++) {
+        items.push(stringRepeat(' ', 2 * level) + jsonString(input[i], level + 1));
+      }
+      return '[\n' + items.join('\n') + '\n]';
+    }
+    for (i = 0; i < input.length; i++) {
+      items.push(jsonString(input[i], level));
+    }
+    return '[' + items.join(', ') + ']';
+  } else if (typeof input === 'object' && input !== null) {
+    var props = [];
+    for (var prop in input) {
+      props.push(prop + ':' + jsonString(input[prop], level));
+    }
+    return '{' + props.join(', ') + '}';
+  } else {
+    return JSON.stringify(input);
+  }
 }
 
 function getScrollSize() {
@@ -422,19 +452,16 @@ function checkForChanges() {
       } else {
         var startTime = new Date();
         var lexed = marked.lexer(markdown, options);
-        var lexedList = [];
-        for (var i = 0; i < lexed.length; i++) {
-          var lexedLine = [];
-          for (var j in lexed[i]) {
-            lexedLine.push(j + ':' + jsonString(lexed[i][j]));
-          }
-          lexedList.push('{' + lexedLine.join(', ') + '}');
-        }
+        var lexedList = jsonString(lexed);
         var parsed = marked.parser(lexed, options);
-        var scrollPercent = getScrollPercent();
-        setParsed(parsed, lexedList.join('\n'));
-        setScrollPercent(scrollPercent);
         var endTime = new Date();
+
+        $previewElem.classList.remove('error');
+        $htmlElem.classList.remove('error');
+        $lexerElem.classList.remove('error');
+        var scrollPercent = getScrollPercent();
+        setParsed(parsed, lexedList);
+        setScrollPercent(scrollPercent);
         delayTime = endTime - startTime;
         setResponseTime(delayTime);
         if (delayTime < 50) {
