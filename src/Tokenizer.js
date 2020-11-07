@@ -320,6 +320,7 @@ module.exports = class Tokenizer {
       if (cap[3]) cap[3] = cap[3].substring(1, cap[3].length - 1);
       const tag = cap[1].toLowerCase().replace(/\s+/g, ' ');
       return {
+        type: 'def',
         tag,
         raw: cap[0],
         href: cap[2],
