@@ -58,7 +58,7 @@
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-license": "^2.2.0",
-    "semantic-release": "^17.2.1",
+    "semantic-release": "^17.2.2",
     "titleize": "^2.1.0",
     "uglify-js": "^3.11.4",
     "vuln-regex-detector": "^1.3.0"
