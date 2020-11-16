@@ -48,7 +48,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.2",
+    "eslint-plugin-standard": "^4.1.0",
     "front-matter": "^4.0.2",
     "highlight.js": "^10.3.2",
     "jasmine": "^3.6.3",
