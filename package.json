@@ -38,7 +38,7 @@
     "@markedjs/html-differ": "^3.0.3",
     "@semantic-release/commit-analyzer": "^8.0.1",
     "@semantic-release/git": "^9.0.0",
-    "@semantic-release/github": "^7.1.1",
+    "@semantic-release/github": "^7.1.2",
     "@semantic-release/npm": "^7.0.6",
     "@semantic-release/release-notes-generator": "^9.0.1",
     "cheerio": "^1.0.0-rc.3",
