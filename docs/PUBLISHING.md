@@ -12,4 +12,4 @@ We follow [semantic versioning](https://semver.org) where the following sequence
 
 1. **Major:** There is at least one change to the public API or a break from the [CommonMark](https://spec.commonmark.org/current/) or [GFM](https://github.github.com/gfm/) spec.
 2. **Minor:** There is at least one new feature added to the public API.
-3. **Patch:** No breaking changes, no new features.
+3. **Patch:** Changes that move marked closer to spec compliance or change a public API that does not break backwards compatibility.
