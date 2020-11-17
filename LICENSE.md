@@ -8,6 +8,7 @@ all code is your original work. `</legalese>`
 
 ## Marked
 
+Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/)
 Copyright (c) 2011-2018, Christopher Jeffrey (https://github.com/chjj/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,8 +31,8 @@ THE SOFTWARE.
 
 ## Markdown
 
-Copyright © 2004, John Gruber 
-http://daringfireball.net/ 
+Copyright © 2004, John Gruber
+http://daringfireball.net/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
