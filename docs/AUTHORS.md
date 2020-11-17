@@ -65,6 +65,8 @@ Marked takes an encompassing approach to its community. As such, you can think o
   </tbody>
 </table>
 
+## Contributors
+
 <table>
   <tbody>
     <tr>
