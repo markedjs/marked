@@ -53,11 +53,19 @@ Marked takes an encompassing approach to its community. As such, you can think o
         <small>Release Wrangler; Titan of the test harness; Dr. DevOps</small>
       </td>
       <td align="center" valign="top">
-        &nbsp;
+        <a href="https://github.com/calculuschild">
+          <img width="100" height="100" src="https://github.com/calculuschild.png?s=150">
+        </a>
+        <br>
+        <a href="https://github.com/calculuschild">Trevor Buckner</a>
+        <div>Committer</div>
+        <small>Master of Marked</small>
       </td>
     </tr>
   </tbody>
 </table>
+
+## Contributors
 
 <table>
   <tbody>

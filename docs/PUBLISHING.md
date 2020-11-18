@@ -8,14 +8,8 @@ Marked uses [semantic-release](https://github.com/semantic-release/semantic-rele
 
 ## Versioning
 
-We follow [semantic versioning](https://semver.org) where the following sequence is true `[major].[minor].[patch]`; therefore, consider the following implications of the release you are preparing:
+We follow [semantic versioning](https://semver.org) where the following sequence is true `[major].[minor].[patch]`:
 
-1. **Major:** There is at least one change not deemed backward compatible.
-2. **Minor:** There is at least one new feature added to the release.
-3. **Patch:** No breaking changes, no new features.
-
-What to expect while Marked is a zero-major (0.x.y):
-
-1. The major will remain at zero; thereby, alerting consumers to the potentially volatile nature of the package.
-2. The minor will tend to be more analogous to a `major` release.
-3. The patch will tend to be more analogous to a `minor` release or a collection of bug fixes (patches).
+1. **Major:** There is at least one change to the public API or a break from the [CommonMark](https://spec.commonmark.org/current/) or [GFM](https://github.github.com/gfm/) spec.
+2. **Minor:** There is at least one new feature added to the public API.
+3. **Patch:** Changes that move Marked closer to spec compliance or change a public API that does not break backwards compatibility.
