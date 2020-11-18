@@ -328,12 +328,13 @@ module.exports = class Lexer {
   /**
    * Lexing/Compiling
    */
-  inlineTokens(src, tokens = [], inLink = false, inRawBlock = false, prevChar = '') {
+  inlineTokens(src, tokens = [], inLink = false, inRawBlock = false) {
     let token;
 
     // String with links masked to avoid interference with em and strong
     let maskedSrc = src;
     let match;
+    let keepPrevChar, prevChar;
 
     // Mask out reflinks
     if (this.tokens.links) {
@@ -352,6 +353,10 @@ module.exports = class Lexer {
     }
 
     while (src) {
+      if (!keepPrevChar) {
+        prevChar = '';
+      }
+      keepPrevChar = false;
       // escape
       if (token = this.tokenizer.escape(src)) {
         src = src.substring(token.raw.length);
@@ -444,6 +449,7 @@ module.exports = class Lexer {
       if (token = this.tokenizer.inlineText(src, inRawBlock, smartypants)) {
         src = src.substring(token.raw.length);
         prevChar = token.raw.slice(-1);
+        keepPrevChar = true;
         tokens.push(token);
         continue;
       }
