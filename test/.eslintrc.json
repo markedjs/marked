@@ -1,8 +1,5 @@
 {
   "extends": "standard",
-  "plugins": [
-    "standard"
-  ],
   "globals": {
     "expectAsync": "readonly"
   },
