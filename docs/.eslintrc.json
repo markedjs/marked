@@ -1,8 +1,5 @@
 {
   "extends": "standard",
-  "plugins": [
-    "standard"
-  ],
   "parserOptions": {
     "ecmaVersion": 5,
     "sourceType": "script"

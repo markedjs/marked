@@ -1,8 +1,5 @@
 {
   "extends": "standard",
-  "plugins": [
-    "standard"
-  ],
   "rules": {
     "semi": ["error", "always"],
     "indent": ["error", 2, {
