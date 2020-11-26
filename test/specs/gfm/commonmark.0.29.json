@@ -3939,8 +3939,7 @@
     "example": 486,
     "start_line": 7543,
     "end_line": 7547,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[link](foo\nbar)\n",
@@ -3964,8 +3963,7 @@
     "example": 489,
     "start_line": 7571,
     "end_line": 7575,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[link](<foo\\>)\n",
@@ -3973,8 +3971,7 @@
     "example": 490,
     "start_line": 7579,
     "end_line": 7583,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[a](<b)c\n[a](<b)c>\n[a](<b>c)\n",
@@ -3982,8 +3979,7 @@
     "example": 491,
     "start_line": 7588,
     "end_line": 7596,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[link](\\(foo\\))\n",
