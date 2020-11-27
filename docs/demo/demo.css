@@ -31,6 +31,10 @@ header h1 {
 	z-index: 1000;
 }
 
+.other-demos {
+	margin-left: 3em;
+}
+
 .containers {
 	display: flex;
 	height: calc(100vh - 68px);
