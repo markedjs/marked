@@ -466,7 +466,7 @@ module.exports = class Tokenizer {
 
         // ending angle bracket cannot be escaped
         const rtrimSlash = rtrim(trimmedUrl.slice(0, -1), '\\');
-        if (!((trimmedUrl.length - rtrimSlash.length) & 1)) {
+        if ((trimmedUrl.length - rtrimSlash.length) % 2 === 0) {
           return;
         }
       } else {
