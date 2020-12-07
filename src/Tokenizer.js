@@ -507,6 +507,99 @@ module.exports = class Tokenizer {
     }
   }
 
+  emStrong(src, maskedSrc, prevChar = '') {
+    console.log("trying to match:");
+    console.log(src);
+    let match = this.rules.inline.emStrong.lDelim.exec(src);
+    console.log(match);
+    console.log(src);
+    if (!match) {
+      return;
+    }
+
+    let lLength, rLength;
+    let delimTotal = 0;
+    let bothDelimTotal = 0;
+    let nextChar = match[1] || match[2] || '';
+    console.log("nextChar " + nextChar);
+
+    if(match[3] && prevChar.match(/\w/)) { //_ can't be be between two \w
+      return;
+    }
+
+    if (match && (!nextChar || (nextChar && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar))))) {
+      console.log("Found lDelim");
+
+      lLength = match[0].length - 1;
+      console.log('lLength: ' + lLength);
+      delimTotal += lLength;
+      const endReg = match[0][0] === '*' ? this.rules.inline.emStrong.rDelimAst : this.rules.inline.emStrong.rDelimUnd;
+      endReg.lastIndex = 0;
+
+      maskedSrc = maskedSrc.slice(-1 * src.length + lLength); //Bump maskedSrc to same section of string as src (move to lexer?)
+
+      let cap;
+      while ((match = endReg.exec(maskedSrc)) != null) {
+        console.log("looking for rDelim");
+        console.log(match);
+        console.log(endReg.lastIndex);
+        cap = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
+
+        if(!cap){ //skip over delimiters between the opposite delimiter character (skip the * in __abc*abc__)
+          continue;
+        }
+
+        rLength = cap.length;
+
+        if(match[3] || match[4]) { //found another left Delim
+          console.log("found another left delim");
+          delimTotal += rLength;
+          console.log("delimTotal is now " + delimTotal);
+          continue;
+        }
+        else if(match[5] || match[6]) {
+          if(lLength % 3 != 0 && ((lLength + rLength) % 3 == 0) ) {
+            //delimTotal += rLength;
+            console.log("found either left or right delim that can't close")
+            //console.log("delimTotal is now " + delimTotal);
+            continue;
+          }
+
+        }
+        console.log("passed mult 3 rule");
+
+        delimTotal -= rLength;
+        console.log("delimTotal is now " + delimTotal);
+        console.log("rLength is " + rLength);
+
+        if(delimTotal > 0) {  //Haven't found enough closing delimiters
+          console.log("not enough closers yet");
+          continue;
+        }
+
+        console.log("lastIndex");
+        console.log(endReg.lastIndex);
+
+        if(Math.min(lLength, rLength) % 2) {
+          console.log("should create em");
+          return {
+            type: 'em',
+            raw: src.slice(0, lLength + match.index + rLength + 1),
+            text: src.slice(1, lLength + match.index + rLength)
+          };
+        }
+        if(Math.min(lLength, rLength) % 2 == 0){
+          console.log("should create strong");
+          return {
+            type: 'strong',
+            raw: src.slice(0, lLength + match.index + rLength + 1),
+            text: src.slice(2, lLength + match.index + rLength - 1)
+          }
+        }
+      }
+    }
+  }
+
   strong(src, maskedSrc, prevChar = '') {
     let match = this.rules.inline.strong.start.exec(src);
 

@@ -3355,7 +3355,7 @@
     "start_line": 6913,
     "end_line": 6917,
     "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "shouldFail": false
   },
   {
     "markdown": "foo******bar*********baz\n",
