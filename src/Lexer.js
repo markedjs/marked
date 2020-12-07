@@ -362,6 +362,7 @@ module.exports = class Lexer {
         prevChar = '';
       }
       keepPrevChar = false;
+
       // escape
       if (token = this.tokenizer.escape(src)) {
         src = src.substring(token.raw.length);
@@ -398,7 +399,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      //em & strong
+      // em & strong
       if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar)) {
         src = src.substring(token.raw.length);
         token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);

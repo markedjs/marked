@@ -509,66 +509,52 @@ module.exports = class Tokenizer {
 
   emStrong(src, maskedSrc, prevChar = '') {
     let match = this.rules.inline.emStrong.lDelim.exec(src);
-    if (!match) {
-      return;
-    }
+    if (!match) return;
 
-    let lLength, rLength;
-    let delimTotal = 0;
-    let bothDelimTotal = 0;
-    let nextChar = match[1] || match[2] || '';
+    if (match[3] && prevChar.match(/\w/)) return; // _ can't be be between two \w
 
-    if(match[3] && prevChar.match(/\w/)) { //_ can't be be between two \w
-      return;
-    }
+    const nextChar = match[1] || match[2] || '';
 
-    if (match && (!nextChar || (nextChar && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar))))) {
-      lLength = match[0].length - 1;
-      delimTotal += lLength;
+    if (!nextChar || (nextChar && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar)))) {
+      const lLength = match[0].length - 1;
+      let rDelim, rLength, delimTotal = lLength;
+
       const endReg = match[0][0] === '*' ? this.rules.inline.emStrong.rDelimAst : this.rules.inline.emStrong.rDelimUnd;
       endReg.lastIndex = 0;
 
-      maskedSrc = maskedSrc.slice(-1 * src.length + lLength); //Bump maskedSrc to same section of string as src (move to lexer?)
+      maskedSrc = maskedSrc.slice(-1 * src.length + lLength); // Bump maskedSrc to same section of string as src (move to lexer?)
 
-      let cap;
       while ((match = endReg.exec(maskedSrc)) != null) {
-        cap = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
+        rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
-        if(!cap){ //skip over delimiters between the opposite delimiter character (skip the * in __abc*abc__)
-          continue;
-        }
+        if (!rDelim) continue; // matched the first alternative in rules.js (skip the * in __abc*abc__)
 
-        rLength = cap.length;
+        rLength = rDelim.length;
 
-        if(match[3] || match[4]) { //found another left Delim
+        if (match[3] || match[4]) { // found another left Delim
           delimTotal += rLength;
           continue;
-        }
-        else if(match[5] || match[6]) {
-          if(lLength % 3 != 0 && ((lLength + rLength) % 3 == 0) ) {
-            continue; //CommonMark Emphasis Rules 9-10
-          }
+        } else if (match[5] || match[6]) {
+          if (lLength % 3 && !((lLength + rLength) % 3)) continue; // CommonMark Emphasis Rules 9-10
         }
 
         delimTotal -= rLength;
 
-        if(delimTotal > 0) {  //Haven't found enough closing delimiters
-          continue;
-        }
+        if (delimTotal > 0) continue; // Haven't found enough closing delimiters
 
-        if(Math.min(lLength, rLength) % 2) {
+        if (Math.min(lLength, rLength) % 2) {
           return {
             type: 'em',
             raw: src.slice(0, lLength + match.index + rLength + 1),
             text: src.slice(1, lLength + match.index + rLength)
           };
         }
-        if(Math.min(lLength, rLength) % 2 == 0){
+        if (Math.min(lLength, rLength) % 2 === 0) {
           return {
             type: 'strong',
             raw: src.slice(0, lLength + match.index + rLength + 1),
             text: src.slice(2, lLength + match.index + rLength - 1)
-          }
+          };
         }
       }
     }
