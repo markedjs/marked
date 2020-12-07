@@ -174,23 +174,11 @@ const inline = {
   nolink: /^!?\[(?!\s*\])((?:\[[^\[\]]*\]|\\[\[\]]|[^\[\]])*)\](?:\[\])?/,
   reflinkSearch: 'reflink|nolink(?!\\()',
   emStrong: {
-    lDelim: /^(?:\*+(?:([punctuation_])|[^\s*]))|^(?:_+(?:([punctuation*])|([^\s_])))/,
-    //         (1) and (2) can only be Right Delimiter. (3) and (4) can be either Left or Right. (5) and (6) is only Left
-    //         (1) #***                       (2) a***#, a***                              (3) #***a, ***a                             (4) ***#                    (5) #***#                             (6) a***a
-    rDelimAst: /__[^_]*?\*[^_]*?__|[punctuation_](\*+)(?=[\s]|$)|[^punctuation*_\s](\*+)(?=[punctuation_\s]|$)|[punctuation_\s](\*+)(?=[^punctuation*_\s])|[\s](\*+)(?=[punctuation_])|[punctuation_](\*+)(?=[punctuation_])|[^punctuation*_\s](\*+)(?=[^punctuation*_\s])/,
-    rDelimUnd: /[punctuation*](\_+)(?=[\s]|$)|[^punctuation*_\s](\_+)(?=[punctuation*\s]|$)|[punctuation*\s](\_+)(?=[^punctuation*_\s])|[\s](\_+)(?=[punctuation*])|[punctuation*](\_+)(?=[punctuation*])/,
-  },
-  strong: {
-    start: /^(?:(\*\*(?=[*punctuation]))|\*\*)(?![\s])|__/, // (1) returns if starts w/ punctuation
-    middle: /^\*\*(?:(?:(?!overlapSkip)(?:[^*]|\\\*)|overlapSkip)|\*(?:(?!overlapSkip)(?:[^*]|\\\*)|overlapSkip)*?\*)+?\*\*$|^__(?![\s])((?:(?:(?!overlapSkip)(?:[^_]|\\_)|overlapSkip)|_(?:(?!overlapSkip)(?:[^_]|\\_)|overlapSkip)*?_)+?)__$/,
-    endAst: /[^punctuation\s]\*\*(?!\*)|[punctuation]\*\*(?!\*)(?:(?=[punctuation_\s]|$))/, // last char can't be punct, or final * must also be followed by punct (or endline)
-    endUnd: /[^\s]__(?!_)(?:(?=[punctuation*\s])|$)/ // last char can't be a space, and final _ must preceed punct or \s (or endline)
-  },
-  em: {
-    start: /^(?:(\*(?=[punctuation]))|\*)(?![*\s])|_/, // (1) returns if starts w/ punctuation
-    middle: /^\*(?:(?:(?!overlapSkip)(?:[^*]|\\\*)|overlapSkip)|\*(?:(?!overlapSkip)(?:[^*]|\\\*)|overlapSkip)*?\*)+?\*$|^_(?![_\s])(?:(?:(?!overlapSkip)(?:[^_]|\\_)|overlapSkip)|_(?:(?!overlapSkip)(?:[^_]|\\_)|overlapSkip)*?_)+?_$/,
-    endAst: /[^punctuation\s]\*(?!\*)|[punctuation]\*(?!\*)(?:(?=[punctuation_\s]|$))/, // last char can't be punct, or final * must also be followed by punct (or endline)
-    endUnd: /[^\s]_(?!_)(?:(?=[punctuation*\s])|$)/ // last char can't be a space, and final _ must preceed punct or \s (or endline)
+    lDelim: /^(?:\*+(?:([punct_])|[^\s*]))|^(?:_+(?:([punct*])|([^\s_])))/,
+    //        (1) and (2) can only be a Right Delimiter. (3) and (4) can only be Left.  (5) and (6) can be either Left or Right.
+    //        () Skip other delimiter (1) #***                (2) a***#, a***                   (3) #***a, ***a                 (4) ***#              (5) #***#                 (6) a***a
+    rDelimAst: /\_\_[^_]*?\*[^_]*?\_\_|[punct_](\*+)(?=[\s]|$)|[^punct*_\s](\*+)(?=[punct_\s]|$)|[punct_\s](\*+)(?=[^punct*_\s])|[\s](\*+)(?=[punct_])|[punct_](\*+)(?=[punct_])|[^punct*_\s](\*+)(?=[^punct*_\s])/,
+    rDelimUnd: /\*\*[^*]*?\_[^*]*?\*\*|[punct*](\_+)(?=[\s]|$)|[^punct*_\s](\_+)(?=[punct*\s]|$)|[punct*\s](\_+)(?=[^punct*_\s])|[\s](\_+)(?=[punct*])|[punct*](\_+)(?=[punct*])/, // ^ Not allowed for _
   },
   code: /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/,
   br: /^( {2,}|\\)\n(?!\s*$)/,
@@ -200,69 +188,27 @@ const inline = {
 };
 
 // list of punctuation marks from common mark spec
-// without * and _ to workaround cases with double emphasis
+// without * and _ to handle the different emphasis markers * and _
 inline._punctuation = '!"#$%&\'()+\\-.,/:;<=>?@\\[\\]`^{|}~';
 inline.punctuation = edit(inline.punctuation).replace(/punctuation/g, inline._punctuation).getRegex();
 
 // sequences em should skip over [title](link), `code`, <html>
-inline._blockSkip = '\\[[^\\]]*?\\]\\([^\\)]*?\\)|`[^`]*?`|<[^>]*?>';
-inline._overlapSkip = '__[^_]*?__|\\*\\*\\[^\\*\\]*?\\*\\*';
-inline.overlapSkip = /__[^_]*?\*[^_]*?__|\\*\\*\\[^\\*\\]*?\\*\\*/;
+inline.blockSkip = /\[[^\]]*?\]\([^\)]*?\)|`[^`]*?`|<[^>]*?>/g;
 inline.escapedEmSt = /\\\*|\\_/g;
 
 inline._comment = edit(block._comment).replace('(?:-->|$)', '-->').getRegex();
 
 inline.emStrong.lDelim = edit(inline.emStrong.lDelim)
-  .replace(/punctuation/g, inline._punctuation)
+  .replace(/punct/g, inline._punctuation)
   .getRegex();
 
 inline.emStrong.rDelimAst = edit(inline.emStrong.rDelimAst, 'g')
-  .replace(/punctuation/g, inline._punctuation)
+  .replace(/punct/g, inline._punctuation)
   .getRegex();
 
 inline.emStrong.rDelimUnd = edit(inline.emStrong.rDelimUnd, 'g')
-  .replace(/punctuation/g, inline._punctuation)
+  .replace(/punct/g, inline._punctuation)
   .getRegex();
-
-inline.em.start = edit(inline.em.start)
-  .replace(/punctuation/g, inline._punctuation)
-  .getRegex();
-
-inline.em.middle = edit(inline.em.middle)
-  .replace(/punctuation/g, inline._punctuation)
-  .replace(/overlapSkip/g, inline._overlapSkip)
-  .getRegex();
-
-inline.em.endAst = edit(inline.em.endAst, 'g')
-  .replace(/punctuation/g, inline._punctuation)
-  .getRegex();
-
-inline.em.endUnd = edit(inline.em.endUnd, 'g')
-  .replace(/punctuation/g, inline._punctuation)
-  .getRegex();
-
-inline.strong.start = edit(inline.strong.start)
-  .replace(/punctuation/g, inline._punctuation)
-  .getRegex();
-
-inline.strong.middle = edit(inline.strong.middle)
-  .replace(/punctuation/g, inline._punctuation)
-  .replace(/overlapSkip/g, inline._overlapSkip)
-  .getRegex();
-
-inline.strong.endAst = edit(inline.strong.endAst, 'g')
-  .replace(/punctuation/g, inline._punctuation)
-  .getRegex();
-
-inline.strong.endUnd = edit(inline.strong.endUnd, 'g')
-  .replace(/punctuation/g, inline._punctuation)
-  .getRegex();
-
-inline.blockSkip = edit(inline._blockSkip, 'g')
-  .getRegex();
-
-// inline.overlapSkip = edit(inline._overlapSkip, 'g')
-//   .getRegex();
 
 inline._escapes = /\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/g;
 
