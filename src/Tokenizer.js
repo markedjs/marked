@@ -489,8 +489,6 @@ module.exports = class Tokenizer {
         if (link) {
           href = link[1];
           title = link[3];
-        } else {
-          title = '';
         }
       } else {
         title = cap[3] ? cap[3].slice(1, -1) : '';
