@@ -505,11 +505,10 @@ module.exports = class Tokenizer {
           href = href.slice(1, -1);
         }
       }
-      const token = outputLink(cap, {
+      return outputLink(cap, {
         href: href ? href.replace(this.rules.inline._escapes, '$1') : href,
         title: title ? title.replace(this.rules.inline._escapes, '$1') : title
       }, cap[0]);
-      return token;
     }
   }
 
@@ -527,8 +526,7 @@ module.exports = class Tokenizer {
           text
         };
       }
-      const token = outputLink(cap, link, cap[0]);
-      return token;
+      return outputLink(cap, link, cap[0]);
     }
   }
 
