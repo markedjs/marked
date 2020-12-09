@@ -3653,8 +3653,7 @@
     "example": 453,
     "start_line": 7209,
     "end_line": 7213,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "_foo__\n",
@@ -3670,8 +3669,7 @@
     "example": 455,
     "start_line": 7227,
     "end_line": 7231,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "____foo_\n",
@@ -3679,8 +3677,7 @@
     "example": 456,
     "start_line": 7234,
     "end_line": 7238,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "__foo___\n",
