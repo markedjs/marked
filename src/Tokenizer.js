@@ -517,7 +517,7 @@ module.exports = class Tokenizer {
 
     if (!nextChar || (nextChar && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar)))) {
       const lLength = match[0].length - 1;
-      let rDelim, rLength, delimTotal = lLength;
+      let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
 
       const endReg = match[0][0] === '*' ? this.rules.inline.emStrong.rDelimAst : this.rules.inline.emStrong.rDelimUnd;
       endReg.lastIndex = 0;
@@ -531,16 +531,24 @@ module.exports = class Tokenizer {
 
         rLength = rDelim.length;
 
-        if (match[3] || match[4]) { // found another left Delim
+        if (match[3] || match[4]) { // found another Left Delim
           delimTotal += rLength;
           continue;
-        } else if (match[5] || match[6]) {
-          if (lLength % 3 && !((lLength + rLength) % 3)) continue; // CommonMark Emphasis Rules 9-10
+        } else if (match[5] || match[6]) { // either Left or Right Delim
+          if (lLength % 3 && !((lLength + rLength) % 3)) {
+              midDelimTotal += rLength;
+              continue; // CommonMark Emphasis Rules 9-10
+          }
         }
 
         delimTotal -= rLength;
 
         if (delimTotal > 0) continue; // Haven't found enough closing delimiters
+
+        //If this is the last rDelimiter, remove extra characters. *a*** -> *a*
+        if(delimTotal + midDelimTotal - rLength <= 0 && !maskedSrc.slice(endReg.lastIndex).match(endReg)) {
+          rLength = Math.min(rLength, rLength + delimTotal + midDelimTotal);
+        }
 
         if (Math.min(lLength, rLength) % 2) {
           return {

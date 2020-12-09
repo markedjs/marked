@@ -3357,8 +3357,7 @@
     "example": 416,
     "start_line": 6919,
     "end_line": 6923,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "*foo **bar *baz* bim** bop*\n",
@@ -3566,8 +3565,7 @@
     "example": 442,
     "start_line": 7129,
     "end_line": 7133,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "***foo**\n",
@@ -3591,8 +3589,7 @@
     "example": 445,
     "start_line": 7150,
     "end_line": 7154,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "*foo****\n",
@@ -3600,8 +3597,7 @@
     "example": 446,
     "start_line": 7157,
     "end_line": 7161,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "foo ___\n",
@@ -3666,8 +3662,7 @@
     "example": 454,
     "start_line": 7220,
     "end_line": 7224,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "___foo__\n",
@@ -3693,8 +3688,7 @@
     "example": 457,
     "start_line": 7241,
     "end_line": 7245,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "_foo____\n",
@@ -3702,8 +3696,7 @@
     "example": 458,
     "start_line": 7248,
     "end_line": 7252,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "**foo**\n",
