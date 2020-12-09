@@ -536,8 +536,8 @@ module.exports = class Tokenizer {
           continue;
         } else if (match[5] || match[6]) { // either Left or Right Delim
           if (lLength % 3 && !((lLength + rLength) % 3)) {
-              midDelimTotal += rLength;
-              continue; // CommonMark Emphasis Rules 9-10
+            midDelimTotal += rLength;
+            continue; // CommonMark Emphasis Rules 9-10
           }
         }
 
@@ -545,8 +545,8 @@ module.exports = class Tokenizer {
 
         if (delimTotal > 0) continue; // Haven't found enough closing delimiters
 
-        //If this is the last rDelimiter, remove extra characters. *a*** -> *a*
-        if(delimTotal + midDelimTotal - rLength <= 0 && !maskedSrc.slice(endReg.lastIndex).match(endReg)) {
+        // If this is the last rDelimiter, remove extra characters. *a*** -> *a*
+        if (delimTotal + midDelimTotal - rLength <= 0 && !maskedSrc.slice(endReg.lastIndex).match(endReg)) {
           rLength = Math.min(rLength, rLength + delimTotal + midDelimTotal);
         }
 
