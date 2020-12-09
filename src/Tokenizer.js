@@ -511,7 +511,7 @@ module.exports = class Tokenizer {
     let match = this.rules.inline.emStrong.lDelim.exec(src);
     if (!match) return;
 
-    if (match[3] && prevChar.match(/\w/)) return; // _ can't be be between two \w
+    if (match[3] && prevChar.match(/[\p{L}\p{N}]/u)) return; // _ can't be be between two alphanumerics. \p{L}\p{N} includes non-english alphabet/numbers as well
 
     const nextChar = match[1] || match[2] || '';
 

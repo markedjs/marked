@@ -2917,8 +2917,7 @@
     "example": 361,
     "start_line": 6390,
     "end_line": 6394,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "aa_\"bb\"_cc\n",
@@ -3126,8 +3125,7 @@
     "example": 387,
     "start_line": 6641,
     "end_line": 6645,
-    "section": "Emphasis and strong emphasis",
-    "shouldFail": true
+    "section": "Emphasis and strong emphasis"
   },
   {
     "markdown": "__foo, __bar__, baz__\n",
