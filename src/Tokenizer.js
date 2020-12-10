@@ -121,11 +121,24 @@ module.exports = class Tokenizer {
   heading(src) {
     const cap = this.rules.block.heading.exec(src);
     if (cap) {
+      let text = cap[2].trim();
+
+      // remove trailing #s
+      if (text.endsWith('#')) {
+        const trimmed = rtrim(text, '#');
+        if (this.options.pedantic) {
+          text = trimmed.trim();
+        } else if (!trimmed || trimmed.endsWith(' ')) {
+          // CommonMark requires space before trailing #s
+          text = trimmed.trim();
+        }
+      }
+
       return {
         type: 'heading',
         raw: cap[0],
         depth: cap[1].length,
-        text: cap[2]
+        text: text
       };
     }
   }

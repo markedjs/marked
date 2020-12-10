@@ -12,7 +12,7 @@ const block = {
   code: /^( {4}[^\n]+\n*)+/,
   fences: /^ {0,3}(`{3,}(?=[^`\n]*\n)|~{3,})([^\n]*)\n(?:|([\s\S]*?)\n)(?: {0,3}\1[~`]* *(?:\n+|$)|$)/,
   hr: /^ {0,3}((?:- *){3,}|(?:_ *){3,}|(?:\* *){3,})(?:\n+|$)/,
-  heading: /^ {0,3}(#{1,6}) +([^\n]*?)(?: +#+)? *(?:\n+|$)/,
+  heading: /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/,
   blockquote: /^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/,
   list: /^( {0,3})(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?! {0,3}bull )\n*|\s*$)/,
   html: '^ {0,3}(?:' // optional indentation
@@ -143,7 +143,7 @@ block.pedantic = merge({}, block.normal, {
       + '\\b)\\w+(?!:|[^\\w\\s@]*@)\\b')
     .getRegex(),
   def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +(["(][^\n]+[")]))? *(?:\n+|$)/,
-  heading: /^ *(#{1,6}) *([^\n]+?) *(?:#+ *)?(?:\n+|$)/,
+  heading: /^(#{1,6})(.*)(?:\n+|$)/,
   fences: noopTest, // fences not supported
   paragraph: edit(block.normal._paragraph)
     .replace('hr', block.hr)
