@@ -28,7 +28,6 @@ function escape(html, encode) {
 }
 
 const unescapeTest = /&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig;
-
 function unescape(html) {
   // explicitly match decimal, hex, and named HTML entities
   return html.replace(unescapeTest, (_, n) => {
@@ -59,67 +58,6 @@ function edit(regex, opt) {
     }
   };
   return obj;
-}
-
-const nonWordAndColonTest = /[^\w:]/g;
-const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
-function cleanUrl(sanitize, base, href) {
-  if (sanitize) {
-    let prot;
-    try {
-      prot = decodeURIComponent(unescape(href))
-        .replace(nonWordAndColonTest, '')
-        .toLowerCase();
-    } catch (e) {
-      return null;
-    }
-    if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
-      return null;
-    }
-  }
-  if (base && !originIndependentUrl.test(href)) {
-    href = resolveUrl(base, href);
-  }
-  try {
-    href = encodeURI(href).replace(/%25/g, '%');
-  } catch (e) {
-    return null;
-  }
-  return href;
-}
-
-const baseUrls = {};
-const justDomain = /^[^:]+:\/*[^/]*$/;
-const protocol = /^([^:]+:)[\s\S]*$/;
-const domain = /^([^:]+:\/*[^/]*)[\s\S]*$/;
-
-function resolveUrl(base, href) {
-  if (!baseUrls[' ' + base]) {
-    // we can ignore everything in base after the last slash of its path component,
-    // but we might need to add _that_
-    // https://tools.ietf.org/html/rfc3986#section-3
-    if (justDomain.test(base)) {
-      baseUrls[' ' + base] = base + '/';
-    } else {
-      baseUrls[' ' + base] = rtrim(base, '/', true);
-    }
-  }
-  base = baseUrls[' ' + base];
-  const relativeBase = base.indexOf(':') === -1;
-
-  if (href.substring(0, 2) === '//') {
-    if (relativeBase) {
-      return href;
-    }
-    return base.replace(protocol, '$1') + href;
-  } else if (href.charAt(0) === '/') {
-    if (relativeBase) {
-      return href;
-    }
-    return base.replace(domain, '$1') + href;
-  } else {
-    return base + href;
-  }
 }
 
 const noopTest = { exec: function noopTest() {} };
@@ -222,12 +160,6 @@ function findClosingBracket(str, b) {
   return -1;
 }
 
-function checkSanitizeDeprecation(opt) {
-  if (opt && opt.sanitize && !opt.silent) {
-    console.warn('marked(): sanitize and sanitizer parameters are deprecated since version 0.7.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/#/USING_ADVANCED.md#options');
-  }
-}
-
 // copied from https://stackoverflow.com/a/5450113/806777
 function repeatString(pattern, count) {
   if (count < 1) {
@@ -248,13 +180,10 @@ module.exports = {
   escape,
   unescape,
   edit,
-  cleanUrl,
-  resolveUrl,
   noopTest,
   merge,
   splitCells,
   rtrim,
   findClosingBracket,
-  checkSanitizeDeprecation,
   repeatString
 };

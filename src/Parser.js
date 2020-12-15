@@ -1,10 +1,7 @@
+const Hooks = require('./Hooks.js');
 const Renderer = require('./Renderer.js');
 const TextRenderer = require('./TextRenderer.js');
-const Slugger = require('./Slugger.js');
 const { defaults } = require('./defaults.js');
-const {
-  unescape
-} = require('./helpers.js');
 
 /**
  * Parsing & Compiling
@@ -12,11 +9,11 @@ const {
 module.exports = class Parser {
   constructor(options) {
     this.options = options || defaults;
+    this.options.hooks = this.options.hooks || new Hooks();
+    this.options.hooks.options = this.options;
     this.options.renderer = this.options.renderer || new Renderer();
-    this.renderer = this.options.renderer;
-    this.renderer.options = this.options;
+    this.options.renderer.options = this.options;
     this.textRenderer = new TextRenderer();
-    this.slugger = new Slugger();
   }
 
   /**
@@ -67,19 +64,18 @@ module.exports = class Parser {
           continue;
         }
         case 'hr': {
-          out += this.renderer.hr();
+          out += this.options.renderer.hr();
           continue;
         }
         case 'heading': {
-          out += this.renderer.heading(
+          out += this.options.renderer.heading(
             this.parseInline(token.tokens),
             token.depth,
-            unescape(this.parseInline(token.tokens, this.textRenderer)),
-            this.slugger);
+            this.options.hooks.unescape(this.parseInline(token.tokens, this.textRenderer)));
           continue;
         }
         case 'code': {
-          out += this.renderer.code(token.text,
+          out += this.options.renderer.code(token.text,
             token.lang,
             token.escaped);
           continue;
@@ -91,12 +87,12 @@ module.exports = class Parser {
           cell = '';
           l2 = token.header.length;
           for (j = 0; j < l2; j++) {
-            cell += this.renderer.tablecell(
+            cell += this.options.renderer.tablecell(
               this.parseInline(token.tokens.header[j]),
               { header: true, align: token.align[j] }
             );
           }
-          header += this.renderer.tablerow(cell);
+          header += this.options.renderer.tablerow(cell);
 
           body = '';
           l2 = token.cells.length;
@@ -106,20 +102,20 @@ module.exports = class Parser {
             cell = '';
             l3 = row.length;
             for (k = 0; k < l3; k++) {
-              cell += this.renderer.tablecell(
+              cell += this.options.renderer.tablecell(
                 this.parseInline(row[k]),
                 { header: false, align: token.align[k] }
               );
             }
 
-            body += this.renderer.tablerow(cell);
+            body += this.options.renderer.tablerow(cell);
           }
-          out += this.renderer.table(header, body);
+          out += this.options.renderer.table(header, body);
           continue;
         }
         case 'blockquote': {
           body = this.parse(token.tokens);
-          out += this.renderer.blockquote(body);
+          out += this.options.renderer.blockquote(body);
           continue;
         }
         case 'list': {
@@ -136,7 +132,7 @@ module.exports = class Parser {
 
             itemBody = '';
             if (item.task) {
-              checkbox = this.renderer.checkbox(checked);
+              checkbox = this.options.renderer.checkbox(checked);
               if (loose) {
                 if (item.tokens.length > 0 && item.tokens[0].type === 'text') {
                   item.tokens[0].text = checkbox + ' ' + item.tokens[0].text;
@@ -155,19 +151,19 @@ module.exports = class Parser {
             }
 
             itemBody += this.parse(item.tokens, loose);
-            body += this.renderer.listitem(itemBody, task, checked);
+            body += this.options.renderer.listitem(itemBody, task, checked);
           }
 
-          out += this.renderer.list(body, ordered, start);
+          out += this.options.renderer.list(body, ordered, start);
           continue;
         }
         case 'html': {
           // TODO parse inline content if parameter markdown=1
-          out += this.renderer.html(token.text);
+          out += this.options.renderer.html(token.text);
           continue;
         }
         case 'paragraph': {
-          out += this.renderer.paragraph(this.parseInline(token.tokens));
+          out += this.options.renderer.paragraph(this.parseInline(token.tokens));
           continue;
         }
         case 'text': {
@@ -176,17 +172,12 @@ module.exports = class Parser {
             token = tokens[++i];
             body += '\n' + (token.tokens ? this.parseInline(token.tokens) : token.text);
           }
-          out += top ? this.renderer.paragraph(body) : body;
+          out += top ? this.options.renderer.paragraph(body) : body;
           continue;
         }
         default: {
-          const errMsg = 'Token with "' + token.type + '" type was not found.';
-          if (this.options.silent) {
-            console.error(errMsg);
-            return;
-          } else {
-            throw new Error(errMsg);
-          }
+          this.options.hooks.error(new Error('Token with "' + token.type + '" type was not found.'));
+          return;
         }
       }
     }
@@ -198,7 +189,7 @@ module.exports = class Parser {
    * Parse Inline Tokens
    */
   parseInline(tokens, renderer) {
-    renderer = renderer || this.renderer;
+    renderer = renderer || this.options.renderer;
     let out = '',
       i,
       token;
@@ -248,13 +239,8 @@ module.exports = class Parser {
           break;
         }
         default: {
-          const errMsg = 'Token with "' + token.type + '" type was not found.';
-          if (this.options.silent) {
-            console.error(errMsg);
-            return;
-          } else {
-            throw new Error(errMsg);
-          }
+          this.options.hooks.error(new Error('Token with "' + token.type + '" type was not found.'));
+          return;
         }
       }
     }

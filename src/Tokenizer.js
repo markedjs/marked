@@ -1,12 +1,12 @@
 const { defaults } = require('./defaults.js');
+const Hooks = require('./Hooks.js');
 const {
   rtrim,
   splitCells,
-  escape,
   findClosingBracket
 } = require('./helpers.js');
 
-function outputLink(cap, link, raw) {
+function outputLink(cap, link, raw, escape) {
   const href = link.href;
   const title = link.title ? escape(link.title) : null;
   const text = cap[1].replace(/\\([\[\]])/g, '$1');
@@ -64,6 +64,8 @@ function indentCodeCompensation(raw, text) {
 module.exports = class Tokenizer {
   constructor(options) {
     this.options = options || defaults;
+    this.options.hooks = this.options.hooks || new Hooks();
+    this.options.hooks.options = this.options;
   }
 
   space(src) {
@@ -251,7 +253,7 @@ module.exports = class Tokenizer {
           } else {
             if (
               // different bullet style
-              !this.options.pedantic || this.options.smartLists
+              !this.options.pedantic
                 ? bnext[2][bnext[2].length - 1] !== bull[bull.length - 1]
                 : isordered === (bnext[2].length === 1)
             ) {
@@ -318,13 +320,10 @@ module.exports = class Tokenizer {
     const cap = this.rules.block.html.exec(src);
     if (cap) {
       return {
-        type: this.options.sanitize
-          ? 'paragraph'
-          : 'html',
+        type: 'html',
         raw: cap[0],
-        pre: !this.options.sanitizer
-          && (cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style'),
-        text: this.options.sanitize ? (this.options.sanitizer ? this.options.sanitizer(cap[0]) : escape(cap[0])) : cap[0]
+        pre: (cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style'),
+        text: this.options.hooks.sanitize(cap[0])
       };
     }
   }
@@ -432,7 +431,7 @@ module.exports = class Tokenizer {
       return {
         type: 'escape',
         raw: cap[0],
-        text: escape(cap[1])
+        text: this.options.hooks.escape(cap[1])
       };
     }
   }
@@ -452,17 +451,11 @@ module.exports = class Tokenizer {
       }
 
       return {
-        type: this.options.sanitize
-          ? 'text'
-          : 'html',
+        type: 'html',
         raw: cap[0],
         inLink,
         inRawBlock,
-        text: this.options.sanitize
-          ? (this.options.sanitizer
-            ? this.options.sanitizer(cap[0])
-            : escape(cap[0]))
-          : cap[0]
+        text: this.options.hooks.sanitize(cap[0])
       };
     }
   }
@@ -519,7 +512,7 @@ module.exports = class Tokenizer {
       return outputLink(cap, {
         href: href ? href.replace(this.rules.inline._escapes, '$1') : href,
         title: title ? title.replace(this.rules.inline._escapes, '$1') : title
-      }, cap[0]);
+      }, cap[0], this.options.hooks.escape);
     }
   }
 
@@ -537,7 +530,7 @@ module.exports = class Tokenizer {
           text
         };
       }
-      return outputLink(cap, link, cap[0]);
+      return outputLink(cap, link, cap[0], this.options.hooks.escape);
     }
   }
 
@@ -596,7 +589,7 @@ module.exports = class Tokenizer {
       if (hasNonSpaceChars && hasSpaceCharsOnBothEnds) {
         text = text.substring(1, text.length - 1);
       }
-      text = escape(text, true);
+      text = this.options.hooks.encode(text);
       return {
         type: 'codespan',
         raw: cap[0],
@@ -626,15 +619,15 @@ module.exports = class Tokenizer {
     }
   }
 
-  autolink(src, mangle) {
+  autolink(src) {
     const cap = this.rules.inline.autolink.exec(src);
     if (cap) {
       let text, href;
       if (cap[2] === '@') {
-        text = escape(this.options.mangle ? mangle(cap[1]) : cap[1]);
+        text = this.options.hooks.escape(this.options.hooks.mangle(cap[1]));
         href = 'mailto:' + text;
       } else {
-        text = escape(cap[1]);
+        text = this.options.hooks.escape(cap[1]);
         href = text;
       }
 
@@ -654,12 +647,12 @@ module.exports = class Tokenizer {
     }
   }
 
-  url(src, mangle) {
+  url(src) {
     let cap;
     if (cap = this.rules.inline.url.exec(src)) {
       let text, href;
       if (cap[2] === '@') {
-        text = escape(this.options.mangle ? mangle(cap[0]) : cap[0]);
+        text = this.options.hooks.escape(this.options.hooks.mangle(cap[0]));
         href = 'mailto:' + text;
       } else {
         // do extended autolink path validation
@@ -668,7 +661,7 @@ module.exports = class Tokenizer {
           prevCapZero = cap[0];
           cap[0] = this.rules.inline._backpedal.exec(cap[0])[0];
         } while (prevCapZero !== cap[0]);
-        text = escape(cap[0]);
+        text = this.options.hooks.escape(cap[0]);
         if (cap[1] === 'www.') {
           href = 'http://' + text;
         } else {
@@ -691,14 +684,14 @@ module.exports = class Tokenizer {
     }
   }
 
-  inlineText(src, inRawBlock, smartypants) {
+  inlineText(src, inRawBlock) {
     const cap = this.rules.inline.text.exec(src);
     if (cap) {
       let text;
       if (inRawBlock) {
-        text = this.options.sanitize ? (this.options.sanitizer ? this.options.sanitizer(cap[0]) : escape(cap[0])) : cap[0];
+        text = this.options.hooks.sanitize(cap[0]);
       } else {
-        text = escape(this.options.smartypants ? smartypants(cap[0]) : cap[0]);
+        text = this.options.hooks.escape(this.options.hooks.smartypants(cap[0]));
       }
       return {
         type: 'text',

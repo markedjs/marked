@@ -1,8 +1,5 @@
 const { defaults } = require('./defaults.js');
-const {
-  cleanUrl,
-  escape
-} = require('./helpers.js');
+const Hooks = require('./Hooks.js');
 
 /**
  * Renderer
@@ -10,29 +7,28 @@ const {
 module.exports = class Renderer {
   constructor(options) {
     this.options = options || defaults;
+    this.options.hooks = this.options.hooks || new Hooks();
+    this.options.hooks.options = this.options;
   }
 
   code(code, infostring, escaped) {
     const lang = (infostring || '').match(/\S*/)[0];
-    if (this.options.highlight) {
-      const out = this.options.highlight(code, lang);
-      if (out != null && out !== code) {
-        escaped = true;
-        code = out;
-      }
+    const out = this.options.hooks.highlight(code, lang);
+    if (out != null && out !== code) {
+      escaped = true;
+      code = out;
     }
 
     if (!lang) {
       return '<pre><code>'
-        + (escaped ? code : escape(code, true))
+        + (escaped ? code : this.options.hooks.encode(code))
         + '</code></pre>\n';
     }
 
     return '<pre><code class="'
-      + this.options.langPrefix
-      + escape(lang, true)
+      + this.options.hooks.languageClass(lang)
       + '">'
-      + (escaped ? code : escape(code, true))
+      + (escaped ? code : this.options.hooks.encode(code))
       + '</code></pre>\n';
   }
 
@@ -45,24 +41,12 @@ module.exports = class Renderer {
   }
 
   heading(text, level, raw, slugger) {
-    if (this.options.headerIds) {
-      return '<h'
-        + level
-        + ' id="'
-        + this.options.headerPrefix
-        + slugger.slug(raw)
-        + '">'
-        + text
-        + '</h'
-        + level
-        + '>\n';
-    }
-    // ignore IDs
-    return '<h' + level + '>' + text + '</h' + level + '>\n';
+    const headerId = this.options.hooks.headerId(raw);
+    return '<h' + level + (headerId ? ' id="' + headerId + '"' : '') + '>' + text + '</h' + level + '>\n';
   }
 
   hr() {
-    return this.options.xhtml ? '<hr/>\n' : '<hr>\n';
+    return '<hr>\n';
   }
 
   list(body, ordered, start) {
@@ -78,9 +62,7 @@ module.exports = class Renderer {
   checkbox(checked) {
     return '<input '
       + (checked ? 'checked="" ' : '')
-      + 'disabled="" type="checkbox"'
-      + (this.options.xhtml ? ' /' : '')
-      + '> ';
+      + 'disabled="" type="checkbox"> ';
   }
 
   paragraph(text) {
@@ -124,7 +106,7 @@ module.exports = class Renderer {
   }
 
   br() {
-    return this.options.xhtml ? '<br/>' : '<br>';
+    return '<br>';
   }
 
   del(text) {
@@ -132,11 +114,11 @@ module.exports = class Renderer {
   }
 
   link(href, title, text) {
-    href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+    href = this.options.hooks.cleanUrl(href);
     if (href === null) {
       return text;
     }
-    let out = '<a href="' + escape(href) + '"';
+    let out = '<a href="' + this.options.hooks.escape(href) + '"';
     if (title) {
       out += ' title="' + title + '"';
     }
@@ -145,7 +127,7 @@ module.exports = class Renderer {
   }
 
   image(href, title, text) {
-    href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+    href = this.options.hooks.cleanUrl(href);
     if (href === null) {
       return text;
     }
@@ -154,7 +136,7 @@ module.exports = class Renderer {
     if (title) {
       out += ' title="' + title + '"';
     }
-    out += this.options.xhtml ? '/>' : '>';
+    out += '>';
     return out;
   }
 
