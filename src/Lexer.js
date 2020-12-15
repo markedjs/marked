@@ -74,21 +74,22 @@ module.exports = class Lexer {
     }
     this.tokenizer.rules = rules;
 
-    this.blockTokenizers = [
-      this.newline,
-      this.code,
-      this.fences,
-      this.nptable,
-      this.heading,
-      this.hr,
-      this.blockquote,
-      this.list,
-      this.html,
-      this.def,
-      this.table,
-      this.lheading,
-      this.paragraph,
-      this.text];
+    this.blockTokenizers = new Map([
+      ['newline', this.newline],
+      ['code', this.code],
+      ['fences', this.fences],
+      ['nptable', this.nptable],
+      ['heading', this.heading],
+      ['hr', this.hr],
+      ['blockquote', this.blockquote],
+      ['list', this.list],
+      ['html', this.html],
+      ['def', this.def],
+      ['table', this.table],
+      ['lheading', this.lheading],
+      ['paragraph', this.paragraph],
+      ['text', this.text]
+    ]);
   }
 
   /**
@@ -136,184 +137,174 @@ module.exports = class Lexer {
    * Lexing
    */
 
-   // newline
-   newline(params) {
-     if (params.token = params.tokenizer.space(params.src)) {
-       params.src = params.src.substring(params.token.raw.length);
-       if (params.token.type) {
-         params.tokens.push(params.token);
-       }
-       return true;
-     }
-   }//.bind(this);
+  // newline
+  newline(params) {
+    if (params.token = this.tokenizer.space(params.src)) {
+      params.src = params.src.substring(params.token.raw.length);
+      if (params.token.type) {
+        params.tokens.push(params.token);
+      }
+      return true;
+    }
+  }
 
-   // code
-   code(params) {
-     if (params.token = params.tokenizer.code(params.src, params.tokens)) {
-       params.src = params.src.substring(params.token.raw.length);
-       if (params.token.type) {
-         params.tokens.push(params.token);
-       } else {
-         params.lastToken = params.tokens[params.tokens.length - 1];
-         params.lastToken.raw += '\n' + params.token.raw;
-         params.lastToken.text += '\n' + params.token.text;
-       }
-       return true;
-     }
-   }//.bind(this);
+  // code
+  code(params) {
+    if (params.token = this.tokenizer.code(params.src, params.tokens)) {
+      params.src = params.src.substring(params.token.raw.length);
+      if (params.token.type) {
+        params.tokens.push(params.token);
+      } else {
+        params.lastToken = params.tokens[params.tokens.length - 1];
+        params.lastToken.raw += '\n' + params.token.raw;
+        params.lastToken.text += '\n' + params.token.text;
+      }
+      return true;
+    }
+  }
 
-   // fences
-   fences(params) {
-     if (params.token = params.tokenizer.fences(params.src)) {
-       params.src = params.src.substring(params.token.raw.length);
-       params.tokens.push(params.token);
-       return true;
-     }
-   }//.bind(this);
+  // fences
+  fences(params) {
+    if (params.token = this.tokenizer.fences(params.src)) {
+      params.src = params.src.substring(params.token.raw.length);
+      params.tokens.push(params.token);
+      return true;
+    }
+  }
 
-   // table no leading pipe (gfm)
-   nptable(params) {
-     if (params.token = params.tokenizer.nptable(params.src)) {
-       params.src = params.src.substring(params.token.raw.length);
-       params.tokens.push(params.token);
-       return true;
-     }
-   }//.bind(this);
+  // table no leading pipe (gfm)
+  nptable(params) {
+    if (params.token = this.tokenizer.nptable(params.src)) {
+      params.src = params.src.substring(params.token.raw.length);
+      params.tokens.push(params.token);
+      return true;
+    }
+  }
 
-   // heading
-   heading(params) {
-     if (params.token = params.tokenizer.heading(params.src)) {
-       params.src = params.src.substring(params.token.raw.length);
-       params.tokens.push(params.token);
-       return true;
-     }
-   }//.bind(this);
+  // heading
+  heading(params) {
+    if (params.token = this.tokenizer.heading(params.src)) {
+      params.src = params.src.substring(params.token.raw.length);
+      params.tokens.push(params.token);
+      return true;
+    }
+  }
 
-   // hr
-   hr(params) {
-     if (params.token = params.tokenizer.hr(params.src)) {
-       params.src = params.src.substring(params.token.raw.length);
-       params.tokens.push(params.token);
-       return true;
-     }
-   }//.bind(this);
+  // hr
+  hr(params) {
+    if (params.token = this.tokenizer.hr(params.src)) {
+      params.src = params.src.substring(params.token.raw.length);
+      params.tokens.push(params.token);
+      return true;
+    }
+  }
 
-   // blockquote
-   blockquote(params) {
-     if (params.token = params.tokenizer.blockquote(params.src)) {
-       params.src = params.src.substring(params.token.raw.length);
-       params.token.tokens = params.blockTokens(params.token.text, [], params.top);
-       params.tokens.push(params.token);
-       return true;
-     }
-   }//.bind(this);
+  // blockquote
+  blockquote(params) {
+    if (params.token = this.tokenizer.blockquote(params.src)) {
+      params.src = params.src.substring(params.token.raw.length);
+      params.token.tokens = this.blockTokens(params.token.text, [], params.top);
+      params.tokens.push(params.token);
+      return true;
+    }
+  }
 
+  // list
+  list(params) {
+    if (params.token = this.tokenizer.list(params.src)) {
+      params.src = params.src.substring(params.token.raw.length);
+      params.l = params.token.items.length;
+      for (params.i = 0; params.i < params.l; params.i++) {
+        params.token.items[params.i].tokens = this.blockTokens(params.token.items[params.i].text, [], false);
+      }
+      params.tokens.push(params.token);
+      return true;
+    }
+  }
 
-   // list
-   list(params) {
-     if (params.token = params.tokenizer.list(params.src)) {
-       params.src = params.src.substring(params.token.raw.length);
-       params.l = params.token.items.length;
-       for (params.i = 0; params.i < params.l; params.i++) {
-         params.token.items[params.i].tokens = params.blockTokens(params.token.items[params.i].text, [], false);
-       }
-       params.tokens.push(params.token);
-       return true;
-     }
-   }//.bind(this);
+  // html
+  html(params) {
+    if (params.token = this.tokenizer.html(params.src)) {
+      params.src = params.src.substring(params.token.raw.length);
+      params.tokens.push(params.token);
+      return true;
+    }
+  }
 
-   // html
-   html(params) {
-     if (params.token = params.tokenizer.html(params.src)) {
-       params.src = params.src.substring(params.token.raw.length);
-       params.tokens.push(params.token);
-       return true;
-     }
-   }//.bind(this);
+  // def
+  def(params) {
+    if (params.top && (params.token = this.tokenizer.def(params.src))) {
+      params.src = params.src.substring(params.token.raw.length);
+      if (!this.tokens.links[params.token.tag]) {
+        this.tokens.links[params.token.tag] = {
+          href: params.token.href,
+          title: params.token.title
+        };
+      }
+      return true;
+    }
+  }
 
-   // def
-   def(params) {
-     if (params.top && (params.token = params.tokenizer.def(params.src))) {
-       params.src = params.src.substring(params.token.raw.length);
-       if (params.tokens && (!params.tokens.links || !params.tokens.links[params.token.tag])) {
-         params.tokens.links[params.token.tag] = {
-           href: params.token.href,
-           title: params.token.title
-         };
-       }
-       return true;
-     }
-   }//.bind(this);
+  // table (gfm)
+  table(params) {
+    if (params.token = this.tokenizer.table(params.src)) {
+      params.src = params.src.substring(params.token.raw.length);
+      params.tokens.push(params.token);
+      return true;
+    }
+  }
 
-   // table (gfm)
-   table(params) {
-     if (params.token = params.tokenizer.table(params.src)) {
-       params.src = params.src.substring(params.token.raw.length);
-       params.tokens.push(params.token);
-       return true;
-     }
-   }//.bind(this);
+  // lheading
+  lheading(params) {
+    if (params.token = this.tokenizer.lheading(params.src)) {
+      params.src = params.src.substring(params.token.raw.length);
+      params.tokens.push(params.token);
+      return true;
+    }
+  }
 
-   // lheading
-   lheading(params) {
-     if (params.token = params.tokenizer.lheading(params.src)) {
-       params.src = params.src.substring(params.token.raw.length);
-       params.tokens.push(params.token);
-       return true;
-     }
-   }//.bind(this);
+  // top-level paragraph
+  paragraph(params) {
+    if (params.top && (params.token = this.tokenizer.paragraph(params.src))) {
+      params.src = params.src.substring(params.token.raw.length);
+      params.tokens.push(params.token);
+      return true;
+    }
+  }
 
-   // top-level paragraph
-   paragraph(params) {
-     if (params.top && (params.token = params.tokenizer.paragraph(params.src))) {
-       params.src = params.src.substring(params.token.raw.length);
-       params.tokens.push(params.token);
-       return true;
-     }
-   }//.bind(this);
-
-   // text
-   text(params) {
-     if (params.token = params.tokenizer.text(params.src, params.tokens)) {
-       params.src = params.src.substring(params.token.raw.length);
-       if (params.token.type) {
-         params.tokens.push(params.token);
-       } else {
-         params.lastToken = params.tokens[params.tokens.length - 1];
-         params.lastToken.raw += '\n' + params.token.raw;
-         params.lastToken.text += '\n' + params.token.text;
-       }
-       return true;
-     }
-   }//.bind(this);
-
-
+  // text
+  text(params) {
+    if (params.token = this.tokenizer.text(params.src, params.tokens)) {
+      params.src = params.src.substring(params.token.raw.length);
+      if (params.token.type) {
+        params.tokens.push(params.token);
+      } else {
+        params.lastToken = params.tokens[params.tokens.length - 1];
+        params.lastToken.raw += '\n' + params.token.raw;
+        params.lastToken.text += '\n' + params.token.text;
+      }
+      return true;
+    }
+  }
 
   blockTokens(src, tokens = [], top = true) {
-    if(!tokens.links){
-      tokens.links = Object.create(null);
-    }
     src = src.replace(/^ +$/gm, '');
-    let token, i, l, lastToken;
-    let fn;
+    let token, lastToken, i, l, fn;
 
-    let blockParams = {
-      tokenizer : this.tokenizer,
-      blockTokens : this.blockTokens.bind(this),
-      src : src,
-      token : token,
-      tokens : tokens,
-      lastToken : lastToken,
-      top : top,
-      i : i,
-      l : l
+    const blockParams = {
+      src: src,
+      tokens: tokens,
+      top: top,
+      token: token,
+      lastToken: lastToken,
+      i: i,
+      l: l
     };
 
     outerLoop:
     while (blockParams.src) {
-
-      for(fn of this.blockTokenizers) {
-        if(fn(blockParams)) {
+      for (fn of this.blockTokenizers.values()) {
+        if (fn.call(this, blockParams)) {
           continue outerLoop;
         }
       }
