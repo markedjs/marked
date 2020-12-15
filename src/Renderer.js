@@ -19,15 +19,10 @@ module.exports = class Renderer {
       code = out;
     }
 
-    if (!lang) {
-      return '<pre><code>'
-        + (escaped ? code : this.options.hooks.encode(code))
-        + '</code></pre>\n';
-    }
-
-    return '<pre><code class="'
-      + this.options.hooks.languageClass(lang)
-      + '">'
+    const langClass = this.options.hooks.languageClass(lang);
+    return '<pre><code'
+      + (langClass ? ' class="' + langClass + '"' : '')
+      + '>'
       + (escaped ? code : this.options.hooks.encode(code))
       + '</code></pre>\n';
   }
@@ -40,7 +35,7 @@ module.exports = class Renderer {
     return html;
   }
 
-  heading(text, level, raw, slugger) {
+  heading(text, level, raw) {
     const headerId = this.options.hooks.headerId(raw);
     return '<h' + level + (headerId ? ' id="' + headerId + '"' : '') + '>' + text + '</h' + level + '>\n';
   }

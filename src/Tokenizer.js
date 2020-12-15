@@ -6,9 +6,9 @@ const {
   findClosingBracket
 } = require('./helpers.js');
 
-function outputLink(cap, link, raw, escape) {
+function outputLink(cap, link, raw, escapeHook) {
   const href = link.href;
-  const title = link.title ? escape(link.title) : null;
+  const title = link.title ? escapeHook(link.title) : null;
   const text = cap[1].replace(/\\([\[\]])/g, '$1');
 
   if (cap[0].charAt(0) !== '!') {
@@ -25,7 +25,7 @@ function outputLink(cap, link, raw, escape) {
       raw,
       href,
       title,
-      text: escape(text)
+      text: escapeHook(text)
     };
   }
 }
