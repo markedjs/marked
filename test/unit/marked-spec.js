@@ -15,7 +15,7 @@ describe('Test heading ID functionality', () => {
     expect(header).toBe('<h1>test</h1>\n');
   });
 
-  fit('should reset slugger on new render', () => {
+  it('should reset slugger on new render', () => {
     const options = {
       hooks: {
         headerId: function(text, slugger) { return slugger.slug(text) + ' heading'; }
