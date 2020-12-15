@@ -39,7 +39,9 @@ function marked(src, opt, callback) {
     let tokens;
 
     try {
-      src = opt.hooks.preprocess(src);
+      if (opt.hooks) {
+        src = opt.hooks.preprocess(src);
+      }
       tokens = Lexer.lex(src, opt);
       if (opt.walkTokens) {
         marked.walkTokens(tokens, opt.walkTokens);
@@ -54,7 +56,9 @@ function marked(src, opt, callback) {
       if (!err) {
         try {
           out = Parser.parse(tokens, opt);
-          out = opt.hooks.postprocess(out);
+          if (opt.hooks) {
+            out = opt.hooks.postprocess(out);
+          }
         } catch (e) {
           err = e;
         }
@@ -102,16 +106,21 @@ function marked(src, opt, callback) {
   }
 
   try {
-    src = opt.hooks.preprocess(src);
+    if (opt.hooks) {
+      src = opt.hooks.preprocess(src);
+    }
     const tokens = Lexer.lex(src, opt);
     if (opt.walkTokens) {
       marked.walkTokens(tokens, opt.walkTokens);
     }
-    const out = Parser.parse(tokens, opt);
-    return opt.hooks.postprocess(out);
+    let out = Parser.parse(tokens, opt);
+    if (opt.hooks) {
+      out = opt.hooks.postprocess(out);
+    }
+    return out;
   } catch (e) {
     e.message += '\nPlease report this to https://github.com/markedjs/marked.';
-    opt.hooks.error(e);
+    (opt.hooks || new Hooks()).error(e);
   }
 }
 

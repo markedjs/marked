@@ -64,6 +64,9 @@ module.exports = class Hooks {
    * code language class
    */
   languageClass(lang) {
+    if (!lang) {
+      return '';
+    }
     return 'language-' + this.encode(lang);
   }
 
