@@ -9,7 +9,8 @@ describe('Test heading ID functionality', () => {
   });
 
   it('should NOT add id attribute when options set false', () => {
-    const renderer = new marked.Renderer({ headerIds: false });
+    marked.use({ hooks: { headerId: false } });
+    const renderer = new marked.Renderer();
     const header = renderer.heading('test', 1, 'test');
     expect(header).toBe('<h1>test</h1>\n');
   });
@@ -185,7 +186,9 @@ describe('use extension', () => {
 
   it('should use options from extension', () => {
     const extension = {
-      headerIds: false
+      hooks: {
+        headerId: false
+      }
     };
     marked.use(extension);
     const html = marked('# heading');
@@ -330,7 +333,8 @@ text 1
   it('should highlight codeblocks async', (done) => {
     highlight.and.callThrough();
 
-    marked(markdown, { highlight }, (err, html) => {
+    marked.use({ hooks: { highlight } });
+    marked(markdown, (err, html) => {
       if (err) {
         fail(err);
       }
@@ -354,7 +358,8 @@ text 1
     });
 
     let numErrors = 0;
-    marked(markdown, { highlight }, (err, html) => {
+    marked.use({ hooks: { highlight } });
+    marked(markdown, (err, html) => {
       expect(err).toBeTruthy();
       expect(html).toBeUndefined();
 
@@ -373,7 +378,8 @@ text 1
       callback(null, `async ${text || ''}`);
     });
 
-    marked(markdown, { highlight }, (err, html) => {
+    marked.use({ hooks: { highlight } });
+    marked(markdown, (err, html) => {
       if (err) {
         fail(err);
       }

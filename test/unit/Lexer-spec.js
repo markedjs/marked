@@ -1,7 +1,11 @@
+const marked = require('../../src/marked.js');
 const Lexer = require('../../src/Lexer.js');
 
 function expectTokens({ md, options, tokens = [], links = {} }) {
-  const lexer = new Lexer(options);
+  if (options) {
+    marked.use(options);
+  }
+  const lexer = new Lexer();
   const actual = lexer.lex(md);
   const expected = tokens;
   expected.links = links;
@@ -10,7 +14,10 @@ function expectTokens({ md, options, tokens = [], links = {} }) {
 }
 
 function expectInlineTokens({ md, options, tokens = jasmine.any(Array), links = {} }) {
-  const lexer = new Lexer(options);
+  if (options) {
+    marked.use(options);
+  }
+  const lexer = new Lexer();
   lexer.tokens.links = links;
   const outTokens = [];
   lexer.inlineTokens(md, outTokens);
@@ -18,7 +25,10 @@ function expectInlineTokens({ md, options, tokens = jasmine.any(Array), links = 
 }
 
 function expectInline({ token, options, tokens }) {
-  const lexer = new Lexer(options);
+  if (options) {
+    marked.use(options);
+  }
+  const lexer = new Lexer();
   lexer.inline([token]);
   expect(token.tokens).toEqual(tokens);
 }
@@ -492,18 +502,17 @@ a | b
     it('sanitize', () => {
       expectTokens({
         md: '<div>html</div>',
-        options: { sanitize: true },
+        options: {
+          hooks: {
+            sanitize: (text) => text.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          }
+        },
         tokens: [
           {
-            type: 'paragraph',
+            type: 'html',
             raw: '<div>html</div>',
             pre: false,
-            text: '&lt;div&gt;html&lt;/div&gt;',
-            tokens: [{
-              type: 'text',
-              raw: '&lt;div&gt;html&lt;/div&gt;',
-              text: '&lt;div&gt;html&lt;/div&gt;'
-            }]
+            text: '&lt;div&gt;html&lt;/div&gt;'
           }
         ]
       });
@@ -614,11 +623,11 @@ a | b
       it('html sanitize', () => {
         expectInlineTokens({
           md: '<div>html</div>',
-          options: { sanitize: true },
+          options: { hooks: { sanitize: (html) => html.replace(/</g, '&lt;').replace(/>/g, '&gt;') } },
           tokens: [
-            { type: 'text', raw: '<div>', inLink: false, inRawBlock: false, text: '&lt;div&gt;' },
+            { type: 'html', raw: '<div>', inLink: false, inRawBlock: false, text: '&lt;div&gt;' },
             { type: 'text', raw: 'html', text: 'html' },
-            { type: 'text', raw: '</div>', inLink: false, inRawBlock: false, text: '&lt;/div&gt;' }
+            { type: 'html', raw: '</div>', inLink: false, inRawBlock: false, text: '&lt;/div&gt;' }
           ]
         });
       });
@@ -918,7 +927,7 @@ a | b
         it('autolink email', () => {
           expectInlineTokens({
             md: '<test@example.com>',
-            options: { mangle: false },
+            options: { hooks: { mangle: (text) => text } },
             tokens: [
               {
                 type: 'link',
@@ -936,7 +945,6 @@ a | b
         it('autolink mangle email', () => {
           expectInlineTokens({
             md: '<test@example.com>',
-            options: { mangle: true },
             tokens: [
               {
                 type: 'link',
@@ -975,7 +983,7 @@ a | b
         it('url email', () => {
           expectInlineTokens({
             md: 'test@example.com',
-            options: { gfm: true, mangle: false },
+            options: { gfm: true, hooks: { mangle: false } },
             tokens: [
               {
                 type: 'link',
@@ -993,7 +1001,7 @@ a | b
         it('url mangle email', () => {
           expectInlineTokens({
             md: 'test@example.com',
-            options: { gfm: true, mangle: true },
+            options: { gfm: true },
             tokens: [
               {
                 type: 'link',
@@ -1026,76 +1034,36 @@ a | b
         });
       });
 
-      describe('smartypants', () => {
-        it('single quotes', () => {
-          expectInlineTokens({
-            md: "'single quotes'",
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: "'single quotes'",
-                text: '‘single quotes’'
-              }
-            ]
-          });
+      it('smartypants hook is called', () => {
+        const smartypants = jasmine.createSpy('smartypants', () => 'smartypants').and.callThrough();
+        expectInlineTokens({
+          md: "'single quotes'",
+          options: { hooks: { smartypants } },
+          tokens: [
+            {
+              type: 'text',
+              raw: "'single quotes'",
+              text: 'smartypants'
+            }
+          ]
         });
+        expect(smartypants).toHaveBeenCalledWith("'single quotes'");
+      });
 
-        it('double quotes', () => {
-          expectInlineTokens({
-            md: '"double quotes"',
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: '"double quotes"',
-                text: '“double quotes”'
-              }
-            ]
-          });
+      it('escape hook is called', () => {
+        const escape = jasmine.createSpy('escape', () => 'escape').and.callThrough();
+        expectInlineTokens({
+          md: "'single quotes'",
+          options: { hooks: { escape } },
+          tokens: [
+            {
+              type: 'text',
+              raw: "'single quotes'",
+              text: 'escape'
+            }
+          ]
         });
-
-        it('ellipses', () => {
-          expectInlineTokens({
-            md: 'ellipses...',
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: 'ellipses...',
-                text: 'ellipses…'
-              }
-            ]
-          });
-        });
-
-        it('en-dash', () => {
-          expectInlineTokens({
-            md: 'en--dash',
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: 'en--dash',
-                text: 'en–dash'
-              }
-            ]
-          });
-        });
-
-        it('em-dash', () => {
-          expectInlineTokens({
-            md: 'em---dash',
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: 'em---dash',
-                text: 'em—dash'
-              }
-            ]
-          });
-        });
+        expect(escape).toHaveBeenCalledWith("'single quotes'");
       });
     });
   });

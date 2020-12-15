@@ -10,7 +10,8 @@ beforeEach(() => {
       return {
         compare: async(spec, expected) => {
           const result = {};
-          const actual = marked(spec.markdown, spec.options);
+          marked.use(spec.options);
+          const actual = marked(spec.markdown);
           result.pass = await htmlDiffer.isEqual(expected, actual);
 
           if (result.pass) {
@@ -42,7 +43,8 @@ beforeEach(() => {
     toRenderExact: () => ({
       compare: async(spec, expected) => {
         const result = {};
-        const actual = marked(spec.markdown, spec.options);
+        marked.use(spec.options);
+        const actual = marked(spec.markdown);
 
         result.pass = assert.strictEqual(expected, actual) === undefined;
 

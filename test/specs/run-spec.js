@@ -17,15 +17,6 @@ function runSpecs(title, dir, showCompletionTable, options) {
           const example = (spec.example ? ' example ' + spec.example : '');
           const passFail = (spec.shouldFail ? 'fail' : 'pass');
 
-          if (typeof spec.options.silent === 'undefined') {
-            spec.options.silent = true;
-          }
-
-          if (spec.options.sanitizer) {
-            // eslint-disable-next-line no-eval
-            spec.options.sanitizer = eval(spec.options.sanitizer);
-          }
-
           (spec.only ? fit : (spec.skip ? xit : it))('should ' + passFail + example, async() => {
             const before = process.hrtime();
             if (spec.shouldFail) {
@@ -47,9 +38,8 @@ function runSpecs(title, dir, showCompletionTable, options) {
   });
 }
 
-runSpecs('GFM', './gfm', true, { gfm: true, pedantic: false, headerIds: false });
-runSpecs('CommonMark', './commonmark', true, { gfm: false, pedantic: false, headerIds: false });
-runSpecs('Original', './original', false, { gfm: false, pedantic: true });
+runSpecs('GFM', './gfm', true, { gfm: true, pedantic: false, hooks: { headerId: false } });
+runSpecs('CommonMark', './commonmark', true, { gfm: false, pedantic: false, hooks: { headerId: false } });
+runSpecs('Original', './original', false, { gfm: false, pedantic: true, hooks: { headerId: false } });
 runSpecs('New', './new');
 runSpecs('ReDOS', './redos');
-runSpecs('Security', './security', false, { silent: true }); // silent - do not show deprecation warning
