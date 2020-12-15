@@ -1,6 +1,7 @@
 const Hooks = require('./Hooks.js');
 const Renderer = require('./Renderer.js');
 const TextRenderer = require('./TextRenderer.js');
+const Slugger = require('./Slugger.js');
 const { defaults } = require('./defaults.js');
 
 /**
@@ -14,6 +15,7 @@ module.exports = class Parser {
     this.options.renderer = this.options.renderer || new Renderer();
     this.options.renderer.options = this.options;
     this.textRenderer = new TextRenderer();
+    this.slugger = new Slugger();
   }
 
   /**
@@ -71,7 +73,8 @@ module.exports = class Parser {
           out += this.options.renderer.heading(
             this.parseInline(token.tokens),
             token.depth,
-            this.options.hooks.unescape(this.parseInline(token.tokens, this.textRenderer)));
+            this.options.hooks.unescape(this.parseInline(token.tokens, this.textRenderer)),
+            this.slugger);
           continue;
         }
         case 'code': {

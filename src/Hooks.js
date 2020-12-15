@@ -1,5 +1,4 @@
 const { defaults } = require('./defaults.js');
-const Slugger = require('./Slugger.js');
 const {
   escape,
   unescape
@@ -8,7 +7,6 @@ const {
 module.exports = class Hooks {
   constructor(options) {
     this.options = options || defaults;
-    this.slugger = new Slugger();
   }
 
   /**
@@ -80,8 +78,8 @@ module.exports = class Hooks {
   /**
    * create header id
    */
-  headerId(text) {
-    return this.slugger.slug(text);
+  headerId(text, slugger) {
+    return slugger.slug(text);
   }
 
   /**

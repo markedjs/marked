@@ -35,8 +35,8 @@ module.exports = class Renderer {
     return html;
   }
 
-  heading(text, level, raw) {
-    const headerId = this.options.hooks.headerId(raw);
+  heading(text, level, raw, slugger) {
+    const headerId = this.options.hooks.headerId(raw, slugger);
     return '<h' + level + (headerId ? ' id="' + headerId + '"' : '') + '>' + text + '</h' + level + '>\n';
   }
 
