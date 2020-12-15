@@ -124,11 +124,11 @@ module.exports = class Tokenizer {
       let text = cap[2].trim();
 
       // remove trailing #s
-      if (text.endsWith('#')) {
+      if (/#$/.test(text)) {
         const trimmed = rtrim(text, '#');
         if (this.options.pedantic) {
           text = trimmed.trim();
-        } else if (!trimmed || trimmed.endsWith(' ')) {
+        } else if (!trimmed || / $/.test(trimmed)) {
           // CommonMark requires space before trailing #s
           text = trimmed.trim();
         }
@@ -471,9 +471,9 @@ module.exports = class Tokenizer {
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
       const trimmedUrl = cap[2].trim();
-      if (!this.options.pedantic && trimmedUrl.startsWith('<')) {
+      if (!this.options.pedantic && /^</.test(trimmedUrl)) {
         // commonmark requires matching angle brackets
-        if (!trimmedUrl.endsWith('>')) {
+        if (!(/>$/.test(trimmedUrl))) {
           return;
         }
 
@@ -508,8 +508,8 @@ module.exports = class Tokenizer {
       }
 
       href = href.trim();
-      if (href.startsWith('<')) {
-        if (this.options.pedantic && !trimmedUrl.endsWith('>')) {
+      if (/^</.test(href)) {
+        if (this.options.pedantic && !(/>$/.test(trimmedUrl))) {
           // pedantic allows starting angle bracket without ending angle bracket
           href = href.slice(1);
         } else {
@@ -592,7 +592,7 @@ module.exports = class Tokenizer {
     if (cap) {
       let text = cap[2].replace(/\n/g, ' ');
       const hasNonSpaceChars = /[^ ]/.test(text);
-      const hasSpaceCharsOnBothEnds = text.startsWith(' ') && text.endsWith(' ');
+      const hasSpaceCharsOnBothEnds = /^ /.test(text) && / $/.test(text);
       if (hasNonSpaceChars && hasSpaceCharsOnBothEnds) {
         text = text.substring(1, text.length - 1);
       }
