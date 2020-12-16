@@ -371,16 +371,16 @@ module.exports = class Lexer {
 
   blockTokens(src, tokens = [], top = true) {
     src = src.replace(/^ +$/gm, '');
-    let token, lastToken, i, l, fn;
+    let fn;
 
     const blockParams = {
       src: src,
       tokens: tokens,
       top: top,
-      token: token,
-      lastToken: lastToken,
-      i: i,
-      l: l
+      token: null,
+      lastToken: null,
+      i: 0,
+      l: 0
     };
 
     blockTokenizerLoop:
@@ -595,14 +595,10 @@ module.exports = class Lexer {
    * Lexing/Compiling
    */
   inlineTokens(src, tokens = [], inLink = false, inRawBlock = false) {
-    let token;
-
-    // String with links masked to avoid interference with em and strong
-    let match;
+    let match, fn;
     let maskedSrc = src;
-    let keepPrevChar, prevChar, fn;
 
-    // Mask out reflinks
+    // Mask out reflinks to avoid interference with em and strong
     if (this.tokens.links) {
       const links = Object.keys(this.tokens.links);
       if (links.length > 0) {
@@ -624,9 +620,9 @@ module.exports = class Lexer {
       inLink: inLink,
       inRawBlock: inRawBlock,
       maskedSrc: maskedSrc,
-      prevChar: prevChar,
-      keepPrevChar: keepPrevChar,
-      token: token,
+      prevChar: false,
+      keepPrevChar: false,
+      token: null,
 
       mangle: mangle,
       smartypants: smartypants
