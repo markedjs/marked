@@ -74,37 +74,104 @@ module.exports = class Lexer {
     }
     this.tokenizer.rules = rules;
 
-    this.blockTokenizers = new Map([
-      ['newline', this.newline],
-      ['code', this.code],
-      ['fences', this.fences],
-      ['nptable', this.nptable],
-      ['heading', this.heading],
-      ['hr', this.hr],
-      ['blockquote', this.blockquote],
-      ['list', this.list],
-      ['html', this.html],
-      ['def', this.def],
-      ['table', this.table],
-      ['lheading', this.lheading],
-      ['paragraph', this.paragraph],
-      ['text', this.text]
-    ]);
+// TOO SLOW
+    // this.blockTokenizers = new Map([
+    //   ['newline', this.newline],
+    //   ['code', this.code],
+    //   ['fences', this.fences],
+    //   ['nptable', this.nptable],
+    //   ['heading', this.heading],
+    //   ['hr', this.hr],
+    //   ['blockquote', this.blockquote],
+    //   ['list', this.list],
+    //   ['html', this.html],
+    //   ['def', this.def],
+    //   ['table', this.table],
+    //   ['lheading', this.lheading],
+    //   ['paragraph', this.paragraph],
+    //   ['text', this.text]
+    // ]);
 
-    this.inlineTokenizers = new Map([
-      ['escape', this.escape],
-      ['tag', this.tag],
-      ['link', this.link],
-      ['reflink', this.reflink],
-      ['strong', this.strong],
-      ['em', this.em],
-      ['codespan', this.codespan],
-      ['br', this.br],
-      ['del', this.del],
-      ['autolink', this.autolink],
-      ['url', this.url],
-      ['inlineText', this.inlineText]
-    ]);
+    // this.blockTokenizers = [
+    //   this.newline,
+    //   this.code,
+    //   this.fences,
+    //   this.nptable,
+    //   this.heading,
+    //   this.hr,
+    //   this.blockquote,
+    //   this.list,
+    //   this.html,
+    //   this.def,
+    //   this.table,
+    //   this.lheading,
+    //   this.paragraph,
+    //   this.text
+    // ];
+
+// Array of objects only slightly slower than raw array (~4720 - 4750 ms)
+    this.blockTokenizers = [
+      {name: 'newline', func: this.newline},
+      {name: 'code', func: this.code},
+      {name: 'fences', func: this.fences},
+      {name: 'nptable', func: this.nptable},
+      {name: 'heading', func: this.heading},
+      {name: 'hr', func: this.hr},
+      {name: 'blockquote', func: this.blockquote},
+      {name: 'list', func: this.list},
+      {name: 'html', func: this.html},
+      {name: 'def', func: this.def},
+      {name: 'table', func: this.table},
+      {name: 'lheading', func: this.lheading},
+      {name: 'paragraph', func: this.paragraph},
+      {name: 'text', func: this.text}
+    ];
+
+// TOO SLOW
+    // this.inlineTokenizers = new Map([
+    //   ['escape', this.escape],
+    //   ['tag', this.tag],
+    //   ['link', this.link],
+    //   ['reflink', this.reflink],
+    //   ['strong', this.strong],
+    //   ['em', this.em],
+    //   ['codespan', this.codespan],
+    //   ['br', this.br],
+    //   ['del', this.del],
+    //   ['autolink', this.autolink],
+    //   ['url', this.url],
+    //   ['inlineText', this.inlineText]
+    // ]);
+
+    // this.inlineTokenizers = [
+    //   this.escape,
+    //   this.tag,
+    //   this.link,
+    //   this.reflink,
+    //   this.strong,
+    //   this.em,
+    //   this.codespan,
+    //   this.br,
+    //   this.del,
+    //   this.autolink,
+    //   this.url,
+    //   this.inlineText
+    // ];
+
+    this.inlineTokenizers = [
+      {name: "escape", func: this.escape},
+      {name: "tag",  func: this.tag},
+      {name: "link",  func: this.link},
+      {name: "reflink", func: this.reflink},
+      {name: "strong", func: this.strong},
+      {name: "em", func: this.em},
+      {name: "codespan", func: this.codespan},
+      {name: "br", func: this.br},
+      {name: "del",  func:this.del},
+      {name: "autolink", func: this.autolink},
+      {name: "url", func: this.url},
+      {name: "inlineText", func: this.inlineText}
+    ];
   }
 
   /**
@@ -318,8 +385,8 @@ module.exports = class Lexer {
 
     blockTokenizerLoop:
     while (blockParams.src) {
-      for (fn of this.blockTokenizers.values()) {
-        if (fn.call(this, blockParams)) {
+      for (fn of this.blockTokenizers) {
+        if (fn["func"].call(this, blockParams)) {
           continue blockTokenizerLoop;
         }
       }
@@ -572,8 +639,8 @@ module.exports = class Lexer {
       }
       inlineParams.keepPrevChar = false;
 
-      for (fn of this.inlineTokenizers.values()) {
-        if (fn.call(this, inlineParams)) {
+      for (fn of this.inlineTokenizers) {
+        if (fn["func"].call(this, inlineParams)) {
           continue inlineTokenizerLoop;
         }
       }
