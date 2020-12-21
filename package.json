@@ -53,7 +53,7 @@
     "jasmine": "^3.6.3",
     "markdown-it": "12.0.3",
     "node-fetch": "^2.6.1",
-    "rollup": "^2.34.2",
+    "rollup": "^2.35.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-license": "^2.2.0",
