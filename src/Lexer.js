@@ -221,10 +221,11 @@ module.exports = class Lexer {
 
   // newline
   newline(params) {
-    if (params.token = this.tokenizer.space(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      if (params.token.type) {
-        params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.space(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      if (token.type) {
+        params.tokens.push(token);
       }
       return true;
     }
@@ -232,14 +233,15 @@ module.exports = class Lexer {
 
   // code
   code(params) {
-    if (params.token = this.tokenizer.code(params.src, params.tokens)) {
-      params.src = params.src.substring(params.token.raw.length);
-      if (params.token.type) {
-        params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.code(params.src, params.tokens)) {
+      params.src = params.src.substring(token.raw.length);
+      if (token.type) {
+        params.tokens.push(token);
       } else {
         params.lastToken = params.tokens[params.tokens.length - 1];
-        params.lastToken.raw += '\n' + params.token.raw;
-        params.lastToken.text += '\n' + params.token.text;
+        params.lastToken.raw += '\n' + token.raw;
+        params.lastToken.text += '\n' + token.text;
       }
       return true;
     }
@@ -247,80 +249,89 @@ module.exports = class Lexer {
 
   // fences
   fences(params) {
-    if (params.token = this.tokenizer.fences(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.fences(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // table no leading pipe (gfm)
   nptable(params) {
-    if (params.token = this.tokenizer.nptable(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.nptable(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // heading
   heading(params) {
-    if (params.token = this.tokenizer.heading(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.heading(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // hr
   hr(params) {
-    if (params.token = this.tokenizer.hr(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.hr(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // blockquote
   blockquote(params) {
-    if (params.token = this.tokenizer.blockquote(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.token.tokens = this.blockTokens(params.token.text, [], params.top);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.blockquote(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      token.tokens = this.blockTokens(token.text, [], params.top);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // list
   list(params) {
-    if (params.token = this.tokenizer.list(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.l = params.token.items.length;
-      for (params.i = 0; params.i < params.l; params.i++) {
-        params.token.items[params.i].tokens = this.blockTokens(params.token.items[params.i].text, [], false);
+    let token;
+    if (token = this.tokenizer.list(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      const l = token.items.length;
+      let i;
+      for (i = 0; i < l; i++) {
+        token.items[i].tokens = this.blockTokens(token.items[i].text, [], false);
       }
-      params.tokens.push(params.token);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // html
   html(params) {
-    if (params.token = this.tokenizer.html(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.html(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // def
   def(params) {
-    if (params.top && (params.token = this.tokenizer.def(params.src))) {
-      params.src = params.src.substring(params.token.raw.length);
-      if (!this.tokens.links[params.token.tag]) {
-        this.tokens.links[params.token.tag] = {
-          href: params.token.href,
-          title: params.token.title
+    let token;
+    if (params.top && (token = this.tokenizer.def(params.src))) {
+      params.src = params.src.substring(token.raw.length);
+      if (!this.tokens.links[token.tag]) {
+        this.tokens.links[token.tag] = {
+          href: token.href,
+          title: token.title
         };
       }
       return true;
@@ -329,41 +340,45 @@ module.exports = class Lexer {
 
   // table (gfm)
   table(params) {
-    if (params.token = this.tokenizer.table(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.table(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // lheading
   lheading(params) {
-    if (params.token = this.tokenizer.lheading(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.lheading(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // top-level paragraph
   paragraph(params) {
-    if (params.top && (params.token = this.tokenizer.paragraph(params.src))) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (params.top && (token = this.tokenizer.paragraph(params.src))) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // text
   text(params) {
-    if (params.token = this.tokenizer.text(params.src, params.tokens)) {
-      params.src = params.src.substring(params.token.raw.length);
-      if (params.token.type) {
-        params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.text(params.src, params.tokens)) {
+      params.src = params.src.substring(token.raw.length);
+      if (token.type) {
+        params.tokens.push(token);
       } else {
         params.lastToken = params.tokens[params.tokens.length - 1];
-        params.lastToken.raw += '\n' + params.token.raw;
-        params.lastToken.text += '\n' + params.token.text;
+        params.lastToken.raw += '\n' + token.raw;
+        params.lastToken.text += '\n' + token.text;
       }
       return true;
     }
@@ -371,25 +386,17 @@ module.exports = class Lexer {
 
   blockTokens(src, tokens = [], top = true) {
     src = src.replace(/^ +$/gm, '');
-    let fn;
 
     const blockParams = {
       src: src,
       tokens: tokens,
       top: top,
-      token: null,
-      lastToken: null,
-      i: 0,
-      l: 0
+      // token: null,
+      lastToken: null//,
     };
 
-    blockTokenizerLoop:
     while (blockParams.src) {
-      for (fn of this.blockTokenizers) {
-        if (fn.func.call(this, blockParams)) {
-          continue blockTokenizerLoop;
-        }
-      }
+      if (this.blockTokenizers.some(fn => fn.func.call(this, blockParams))) continue;
 
       if (blockParams.src) {
         const errMsg = 'Infinite loop on byte: ' + blockParams.src.charCodeAt(0);
@@ -472,121 +479,133 @@ module.exports = class Lexer {
 
   // escape
   escape(params) {
-    if (params.token = this.tokenizer.escape(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.escape(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // tag
   tag(params) {
-    if (params.token = this.tokenizer.tag(params.src, params.inLink, params.inRawBlock)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.inLink = params.token.inLink;
-      params.inRawBlock = params.token.inRawBlock;
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.tag(params.src, params.inLink, params.inRawBlock)) {
+      params.src = params.src.substring(token.raw.length);
+      params.inLink = token.inLink;
+      params.inRawBlock = token.inRawBlock;
+      params.tokens.push(token);
       return true;
     }
   }
 
   // link
   link(params) {
-    if (params.token = this.tokenizer.link(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      if (params.token.type === 'link') {
-        params.token.tokens = this.inlineTokens(params.token.text, [], true, params.inRawBlock);
+    let token;
+    if (token = this.tokenizer.link(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      if (token.type === 'link') {
+        token.tokens = this.inlineTokens(token.text, [], true, params.inRawBlock);
       }
-      params.tokens.push(params.token);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // reflink, nolink
   reflink(params) {
-    if (params.token = this.tokenizer.reflink(params.src, this.tokens.links)) {
-      params.src = params.src.substring(params.token.raw.length);
-      if (params.token.type === 'link') {
-        params.token.tokens = this.inlineTokens(params.token.text, [], true, params.inRawBlock);
+    let token;
+    if (token = this.tokenizer.reflink(params.src, this.tokens.links)) {
+      params.src = params.src.substring(token.raw.length);
+      if (token.type === 'link') {
+        token.tokens = this.inlineTokens(token.text, [], true, params.inRawBlock);
       }
-      params.tokens.push(params.token);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // strong
   strong(params) {
-    if (params.token = this.tokenizer.strong(params.src, params.maskedSrc, params.prevChar)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.token.tokens = this.inlineTokens(params.token.text, [], params.inLink, params.inRawBlock);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.strong(params.src, params.maskedSrc, params.prevChar)) {
+      params.src = params.src.substring(token.raw.length);
+      token.tokens = this.inlineTokens(token.text, [], params.inLink, params.inRawBlock);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // em
   em(params) {
-    if (params.token = this.tokenizer.em(params.src, params.maskedSrc, params.prevChar)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.token.tokens = this.inlineTokens(params.token.text, [], params.inLink, params.inRawBlock);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.em(params.src, params.maskedSrc, params.prevChar)) {
+      params.src = params.src.substring(token.raw.length);
+      token.tokens = this.inlineTokens(token.text, [], params.inLink, params.inRawBlock);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // code
   codespan(params) {
-    if (params.token = this.tokenizer.codespan(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.codespan(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // br
   br(params) {
-    if (params.token = this.tokenizer.br(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.br(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // del (gfm)
   del(params) {
-    if (params.token = this.tokenizer.del(params.src)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.token.tokens = this.inlineTokens(params.token.text, [], params.inLink, params.inRawBlock);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.del(params.src)) {
+      params.src = params.src.substring(token.raw.length);
+      token.tokens = this.inlineTokens(token.text, [], params.inLink, params.inRawBlock);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // autolink
   autolink(params) {
-    if (params.token = this.tokenizer.autolink(params.src, params.mangle)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (token = this.tokenizer.autolink(params.src, params.mangle)) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // url (gfm)
   url(params) {
-    if (!params.inLink && (params.token = this.tokenizer.url(params.src, params.mangle))) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.tokens.push(params.token);
+    let token;
+    if (!params.inLink && (token = this.tokenizer.url(params.src, params.mangle))) {
+      params.src = params.src.substring(token.raw.length);
+      params.tokens.push(token);
       return true;
     }
   }
 
   // text
   inlineText(params) {
-    if (params.token = this.tokenizer.inlineText(params.src, params.inRawBlock, params.smartypants)) {
-      params.src = params.src.substring(params.token.raw.length);
-      params.prevChar = params.token.raw.slice(-1);
+    let token;
+    if (token = this.tokenizer.inlineText(params.src, params.inRawBlock, params.smartypants)) {
+      params.src = params.src.substring(token.raw.length);
+      params.prevChar = token.raw.slice(-1);
       params.keepPrevChar = true;
-      params.tokens.push(params.token);
+      params.tokens.push(token);
       return true;
     }
   }
@@ -595,7 +614,7 @@ module.exports = class Lexer {
    * Lexing/Compiling
    */
   inlineTokens(src, tokens = [], inLink = false, inRawBlock = false) {
-    let match, fn;
+    let match;
     let maskedSrc = src;
 
     // Mask out reflinks to avoid interference with em and strong
@@ -622,24 +641,18 @@ module.exports = class Lexer {
       maskedSrc: maskedSrc,
       prevChar: false,
       keepPrevChar: false,
-      token: null,
 
       mangle: mangle,
       smartypants: smartypants
     };
 
-    inlineTokenizerLoop:
     while (inlineParams.src) {
       if (!inlineParams.keepPrevChar) {
         inlineParams.prevChar = '';
       }
       inlineParams.keepPrevChar = false;
 
-      for (fn of this.inlineTokenizers) {
-        if (fn.func.call(this, inlineParams)) {
-          continue inlineTokenizerLoop;
-        }
-      }
+      if (this.inlineTokenizers.some(fn => fn.func.call(this, inlineParams))) continue;
 
       if (inlineParams.src) {
         const errMsg = 'Infinite loop on byte: ' + inlineParams.src.charCodeAt(0);
