@@ -1,5 +1,5 @@
-const commonjs = require('rollup-plugin-commonjs');
-const babel = require('rollup-plugin-babel');
+const commonjs = require('@rollup/plugin-commonjs');
+const babel = require('@rollup/plugin-babel').default;
 const license = require('rollup-plugin-license');
 
 module.exports = {
