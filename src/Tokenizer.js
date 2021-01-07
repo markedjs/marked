@@ -79,13 +79,13 @@ module.exports = class Tokenizer {
     }
   }
 
-  code(src, tokens) {
+  code(src, lastToken) {
     const cap = this.rules.block.code.exec(src);
     if (cap) {
-      const lastToken = tokens[tokens.length - 1];
       // An indented code block cannot interrupt a paragraph.
       if (lastToken && lastToken.type === 'paragraph') {
         return {
+          type: 'continue',
           raw: cap[0],
           text: cap[0].trimRight()
         };
@@ -407,12 +407,12 @@ module.exports = class Tokenizer {
     }
   }
 
-  text(src, tokens) {
+  text(src, lastToken) {
     const cap = this.rules.block.text.exec(src);
     if (cap) {
-      const lastToken = tokens[tokens.length - 1];
       if (lastToken && lastToken.type === 'text') {
         return {
+          type: 'continue',
           raw: cap[0],
           text: cap[0]
         };

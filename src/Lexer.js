@@ -220,186 +220,155 @@ module.exports = class Lexer {
    */
 
   // newline
-  newline(params) {
+  newline(src, params) {
     let token;
-    if (token = this.tokenizer.space(params.src)) {
-      params.src = params.src.substring(token.raw.length);
-      if (token.type) {
-        params.tokens.push(token);
-      }
-      return true;
+    if (token = this.tokenizer.space(src)) {
+      return token;
     }
   }
 
   // code
-  code(params) {
+  code(src, params) {
     let token;
-    if (token = this.tokenizer.code(params.src, params.tokens)) {
-      params.src = params.src.substring(token.raw.length);
-      if (token.type) {
-        params.tokens.push(token);
-      } else {
-        params.lastToken = params.tokens[params.tokens.length - 1];
-        params.lastToken.raw += '\n' + token.raw;
-        params.lastToken.text += '\n' + token.text;
-      }
-      return true;
+    if (token = this.tokenizer.code(src, params.lastToken)) {
+      return token;
     }
   }
 
   // fences
-  fences(params) {
+  fences(src, params) {
     let token;
-    if (token = this.tokenizer.fences(params.src)) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (token = this.tokenizer.fences(src)) {
+      return token;
     }
   }
 
   // table no leading pipe (gfm)
-  nptable(params) {
+  nptable(src, params) {
     let token;
-    if (token = this.tokenizer.nptable(params.src)) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (token = this.tokenizer.nptable(src)) {
+      return token;
     }
   }
 
   // heading
-  heading(params) {
+  heading(src, params) {
     let token;
-    if (token = this.tokenizer.heading(params.src)) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (token = this.tokenizer.heading(src)) {
+      return token;
     }
   }
 
   // hr
-  hr(params) {
+  hr(src, params) {
     let token;
-    if (token = this.tokenizer.hr(params.src)) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (token = this.tokenizer.hr(src)) {
+      return token;
     }
   }
 
   // blockquote
-  blockquote(params) {
+  blockquote(src, params) {
     let token;
-    if (token = this.tokenizer.blockquote(params.src)) {
-      params.src = params.src.substring(token.raw.length);
+    if (token = this.tokenizer.blockquote(src)) {
       token.tokens = this.blockTokens(token.text, [], params.top);
-      params.tokens.push(token);
-      return true;
+      return token;
     }
   }
 
   // list
-  list(params) {
+  list(src, params) {
     let token;
-    if (token = this.tokenizer.list(params.src)) {
-      params.src = params.src.substring(token.raw.length);
+    if (token = this.tokenizer.list(src)) {
       const l = token.items.length;
       let i;
       for (i = 0; i < l; i++) {
         token.items[i].tokens = this.blockTokens(token.items[i].text, [], false);
       }
-      params.tokens.push(token);
-      return true;
+      return token;
     }
   }
 
   // html
-  html(params) {
+  html(src, params) {
     let token;
-    if (token = this.tokenizer.html(params.src)) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (token = this.tokenizer.html(src)) {
+      return token;
     }
   }
 
   // def
-  def(params) {
+  def(src, params) {
     let token;
-    if (params.top && (token = this.tokenizer.def(params.src))) {
-      params.src = params.src.substring(token.raw.length);
+    if (params.top && (token = this.tokenizer.def(src))) {
       if (!this.tokens.links[token.tag]) {
         this.tokens.links[token.tag] = {
           href: token.href,
           title: token.title
         };
       }
-      return true;
+      return token;
     }
   }
 
   // table (gfm)
-  table(params) {
+  table(src, params) {
     let token;
-    if (token = this.tokenizer.table(params.src)) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (token = this.tokenizer.table(src)) {
+      return token;
     }
   }
 
   // lheading
-  lheading(params) {
+  lheading(src, params) {
     let token;
-    if (token = this.tokenizer.lheading(params.src)) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (token = this.tokenizer.lheading(src, params)) {
+      return token;
     }
   }
 
   // top-level paragraph
-  paragraph(params) {
+  paragraph(src, params) {
     let token;
-    if (params.top && (token = this.tokenizer.paragraph(params.src))) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (params.top && (token = this.tokenizer.paragraph(src))) {
+      return token;
     }
   }
 
   // text
-  text(params) {
+  text(src, params) {
     let token;
-    if (token = this.tokenizer.text(params.src, params.tokens)) {
-      params.src = params.src.substring(token.raw.length);
-      if (token.type) {
-        params.tokens.push(token);
-      } else {
-        params.lastToken = params.tokens[params.tokens.length - 1];
-        params.lastToken.raw += '\n' + token.raw;
-        params.lastToken.text += '\n' + token.text;
-      }
-      return true;
+    if (token = this.tokenizer.text(src, params.lastToken)) {
+      return token;
     }
   }
 
   blockTokens(src, tokens = [], top = true) {
+    let token;
     src = src.replace(/^ +$/gm, '');
 
     const blockParams = {
-      src: src,
-      tokens: tokens,
       top: top,
-      // token: null,
-      lastToken: null//,
+      lastToken: null
     };
 
-    while (blockParams.src) {
-      if (this.blockTokenizers.some(fn => fn.func.call(this, blockParams))) continue;
+    while (src) {
+      if (this.blockTokenizers.some(fn => token = fn.func.call(this, src, blockParams))) {
+        src = src.substring(token.raw.length);
+        if (token.type) {
+          if (token.type === 'continue') {
+            blockParams.lastToken.raw += '\n' + token.raw;
+            blockParams.lastToken.text += '\n' + token.text;
+          } else {
+            tokens.push(token);
+            blockParams.lastToken = token;
+          }
+        }
+        continue;
+      }
 
-      if (blockParams.src) {
-        const errMsg = 'Infinite loop on byte: ' + blockParams.src.charCodeAt(0);
+      if (src) {
+        const errMsg = 'Infinite loop on byte: ' + src.charCodeAt(0);
         if (this.options.silent) {
           console.error(errMsg);
           break;
@@ -409,7 +378,7 @@ module.exports = class Lexer {
       }
     }
 
-    return blockParams.tokens;
+    return tokens;
   }
 
   inline(tokens) {
@@ -478,135 +447,111 @@ module.exports = class Lexer {
   }
 
   // escape
-  escape(params) {
+  escape(src, params) {
     let token;
-    if (token = this.tokenizer.escape(params.src)) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (token = this.tokenizer.escape(src)) {
+      return token;
     }
   }
 
   // tag
-  tag(params) {
+  tag(src, params) {
     let token;
-    if (token = this.tokenizer.tag(params.src, params.inLink, params.inRawBlock)) {
-      params.src = params.src.substring(token.raw.length);
+    if (token = this.tokenizer.tag(src, params.inLink, params.inRawBlock)) {
       params.inLink = token.inLink;
       params.inRawBlock = token.inRawBlock;
-      params.tokens.push(token);
-      return true;
+      return token;
     }
   }
 
   // link
-  link(params) {
+  link(src, params) {
     let token;
-    if (token = this.tokenizer.link(params.src)) {
-      params.src = params.src.substring(token.raw.length);
+    if (token = this.tokenizer.link(src)) {
       if (token.type === 'link') {
         token.tokens = this.inlineTokens(token.text, [], true, params.inRawBlock);
       }
-      params.tokens.push(token);
-      return true;
+      return token;
     }
   }
 
   // reflink, nolink
-  reflink(params) {
+  reflink(src, params) {
     let token;
-    if (token = this.tokenizer.reflink(params.src, this.tokens.links)) {
-      params.src = params.src.substring(token.raw.length);
+    if (token = this.tokenizer.reflink(src, this.tokens.links)) {
       if (token.type === 'link') {
         token.tokens = this.inlineTokens(token.text, [], true, params.inRawBlock);
       }
-      params.tokens.push(token);
-      return true;
+      return token;
     }
   }
 
   // strong
-  strong(params) {
+  strong(src, params) {
     let token;
-    if (token = this.tokenizer.strong(params.src, params.maskedSrc, params.prevChar)) {
-      params.src = params.src.substring(token.raw.length);
+    if (token = this.tokenizer.strong(src, params.maskedSrc, params.prevChar)) {
       token.tokens = this.inlineTokens(token.text, [], params.inLink, params.inRawBlock);
-      params.tokens.push(token);
-      return true;
+      return token;
     }
   }
 
   // em
-  em(params) {
+  em(src, params) {
     let token;
-    if (token = this.tokenizer.em(params.src, params.maskedSrc, params.prevChar)) {
-      params.src = params.src.substring(token.raw.length);
+    if (token = this.tokenizer.em(src, params.maskedSrc, params.prevChar)) {
       token.tokens = this.inlineTokens(token.text, [], params.inLink, params.inRawBlock);
-      params.tokens.push(token);
-      return true;
+      return token;
     }
   }
 
   // code
-  codespan(params) {
+  codespan(src, params) {
     let token;
-    if (token = this.tokenizer.codespan(params.src)) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (token = this.tokenizer.codespan(src)) {
+      return token;
     }
   }
 
   // br
-  br(params) {
+  br(src, params) {
     let token;
-    if (token = this.tokenizer.br(params.src)) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (token = this.tokenizer.br(src)) {
+      return token;
     }
   }
 
   // del (gfm)
-  del(params) {
+  del(src, params) {
     let token;
-    if (token = this.tokenizer.del(params.src)) {
-      params.src = params.src.substring(token.raw.length);
+    if (token = this.tokenizer.del(src)) {
       token.tokens = this.inlineTokens(token.text, [], params.inLink, params.inRawBlock);
-      params.tokens.push(token);
-      return true;
+      return token;
     }
   }
 
   // autolink
-  autolink(params) {
+  autolink(src, params) {
     let token;
-    if (token = this.tokenizer.autolink(params.src, params.mangle)) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (token = this.tokenizer.autolink(src, params.mangle)) {
+      return token;
     }
   }
 
   // url (gfm)
-  url(params) {
+  url(src, params) {
     let token;
-    if (!params.inLink && (token = this.tokenizer.url(params.src, params.mangle))) {
-      params.src = params.src.substring(token.raw.length);
-      params.tokens.push(token);
-      return true;
+    if (!params.inLink && (token = this.tokenizer.url(src, params.mangle))) {
+      return token;
     }
   }
 
   // text
-  inlineText(params) {
+  inlineText(src, params) {
     let token;
-    if (token = this.tokenizer.inlineText(params.src, params.inRawBlock, params.smartypants)) {
-      params.src = params.src.substring(token.raw.length);
+    if (token = this.tokenizer.inlineText(src, params.inRawBlock, params.smartypants)) {
       params.prevChar = token.raw.slice(-1);
       params.keepPrevChar = true;
-      params.tokens.push(token);
-      return true;
+      return token;
     }
   }
 
@@ -614,7 +559,7 @@ module.exports = class Lexer {
    * Lexing/Compiling
    */
   inlineTokens(src, tokens = [], inLink = false, inRawBlock = false) {
-    let match;
+    let match, token;
     let maskedSrc = src;
 
     // Mask out reflinks to avoid interference with em and strong
@@ -634,8 +579,6 @@ module.exports = class Lexer {
     }
 
     const inlineParams = {
-      src: src,
-      tokens: tokens,
       inLink: inLink,
       inRawBlock: inRawBlock,
       maskedSrc: maskedSrc,
@@ -646,16 +589,20 @@ module.exports = class Lexer {
       smartypants: smartypants
     };
 
-    while (inlineParams.src) {
+    while (src) {
       if (!inlineParams.keepPrevChar) {
         inlineParams.prevChar = '';
       }
       inlineParams.keepPrevChar = false;
 
-      if (this.inlineTokenizers.some(fn => fn.func.call(this, inlineParams))) continue;
+      if (this.inlineTokenizers.some(fn => token = fn.func.call(this, src, inlineParams))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
 
-      if (inlineParams.src) {
-        const errMsg = 'Infinite loop on byte: ' + inlineParams.src.charCodeAt(0);
+      if (src) {
+        const errMsg = 'Infinite loop on byte: ' + src.charCodeAt(0);
         if (this.options.silent) {
           console.error(errMsg);
           break;
@@ -665,6 +612,6 @@ module.exports = class Lexer {
       }
     }
 
-    return inlineParams.tokens;
+    return tokens;
   }
 };
