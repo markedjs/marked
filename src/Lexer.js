@@ -74,42 +74,6 @@ module.exports = class Lexer {
     }
     this.tokenizer.rules = rules;
 
-    // TOO SLOW
-    // this.blockTokenizers = new Map([
-    //   ['newline', this.newline],
-    //   ['code', this.code],
-    //   ['fences', this.fences],
-    //   ['nptable', this.nptable],
-    //   ['heading', this.heading],
-    //   ['hr', this.hr],
-    //   ['blockquote', this.blockquote],
-    //   ['list', this.list],
-    //   ['html', this.html],
-    //   ['def', this.def],
-    //   ['table', this.table],
-    //   ['lheading', this.lheading],
-    //   ['paragraph', this.paragraph],
-    //   ['text', this.text]
-    // ]);
-
-    // this.blockTokenizers = [
-    //   this.newline,
-    //   this.code,
-    //   this.fences,
-    //   this.nptable,
-    //   this.heading,
-    //   this.hr,
-    //   this.blockquote,
-    //   this.list,
-    //   this.html,
-    //   this.def,
-    //   this.table,
-    //   this.lheading,
-    //   this.paragraph,
-    //   this.text
-    // ];
-
-    // Array of objects only slightly slower than raw array (~4720 -> ~4750 ms)
     this.blockTokenizers = [
       { name: 'newline', func: this.newline },
       { name: 'code', func: this.code },
@@ -126,37 +90,6 @@ module.exports = class Lexer {
       { name: 'paragraph', func: this.paragraph },
       { name: 'text', func: this.text }
     ];
-
-    // TOO SLOW
-    // this.inlineTokenizers = new Map([
-    //   ['escape', this.escape],
-    //   ['tag', this.tag],
-    //   ['link', this.link],
-    //   ['reflink', this.reflink],
-    //   ['strong', this.strong],
-    //   ['em', this.em],
-    //   ['codespan', this.codespan],
-    //   ['br', this.br],
-    //   ['del', this.del],
-    //   ['autolink', this.autolink],
-    //   ['url', this.url],
-    //   ['inlineText', this.inlineText]
-    // ]);
-
-    // this.inlineTokenizers = [
-    //   this.escape,
-    //   this.tag,
-    //   this.link,
-    //   this.reflink,
-    //   this.strong,
-    //   this.em,
-    //   this.codespan,
-    //   this.br,
-    //   this.del,
-    //   this.autolink,
-    //   this.url,
-    //   this.inlineText
-    // ];
 
     this.inlineTokenizers = [
       { name: 'escape', func: this.escape },
@@ -219,6 +152,7 @@ module.exports = class Lexer {
    * Lexing
    */
 
+  //= === Block tokenizers ====//
   // newline
   newline(src, params) {
     let token;
@@ -446,6 +380,7 @@ module.exports = class Lexer {
     return tokens;
   }
 
+  //= === Inline Tokenizers ====//
   // escape
   escape(src, params) {
     let token;
