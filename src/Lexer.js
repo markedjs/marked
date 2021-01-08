@@ -353,7 +353,7 @@ module.exports = class Lexer {
     };
 
     while (src) {
-      if (this.blockTokenizers.some(fn => token = fn.func.call(this, src, blockParams))) {
+      if (this.blockTokenizers.some(function(fn) { return token = fn.func.call(this, src, blockParams); }, this)) {
         src = src.substring(token.raw.length);
         if (token.type) {
           if (token.type === 'continue') {
@@ -595,7 +595,7 @@ module.exports = class Lexer {
       }
       inlineParams.keepPrevChar = false;
 
-      if (this.inlineTokenizers.some(fn => token = fn.func.call(this, src, inlineParams))) {
+      if (this.inlineTokenizers.some(function(fn) { return token = fn.func.call(this, src, inlineParams); }, this)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
