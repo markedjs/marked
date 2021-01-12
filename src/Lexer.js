@@ -2,6 +2,7 @@ const Tokenizer = require('./Tokenizer.js');
 const { defaults } = require('./defaults.js');
 const { block, inline } = require('./rules.js');
 const { repeatString } = require('./helpers.js');
+// Function.prototype.bind = require('fast-bind');
 
 /**
  * smartypants text replacement
@@ -154,89 +155,89 @@ module.exports = class Lexer {
 
   //= === Block tokenizers ====//
   // newline
-  newline(src, params) {
+  newline(c, src, params) {
     let token;
-    if (token = this.tokenizer.space(src)) {
+    if (token = c.tokenizer.space(src)) {
       return token;
     }
   }
 
   // code
-  code(src, params) {
+  code(c, src, params) {
     let token;
-    if (token = this.tokenizer.code(src, params.lastToken)) {
+    if (token = c.tokenizer.code(src, params.lastToken)) {
       return token;
     }
   }
 
   // fences
-  fences(src, params) {
+  fences(c, src, params) {
     let token;
-    if (token = this.tokenizer.fences(src)) {
+    if (token = c.tokenizer.fences(src)) {
       return token;
     }
   }
 
   // table no leading pipe (gfm)
-  nptable(src, params) {
+  nptable(c, src, params) {
     let token;
-    if (token = this.tokenizer.nptable(src)) {
+    if (token = c.tokenizer.nptable(src)) {
       return token;
     }
   }
 
   // heading
-  heading(src, params) {
+  heading(c, src, params) {
     let token;
-    if (token = this.tokenizer.heading(src)) {
+    if (token = c.tokenizer.heading(src)) {
       return token;
     }
   }
 
   // hr
-  hr(src, params) {
+  hr(c, src, params) {
     let token;
-    if (token = this.tokenizer.hr(src)) {
+    if (token = c.tokenizer.hr(src)) {
       return token;
     }
   }
 
   // blockquote
-  blockquote(src, params) {
+  blockquote(c, src, params) {
     let token;
-    if (token = this.tokenizer.blockquote(src)) {
-      token.tokens = this.blockTokens(token.text, [], params.top);
+    if (token = c.tokenizer.blockquote(src)) {
+      token.tokens = c.blockTokens(token.text, [], params.top);
       return token;
     }
   }
 
   // list
-  list(src, params) {
+  list(c, src, params) {
     let token;
-    if (token = this.tokenizer.list(src)) {
+    if (token = c.tokenizer.list(src)) {
       const l = token.items.length;
       let i;
       for (i = 0; i < l; i++) {
-        token.items[i].tokens = this.blockTokens(token.items[i].text, [], false);
+        token.items[i].tokens = c.blockTokens(token.items[i].text, [], false);
       }
       return token;
     }
   }
 
   // html
-  html(src, params) {
+  html(c, src, params) {
     let token;
-    if (token = this.tokenizer.html(src)) {
+    if (token = c.tokenizer.html(src)) {
       return token;
     }
   }
 
   // def
-  def(src, params) {
+  def(c, src, params) {
     let token;
-    if (params.top && (token = this.tokenizer.def(src))) {
-      if (!this.tokens.links[token.tag]) {
-        this.tokens.links[token.tag] = {
+    if (params.top && (token = c.tokenizer.def(src))) {
+      if (!c.tokens.links[token.tag]) {
+        c.tokens.links[token.tag] = {
           href: token.href,
           title: token.title
         };
@@ -246,33 +247,33 @@ module.exports = class Lexer {
   }
 
   // table (gfm)
-  table(src, params) {
+  table(c, src, params) {
     let token;
-    if (token = this.tokenizer.table(src)) {
+    if (token = c.tokenizer.table(src)) {
       return token;
     }
   }
 
   // lheading
-  lheading(src, params) {
+  lheading(c, src, params) {
     let token;
-    if (token = this.tokenizer.lheading(src, params)) {
+    if (token = c.tokenizer.lheading(src, params)) {
       return token;
     }
   }
 
   // top-level paragraph
-  paragraph(src, params) {
+  paragraph(c, src, params) {
     let token;
-    if (params.top && (token = this.tokenizer.paragraph(src))) {
+    if (params.top && (token = c.tokenizer.paragraph(src))) {
       return token;
     }
   }
 
   // text
-  text(src, params) {
+  text(c, src, params) {
     let token;
-    if (token = this.tokenizer.text(src, params.lastToken)) {
+    if (token = c.tokenizer.text(src, params.lastToken)) {
       return token;
     }
   }
@@ -287,7 +288,7 @@ module.exports = class Lexer {
     };
 
     while (src) {
-      if (this.blockTokenizers.some(function(fn) { return token = fn.func.call(this, src, blockParams); }, this)) {
+      if (this.blockTokenizers.some((fn) => token = fn.func(this, src, blockParams))) {
         src = src.substring(token.raw.length);
         if (token.type) {
           if (token.type === 'continue') {
@@ -382,17 +383,17 @@ module.exports = class Lexer {
 
   //= === Inline Tokenizers ====//
   // escape
-  escape(src, params) {
+  escape(c, src, params) {
     let token;
-    if (token = this.tokenizer.escape(src)) {
+    if (token = c.tokenizer.escape(src)) {
       return token;
     }
   }
 
   // tag
-  tag(src, params) {
+  tag(c, src, params) {
     let token;
-    if (token = this.tokenizer.tag(src, params.inLink, params.inRawBlock)) {
+    if (token = c.tokenizer.tag(src, params.inLink, params.inRawBlock)) {
       params.inLink = token.inLink;
       params.inRawBlock = token.inRawBlock;
       return token;
@@ -400,90 +401,90 @@ module.exports = class Lexer {
   }
 
   // link
-  link(src, params) {
+  link(c, src, params) {
     let token;
-    if (token = this.tokenizer.link(src)) {
+    if (token = c.tokenizer.link(src)) {
       if (token.type === 'link') {
-        token.tokens = this.inlineTokens(token.text, [], true, params.inRawBlock);
+        token.tokens = c.inlineTokens(token.text, [], true, params.inRawBlock);
       }
       return token;
     }
   }
 
   // reflink, nolink
-  reflink(src, params) {
+  reflink(c, src, params) {
     let token;
-    if (token = this.tokenizer.reflink(src, this.tokens.links)) {
+    if (token = c.tokenizer.reflink(src, c.tokens.links)) {
       if (token.type === 'link') {
-        token.tokens = this.inlineTokens(token.text, [], true, params.inRawBlock);
+        token.tokens = c.inlineTokens(token.text, [], true, params.inRawBlock);
       }
       return token;
     }
   }
 
   // strong
-  strong(src, params) {
+  strong(c, src, params) {
     let token;
-    if (token = this.tokenizer.strong(src, params.maskedSrc, params.prevChar)) {
-      token.tokens = this.inlineTokens(token.text, [], params.inLink, params.inRawBlock);
+    if (token = c.tokenizer.strong(src, params.maskedSrc, params.prevChar)) {
+      token.tokens = c.inlineTokens(token.text, [], params.inLink, params.inRawBlock);
       return token;
     }
   }
 
   // em
-  em(src, params) {
+  em(c, src, params) {
     let token;
-    if (token = this.tokenizer.em(src, params.maskedSrc, params.prevChar)) {
-      token.tokens = this.inlineTokens(token.text, [], params.inLink, params.inRawBlock);
+    if (token = c.tokenizer.em(src, params.maskedSrc, params.prevChar)) {
+      token.tokens = c.inlineTokens(token.text, [], params.inLink, params.inRawBlock);
       return token;
     }
   }
 
   // code
-  codespan(src, params) {
+  codespan(c, src, params) {
     let token;
-    if (token = this.tokenizer.codespan(src)) {
+    if (token = c.tokenizer.codespan(src)) {
       return token;
     }
   }
 
   // br
-  br(src, params) {
+  br(c, src, params) {
     let token;
-    if (token = this.tokenizer.br(src)) {
+    if (token = c.tokenizer.br(src)) {
       return token;
     }
   }
 
   // del (gfm)
-  del(src, params) {
+  del(c, src, params) {
     let token;
-    if (token = this.tokenizer.del(src)) {
-      token.tokens = this.inlineTokens(token.text, [], params.inLink, params.inRawBlock);
+    if (token = c.tokenizer.del(src)) {
+      token.tokens = c.inlineTokens(token.text, [], params.inLink, params.inRawBlock);
       return token;
     }
   }
 
   // autolink
-  autolink(src, params) {
+  autolink(c, src, params) {
     let token;
-    if (token = this.tokenizer.autolink(src, params.mangle)) {
+    if (token = c.tokenizer.autolink(src, params.mangle)) {
       return token;
     }
   }
 
   // url (gfm)
-  url(src, params) {
+  url(c, src, params) {
     let token;
-    if (!params.inLink && (token = this.tokenizer.url(src, params.mangle))) {
+    if (!params.inLink && (token = c.tokenizer.url(src, params.mangle))) {
       return token;
     }
   }
 
   // text
-  inlineText(src, params) {
+  inlineText(c, src, params) {
     let token;
-    if (token = this.tokenizer.inlineText(src, params.inRawBlock, params.smartypants)) {
+    if (token = c.tokenizer.inlineText(src, params.inRawBlock, params.smartypants)) {
       params.prevChar = token.raw.slice(-1);
       params.keepPrevChar = true;
       return token;
@@ -530,7 +531,7 @@ module.exports = class Lexer {
       }
       inlineParams.keepPrevChar = false;
 
-      if (this.inlineTokenizers.some(function(fn) { return token = fn.func.call(this, src, inlineParams); }, this)) {
+      if (this.inlineTokenizers.some(fn => token = fn.func(this, src, inlineParams))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
