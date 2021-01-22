@@ -56,8 +56,7 @@ module.exports = class Lexer {
     this.tokens = [];
     this.tokens.links = Object.create(null);
     this.options = options || defaults;
-    this.options.tokenizer = this.options.tokenizer || new Tokenizer();
-    this.tokenizer = this.options.tokenizer;
+    this.tokenizer = this.options.tokenizer || Tokenizer.getStaticTokenizer();
     this.tokenizer.options = this.options;
 
     const rules = {
