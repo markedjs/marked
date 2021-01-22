@@ -49,6 +49,10 @@ function mangle(text) {
  */
 module.exports = class Lexer {
   constructor(options) {
+    this.setOptions(options);
+  }
+
+  setOptions(options) {
     this.tokens = [];
     this.tokens.links = Object.create(null);
     this.options = options || defaults;
@@ -75,6 +79,8 @@ module.exports = class Lexer {
     this.tokenizer.rules = rules;
   }
 
+  static staticLexer
+
   /**
    * Expose Rules
    */
@@ -89,16 +95,22 @@ module.exports = class Lexer {
    * Static Lex Method
    */
   static lex(src, options) {
-    const lexer = new Lexer(options);
-    return lexer.lex(src);
+    if(!this.staticLexer){
+      this.staticLexer = new Lexer();
+    }
+    this.staticLexer.setOptions(options);
+    return this.staticLexer.lex(src);
   }
 
   /**
    * Static Lex Inline Method
    */
   static lexInline(src, options) {
-    const lexer = new Lexer(options);
-    return lexer.inlineTokens(src);
+    if(!this.staticLexer){
+      this.staticLexer = new Lexer();
+    }
+    this.staticLexer.setOptions(options);
+    return this.staticLexer.inlineTokens(src);
   }
 
   /**
