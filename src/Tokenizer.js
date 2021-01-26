@@ -91,7 +91,7 @@ module.exports = class Tokenizer {
         };
       }
 
-      const text = cap[0].replace(/^ {4}/gm, '');
+      const text = cap[0].replace(/^ {1,4}/gm, '');
       return {
         type: 'code',
         raw: cap[0],

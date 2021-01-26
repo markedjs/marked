@@ -120,7 +120,9 @@ module.exports = class Lexer {
    * Lexing
    */
   blockTokens(src, tokens = [], top = true) {
-    src = src.replace(/^ +$/gm, '');
+    if (this.options.pedantic) {
+      src = src.replace(/^ +$/gm, '');
+    }
     let token, i, l, lastToken;
 
     while (src) {

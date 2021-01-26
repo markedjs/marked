@@ -335,12 +335,15 @@ text 1
         fail(err);
       }
 
-      expect(html).toBe(`<pre><code class="language-lang1">async text 1</code></pre>
+      expect(html).toBe(`<pre><code class="language-lang1">async text 1
+</code></pre>
 <blockquote>
-<pre><code class="language-lang2">async text 2</code></pre>
+<pre><code class="language-lang2">async text 2
+</code></pre>
 </blockquote>
 <ul>
-<li><pre><code class="language-lang3">async text 3</code></pre>
+<li><pre><code class="language-lang3">async text 3
+</code></pre>
 </li>
 </ul>
 `);
@@ -378,12 +381,15 @@ text 1
         fail(err);
       }
 
-      expect(html).toBe(`<pre><code class="language-lang1">async text 1</code></pre>
+      expect(html).toBe(`<pre><code class="language-lang1">async text 1
+</code></pre>
 <blockquote>
-<pre><code class="language-lang2">async text 2</code></pre>
+<pre><code class="language-lang2">async text 2
+</code></pre>
 </blockquote>
 <ul>
-<li><pre><code class="language-lang3">async text 3</code></pre>
+<li><pre><code class="language-lang3">async text 3
+</code></pre>
 </li>
 </ul>
 `);
