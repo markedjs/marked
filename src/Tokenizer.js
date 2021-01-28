@@ -66,15 +66,6 @@ module.exports = class Tokenizer {
     this.options = options || defaults;
   }
 
-  static staticTokenizer
-
-  static getStaticTokenizer() {
-    if(!this.staticTokenizer) {
-      this.staticTokenizer = new Tokenizer();
-    }
-    return this.staticTokenizer;
-  }
-
   space(src) {
     const cap = this.rules.block.newline.exec(src);
     if (cap) {

@@ -56,7 +56,9 @@ module.exports = class Lexer {
     this.tokens = [];
     this.tokens.links = Object.create(null);
     this.options = options || defaults;
-    this.tokenizer = this.options.tokenizer || Tokenizer.getStaticTokenizer();
+    if (!this.tokenizer) {
+      this.tokenizer = this.options.tokenizer || new Tokenizer();
+    }
     this.tokenizer.options = this.options;
 
     const rules = {
@@ -78,8 +80,6 @@ module.exports = class Lexer {
     this.tokenizer.rules = rules;
   }
 
-  static staticLexer
-
   /**
    * Expose Rules
    */
@@ -94,7 +94,7 @@ module.exports = class Lexer {
    * Static Lex Method
    */
   static lex(src, options) {
-    if(!this.staticLexer){
+    if (!this.staticLexer) {
       this.staticLexer = new Lexer();
     }
     this.staticLexer.setOptions(options);
@@ -105,7 +105,7 @@ module.exports = class Lexer {
    * Static Lex Inline Method
    */
   static lexInline(src, options) {
-    if(!this.staticLexer){
+    if (!this.staticLexer) {
       this.staticLexer = new Lexer();
     }
     this.staticLexer.setOptions(options);
