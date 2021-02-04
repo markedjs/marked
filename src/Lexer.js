@@ -452,7 +452,13 @@ module.exports = class Lexer {
         src = src.substring(token.raw.length);
         prevChar = token.raw.slice(-1);
         keepPrevChar = true;
-        tokens.push(token);
+        const lastToken = tokens[tokens.length - 1];
+        if (lastToken && lastToken.type === 'text') {
+          lastToken.raw += token.raw;
+          lastToken.text += token.text;
+        } else {
+          tokens.push(token);
+        }
         continue;
       }
 
