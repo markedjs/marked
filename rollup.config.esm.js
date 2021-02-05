@@ -1,4 +1,4 @@
-const commonjs = require('rollup-plugin-commonjs');
+const commonjs = require('@rollup/plugin-commonjs');
 const license = require('rollup-plugin-license');
 
 module.exports = {
