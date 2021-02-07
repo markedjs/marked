@@ -616,9 +616,7 @@ a | b
           md: '<div>html</div>',
           options: { sanitize: true },
           tokens: [
-            { type: 'text', raw: '<div>', inLink: false, inRawBlock: false, text: '&lt;div&gt;' },
-            { type: 'text', raw: 'html', text: 'html' },
-            { type: 'text', raw: '</div>', inLink: false, inRawBlock: false, text: '&lt;/div&gt;' }
+            { type: 'text', raw: '<div>html</div>', inLink: false, inRawBlock: false, text: '&lt;div&gt;html&lt;/div&gt;' }
           ]
         });
       });
@@ -740,8 +738,7 @@ a | b
           expectInlineTokens({
             md: '[link]',
             tokens: [
-              { type: 'text', raw: '[', text: '[' },
-              { type: 'text', raw: 'link]', text: 'link]' }
+              { type: 'text', raw: '[link]', text: '[link]' }
             ]
           });
         });

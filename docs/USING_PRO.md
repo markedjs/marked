@@ -157,7 +157,7 @@ console.log(marked('$ latex code $\n\n` other code `'));
 ### Block level tokenizer methods
 
 - space(*string* src)
-- code(*string* src, *array* tokens)
+- code(*string* src)
 - fences(*string* src)
 - heading(*string* src)
 - nptable(*string* src)
@@ -169,7 +169,7 @@ console.log(marked('$ latex code $\n\n` other code `'));
 - table(*string* src)
 - lheading(*string* src)
 - paragraph(*string* src)
-- text(*string* src, *array* tokens)
+- text(*string* src)
 
 ### Inline level tokenizer methods
 
