@@ -26,8 +26,5 @@ jobs:
         with:
           languages: "javascript"
 
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v1
-
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
