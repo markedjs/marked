@@ -1805,8 +1805,7 @@
     "example": 225,
     "start_line": 3834,
     "end_line": 3843,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "- one\n\n  two\n",
@@ -1822,8 +1821,7 @@
     "example": 227,
     "start_line": 3860,
     "end_line": 3870,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": " -    one\n\n      two\n",
@@ -1979,8 +1977,7 @@
     "example": 246,
     "start_line": 4192,
     "end_line": 4201,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "-  foo\n\n   bar\n",
@@ -2282,8 +2279,7 @@
     "example": 283,
     "start_line": 5197,
     "end_line": 5214,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- a\n- b\n\n- c\n",

@@ -48,7 +48,7 @@ block.item = edit(block.item, 'gm')
   .replace(/bull/g, block.bullet)
   .getRegex();
 
-block.listItemStart = edit(/^( *)(bull)/)
+block.listItemStart = edit(/^( *)(bull) */)
   .replace('bull', block.bullet)
   .getRegex();
 

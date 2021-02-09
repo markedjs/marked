@@ -220,7 +220,8 @@ module.exports = class Tokenizer {
         addBack,
         loose,
         istask,
-        ischecked;
+        ischecked,
+        endMatch;
 
       let l = itemMatch.length;
       bcurr = this.rules.block.listItemStart.exec(itemMatch[0]);
@@ -228,13 +229,31 @@ module.exports = class Tokenizer {
         item = itemMatch[i];
         raw = item;
 
+        if (!this.options.pedantic) {
+          // Determine if current item contains the end of the list
+          endMatch = item.match(new RegExp(`\\n *\\n {0,${bcurr[0].length - 1}}\\S`));
+          if (endMatch) {
+            // console.log(item, endMatch);
+            let num = item.length - endMatch.index;
+            item = item.substring(0, endMatch.index + 1);
+            raw = item;
+
+            for (let j = i + 1; j < l; j++) {
+              num += itemMatch[j].length;
+            }
+
+            list.raw = list.raw.substring(0, list.raw.length - num);
+            l = i + 1;
+          }
+        }
+
         // Determine whether the next list item belongs here.
         // Backpedal if it does not belong in this list.
         if (i !== l - 1) {
           bnext = this.rules.block.listItemStart.exec(itemMatch[i + 1]);
           if (
             !this.options.pedantic
-              ? bnext[1].length > bcurr[0].length || bnext[1].length > 3
+              ? bnext[1].length >= bcurr[0].length || bnext[1].length > 3
               : bnext[1].length > bcurr[1].length
           ) {
             // nested list
