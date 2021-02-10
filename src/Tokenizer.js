@@ -231,18 +231,13 @@ module.exports = class Tokenizer {
 
         if (!this.options.pedantic) {
           // Determine if current item contains the end of the list
-          endMatch = item.match(new RegExp('\\n *\\n {0,' + (bcurr[0].length - 1) + '}\\S'));
+          endMatch = item.match(new RegExp('\\n\\s*\\n {0,' + (bcurr[0].length - 1) + '}\\S'));
           if (endMatch) {
-            // console.log(item, endMatch);
-            let num = item.length - endMatch.index;
+            addBack = item.length - endMatch.index + itemMatch.slice(i + 1).join('\n').length;
+            list.raw = list.raw.substring(0, list.raw.length - addBack);
+
             item = item.substring(0, endMatch.index + 1);
             raw = item;
-
-            for (let j = i + 1; j < l; j++) {
-              num += itemMatch[j].length;
-            }
-
-            list.raw = list.raw.substring(0, list.raw.length - num);
             l = i + 1;
           }
         }
@@ -257,21 +252,19 @@ module.exports = class Tokenizer {
               : bnext[1].length > bcurr[1].length
           ) {
             // nested list or continuation
-            itemMatch.splice(i, 2, itemMatch[i] + (!itemMatch[i].match(/\n$/) && !this.options.pedantic && bnext[1].length < bcurr[0].length ? '' : '\n') + itemMatch[i + 1]);
+            itemMatch.splice(i, 2, itemMatch[i] + (!this.options.pedantic && bnext[1].length < bcurr[0].length && !itemMatch[i].match(/\n$/) ? '' : '\n') + itemMatch[i + 1]);
             i--;
             l--;
             continue;
-          } else {
-            if (
-              // different bullet style
-              !this.options.pedantic || this.options.smartLists
-                ? bnext[2][bnext[2].length - 1] !== bull[bull.length - 1]
-                : isordered === (bnext[2].length === 1)
-            ) {
-              addBack = itemMatch.slice(i + 1).join('\n');
-              list.raw = list.raw.substring(0, list.raw.length - addBack.length);
-              i = l - 1;
-            }
+          } else if (
+            // different bullet style
+            !this.options.pedantic || this.options.smartLists
+              ? bnext[2][bnext[2].length - 1] !== bull[bull.length - 1]
+              : isordered === (bnext[2].length === 1)
+          ) {
+            addBack = itemMatch.slice(i + 1).join('\n').length;
+            list.raw = list.raw.substring(0, list.raw.length - addBack);
+            i = l - 1;
           }
           bcurr = bnext;
         }
