@@ -2270,8 +2270,7 @@
     "example": 282,
     "start_line": 5177,
     "end_line": 5191,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "1. a\n\n  2. b\n\n    3. c\n",

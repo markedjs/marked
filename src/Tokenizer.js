@@ -231,7 +231,7 @@ module.exports = class Tokenizer {
 
         if (!this.options.pedantic) {
           // Determine if current item contains the end of the list
-          endMatch = item.match(new RegExp(`\\n *\\n {0,${bcurr[0].length - 1}}\\S`));
+          endMatch = item.match(new RegExp('\\n *\\n {0,' + (bcurr[0].length - 1) + '}\\S'));
           if (endMatch) {
             // console.log(item, endMatch);
             let num = item.length - endMatch.index;
@@ -256,8 +256,8 @@ module.exports = class Tokenizer {
               ? bnext[1].length >= bcurr[0].length || bnext[1].length > 3
               : bnext[1].length > bcurr[1].length
           ) {
-            // nested list
-            itemMatch.splice(i, 2, itemMatch[i] + '\n' + itemMatch[i + 1]);
+            // nested list or continuation
+            itemMatch.splice(i, 2, itemMatch[i] + (!itemMatch[i].match(/\n$/) && !this.options.pedantic && bnext[1].length < bcurr[0].length ? '' : '\n') + itemMatch[i + 1]);
             i--;
             l--;
             continue;
