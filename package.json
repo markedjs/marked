@@ -49,7 +49,7 @@
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-promise": "^4.3.1",
     "front-matter": "^4.0.2",
     "highlight.js": "^10.5.0",
     "jasmine": "^3.6.4",
