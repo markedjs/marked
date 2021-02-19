@@ -153,6 +153,7 @@ console.log(marked('$ latex code $\n\n` other code `'));
 <p><code>latex code</code></p>
 <p><code>other code</code></p>
 ```
+**NOTE**: This does not fully support latex, see issue [#1948](https://github.com/markedjs/marked/issues/1948).
 
 ### Block level tokenizer methods
 
