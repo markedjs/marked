@@ -326,7 +326,7 @@ a | b
                 task: false,
                 checked: undefined,
                 loose: false,
-                text: 'item 2\n',
+                text: 'item 2',
                 tokens: [{
                   type: 'text',
                   raw: 'item 2',
@@ -387,6 +387,66 @@ a | b
             ]
           })
         ])
+      });
+    });
+
+    it('space after list', () => {
+      expectTokens({
+        md: `
+- item 1
+- item 2
+
+paragraph
+`,
+        tokens: [
+          {
+            type: 'list',
+            raw: '- item 1\n- item 2\n\n',
+            ordered: false,
+            start: '',
+            loose: false,
+            items: [
+              {
+                type: 'list_item',
+                raw: '- item 1',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'item 1',
+                tokens: [{
+                  type: 'text',
+                  raw: 'item 1',
+                  text: 'item 1',
+                  tokens: [{ type: 'text', raw: 'item 1', text: 'item 1' }]
+                }]
+              },
+              {
+                type: 'list_item',
+                raw: '- item 2\n\n',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'item 2',
+                tokens: [{
+                  type: 'text',
+                  raw: 'item 2',
+                  text: 'item 2',
+                  tokens: [{ type: 'text', raw: 'item 2', text: 'item 2' }]
+                }]
+              }
+            ]
+          },
+          {
+            type: 'paragraph',
+            raw: 'paragraph',
+            text: 'paragraph',
+            tokens: [{
+              type: 'text',
+              raw: 'paragraph',
+              text: 'paragraph'
+            }]
+          }
+        ]
       });
     });
 

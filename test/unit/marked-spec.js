@@ -465,7 +465,6 @@ br
       ['list_item', '- list'],
       ['text', 'list'],
       ['text', 'list'],
-      ['space', ''],
       ['html', '<div>html</div>'],
       ['paragraph', '[link](https://example.com)'],
       ['link', '[link](https://example.com)'],

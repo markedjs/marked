@@ -236,7 +236,7 @@ module.exports = class Tokenizer {
             addBack = item.length - endMatch.index + itemMatch.slice(i + 1).join('\n').length;
             list.raw = list.raw.substring(0, list.raw.length - addBack);
 
-            item = item.substring(0, endMatch.index + 1);
+            item = item.substring(0, endMatch.index);
             raw = item;
             l = i + 1;
           }
@@ -283,12 +283,15 @@ module.exports = class Tokenizer {
             : item.replace(/^ {1,4}/gm, '');
         }
 
+        // trim item newlines at end
+        item = rtrim(item, '\n');
+
         // Determine whether item is loose or not.
         // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
         // for discount behavior.
-        loose = next || /\n\n(?!\s*$)/.test(item);
+        loose = next || /\n\n(?!\s*$)/.test(raw);
         if (i !== l - 1) {
-          next = item.charAt(item.length - 1) === '\n';
+          next = raw.charAt(raw.length - 1) === '\n';
           if (!loose) loose = next;
         }
 
