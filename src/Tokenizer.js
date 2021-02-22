@@ -285,13 +285,16 @@ module.exports = class Tokenizer {
 
         // trim item newlines at end
         item = rtrim(item, '\n');
+        if (i !== l - 1) {
+          raw = raw + '\n';
+        }
 
         // Determine whether item is loose or not.
         // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
         // for discount behavior.
         loose = next || /\n\n(?!\s*$)/.test(raw);
         if (i !== l - 1) {
-          next = raw.charAt(raw.length - 1) === '\n';
+          next = raw.slice(-2) === '\n\n';
           if (!loose) loose = next;
         }
 

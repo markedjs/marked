@@ -308,7 +308,7 @@ a | b
             items: [
               {
                 type: 'list_item',
-                raw: '- item 1',
+                raw: '- item 1\n',
                 task: false,
                 checked: undefined,
                 loose: false,
@@ -354,7 +354,7 @@ a | b
             start: 1,
             items: [
               jasmine.objectContaining({
-                raw: '1. item 1'
+                raw: '1. item 1\n'
               }),
               jasmine.objectContaining({
                 raw: '2. item 2\n'
@@ -379,7 +379,7 @@ a | b
             start: 1,
             items: [
               jasmine.objectContaining({
-                raw: '1) item 1'
+                raw: '1) item 1\n'
               }),
               jasmine.objectContaining({
                 raw: '2) item 2\n'
@@ -408,7 +408,7 @@ paragraph
             items: [
               {
                 type: 'list_item',
-                raw: '- item 1',
+                raw: '- item 1\n',
                 task: false,
                 checked: undefined,
                 loose: false,
@@ -464,7 +464,7 @@ paragraph
             start: 2,
             items: [
               jasmine.objectContaining({
-                raw: '2. item 1'
+                raw: '2. item 1\n'
               }),
               jasmine.objectContaining({
                 raw: '3. item 2\n'
@@ -486,7 +486,15 @@ paragraph
           jasmine.objectContaining({
             type: 'list',
             raw: '- item 1\n\n- item 2\n',
-            loose: true
+            loose: true,
+            items: [
+              jasmine.objectContaining({
+                raw: '- item 1\n\n'
+              }),
+              jasmine.objectContaining({
+                raw: '- item 2\n'
+              })
+            ]
           })
         ])
       });
@@ -504,7 +512,7 @@ paragraph
             raw: '- [ ] item 1\n- [x] item 2\n',
             items: [
               jasmine.objectContaining({
-                raw: '- [ ] item 1',
+                raw: '- [ ] item 1\n',
                 task: true,
                 checked: false
               }),
