@@ -308,7 +308,7 @@ a | b
             items: [
               {
                 type: 'list_item',
-                raw: '- item 1',
+                raw: '- item 1\n',
                 task: false,
                 checked: undefined,
                 loose: false,
@@ -326,7 +326,7 @@ a | b
                 task: false,
                 checked: undefined,
                 loose: false,
-                text: 'item 2\n',
+                text: 'item 2',
                 tokens: [{
                   type: 'text',
                   raw: 'item 2',
@@ -354,7 +354,7 @@ a | b
             start: 1,
             items: [
               jasmine.objectContaining({
-                raw: '1. item 1'
+                raw: '1. item 1\n'
               }),
               jasmine.objectContaining({
                 raw: '2. item 2\n'
@@ -379,7 +379,7 @@ a | b
             start: 1,
             items: [
               jasmine.objectContaining({
-                raw: '1) item 1'
+                raw: '1) item 1\n'
               }),
               jasmine.objectContaining({
                 raw: '2) item 2\n'
@@ -387,6 +387,66 @@ a | b
             ]
           })
         ])
+      });
+    });
+
+    it('space after list', () => {
+      expectTokens({
+        md: `
+- item 1
+- item 2
+
+paragraph
+`,
+        tokens: [
+          {
+            type: 'list',
+            raw: '- item 1\n- item 2\n\n',
+            ordered: false,
+            start: '',
+            loose: false,
+            items: [
+              {
+                type: 'list_item',
+                raw: '- item 1\n',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'item 1',
+                tokens: [{
+                  type: 'text',
+                  raw: 'item 1',
+                  text: 'item 1',
+                  tokens: [{ type: 'text', raw: 'item 1', text: 'item 1' }]
+                }]
+              },
+              {
+                type: 'list_item',
+                raw: '- item 2\n\n',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'item 2',
+                tokens: [{
+                  type: 'text',
+                  raw: 'item 2',
+                  text: 'item 2',
+                  tokens: [{ type: 'text', raw: 'item 2', text: 'item 2' }]
+                }]
+              }
+            ]
+          },
+          {
+            type: 'paragraph',
+            raw: 'paragraph',
+            text: 'paragraph',
+            tokens: [{
+              type: 'text',
+              raw: 'paragraph',
+              text: 'paragraph'
+            }]
+          }
+        ]
       });
     });
 
@@ -404,7 +464,7 @@ a | b
             start: 2,
             items: [
               jasmine.objectContaining({
-                raw: '2. item 1'
+                raw: '2. item 1\n'
               }),
               jasmine.objectContaining({
                 raw: '3. item 2\n'
@@ -426,7 +486,15 @@ a | b
           jasmine.objectContaining({
             type: 'list',
             raw: '- item 1\n\n- item 2\n',
-            loose: true
+            loose: true,
+            items: [
+              jasmine.objectContaining({
+                raw: '- item 1\n\n'
+              }),
+              jasmine.objectContaining({
+                raw: '- item 2\n'
+              })
+            ]
           })
         ])
       });
@@ -444,7 +512,7 @@ a | b
             raw: '- [ ] item 1\n- [x] item 2\n',
             items: [
               jasmine.objectContaining({
-                raw: '- [ ] item 1',
+                raw: '- [ ] item 1\n',
                 task: true,
                 checked: false
               }),
