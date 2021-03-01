@@ -55,7 +55,7 @@
     "jasmine": "^3.6.4",
     "markdown-it": "12.0.4",
     "node-fetch": "^2.6.1",
-    "rollup": "^2.39.0",
+    "rollup": "^2.40.0",
     "rollup-plugin-license": "^2.2.0",
     "semantic-release": "^17.3.9",
     "titleize": "^2.1.0",
