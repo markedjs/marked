@@ -42,6 +42,7 @@ function parse(e) {
         }
       }
       postMessage({
+        id: e.data.id,
         task: e.data.task,
         defaults: defaults
       });
@@ -53,6 +54,7 @@ function parse(e) {
       var parsed = marked.parser(lexed, e.data.options);
       var endTime = new Date();
       postMessage({
+        id: e.data.id,
         task: e.data.task,
         lexed: lexedList,
         parsed: parsed,

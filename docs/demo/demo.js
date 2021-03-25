@@ -166,7 +166,7 @@ function setInitialOptions() {
   if ('options' in search) {
     $optionsElem.value = search.options;
   } else {
-    setDefaultOptions();
+    return setDefaultOptions();
   }
 }
 
@@ -283,7 +283,7 @@ function getPrCommit(pr) {
 
 function setDefaultOptions() {
   if (window.Worker) {
-    messageWorker({
+    return messageWorker({
       task: 'defaults',
       version: markedVersions[$markedVerElem.value]
     });
@@ -499,6 +499,7 @@ function setParsed(parsed, lexed) {
   $lexerElem.value = lexed;
 }
 
+var workerPromises = {};
 function messageWorker(message) {
   if (!markedWorker || markedWorker.working) {
     if (markedWorker) {
@@ -526,6 +527,8 @@ function messageWorker(message) {
       clearTimeout(checkChangeTimeout);
       delayTime = 10;
       checkForChanges();
+      workerPromises[e.data.id]();
+      delete workerPromises[e.data.id];
     };
     markedWorker.onerror = markedWorker.onmessageerror = function(err) {
       clearTimeout(markedWorker.timeout);
@@ -549,7 +552,19 @@ function messageWorker(message) {
     markedWorker.working = true;
     workerTimeout(0);
   }
-  markedWorker.postMessage(message);
+  return new Promise(function(resolve) {
+    message.id = uniqueWorkerMessageId();
+    workerPromises[message.id] = resolve;
+    markedWorker.postMessage(message);
+  });
+}
+
+function uniqueWorkerMessageId() {
+  var id;
+  do {
+    id = Math.random().toString(36);
+  } while (id in workerPromises);
+  return id;
 }
 
 function workerTimeout(seconds) {
