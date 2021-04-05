@@ -51,7 +51,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
     "front-matter": "^4.0.2",
-    "highlight.js": "^10.7.1",
+    "highlight.js": "^10.7.2",
     "jasmine": "^3.7.0",
     "markdown-it": "12.0.4",
     "node-fetch": "^2.6.1",
