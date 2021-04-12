@@ -17,13 +17,13 @@ marked(markdownString [,options] [,callback])
 const marked = require('marked');
 
 // Set options
-// `highlight` example uses `highlight.js`
+// `highlight` example uses https://highlightjs.org
 marked.setOptions({
   renderer: new marked.Renderer(),
-  highlight: function(code, language) {
+  highlight: function(code, lang) {
     const hljs = require('highlight.js');
-    const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
-    return hljs.highlight(validLanguage, code).value;
+    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+    return hljs.highlight(code, { language }).value;
   },
   pedantic: false,
   gfm: true,
