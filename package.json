@@ -33,7 +33,7 @@
     "html"
   ],
   "devDependencies": {
-    "@babel/core": "^7.13.14",
+    "@babel/core": "^7.13.15",
     "@babel/preset-env": "^7.13.12",
     "@markedjs/html-differ": "^3.0.4",
     "@rollup/plugin-babel": "^5.3.0",
