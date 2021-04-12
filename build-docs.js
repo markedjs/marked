@@ -36,11 +36,11 @@ async function build(currentDir, tmpl) {
       const parsed = parse(filename);
       if (parsed.ext === '.md' && isUppercase(parsed.name)) {
         const html = marked(buffer.toString('utf8'), {
-          highlight: (code, lang) => {
-            if (!lang) {
+          highlight: (code, language) => {
+            if (!language) {
               return highlightAuto(code).value;
             }
-            return highlight(lang, code).value;
+            return highlight(code, { language }).value;
           }
         });
         buffer = Buffer.from(tmpl
