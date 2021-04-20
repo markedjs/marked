@@ -4,6 +4,7 @@
   "author": "Christopher Jeffrey",
   "version": "2.0.3",
   "main": "./src/marked.js",
+  "module": "./lib/marked.esm.js",
   "browser": "./lib/marked.js",
   "bin": {
     "marked": "bin/marked"
