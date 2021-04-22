@@ -138,6 +138,12 @@
     "example": 631
   },
   {
+    "section": "[extension] Autolinks",
+    "html": "<p><a href=\"http://www.commonmark.org/help_\">www.commonmark.org/help_</a></p>",
+    "markdown": "www.commonmark.org/help_",
+    "example": 632
+  },
+  {
     "section": "[extension] Disallowed Raw HTML",
     "html": "<p><strong> &lt;title> &lt;style> <em></p>\n<blockquote>\n  &lt;xmp> is disallowed.  &lt;XMP> is also disallowed.\n</blockquote>",
     "markdown": "<strong> <title> <style> <em>\n\n<blockquote>\n  <xmp> is disallowed.  <XMP> is also disallowed.\n</blockquote>",
