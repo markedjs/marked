@@ -40,7 +40,7 @@ async function build(currentDir, tmpl) {
             if (!language) {
               return highlightAuto(code).value;
             }
-            return highlight(code, { language }).value;
+            return highlight(code, { language: language }).value;
           }
         });
         buffer = Buffer.from(tmpl
