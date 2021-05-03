@@ -244,6 +244,10 @@ function repeatString(pattern, count) {
   return result + pattern;
 }
 
+function isFun(val) {
+  return typeof val === 'function';
+}
+
 module.exports = {
   escape,
   unescape,
@@ -256,5 +260,6 @@ module.exports = {
   rtrim,
   findClosingBracket,
   checkSanitizeDeprecation,
-  repeatString
+  repeatString,
+  isFun
 };

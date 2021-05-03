@@ -233,7 +233,7 @@ marked.parseInline = function(src, opt) {
     if (opt.walkTokens) {
       marked.walkTokens(tokens, opt.walkTokens);
     }
-    return Parser.parseInline(tokens, opt);
+    return Parser.parse(tokens, opt);
   } catch (e) {
     e.message += '\nPlease report this to https://github.com/markedjs/marked.';
     if (opt.silent) {
