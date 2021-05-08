@@ -142,6 +142,7 @@ describe('use extension', () => {
       name: 'underline',
       before: 'paragraph', // Leave blank to run after everything else...?
       level: 'block',
+      start: /:/,
       tokenizer: (src) => {
         const rule = /^:([^\n]*)(?:\n|$)/;
         const match = rule.exec(src);

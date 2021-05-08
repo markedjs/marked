@@ -408,6 +408,18 @@ module.exports = class Tokenizer {
   }
 
   paragraph(src) {
+    if (this.options.extensions) {
+      Object.values(this.options.extensions).forEach(function(extension, index) {
+        if (extension.start) {
+          // find the next start index
+          const match = src.match(extension.start);
+          if (match && match.length > 0) {
+            // get `src` up to that index
+            src = src.substring(0, match.index);
+          }
+        }
+      });
+    }
     const cap = this.rules.block.paragraph.exec(src);
     if (cap) {
       return {
