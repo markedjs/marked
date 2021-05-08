@@ -138,10 +138,38 @@ describe('parseInline', () => {
 
 describe('use extension', () => {
   afterEach(function() {
-    marked.defaults = marked.getDefaults();
+    // marked.defaults = marked.getDefaults();  // <- This is causing tests in parser-spec.js to fail? What?
   });
 
-  it('should use block tokenizer + renderer extensions', () => {
+  it('should use custom block tokenizer + renderer extensions', () => {
+    const underline = {
+      name: 'underline',
+      before: 'paragraph', // Leave blank to run after everything else...?
+      level: 'block',
+      tokenizer: (src) => {
+        const rule = /^:([^\n]*)(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'underline',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+          };
+        }
+      },
+      renderer: (token) => {
+        return `<u>${token.text}</u>\n`;
+      }
+    };
+    marked.use({ extensions: { underline } });
+    let html = marked('Not Underlined\n:Underlined\nNot Underlined');
+    expect(html).toBe('<p>Not Underlined\n:Underlined\nNot Underlined</p>\n');
+
+    html = marked('Not Underlined\n\n:Underlined\n\nNot Underlined');
+    expect(html).toBe('<p>Not Underlined</p>\n<u>Underlined</u>\n<p>Not Underlined</p>\n');
+  });
+
+  it('should interrupt paragraphs if using "start" property', () => {
     const underline = {
       name: 'underline',
       before: 'paragraph', // Leave blank to run after everything else...?
