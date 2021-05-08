@@ -140,7 +140,7 @@ module.exports = class Lexer {
     if (this.options.pedantic) {
       src = src.replace(/^ +$/gm, '');
     }
-    let token, i, l, lastToken, tokensLength;
+    let token, i, l, lastToken, tokensLength, cutSrc;
 
     while (src) {
       if (this.runTokenzierExtension(src, tokens, 'space')) {
@@ -257,7 +257,20 @@ module.exports = class Lexer {
       }
 
       // top-level paragraph
-      if (top && (token = this.tokenizer.paragraph(src))) {
+      cutSrc = src;
+      if (this.options.extensions) {
+        Object.values(this.options.extensions).forEach(function(extension, index) {
+          if (extension.start) {
+            // find the next start index
+            const match = src.match(extension.start);
+            if (match && match.length > 0) {
+              // get `src` up to that index
+              cutSrc = src.substring(0, match.index);
+            }
+          }
+        });
+      }
+      if (top && (token = this.tokenizer.paragraph(cutSrc))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
