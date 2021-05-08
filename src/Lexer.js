@@ -52,6 +52,7 @@ module.exports = class Lexer {
     this.tokens = [];
     this.tokens.links = Object.create(null);
     this.options = options || defaults;
+    this.options.extensions = this.options.extensions || null;
     this.options.tokenizer = this.options.tokenizer || new Tokenizer();
     this.tokenizer = this.options.tokenizer;
     this.tokenizer.options = this.options;
@@ -101,6 +102,22 @@ module.exports = class Lexer {
     return lexer.inlineTokens(src);
   }
 
+  runTokenzierExtension(src, tokens, before) {
+    let tokensLength = 0;
+    if (this.options.extensions) {
+      // Find extensions with matching "before"
+      let token;
+      Object.values(this.options.extensions).forEach(function(extension, index) {
+        if (extension.before && extension.before === before && (token = extension.tokenizer(src))) {
+          src = src.substring(token.raw.length);
+          tokens.push(token);
+          tokensLength += token.raw.length;
+        }
+      });
+    }
+    return tokensLength;
+  }
+
   /**
    * Preprocessing
    */
@@ -123,9 +140,14 @@ module.exports = class Lexer {
     if (this.options.pedantic) {
       src = src.replace(/^ +$/gm, '');
     }
-    let token, i, l, lastToken;
+    let token, i, l, lastToken, tokensLength;
 
     while (src) {
+      if (this.runTokenzierExtension(src, tokens, 'space')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // newline
       if (token = this.tokenizer.space(src)) {
         src = src.substring(token.raw.length);
@@ -226,6 +248,11 @@ module.exports = class Lexer {
       if (token = this.tokenizer.lheading(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
+        continue;
+      }
+
+      if (tokensLength = this.runTokenzierExtension(src, tokens, 'paragraph')) {
+        src = src.substring(tokensLength);
         continue;
       }
 

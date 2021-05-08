@@ -12,6 +12,7 @@ const {
 module.exports = class Parser {
   constructor(options) {
     this.options = options || defaults;
+    this.options.extensions = this.options.extensions || null;
     this.options.renderer = this.options.renderer || new Renderer();
     this.renderer = this.options.renderer;
     this.renderer.options = this.options;
@@ -57,7 +58,8 @@ module.exports = class Parser {
       item,
       checked,
       task,
-      checkbox;
+      checkbox,
+      tokenParsed;
 
     const l = tokens.length;
     for (i = 0; i < l; i++) {
@@ -179,7 +181,20 @@ module.exports = class Parser {
           out += top ? this.renderer.paragraph(body) : body;
           continue;
         }
+
         default: {
+          // Run any renderer extensions
+          tokenParsed = false;
+          if (this.options.extensions) {
+            Object.values(this.options.extensions).forEach(function(extension, index) {
+              if (extension.name && extension.name === token.type) {
+                out += extension.renderer(token);
+              }
+              tokenParsed = true;
+            });
+          }
+          if (tokenParsed) continue;
+
           const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
             console.error(errMsg);
