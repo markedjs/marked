@@ -137,7 +137,11 @@ describe('parseInline', () => {
 });
 
 describe('use extension', () => {
-  it('should use full extension', () => {
+  afterEach(function() {
+    marked.defaults = marked.getDefaults();
+  });
+
+  it('should use block tokenizer + renderer extensions', () => {
     const underline = {
       name: 'underline',
       before: 'paragraph', // Leave blank to run after everything else...?
