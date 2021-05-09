@@ -195,6 +195,32 @@ describe('use extension', () => {
     expect(html).toBe('<p>Not Underlined</p>\n<u>Underlined</u>\n<p>Not Underlined</p>\n');
   });
 
+  it('should use custom inline tokenizer + renderer extensions', () => {
+    const underline = {
+      name: 'underline',
+      before: 'emStrong', // Leave blank to run after everything else...?
+      level: 'inline',
+      start: /=/,
+      tokenizer: (src) => {
+        const rule = /^=([^=]+)=/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'underline',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+          };
+        }
+      },
+      renderer: (token) => {
+        return `<u>${token.text}</u>`;
+      }
+    };
+    marked.use({ extensions: { underline } });
+    const html = marked('Not Underlined =Underlined= Not Underlined');
+    expect(html).toBe('<p>Not Underlined <u>Underlined</u> Not Underlined</p>\n');
+  });
+
   it('should use renderer', () => {
     const extension = {
       renderer: {

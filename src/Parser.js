@@ -216,7 +216,8 @@ module.exports = class Parser {
     renderer = renderer || this.renderer;
     let out = '',
       i,
-      token;
+      token,
+      tokenParsed;
 
     const l = tokens.length;
     for (i = 0; i < l; i++) {
@@ -263,6 +264,18 @@ module.exports = class Parser {
           break;
         }
         default: {
+          // Run any renderer extensions
+          tokenParsed = false;
+          if (this.options.extensions) {
+            Object.values(this.options.extensions).forEach(function(extension, index) {
+              if (extension.name && extension.name === token.type) {
+                out += extension.renderer(token);
+              }
+              tokenParsed = true;
+            });
+          }
+          if (tokenParsed) continue;
+
           const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
             console.error(errMsg);

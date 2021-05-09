@@ -260,7 +260,7 @@ module.exports = class Lexer {
       cutSrc = src;
       if (this.options.extensions) {
         Object.values(this.options.extensions).forEach(function(extension, index) {
-          if (extension.start) {
+          if (extension.level === 'block' && extension.start) {
             // find the next start index
             const match = src.match(extension.start);
             if (match && match.length > 0) {
@@ -372,12 +372,12 @@ module.exports = class Lexer {
    * Lexing/Compiling
    */
   inlineTokens(src, tokens = [], inLink = false, inRawBlock = false) {
-    let token, lastToken;
+    let token, lastToken, cutSrc;
 
     // String with links masked to avoid interference with em and strong
     let maskedSrc = src;
     let match;
-    let keepPrevChar, prevChar;
+    let keepPrevChar, prevChar, tokensLength;
 
     // Mask out reflinks
     if (this.tokens.links) {
@@ -454,6 +454,11 @@ module.exports = class Lexer {
         continue;
       }
 
+      if (tokensLength = this.runTokenzierExtension(src, tokens, 'emStrong')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // em & strong
       if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar)) {
         src = src.substring(token.raw.length);
@@ -499,7 +504,20 @@ module.exports = class Lexer {
       }
 
       // text
-      if (token = this.tokenizer.inlineText(src, inRawBlock, smartypants)) {
+      cutSrc = src;
+      if (this.options.extensions) {
+        Object.values(this.options.extensions).forEach(function(extension, index) {
+          if (extension.level === 'inline' && extension.start) {
+            // find the next start index
+            const match = src.match(extension.start);
+            if (match && match.length > 0) {
+              // get `src` up to that index
+              cutSrc = src.substring(0, match.index);
+            }
+          }
+        });
+      }
+      if (token = this.tokenizer.inlineText(cutSrc, inRawBlock, smartypants)) {
         src = src.substring(token.raw.length);
         if (token.raw.slice(-1) !== '_') { // Track prevChar before string of ____ started
           prevChar = token.raw.slice(-1);
