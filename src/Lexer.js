@@ -142,7 +142,7 @@ module.exports = class Lexer {
     let token, i, l, lastToken, tokensLength, cutSrc;
 
     while (src) {
-      if (this.runTokenizerExtension(src, tokens, 'space')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'space')) {
         src = src.substring(tokensLength);
         continue;
       }
@@ -156,7 +156,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (this.runTokenizerExtension(src, tokens, 'code')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'code')) {
         src = src.substring(tokensLength);
         continue;
       }
@@ -175,7 +175,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (this.runTokenizerExtension(src, tokens, 'fences')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'fences')) {
         src = src.substring(tokensLength);
         continue;
       }
@@ -187,7 +187,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (this.runTokenizerExtension(src, tokens, 'heading')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'heading')) {
         src = src.substring(tokensLength);
         continue;
       }
@@ -199,7 +199,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (this.runTokenizerExtension(src, tokens, 'nptable')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'nptable')) {
         src = src.substring(tokensLength);
         continue;
       }
@@ -211,7 +211,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (this.runTokenizerExtension(src, tokens, 'hr')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'hr')) {
         src = src.substring(tokensLength);
         continue;
       }
@@ -223,7 +223,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (this.runTokenizerExtension(src, tokens, 'blockquote')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'blockquote')) {
         src = src.substring(tokensLength);
         continue;
       }
@@ -236,7 +236,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (this.runTokenizerExtension(src, tokens, 'list')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'list')) {
         src = src.substring(tokensLength);
         continue;
       }
@@ -252,7 +252,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (this.runTokenizerExtension(src, tokens, 'html')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'html')) {
         src = src.substring(tokensLength);
         continue;
       }
@@ -264,7 +264,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (this.runTokenizerExtension(src, tokens, 'def')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'def')) {
         src = src.substring(tokensLength);
         continue;
       }
@@ -281,7 +281,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (this.runTokenizerExtension(src, tokens, 'table')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'table')) {
         src = src.substring(tokensLength);
         continue;
       }
@@ -293,7 +293,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (this.runTokenizerExtension(src, tokens, 'lheading')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'lheading')) {
         src = src.substring(tokensLength);
         continue;
       }
@@ -325,7 +325,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (this.runTokenizerExtension(src, tokens, 'text')) {
+      if (tokensLength = this.runTokenizerExtension(src, tokens, 'text')) {
         src = src.substring(tokensLength);
         continue;
       }
