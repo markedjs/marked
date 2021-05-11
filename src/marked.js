@@ -151,67 +151,63 @@ marked.use = function(extension) {
   const extensions = {};
 
   extension.forEach((ext) => {
-    if (ext.overwrite) { // Handle "overwrite" extensions
-      if (ext.renderer) {
-        const renderer = marked.defaults.renderer || new Renderer();
-        for (const prop in ext.renderer) {
-          const prevRenderer = renderer[prop];
-          renderer[prop] = (...args) => {
-            let ret = ext.renderer[prop].apply(renderer, args);
-            if (ret === false) {
-              ret = prevRenderer.apply(renderer, args);
-            }
-            return ret;
-          };
-        }
-        opts.renderer = renderer;
+    //= =-- Parse "addon" extensions --==//
+    if (ext.renderer && ext.name) { // Renderers must have 'name' property
+      extensions[ext.name] = ext.renderer;
+    }
+    if (ext.tokenizer && ext.before) { // Tokenizers must have 'before' property
+      if (extensions[ext.before]) {
+        extensions[ext.before].push(ext.tokenizer);
+      } else {
+        extensions[ext.before] = [ext.tokenizer];
       }
-      if (ext.tokenizer) {
-        const tokenizer = marked.defaults.tokenizer || new Tokenizer();
-        for (const prop in ext.tokenizer) {
-          const prevTokenizer = tokenizer[prop];
-          tokenizer[prop] = (...args) => {
-            let ret = ext.tokenizer[prop].apply(tokenizer, args);
-            if (ret === false) {
-              ret = prevTokenizer.apply(tokenizer, args);
-            }
-            return ret;
-          };
-        }
-        opts.tokenizer = tokenizer;
-      }
-    } else { // Handle "addon" extensions
-      if (ext.renderer && ext.name) {
-        extensions[ext.name] = ext.renderer;
-      }
-      if (ext.tokenizer) {
-        if (ext.start && ext.level) {
-          if (ext.level === 'block') {
-            extensions.startBlock = extensions.startBlock
-              ? new RegExp(extensions.startBlock.source + '|' + ext.start.source)
-              : ext.start;
-          } else if (ext.level === 'inline') {
-            extensions.startInline = extensions.startInline
-              ? new RegExp(extensions.startInline.source + '|' + ext.start.source)
-              : ext.start;
-          }
-        }
-        if (ext.before) {
-          if (extensions[ext.before]) {
-            extensions[ext.before].push(ext.tokenizer);
-          } else {
-            extensions[ext.before] = [ext.tokenizer];
-          }
-        } else { // Handle extensions with no "before" set, will run after all others
-          if (extensions.last) {
-            extensions.last.push(ext.tokenizer);
-          } else {
-            extensions.last = [ext.tokenizer];
-          }
+      if (ext.start && ext.level) { // Start regex must have 'level' property
+        if (ext.level === 'block') {
+          extensions.startBlock = extensions.startBlock
+            ? new RegExp(extensions.startBlock.source + '|' + ext.start.source)
+            : ext.start;
+        } else if (ext.level === 'inline') {
+          extensions.startInline = extensions.startInline
+            ? new RegExp(extensions.startInline.source + '|' + ext.start.source)
+            : ext.start;
         }
       }
     }
+    if (Object.keys(extensions).length) {
+      opts.extensions = extensions;
+    }
 
+    //= =-- Parse "overwrite" extensions --==//
+    if (ext.renderer && !ext.name) {
+      const renderer = marked.defaults.renderer || new Renderer();
+      for (const prop in ext.renderer) {
+        const prevRenderer = renderer[prop];
+        renderer[prop] = (...args) => {
+          let ret = ext.renderer[prop].apply(renderer, args);
+          if (ret === false) {
+            ret = prevRenderer.apply(renderer, args);
+          }
+          return ret;
+        };
+      }
+      opts.renderer = renderer;
+    }
+    if (ext.tokenizer && !ext.before) {
+      const tokenizer = marked.defaults.tokenizer || new Tokenizer();
+      for (const prop in ext.tokenizer) {
+        const prevTokenizer = tokenizer[prop];
+        tokenizer[prop] = (...args) => {
+          let ret = ext.tokenizer[prop].apply(tokenizer, args);
+          if (ret === false) {
+            ret = prevTokenizer.apply(tokenizer, args);
+          }
+          return ret;
+        };
+      }
+      opts.tokenizer = tokenizer;
+    }
+
+    //= =-- Parse WalkTokens extensions --==//
     if (ext.walkTokens) {
       const walkTokens = marked.defaults.walkTokens;
       opts.walkTokens = (token) => {
@@ -223,9 +219,6 @@ marked.use = function(extension) {
     }
   });
 
-  if (Object.keys(extensions).length) {
-    opts.extensions = extensions;
-  }
   marked.setOptions(opts);
 };
 

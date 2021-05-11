@@ -156,6 +156,11 @@ module.exports = class Lexer {
         continue;
       }
 
+      if (this.runTokenzierExtension(src, tokens, 'code')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // code
       if (token = this.tokenizer.code(src)) {
         src = src.substring(token.raw.length);
@@ -170,10 +175,20 @@ module.exports = class Lexer {
         continue;
       }
 
+      if (this.runTokenzierExtension(src, tokens, 'fences')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // fences
       if (token = this.tokenizer.fences(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
+        continue;
+      }
+
+      if (this.runTokenzierExtension(src, tokens, 'heading')) {
+        src = src.substring(tokensLength);
         continue;
       }
 
@@ -184,10 +199,20 @@ module.exports = class Lexer {
         continue;
       }
 
+      if (this.runTokenzierExtension(src, tokens, 'nptable')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // table no leading pipe (gfm)
       if (token = this.tokenizer.nptable(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
+        continue;
+      }
+
+      if (this.runTokenzierExtension(src, tokens, 'hr')) {
+        src = src.substring(tokensLength);
         continue;
       }
 
@@ -198,11 +223,21 @@ module.exports = class Lexer {
         continue;
       }
 
+      if (this.runTokenzierExtension(src, tokens, 'blockquote')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // blockquote
       if (token = this.tokenizer.blockquote(src)) {
         src = src.substring(token.raw.length);
         token.tokens = this.blockTokens(token.text, [], top);
         tokens.push(token);
+        continue;
+      }
+
+      if (this.runTokenzierExtension(src, tokens, 'list')) {
+        src = src.substring(tokensLength);
         continue;
       }
 
@@ -217,10 +252,20 @@ module.exports = class Lexer {
         continue;
       }
 
+      if (this.runTokenzierExtension(src, tokens, 'html')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // html
       if (token = this.tokenizer.html(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
+        continue;
+      }
+
+      if (this.runTokenzierExtension(src, tokens, 'def')) {
+        src = src.substring(tokensLength);
         continue;
       }
 
@@ -236,10 +281,20 @@ module.exports = class Lexer {
         continue;
       }
 
+      if (this.runTokenzierExtension(src, tokens, 'table')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // table (gfm)
       if (token = this.tokenizer.table(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
+        continue;
+      }
+
+      if (this.runTokenzierExtension(src, tokens, 'lheading')) {
+        src = src.substring(tokensLength);
         continue;
       }
 
@@ -256,8 +311,8 @@ module.exports = class Lexer {
       }
 
       // top-level paragraph
+      // prevent paragraph consuming extensions by clipping 'src' to extension start
       cutSrc = src;
-      // find the next extension start, and clip 'src' up to that index
       if (this.options.extensions && this.options.extensions.startBlock) {
         const match = src.match(this.options.extensions.startBlock);
         if (match && match.length > 0) {
@@ -267,6 +322,11 @@ module.exports = class Lexer {
       if (top && (token = this.tokenizer.paragraph(cutSrc))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
+        continue;
+      }
+
+      if (this.runTokenzierExtension(src, tokens, 'text')) {
+        src = src.substring(tokensLength);
         continue;
       }
 
@@ -400,10 +460,20 @@ module.exports = class Lexer {
       }
       keepPrevChar = false;
 
+      if (tokensLength = this.runTokenzierExtension(src, tokens, 'escape')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // escape
       if (token = this.tokenizer.escape(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
+        continue;
+      }
+
+      if (tokensLength = this.runTokenzierExtension(src, tokens, 'tag')) {
+        src = src.substring(tokensLength);
         continue;
       }
 
@@ -422,6 +492,11 @@ module.exports = class Lexer {
         continue;
       }
 
+      if (tokensLength = this.runTokenzierExtension(src, tokens, 'link')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // link
       if (token = this.tokenizer.link(src)) {
         src = src.substring(token.raw.length);
@@ -429,6 +504,11 @@ module.exports = class Lexer {
           token.tokens = this.inlineTokens(token.text, [], true, inRawBlock);
         }
         tokens.push(token);
+        continue;
+      }
+
+      if (tokensLength = this.runTokenzierExtension(src, tokens, 'reflink')) {
+        src = src.substring(tokensLength);
         continue;
       }
 
@@ -461,6 +541,11 @@ module.exports = class Lexer {
         continue;
       }
 
+      if (tokensLength = this.runTokenzierExtension(src, tokens, 'codespan')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // code
       if (token = this.tokenizer.codespan(src)) {
         src = src.substring(token.raw.length);
@@ -468,10 +553,20 @@ module.exports = class Lexer {
         continue;
       }
 
+      if (tokensLength = this.runTokenzierExtension(src, tokens, 'br')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // br
       if (token = this.tokenizer.br(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
+        continue;
+      }
+
+      if (tokensLength = this.runTokenzierExtension(src, tokens, 'del')) {
+        src = src.substring(tokensLength);
         continue;
       }
 
@@ -483,10 +578,20 @@ module.exports = class Lexer {
         continue;
       }
 
+      if (tokensLength = this.runTokenzierExtension(src, tokens, 'autolink')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // autolink
       if (token = this.tokenizer.autolink(src, mangle)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
+        continue;
+      }
+
+      if (tokensLength = this.runTokenzierExtension(src, tokens, 'url')) {
+        src = src.substring(tokensLength);
         continue;
       }
 
@@ -497,9 +602,14 @@ module.exports = class Lexer {
         continue;
       }
 
+      if (tokensLength = this.runTokenzierExtension(src, tokens, 'inlineText')) {
+        src = src.substring(tokensLength);
+        continue;
+      }
+
       // text
+      // prevent inlineText consuming extensions by clipping 'src' to extension start
       cutSrc = src;
-      // find the next extension start, and clip 'src' up to that index
       if (this.options.extensions && this.options.extensions.startInline) {
         const match = src.match(this.options.extensions.startInline);
         if (match && match.length > 0) {

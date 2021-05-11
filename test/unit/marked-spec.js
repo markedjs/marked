@@ -219,7 +219,6 @@ describe('use extension', () => {
 
   it('should use renderer', () => {
     const extension = {
-      overwrite: true,
       renderer: {
         paragraph(text) {
           return 'extension';
@@ -235,7 +234,6 @@ describe('use extension', () => {
 
   it('should use tokenizer', () => {
     const extension = {
-      overwrite: true,
       tokenizer: {
         paragraph(text) {
           return {
@@ -313,7 +311,6 @@ describe('use extension', () => {
 
   it('should use last extension function and not override others', () => {
     const extension1 = {
-      overwrite: true,
       renderer: {
         paragraph(text) {
           return 'extension1 paragraph\n';
@@ -324,7 +321,6 @@ describe('use extension', () => {
       }
     };
     const extension2 = {
-      overwrite: true,
       renderer: {
         paragraph(text) {
           return 'extension2 paragraph\n';
@@ -345,7 +341,6 @@ paragraph
 
   it('should use previous extension when returning false', () => {
     const extension1 = {
-      overwrite: true,
       renderer: {
         paragraph(text) {
           if (text !== 'original') {
@@ -356,7 +351,6 @@ paragraph
       }
     };
     const extension2 = {
-      overwrite: true,
       renderer: {
         paragraph(text) {
           if (text !== 'extension1' && text !== 'original') {
@@ -380,7 +374,6 @@ original
 
   it('should get options with this.options', () => {
     const extension = {
-      overwrite: true,
       renderer: {
         heading: () => {
           return this.options ? 'arrow options\n' : 'arrow no options\n';
