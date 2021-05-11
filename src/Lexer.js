@@ -104,11 +104,10 @@ module.exports = class Lexer {
 
   runTokenzierExtension(src, tokens, before) {
     let tokensLength = 0;
-    if (this.options.extensions) {
-      // Find extensions with matching "before"
+    if (this.options.extensions && this.options.extensions[before]) {
       let token;
-      Object.values(this.options.extensions).forEach(function(extension, index) {
-        if (extension.before && extension.before === before && (token = extension.tokenizer(src))) {
+      this.options.extensions[before].forEach(function(extTokenizer, index) {
+        if (token = extTokenizer(src)) {
           src = src.substring(token.raw.length);
           tokens.push(token);
           tokensLength += token.raw.length;
@@ -258,17 +257,12 @@ module.exports = class Lexer {
 
       // top-level paragraph
       cutSrc = src;
-      if (this.options.extensions) {
-        Object.values(this.options.extensions).forEach(function(extension, index) {
-          if (extension.level === 'block' && extension.start) {
-            // find the next start index
-            const match = src.match(extension.start);
-            if (match && match.length > 0) {
-              // get `src` up to that index
-              cutSrc = src.substring(0, match.index);
-            }
-          }
-        });
+      // find the next extension start, and clip 'src' up to that index
+      if (this.options.extensions && this.options.extensions.startBlock) {
+        const match = src.match(this.options.extensions.startBlock);
+        if (match && match.length > 0) {
+          cutSrc = src.substring(0, match.index);
+        }
       }
       if (top && (token = this.tokenizer.paragraph(cutSrc))) {
         src = src.substring(token.raw.length);
@@ -505,17 +499,12 @@ module.exports = class Lexer {
 
       // text
       cutSrc = src;
-      if (this.options.extensions) {
-        Object.values(this.options.extensions).forEach(function(extension, index) {
-          if (extension.level === 'inline' && extension.start) {
-            // find the next start index
-            const match = src.match(extension.start);
-            if (match && match.length > 0) {
-              // get `src` up to that index
-              cutSrc = src.substring(0, match.index);
-            }
-          }
-        });
+      // find the next extension start, and clip 'src' up to that index
+      if (this.options.extensions && this.options.extensions.startInline) {
+        const match = src.match(this.options.extensions.startInline);
+        if (match && match.length > 0) {
+          cutSrc = src.substring(0, match.index);
+        }
       }
       if (token = this.tokenizer.inlineText(cutSrc, inRawBlock, smartypants)) {
         src = src.substring(token.raw.length);

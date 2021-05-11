@@ -185,13 +185,9 @@ module.exports = class Parser {
         default: {
           // Run any renderer extensions
           tokenParsed = false;
-          if (this.options.extensions) {
-            Object.values(this.options.extensions).forEach(function(extension, index) {
-              if (extension.name && extension.name === token.type) {
-                out += extension.renderer(token);
-              }
-              tokenParsed = true;
-            });
+          if (this.options.extensions && this.options.extensions[token.type]) {
+            out += this.options.extensions[token.type](token);
+            tokenParsed = true;
           }
           if (tokenParsed) continue;
 
@@ -266,13 +262,9 @@ module.exports = class Parser {
         default: {
           // Run any renderer extensions
           tokenParsed = false;
-          if (this.options.extensions) {
-            Object.values(this.options.extensions).forEach(function(extension, index) {
-              if (extension.name && extension.name === token.type) {
-                out += extension.renderer(token);
-              }
-              tokenParsed = true;
-            });
+          if (this.options.extensions && this.options.extensions[token.type]) {
+            out += this.options.extensions[token.type](token);
+            tokenParsed = true;
           }
           if (tokenParsed) continue;
 

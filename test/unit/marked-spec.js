@@ -137,10 +137,6 @@ describe('parseInline', () => {
 });
 
 describe('use extension', () => {
-  afterEach(function() {
-    // marked.defaults = marked.getDefaults();  // <- This is causing tests in parser-spec.js to fail? What?
-  });
-
   it('should use custom block tokenizer + renderer extensions', () => {
     const underline = {
       name: 'underline',
@@ -161,7 +157,7 @@ describe('use extension', () => {
         return `<u>${token.text}</u>\n`;
       }
     };
-    marked.use({ extensions: { underline } });
+    marked.use(underline);
     let html = marked('Not Underlined\n:Underlined\nNot Underlined');
     expect(html).toBe('<p>Not Underlined\n:Underlined\nNot Underlined</p>\n');
 
@@ -190,7 +186,7 @@ describe('use extension', () => {
         return `<u>${token.text}</u>\n`;
       }
     };
-    marked.use({ extensions: { underline } });
+    marked.use(underline);
     const html = marked('Not Underlined\n:Underlined\nNot Underlined');
     expect(html).toBe('<p>Not Underlined</p>\n<u>Underlined</u>\n<p>Not Underlined</p>\n');
   });
@@ -216,13 +212,14 @@ describe('use extension', () => {
         return `<u>${token.text}</u>`;
       }
     };
-    marked.use({ extensions: { underline } });
+    marked.use(underline);
     const html = marked('Not Underlined =Underlined= Not Underlined');
     expect(html).toBe('<p>Not Underlined <u>Underlined</u> Not Underlined</p>\n');
   });
 
   it('should use renderer', () => {
     const extension = {
+      overwrite: true,
       renderer: {
         paragraph(text) {
           return 'extension';
@@ -238,6 +235,7 @@ describe('use extension', () => {
 
   it('should use tokenizer', () => {
     const extension = {
+      overwrite: true,
       tokenizer: {
         paragraph(text) {
           return {
@@ -315,6 +313,7 @@ describe('use extension', () => {
 
   it('should use last extension function and not override others', () => {
     const extension1 = {
+      overwrite: true,
       renderer: {
         paragraph(text) {
           return 'extension1 paragraph\n';
@@ -325,6 +324,7 @@ describe('use extension', () => {
       }
     };
     const extension2 = {
+      overwrite: true,
       renderer: {
         paragraph(text) {
           return 'extension2 paragraph\n';
@@ -345,6 +345,7 @@ paragraph
 
   it('should use previous extension when returning false', () => {
     const extension1 = {
+      overwrite: true,
       renderer: {
         paragraph(text) {
           if (text !== 'original') {
@@ -355,6 +356,7 @@ paragraph
       }
     };
     const extension2 = {
+      overwrite: true,
       renderer: {
         paragraph(text) {
           if (text !== 'extension1' && text !== 'original') {
@@ -378,6 +380,7 @@ original
 
   it('should get options with this.options', () => {
     const extension = {
+      overwrite: true,
       renderer: {
         heading: () => {
           return this.options ? 'arrow options\n' : 'arrow no options\n';
