@@ -155,13 +155,13 @@ marked.use = function(extension) {
     if (ext.renderer && ext.name) { // Renderers must have 'name' property
       extensions[ext.name] = ext.renderer;
     }
-    if (ext.tokenizer && ext.before) { // Tokenizers must have 'before' property
-      if (extensions[ext.before]) {
-        extensions[ext.before].push(ext.tokenizer);
+    if (ext.tokenizer && ext.level) { // Tokenizers must have 'level' property
+      if (extensions[ext.level]) {
+        extensions[ext.level].push(ext.tokenizer);
       } else {
-        extensions[ext.before] = [ext.tokenizer];
+        extensions[ext.level] = [ext.tokenizer];
       }
-      if (ext.start && ext.level) { // Start regex must have 'level' property
+      if (ext.start) { // Regex to check for start of token
         if (ext.level === 'block') {
           extensions.startBlock = extensions.startBlock
             ? new RegExp(extensions.startBlock.source + '|' + ext.start.source)
@@ -172,9 +172,6 @@ marked.use = function(extension) {
             : ext.start;
         }
       }
-    }
-    if (Object.keys(extensions).length) {
-      opts.extensions = extensions;
     }
 
     //= =-- Parse "overwrite" extensions --==//
@@ -192,7 +189,7 @@ marked.use = function(extension) {
       }
       opts.renderer = renderer;
     }
-    if (ext.tokenizer && !ext.before) {
+    if (ext.tokenizer && !ext.level) {
       const tokenizer = marked.defaults.tokenizer || new Tokenizer();
       for (const prop in ext.tokenizer) {
         const prevTokenizer = tokenizer[prop];
@@ -218,6 +215,10 @@ marked.use = function(extension) {
       };
     }
   });
+
+  if (Object.keys(extensions).length) {
+    opts.extensions = extensions;
+  }
 
   marked.setOptions(opts);
 };

@@ -52,7 +52,6 @@ module.exports = class Lexer {
     this.tokens = [];
     this.tokens.links = Object.create(null);
     this.options = options || defaults;
-    this.options.extensions = this.options.extensions || null;
     this.options.tokenizer = this.options.tokenizer || new Tokenizer();
     this.tokenizer = this.options.tokenizer;
     this.tokenizer.options = this.options;
@@ -102,21 +101,6 @@ module.exports = class Lexer {
     return lexer.inlineTokens(src);
   }
 
-  runTokenizerExtension(src, tokens, before) {
-    let tokensLength = 0;
-    if (this.options.extensions && this.options.extensions[before]) {
-      let token;
-      this.options.extensions[before].forEach(function(extTokenizer, index) {
-        if (token = extTokenizer(src)) {
-          src = src.substring(token.raw.length);
-          tokens.push(token);
-          tokensLength += token.raw.length;
-        }
-      });
-    }
-    return tokensLength;
-  }
-
   /**
    * Preprocessing
    */
@@ -139,12 +123,20 @@ module.exports = class Lexer {
     if (this.options.pedantic) {
       src = src.replace(/^ +$/gm, '');
     }
-    let token, i, l, lastToken, tokensLength, cutSrc;
+    let token, i, l, lastToken, tokensParsed, cutSrc;
 
     while (src) {
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'space')) {
-        src = src.substring(tokensLength);
-        continue;
+      // extensions
+      if (this.options.extensions?.block) {
+        tokensParsed = false;
+        this.options.extensions.block.forEach(function(extTokenizer, index) {
+          if (token = extTokenizer(src)) {
+            src = src.substring(token.raw.length);
+            tokens.push(token);
+            tokensParsed = true;
+          }
+        });
+        if (tokensParsed) { continue; }
       }
 
       // newline
@@ -153,11 +145,6 @@ module.exports = class Lexer {
         if (token.type) {
           tokens.push(token);
         }
-        continue;
-      }
-
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'code')) {
-        src = src.substring(tokensLength);
         continue;
       }
 
@@ -175,20 +162,10 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'fences')) {
-        src = src.substring(tokensLength);
-        continue;
-      }
-
       // fences
       if (token = this.tokenizer.fences(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
-        continue;
-      }
-
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'heading')) {
-        src = src.substring(tokensLength);
         continue;
       }
 
@@ -199,20 +176,10 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'nptable')) {
-        src = src.substring(tokensLength);
-        continue;
-      }
-
       // table no leading pipe (gfm)
       if (token = this.tokenizer.nptable(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
-        continue;
-      }
-
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'hr')) {
-        src = src.substring(tokensLength);
         continue;
       }
 
@@ -223,21 +190,11 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'blockquote')) {
-        src = src.substring(tokensLength);
-        continue;
-      }
-
       // blockquote
       if (token = this.tokenizer.blockquote(src)) {
         src = src.substring(token.raw.length);
         token.tokens = this.blockTokens(token.text, [], top);
         tokens.push(token);
-        continue;
-      }
-
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'list')) {
-        src = src.substring(tokensLength);
         continue;
       }
 
@@ -252,20 +209,10 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'html')) {
-        src = src.substring(tokensLength);
-        continue;
-      }
-
       // html
       if (token = this.tokenizer.html(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
-        continue;
-      }
-
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'def')) {
-        src = src.substring(tokensLength);
         continue;
       }
 
@@ -281,20 +228,10 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'table')) {
-        src = src.substring(tokensLength);
-        continue;
-      }
-
       // table (gfm)
       if (token = this.tokenizer.table(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
-        continue;
-      }
-
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'lheading')) {
-        src = src.substring(tokensLength);
         continue;
       }
 
@@ -305,15 +242,10 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'paragraph')) {
-        src = src.substring(tokensLength);
-        continue;
-      }
-
       // top-level paragraph
       // prevent paragraph consuming extensions by clipping 'src' to extension start
       cutSrc = src;
-      if (this.options.extensions && this.options.extensions.startBlock) {
+      if (this.options.extensions?.startBlock) {
         const match = src.match(this.options.extensions.startBlock);
         if (match && match.length > 0) {
           cutSrc = src.substring(0, match.index);
@@ -322,11 +254,6 @@ module.exports = class Lexer {
       if (top && (token = this.tokenizer.paragraph(cutSrc))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
-        continue;
-      }
-
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'text')) {
-        src = src.substring(tokensLength);
         continue;
       }
 
@@ -431,7 +358,7 @@ module.exports = class Lexer {
     // String with links masked to avoid interference with em and strong
     let maskedSrc = src;
     let match;
-    let keepPrevChar, prevChar, tokensLength;
+    let keepPrevChar, prevChar, tokensParsed;
 
     // Mask out reflinks
     if (this.tokens.links) {
@@ -460,9 +387,17 @@ module.exports = class Lexer {
       }
       keepPrevChar = false;
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'escape')) {
-        src = src.substring(tokensLength);
-        continue;
+      // extensions
+      if (this.options.extensions?.inline) {
+        tokensParsed = false;
+        this.options.extensions.inline.forEach(function(extTokenizer, index) {
+          if (token = extTokenizer(src)) {
+            src = src.substring(token.raw.length);
+            tokens.push(token);
+            tokensParsed = true;
+          }
+        });
+        if (tokensParsed) { continue; }
       }
 
       // escape
@@ -472,28 +407,18 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'tag')) {
-        src = src.substring(tokensLength);
-        continue;
-      }
-
       // tag
       if (token = this.tokenizer.tag(src, inLink, inRawBlock)) {
         src = src.substring(token.raw.length);
         inLink = token.inLink;
         inRawBlock = token.inRawBlock;
-        const lastToken = tokens[tokens.length - 1];
+        lastToken = tokens[tokens.length - 1];
         if (lastToken && token.type === 'text' && lastToken.type === 'text') {
           lastToken.raw += token.raw;
           lastToken.text += token.text;
         } else {
           tokens.push(token);
         }
-        continue;
-      }
-
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'link')) {
-        src = src.substring(tokensLength);
         continue;
       }
 
@@ -507,15 +432,10 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'reflink')) {
-        src = src.substring(tokensLength);
-        continue;
-      }
-
       // reflink, nolink
       if (token = this.tokenizer.reflink(src, this.tokens.links)) {
         src = src.substring(token.raw.length);
-        const lastToken = tokens[tokens.length - 1];
+        lastToken = tokens[tokens.length - 1];
         if (token.type === 'link') {
           token.tokens = this.inlineTokens(token.text, [], true, inRawBlock);
           tokens.push(token);
@@ -528,21 +448,11 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'emStrong')) {
-        src = src.substring(tokensLength);
-        continue;
-      }
-
       // em & strong
       if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar)) {
         src = src.substring(token.raw.length);
         token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
         tokens.push(token);
-        continue;
-      }
-
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'codespan')) {
-        src = src.substring(tokensLength);
         continue;
       }
 
@@ -553,20 +463,10 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'br')) {
-        src = src.substring(tokensLength);
-        continue;
-      }
-
       // br
       if (token = this.tokenizer.br(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
-        continue;
-      }
-
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'del')) {
-        src = src.substring(tokensLength);
         continue;
       }
 
@@ -578,20 +478,10 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'autolink')) {
-        src = src.substring(tokensLength);
-        continue;
-      }
-
       // autolink
       if (token = this.tokenizer.autolink(src, mangle)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
-        continue;
-      }
-
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'url')) {
-        src = src.substring(tokensLength);
         continue;
       }
 
@@ -602,15 +492,10 @@ module.exports = class Lexer {
         continue;
       }
 
-      if (tokensLength = this.runTokenizerExtension(src, tokens, 'inlineText')) {
-        src = src.substring(tokensLength);
-        continue;
-      }
-
       // text
       // prevent inlineText consuming extensions by clipping 'src' to extension start
       cutSrc = src;
-      if (this.options.extensions && this.options.extensions.startInline) {
+      if (this.options.extensions?.startInline) {
         const match = src.match(this.options.extensions.startInline);
         if (match && match.length > 0) {
           cutSrc = src.substring(0, match.index);

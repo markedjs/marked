@@ -12,7 +12,6 @@ const {
 module.exports = class Parser {
   constructor(options) {
     this.options = options || defaults;
-    this.options.extensions = this.options.extensions || null;
     this.options.renderer = this.options.renderer || new Renderer();
     this.renderer = this.options.renderer;
     this.renderer.options = this.options;
@@ -185,7 +184,7 @@ module.exports = class Parser {
         default: {
           // Run any renderer extensions
           tokenParsed = false;
-          if (this.options.extensions && this.options.extensions[token.type]) {
+          if (this.options.extensions?.[token.type]) {
             out += this.options.extensions[token.type](token);
             tokenParsed = true;
           }
@@ -262,7 +261,7 @@ module.exports = class Parser {
         default: {
           // Run any renderer extensions
           tokenParsed = false;
-          if (this.options.extensions && this.options.extensions[token.type]) {
+          if (this.options.extensions?.[token.type]) {
             out += this.options.extensions[token.type](token);
             tokenParsed = true;
           }

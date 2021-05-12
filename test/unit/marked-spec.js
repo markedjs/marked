@@ -140,7 +140,6 @@ describe('use extension', () => {
   it('should use custom block tokenizer + renderer extensions', () => {
     const underline = {
       name: 'underline',
-      before: 'paragraph', // Leave blank to run after everything else...?
       level: 'block',
       tokenizer: (src) => {
         const rule = /^:([^\n]*)(?:\n|$)/;
@@ -168,7 +167,6 @@ describe('use extension', () => {
   it('should interrupt paragraphs if using "start" property', () => {
     const underline = {
       name: 'underline',
-      before: 'paragraph', // Leave blank to run after everything else...?
       level: 'block',
       start: /:/,
       tokenizer: (src) => {
@@ -194,7 +192,6 @@ describe('use extension', () => {
   it('should use custom inline tokenizer + renderer extensions', () => {
     const underline = {
       name: 'underline',
-      before: 'emStrong', // Leave blank to run after everything else...?
       level: 'inline',
       start: /=/,
       tokenizer: (src) => {
