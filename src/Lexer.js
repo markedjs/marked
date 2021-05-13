@@ -130,7 +130,7 @@ module.exports = class Lexer {
       if (this.options.extensions?.block) {
         tokensParsed = false;
         this.options.extensions.block.forEach(function(extTokenizer, index) {
-          if (token = extTokenizer(src)) {
+          if (token = extTokenizer(src, tokens)) {
             src = src.substring(token.raw.length);
             tokens.push(token);
             tokensParsed = true;

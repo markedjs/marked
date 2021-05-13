@@ -214,6 +214,58 @@ describe('use extension', () => {
     expect(html).toBe('<p>Not Underlined <u>Underlined</u> Not Underlined</p>\n');
   });
 
+  it('should handle interacting block and inline extensions', () => {
+    const descriptionlist = {
+      name: 'descriptionList',
+      level: 'block',
+      start: /:[^:\n]/,
+      tokenizer: (src) => {
+        const rule = /^(?::[^:\n]+:[^:\n]*(?:\n|$))+/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'descriptionList',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            text: match[0].trim() // You can add additional properties to your tokens to pass along to the renderer
+          };
+        }
+      },
+      renderer: (token) => {
+        return `<dl>${marked.parseInline(token.text)}\n</dl>`;
+      }
+    };
+
+    const description = {
+      name: 'description',
+      level: 'inline',
+      start: /:[^:]/,
+      tokenizer: (src) => {
+        const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'description',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            dt: match[1].trim(), // You can add additional properties to your tokens to pass along to the renderer
+            dd: match[2].trim()
+          };
+        }
+      },
+      renderer: (token) => {
+        return `\n<dt>${marked.parseInline(token.dt)}</dt><dd>${marked.parseInline(token.dd)}</dd>`;
+      }
+    };
+    marked.use([descriptionlist, description]);
+    const html = marked('A Description List with One Description:\n'
+                        + ':   Topic 1   :  Description 1\n'
+                        + ': **Topic 2** : *Description 2*');
+    expect(html).toBe('<p>A Description List with One Description:</p>\n'
+                      + '<dl>'
+                      + '\n<dt>Topic 1</dt><dd>Description 1</dd>'
+                      + '\n<dt><strong>Topic 2</strong></dt><dd><em>Description 2</em></dd>'
+                      + '\n</dl>');
+  });
+
   it('should use renderer', () => {
     const extension = {
       renderer: {
