@@ -57,8 +57,7 @@ module.exports = class Parser {
       item,
       checked,
       task,
-      checkbox,
-      tokenParsed;
+      checkbox;
 
     const l = tokens.length;
     for (i = 0; i < l; i++) {
@@ -183,12 +182,10 @@ module.exports = class Parser {
 
         default: {
           // Run any renderer extensions
-          tokenParsed = false;
           if (this.options.extensions?.[token.type]) {
             out += this.options.extensions[token.type](token);
-            tokenParsed = true;
+            continue;
           }
-          if (tokenParsed) continue;
 
           const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
@@ -211,8 +208,7 @@ module.exports = class Parser {
     renderer = renderer || this.renderer;
     let out = '',
       i,
-      token,
-      tokenParsed;
+      token;
 
     const l = tokens.length;
     for (i = 0; i < l; i++) {
@@ -260,12 +256,10 @@ module.exports = class Parser {
         }
         default: {
           // Run any renderer extensions
-          tokenParsed = false;
           if (this.options.extensions?.[token.type]) {
             out += this.options.extensions[token.type](token);
-            tokenParsed = true;
+            continue;
           }
-          if (tokenParsed) continue;
 
           const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
