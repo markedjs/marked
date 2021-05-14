@@ -293,6 +293,30 @@ describe('use extension', () => {
     expect(html).toBe('<u>test</u>\n<p>test</p>\n<p>&lt;div&gt;&lt;/div&gt;</p>\n');
   });
 
+  it('should handle renderers that return false', () => {
+    const extension = {
+      name: 'test',
+      level: 'block',
+      tokenizer: (src) => {
+        const rule = /^:([^\n]*):(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'test',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+          };
+        }
+      },
+      renderer: (token) => {
+        return false;
+      }
+    };
+    marked.use(extension);
+    const html = marked(':Test:');
+    expect(html).toBe('');
+  });
+
   it('should use renderer', () => {
     const extension = {
       renderer: {
