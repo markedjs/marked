@@ -123,7 +123,7 @@ module.exports = class Lexer {
     if (this.options.pedantic) {
       src = src.replace(/^ +$/gm, '');
     }
-    let token, i, l, lastToken, tokensParsed, cutSrc;
+    let token, i, l, lastToken, tokensParsed, cutSrc, lastParagraphClipped;
 
     while (src) {
       // extensions
@@ -252,19 +252,15 @@ module.exports = class Lexer {
         }
       }
       if (top && (token = this.tokenizer.paragraph(cutSrc))) {
-        if(cutSrc.length != src.length) {
-          token.clipped = true;
-        }
-        src = src.substring(token.raw.length);
         lastToken = tokens[tokens.length - 1];
-        if (lastToken?.clipped) {
+        if (lastParagraphClipped && lastToken.type === 'paragraph') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
-          lastToken.clipped = token.clipped || false;
-          continue;
+        } else {
+          tokens.push(token);
         }
-        //console.log(token);
-        tokens.push(token);
+        lastParagraphClipped = (cutSrc.length !== src.length);
+        src = src.substring(token.raw.length);
         continue;
       }
 
