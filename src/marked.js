@@ -148,12 +148,12 @@ marked.use = function(extension) {
   const opts = merge({}, ...extension);
   opts.tokenizer = null;
   opts.renderer = null;
-  const extensions = {};
+  const extensions = { renderers: {} };
 
   extension.forEach((ext) => {
     //= =-- Parse "addon" extensions --==//
     if (ext.renderer && ext.name) { // Renderers must have 'name' property
-      extensions[ext.name] = ext.renderer;
+      extensions.renderers[ext.name] = ext.renderer;
     }
     if (ext.tokenizer && ext.level) { // Tokenizers must have 'level' property
       if (extensions[ext.level]) {
