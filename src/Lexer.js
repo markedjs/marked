@@ -246,9 +246,12 @@ module.exports = class Lexer {
       // prevent paragraph consuming extensions by clipping 'src' to extension start
       cutSrc = src;
       if (this.options.extensions?.startBlock) {
-        const match = src.match(this.options.extensions.startBlock);
-        if (match && match.length > 0 && match.index > 0) {
-          cutSrc = src.substring(0, match.index);
+        let startIndex = Infinity;
+        this.options.extensions.startBlock.forEach(function(getStartIndex) {
+          startIndex = Math.max(0, Math.min(getStartIndex(src), startIndex));
+        });
+        if (startIndex < Infinity && startIndex > 0) {
+          cutSrc = src.substring(0, startIndex);
         }
       }
       if (top && (token = this.tokenizer.paragraph(cutSrc))) {
@@ -503,9 +506,12 @@ module.exports = class Lexer {
       // prevent inlineText consuming extensions by clipping 'src' to extension start
       cutSrc = src;
       if (this.options.extensions?.startInline) {
-        const match = src.match(this.options.extensions.startInline);
-        if (match && match.length > 0 && match.index > 0) {
-          cutSrc = src.substring(0, match.index);
+        let startIndex = Infinity;
+        this.options.extensions.startInline.forEach(function(getStartIndex) {
+          startIndex = Math.max(0, Math.min(getStartIndex(src), startIndex));
+        });
+        if (startIndex < Infinity && startIndex > 0) {
+          cutSrc = src.substring(0, startIndex);
         }
       }
       if (token = this.tokenizer.inlineText(cutSrc, inRawBlock, smartypants)) {

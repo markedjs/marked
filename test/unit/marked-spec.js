@@ -168,7 +168,7 @@ describe('use extension', () => {
     const underline = {
       name: 'underline',
       level: 'block',
-      start: /:/,
+      start: (src) => { return src.match(/:/)?.index; },
       tokenizer: (src) => {
         const rule = /^:([^\n]*):(?:\n|$)/;
         const match = rule.exec(src);
@@ -193,7 +193,7 @@ describe('use extension', () => {
     const underline = {
       name: 'underline',
       level: 'inline',
-      start: /=/,
+      start: (src) => { return src.match(/=/)?.index; },
       tokenizer: (src) => {
         const rule = /^=([^=]+)=/;
         const match = rule.exec(src);
@@ -218,7 +218,7 @@ describe('use extension', () => {
     const descriptionlist = {
       name: 'descriptionList',
       level: 'block',
-      start: /:[^:\n]/,
+      start: (src) => { return src.match(/:[^:\n]/)?.index; },
       tokenizer: (src) => {
         const rule = /^(?::[^:\n]+:[^:\n]*(?:\n|$))+/;
         const match = rule.exec(src);
@@ -238,7 +238,7 @@ describe('use extension', () => {
     const description = {
       name: 'description',
       level: 'inline',
-      start: /:[^:]/,
+      start: (src) => { return src.match(/:/)?.index; },
       tokenizer: (src) => {
         const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;
         const match = rule.exec(src);
@@ -272,7 +272,7 @@ describe('use extension', () => {
       silent: true,
       name: 'underline',
       level: 'block',
-      start: /:/,
+      start: (src) => { return src.indexOf(':'); },
       tokenizer: (src) => {
         const rule = /^:([^\n]*):(?:\n|$)/;
         const match = rule.exec(src);

@@ -161,15 +161,19 @@ marked.use = function(extension) {
       } else {
         extensions[ext.level] = [ext.tokenizer];
       }
-      if (ext.start) { // Regex to check for start of token
+      if (ext.start) { // Function to check for start of token
         if (ext.level === 'block') {
-          extensions.startBlock = extensions.startBlock
-            ? new RegExp(extensions.startBlock.source + '|' + ext.start.source)
-            : ext.start;
+          if (extensions.startBlock) {
+            extensions.startBlock.push(ext.start);
+          } else {
+            extensions.startBlock = [ext.start];
+          }
         } else if (ext.level === 'inline') {
-          extensions.startInline = extensions.startInline
-            ? new RegExp(extensions.startInline.source + '|' + ext.start.source)
-            : ext.start;
+          if (extensions.startInline) {
+            extensions.startInline.push(ext.start);
+          } else {
+            extensions.startInline = [ext.start];
+          }
         }
       }
     }
