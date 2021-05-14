@@ -247,12 +247,23 @@ module.exports = class Lexer {
       cutSrc = src;
       if (this.options.extensions?.startBlock) {
         const match = src.match(this.options.extensions.startBlock);
-        if (match && match.length > 0) {
+        if (match && match.length > 0 && match.index > 0) {
           cutSrc = src.substring(0, match.index);
         }
       }
       if (top && (token = this.tokenizer.paragraph(cutSrc))) {
+        if(cutSrc.length != src.length) {
+          token.clipped = true;
+        }
         src = src.substring(token.raw.length);
+        lastToken = tokens[tokens.length - 1];
+        if (lastToken?.clipped) {
+          lastToken.raw += '\n' + token.raw;
+          lastToken.text += '\n' + token.text;
+          lastToken.clipped = token.clipped || false;
+          continue;
+        }
+        //console.log(token);
         tokens.push(token);
         continue;
       }
@@ -497,7 +508,7 @@ module.exports = class Lexer {
       cutSrc = src;
       if (this.options.extensions?.startInline) {
         const match = src.match(this.options.extensions.startInline);
-        if (match && match.length > 0) {
+        if (match && match.length > 0 && match.index > 0) {
           cutSrc = src.substring(0, match.index);
         }
       }

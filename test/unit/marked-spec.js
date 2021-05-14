@@ -170,7 +170,7 @@ describe('use extension', () => {
       level: 'block',
       start: /:/,
       tokenizer: (src) => {
-        const rule = /^:([^\n]*)(?:\n|$)/;
+        const rule = /^:([^\n]*):(?:\n|$)/;
         const match = rule.exec(src);
         if (match) {
           return {
@@ -185,8 +185,8 @@ describe('use extension', () => {
       }
     };
     marked.use(underline);
-    const html = marked('Not Underlined\n:Underlined\nNot Underlined');
-    expect(html).toBe('<p>Not Underlined</p>\n<u>Underlined</u>\n<p>Not Underlined</p>\n');
+    const html = marked('Not Underlined A\n:Underlined B:\nNot Underlined C\n:Not Underlined D');
+    expect(html).toBe('<p>Not Underlined A</p>\n<u>Underlined B</u>\n<p>Not Underlined C\n:Not Underlined D</p>\n');
   });
 
   it('should use custom inline tokenizer + renderer extensions', () => {
@@ -264,6 +264,33 @@ describe('use extension', () => {
                       + '\n<dt>Topic 1</dt><dd>Description 1</dd>'
                       + '\n<dt><strong>Topic 2</strong></dt><dd><em>Description 2</em></dd>'
                       + '\n</dl>');
+  });
+
+  it('should allow other options mixed into the extension', () => {
+    const extension = {
+      sanitize: true,
+      silent: true,
+      name: 'underline',
+      level: 'block',
+      start: /:/,
+      tokenizer: (src) => {
+        const rule = /^:([^\n]*):(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'underline',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+          };
+        }
+      },
+      renderer: (token) => {
+        return `<u>${token.text}</u>\n`;
+      }
+    };
+    marked.use(extension);
+    const html = marked(':test:\ntest\n<div></div>');
+    expect(html).toBe('<u>test</u>\n<p>test</p>\n<p>&lt;div&gt;&lt;/div&gt;</p>\n');
   });
 
   it('should use renderer', () => {
