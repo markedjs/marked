@@ -219,19 +219,20 @@ describe('use extension', () => {
       name: 'descriptionList',
       level: 'block',
       start: (src) => { return src.match(/:[^:\n]/)?.index; },
-      tokenizer: (src) => {
+      tokenizer(src, tokens) {
         const rule = /^(?::[^:\n]+:[^:\n]*(?:\n|$))+/;
         const match = rule.exec(src);
         if (match) {
           return {
             type: 'descriptionList',
             raw: match[0], // This is the text that you want your token to consume from the source
-            text: match[0].trim() // You can add additional properties to your tokens to pass along to the renderer
+            text: match[0].trim(), // You can add additional properties to your tokens to pass along to the renderer
+            tokens: this.inlineTokens(match[0].trim())
           };
         }
       },
-      renderer: (token) => {
-        return `<dl>${marked.parseInline(token.text)}\n</dl>`;
+      renderer(token) {
+        return `<dl>${this.parseInline(token.tokens)}\n</dl>`;
       }
     };
 
@@ -239,20 +240,20 @@ describe('use extension', () => {
       name: 'description',
       level: 'inline',
       start: (src) => { return src.match(/:/)?.index; },
-      tokenizer: (src) => {
+      tokenizer(src, tokens) {
         const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;
         const match = rule.exec(src);
         if (match) {
           return {
             type: 'description',
             raw: match[0], // This is the text that you want your token to consume from the source
-            dt: match[1].trim(), // You can add additional properties to your tokens to pass along to the renderer
-            dd: match[2].trim()
+            dt: this.inlineTokens(match[1].trim()), // You can add additional properties to your tokens to pass along to the renderer
+            dd: this.inlineTokens(match[2].trim())
           };
         }
       },
-      renderer: (token) => {
-        return `\n<dt>${marked.parseInline(token.dt)}</dt><dd>${marked.parseInline(token.dd)}</dd>`;
+      renderer(token) {
+        return `\n<dt>${this.parseInline(token.dt)}</dt><dd>${this.parseInline(token.dd)}</dd>`;
       }
     };
     marked.use([descriptionlist, description]);

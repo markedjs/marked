@@ -129,8 +129,8 @@ module.exports = class Lexer {
       // extensions
       if (this.options.extensions?.block) {
         tokensParsed = false;
-        this.options.extensions.block.forEach(function(extTokenizer, index) {
-          if (token = extTokenizer(src, tokens)) {
+        this.options.extensions.block.forEach((extTokenizer) => {
+          if (token = extTokenizer.call(this, src, tokens)) {
             src = src.substring(token.raw.length);
             tokens.push(token);
             tokensParsed = true;
@@ -400,8 +400,8 @@ module.exports = class Lexer {
       // extensions
       if (this.options.extensions?.inline) {
         tokensParsed = false;
-        this.options.extensions.inline.forEach(function(extTokenizer, index) {
-          if (token = extTokenizer(src)) {
+        this.options.extensions.inline.forEach((extTokenizer) => {
+          if (token = extTokenizer.call(this, src, tokens)) {
             src = src.substring(token.raw.length);
             tokens.push(token);
             tokensParsed = true;
