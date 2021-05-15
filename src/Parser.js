@@ -182,7 +182,7 @@ module.exports = class Parser {
 
         default: {
           // Run any renderer extensions
-          if (this.options.extensions.renderers?.[token.type]) {
+          if (this.options.extensions?.renderers?.[token.type]) {
             out += this.options.extensions.renderers[token.type].call(this, token) || '';
             continue;
           }
@@ -256,7 +256,7 @@ module.exports = class Parser {
         }
         default: {
           // Run any renderer extensions
-          if (this.options.extensions.renderers?.[token.type]) {
+          if (this.options.extensions?.renderers?.[token.type]) {
             out += this.options.extensions.renderers[token.type].call(this, token) || '';
             continue;
           }

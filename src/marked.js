@@ -254,10 +254,8 @@ marked.walkTokens = function(tokens, callback) {
         break;
       }
       default: {
-        if (this.options.extensions?.walkableTokens) { // Walk any extensions
-          this.options.extensions.walkableTokens.forEach((walkableTokens) => {
-            marked.walkTokens(walkableTokens, callback);
-          });
+        if (this.options.extensions?.walkableTokens?.[token.type]) { // Walk any extensions
+          marked.walkTokens(this.options.extensions.walkableTokens[token.type], callback);
         }
         if (token.tokens) {
           marked.walkTokens(token.tokens, callback);
