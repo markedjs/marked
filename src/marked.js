@@ -155,6 +155,9 @@ marked.use = function(extension) {
     if (ext.renderer && ext.name) { // Renderers must have 'name' property
       extensions.renderers[ext.name] = ext.renderer;
     }
+    if (ext.walkableTokens && ext.name) { // walkableTokens must have 'name'
+      extensions.walkableTokens[ext.name] = ext.walkableTokens;
+    }
     if (ext.tokenizer && ext.level) { // Tokenizers must have 'level' property
       if (extensions[ext.level]) {
         extensions[ext.level].push(ext.tokenizer);
@@ -251,6 +254,11 @@ marked.walkTokens = function(tokens, callback) {
         break;
       }
       default: {
+        if (this.options.extensions?.walkableTokens) { // Walk any extensions
+          this.options.extensions.walkableTokens.forEach((walkableTokens) => {
+            marked.walkTokens(walkableTokens, callback);
+          });
+        }
         if (token.tokens) {
           marked.walkTokens(token.tokens, callback);
         }
