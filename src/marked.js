@@ -181,7 +181,7 @@ marked.use = function(extension) {
       }
     }
 
-    //= =-- Parse "overwrite" extensions --==//
+    //==-- Parse "overwrite" extensions --==//
     if (ext.renderer && !ext.name) {
       const renderer = marked.defaults.renderer || new Renderer();
       for (const prop in ext.renderer) {
