@@ -151,7 +151,7 @@ marked.use = function(extension) {
   const extensions = { renderers: {}, walkableTokens: {} };
 
   extension.forEach((ext) => {
-    //= =-- Parse "addon" extensions --==//
+    //==-- Parse "addon" extensions --==//
     if (ext.renderer && ext.name) { // Renderers must have 'name' property
       extensions.renderers[ext.name] = ext.renderer;
     }
