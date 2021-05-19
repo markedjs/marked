@@ -51,6 +51,9 @@ function marked(src, opt, callback) {
 
       if (!err) {
         try {
+          if (opt.walkTokens) {
+            marked.walkTokens(tokens, opt.walkTokens);
+          }
           out = Parser.parse(tokens, opt);
         } catch (e) {
           err = e;
