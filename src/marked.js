@@ -263,12 +263,10 @@ marked.walkTokens = function(tokens, callback) {
       default: {
         if (marked.defaults?.extensions?.walkableTokens?.[token.type]) { // Walk any extensions
           marked.defaults?.extensions.walkableTokens[token.type].forEach(function(walkableTokens) {
-            if (walkableTokens !== 'tokens') {
-              marked.walkTokens(token[walkableTokens], callback);
-            }
+            marked.walkTokens(token[walkableTokens], callback);
           });
         }
-        if (token.tokens) {
+        if (token.tokens && !marked.defaults?.extensions?.walkableTokens[token.type]?.tokens) {
           marked.walkTokens(token.tokens, callback);
         }
       }
