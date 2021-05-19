@@ -239,35 +239,35 @@ marked.use = function(extension) {
  * Run callback for every token
  */
 
-marked.walkTokens = function(tokens, callback, opt) {
+marked.walkTokens = function(tokens, callback) {
   for (const token of tokens) {
     callback(token);
     switch (token.type) {
       case 'table': {
         for (const cell of token.tokens.header) {
-          marked.walkTokens(cell, callback, opt);
+          marked.walkTokens(cell, callback);
         }
         for (const row of token.tokens.cells) {
           for (const cell of row) {
-            marked.walkTokens(cell, callback, opt);
+            marked.walkTokens(cell, callback);
           }
         }
         break;
       }
       case 'list': {
-        marked.walkTokens(token.items, callback, opt);
+        marked.walkTokens(token.items, callback);
         break;
       }
       default: {
-        if (opt?.extensions?.walkableTokens?.[token.type]) { // Walk any extensions
-          opt.extensions.walkableTokens[token.type].forEach(function(walkableTokens) {
+        if (marked.defaults?.extensions?.walkableTokens?.[token.type]) { // Walk any extensions
+          marked.defaults?.extensions.walkableTokens[token.type].forEach(function(walkableTokens) {
             if (walkableTokens !== 'tokens') {
-              marked.walkTokens(token[walkableTokens], callback, opt);
+              marked.walkTokens(token[walkableTokens], callback);
             }
           });
         }
         if (token.tokens) {
-          marked.walkTokens(token.tokens, callback, opt);
+          marked.walkTokens(token.tokens, callback);
         }
       }
     }
