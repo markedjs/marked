@@ -108,7 +108,7 @@ function marked(src, opt, callback) {
   try {
     const tokens = Lexer.lex(src, opt);
     if (opt.walkTokens) {
-      marked.walkTokens(tokens, opt.walkTokens);
+      marked.walkTokens(tokens, opt.walkTokens, opt);
     }
     return Parser.parse(tokens, opt);
   } catch (e) {
@@ -148,7 +148,7 @@ marked.use = function(extension) {
   const opts = merge({}, ...extension);
   opts.tokenizer = null;
   opts.renderer = null;
-  const extensions = { renderers: {} };
+  const extensions = { renderers: {}, walkableTokens: {} };
 
   extension.forEach((ext) => {
     //= =-- Parse "addon" extensions --==//
@@ -234,31 +234,39 @@ marked.use = function(extension) {
  * Run callback for every token
  */
 
-marked.walkTokens = function(tokens, callback) {
+marked.walkTokens = function(tokens, callback, opt) {
   for (const token of tokens) {
     callback(token);
     switch (token.type) {
       case 'table': {
         for (const cell of token.tokens.header) {
-          marked.walkTokens(cell, callback);
+          marked.walkTokens(cell, callback, opt);
         }
         for (const row of token.tokens.cells) {
           for (const cell of row) {
-            marked.walkTokens(cell, callback);
+            marked.walkTokens(cell, callback, opt);
           }
         }
         break;
       }
       case 'list': {
-        marked.walkTokens(token.items, callback);
+        marked.walkTokens(token.items, callback, opt);
         break;
       }
       default: {
-        if (this.options.extensions?.walkableTokens?.[token.type]) { // Walk any extensions
-          marked.walkTokens(this.options.extensions.walkableTokens[token.type], callback);
+        if (token.type === 'walkableDescription') {
+          // console.log(opt);
+        }
+        if (opt?.extensions?.walkableTokens?.[token.type]) { // Walk any extensions
+          // console.log(opt.extensions.walkableTokens[token.type]);
+          opt.extensions.walkableTokens[token.type].forEach(function(walkableTokens) {
+            if (walkableTokens !== 'tokens') {
+              marked.walkTokens(token[walkableTokens], callback, opt);
+            }
+          });
         }
         if (token.tokens) {
-          marked.walkTokens(token.tokens, callback);
+          marked.walkTokens(token.tokens, callback, opt);
         }
       }
     }

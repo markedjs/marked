@@ -318,6 +318,40 @@ describe('use extension', () => {
     expect(html).toBe('');
   });
 
+  it('should handle list of walkable tokens', () => {
+    const walkableDescription = {
+      name: 'walkableDescription',
+      level: 'inline',
+      start: (src) => { return src.match(/:/)?.index; },
+      tokenizer(src, tokens) {
+        const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'walkableDescription',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            dt: this.inlineTokens(match[1].trim()), // You can add additional properties to your tokens to pass along to the renderer
+            dd: this.inlineTokens(match[2].trim())
+          };
+        }
+      },
+      renderer(token) {
+        return `\n<dt>${this.parseInline(token.dt)}</dt><dd>${this.parseInline(token.dd)}</dd>`;
+      },
+      walkableTokens: ['dd', 'dt'],
+      walkTokens(token) {
+        if (token.type === 'text') {
+          token.text += 'A';
+        }
+      }
+    };
+    marked.use(walkableDescription);
+    const html = marked(':   Topic 1   :  Description 1\n'
+                      + ': **Topic 2** : *Description 2*');
+    expect(html).toBe('<p>\n<dt>Topic 1A</dt><dd>Description 1A</dd>'
+                    + '\n<dt><strong>Topic 2A</strong></dt><dd><em>Description 2A</em></dd></p>\n');
+  });
+
   it('should use renderer', () => {
     const extension = {
       renderer: {
