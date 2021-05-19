@@ -108,7 +108,7 @@ function marked(src, opt, callback) {
   try {
     const tokens = Lexer.lex(src, opt);
     if (opt.walkTokens) {
-      marked.walkTokens(tokens, opt.walkTokens, opt);
+      marked.walkTokens(tokens, opt.walkTokens);
     }
     return Parser.parse(tokens, opt);
   } catch (e) {
