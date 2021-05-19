@@ -354,6 +354,114 @@ describe('use extension', () => {
                     + '\n<dt><strong>Topic 2A</strong></dt><dd><em>Description 2A</em></dd></p>\n');
   });
 
+  describe('multiple extensions', () => {
+    function createExtension(name) {
+      return {
+        extensions: [{
+          name: `block-${name}`,
+          level: 'block',
+          start(src) { return src.indexOf('::'); },
+          tokenizer(src, tokens) {
+            if (src.startsWith(`::${name}\n`)) {
+              const text = `:${name}`;
+              return {
+                type: `block-${name}`,
+                raw: `::${name}\n`,
+                text,
+                tokens: this.inlineTokens(text)
+              };
+            }
+          },
+          renderer(token) {
+            return `<${token.type}>${token.text}</${token.type}>\n`;
+          }
+        }, {
+          name: `inline-${name}`,
+          level: 'inline',
+          start(src) { return src.indexOf(':'); },
+          tokenizer(src, tokens) {
+            if (src.startsWith(`:${name}`)) {
+              return {
+                type: `inline-${name}`,
+                raw: `:${name}`,
+                text: `used ${name}`
+              };
+            }
+          },
+          renderer(token) {
+            return token.text;
+          }
+        }],
+        tokenizer: {
+          heading(src) {
+            if (src.startsWith(`# ${name}`)) {
+              return {
+                type: 'heading',
+                raw: `# ${name}`,
+                text: `used ${name}`
+              };
+            }
+            return false;
+          }
+        },
+        renderer: {
+          heading(text, level, raw, slugger) {
+            if (text === name) {
+              return `<h${level}>${text}</h${level}>\n`;
+            }
+            return false;
+          }
+        },
+        walkTokens(token) {
+          if (token.text === `used ${name}`) {
+            token.text += ' walked';
+          }
+        }
+      };
+    }
+
+    function runTest() {
+      const html = marked(`
+::extension1
+::extension2
+
+:extension1
+:extension2
+
+# extension1
+
+# extension2
+
+# no extension
+`);
+      expect(`\n${html}\n`.replace(/\n+/, '\n')).toBe(`
+<block-extension1>used extension1 walked</block-extension1>
+<block-extension2>used extension2 walked</block-extension2>
+<p>used extension1 walked
+used extension2 walked</p>
+<h1>used extension1 walked</h1>
+<h1>used extension2 walked</h1>
+<h1>no extension</h1>
+`);
+    }
+
+    it('should merge extensions when calling marked.use multiple times', () => {
+      marked.use(createExtension('extension1'));
+      marked.use(createExtension('extension2'));
+
+      runTest();
+    });
+
+    it('should merge extensions when calling marked.use with multiple extensions', () => {
+      marked.use([
+        createExtension('extension1'),
+        createExtension('extension2')
+      ]);
+
+      runTest();
+    });
+  });
+
   it('should use renderer', () => {
     const extension = {
       renderer: {
