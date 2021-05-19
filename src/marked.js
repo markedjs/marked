@@ -150,10 +150,12 @@ marked.use = function(extension) {
   opts.renderer = null;
   opts.extensions = null;
   const extensions = { renderers: {}, walkableTokens: {} };
+  let hasExtensions;
 
   extension.forEach((pack) => {
     // ==-- Parse "addon" extensions --== //
     if (pack.extensions) {
+      hasExtensions = true;
       pack.extensions.forEach((ext) => {
         if (ext.renderer && ext.name) { // Renderers must have 'name' property
           extensions.renderers[ext.name] = ext.renderer;
@@ -228,7 +230,7 @@ marked.use = function(extension) {
     }
   });
 
-  if (Object.keys(extensions).length) {
+  if (hasExtensions) {
     opts.extensions = extensions;
   }
 
