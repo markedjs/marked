@@ -148,46 +148,51 @@ marked.use = function(extension) {
   const opts = merge({}, ...extension);
   opts.tokenizer = null;
   opts.renderer = null;
+  opts.extensions = null;
   const extensions = { renderers: {}, walkableTokens: {} };
 
-  extension.forEach((ext) => {
+  extension.forEach((pack) => {
     // ==-- Parse "addon" extensions --== //
-    if (ext.renderer && ext.name) { // Renderers must have 'name' property
-      extensions.renderers[ext.name] = ext.renderer;
-    }
-    if (ext.walkableTokens && ext.name) { // walkableTokens must have 'name'
-      extensions.walkableTokens[ext.name] = ext.walkableTokens;
-    }
-    if (ext.tokenizer && ext.level) { // Tokenizers must have 'level' property
-      if (extensions[ext.level]) {
-        extensions[ext.level].push(ext.tokenizer);
-      } else {
-        extensions[ext.level] = [ext.tokenizer];
-      }
-      if (ext.start) { // Function to check for start of token
-        if (ext.level === 'block') {
-          if (extensions.startBlock) {
-            extensions.startBlock.push(ext.start);
+    if (pack.extensions) {
+      pack.extensions.forEach((ext) => {
+        if (ext.renderer && ext.name) { // Renderers must have 'name' property
+          extensions.renderers[ext.name] = ext.renderer;
+        }
+        if (ext.walkableTokens && ext.name) { // walkableTokens must have 'name'
+          extensions.walkableTokens[ext.name] = ext.walkableTokens;
+        }
+        if (ext.tokenizer && ext.level) { // Tokenizers must have 'level' property
+          if (extensions[ext.level]) {
+            extensions[ext.level].push(ext.tokenizer);
           } else {
-            extensions.startBlock = [ext.start];
+            extensions[ext.level] = [ext.tokenizer];
           }
-        } else if (ext.level === 'inline') {
-          if (extensions.startInline) {
-            extensions.startInline.push(ext.start);
-          } else {
-            extensions.startInline = [ext.start];
+          if (ext.start) { // Function to check for start of token
+            if (ext.level === 'block') {
+              if (extensions.startBlock) {
+                extensions.startBlock.push(ext.start);
+              } else {
+                extensions.startBlock = [ext.start];
+              }
+            } else if (ext.level === 'inline') {
+              if (extensions.startInline) {
+                extensions.startInline.push(ext.start);
+              } else {
+                extensions.startInline = [ext.start];
+              }
+            }
           }
         }
-      }
+      });
     }
 
     // ==-- Parse "overwrite" extensions --== //
-    if (ext.renderer && !ext.name) {
+    if (pack.renderer) {
       const renderer = marked.defaults.renderer || new Renderer();
-      for (const prop in ext.renderer) {
+      for (const prop in pack.renderer) {
         const prevRenderer = renderer[prop];
         renderer[prop] = (...args) => {
-          let ret = ext.renderer[prop].apply(renderer, args);
+          let ret = pack.renderer[prop].apply(renderer, args);
           if (ret === false) {
             ret = prevRenderer.apply(renderer, args);
           }
@@ -196,12 +201,12 @@ marked.use = function(extension) {
       }
       opts.renderer = renderer;
     }
-    if (ext.tokenizer && !ext.level) {
+    if (pack.tokenizer) {
       const tokenizer = marked.defaults.tokenizer || new Tokenizer();
-      for (const prop in ext.tokenizer) {
+      for (const prop in pack.tokenizer) {
         const prevTokenizer = tokenizer[prop];
         tokenizer[prop] = (...args) => {
-          let ret = ext.tokenizer[prop].apply(tokenizer, args);
+          let ret = pack.tokenizer[prop].apply(tokenizer, args);
           if (ret === false) {
             ret = prevTokenizer.apply(tokenizer, args);
           }
@@ -212,10 +217,10 @@ marked.use = function(extension) {
     }
 
     // ==-- Parse WalkTokens extensions --== //
-    if (ext.walkTokens) {
+    if (pack.walkTokens) {
       const walkTokens = marked.defaults.walkTokens;
       opts.walkTokens = (token) => {
-        ext.walkTokens(token);
+        pack.walkTokens(token);
         if (walkTokens) {
           walkTokens(token);
         }
@@ -254,11 +259,7 @@ marked.walkTokens = function(tokens, callback, opt) {
         break;
       }
       default: {
-        if (token.type === 'walkableDescription') {
-          // console.log(opt);
-        }
         if (opt?.extensions?.walkableTokens?.[token.type]) { // Walk any extensions
-          // console.log(opt.extensions.walkableTokens[token.type]);
           opt.extensions.walkableTokens[token.type].forEach(function(walkableTokens) {
             if (walkableTokens !== 'tokens') {
               marked.walkTokens(token[walkableTokens], callback, opt);
