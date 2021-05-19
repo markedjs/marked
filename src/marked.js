@@ -151,7 +151,7 @@ marked.use = function(extension) {
   const extensions = { renderers: {}, walkableTokens: {} };
 
   extension.forEach((ext) => {
-    //==-- Parse "addon" extensions --==//
+    // ==-- Parse "addon" extensions --== //
     if (ext.renderer && ext.name) { // Renderers must have 'name' property
       extensions.renderers[ext.name] = ext.renderer;
     }
@@ -181,7 +181,7 @@ marked.use = function(extension) {
       }
     }
 
-    //==-- Parse "overwrite" extensions --==//
+    // ==-- Parse "overwrite" extensions --== //
     if (ext.renderer && !ext.name) {
       const renderer = marked.defaults.renderer || new Renderer();
       for (const prop in ext.renderer) {
@@ -211,7 +211,7 @@ marked.use = function(extension) {
       opts.tokenizer = tokenizer;
     }
 
-    //= =-- Parse WalkTokens extensions --==//
+    // ==-- Parse WalkTokens extensions --== //
     if (ext.walkTokens) {
       const walkTokens = marked.defaults.walkTokens;
       opts.walkTokens = (token) => {
