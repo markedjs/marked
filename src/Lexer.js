@@ -123,20 +123,19 @@ module.exports = class Lexer {
     if (this.options.pedantic) {
       src = src.replace(/^ +$/gm, '');
     }
-    let token, i, l, lastToken, tokensParsed, cutSrc, lastParagraphClipped;
+    let token, i, l, lastToken, cutSrc, lastParagraphClipped;
 
     while (src) {
-      // extensions
-      if (this.options.extensions?.block) {
-        tokensParsed = false;
-        this.options.extensions.block.forEach((extTokenizer) => {
+      if (this.options?.extensions?.block
+        && this.options.extensions.block.some((extTokenizer) => {
           if (token = extTokenizer.call(this, src, tokens)) {
             src = src.substring(token.raw.length);
             tokens.push(token);
-            tokensParsed = true;
+            return true;
           }
-        });
-        if (tokensParsed) { continue; }
+          return false;
+        })) {
+        continue;
       }
 
       // newline
@@ -368,7 +367,7 @@ module.exports = class Lexer {
     // String with links masked to avoid interference with em and strong
     let maskedSrc = src;
     let match;
-    let keepPrevChar, prevChar, tokensParsed;
+    let keepPrevChar, prevChar;
 
     // Mask out reflinks
     if (this.tokens.links) {
@@ -398,16 +397,16 @@ module.exports = class Lexer {
       keepPrevChar = false;
 
       // extensions
-      if (this.options.extensions?.inline) {
-        tokensParsed = false;
-        this.options.extensions.inline.forEach((extTokenizer) => {
+      if (this.options?.extensions?.inline
+        && this.options.extensions.inline.some((extTokenizer) => {
           if (token = extTokenizer.call(this, src, tokens)) {
             src = src.substring(token.raw.length);
             tokens.push(token);
-            tokensParsed = true;
+            return true;
           }
-        });
-        if (tokensParsed) { continue; }
+          return false;
+        })) {
+        continue;
       }
 
       // escape
