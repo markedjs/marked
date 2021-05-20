@@ -249,7 +249,7 @@ module.exports = class Lexer {
         const tempSrc = src.slice(1);
         let tempStart;
         this.options.extensions.startBlock.forEach(function(getStartIndex) {
-          tempStart = getStartIndex(tempSrc);
+          tempStart = getStartIndex.call(this, tempSrc);
           if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
         });
         if (startIndex < Infinity && startIndex >= 0) {
@@ -509,11 +509,14 @@ module.exports = class Lexer {
       cutSrc = src;
       if (this.options.extensions?.startInline) {
         let startIndex = Infinity;
+        const tempSrc = src.slice(1);
+        let tempStart;
         this.options.extensions.startInline.forEach(function(getStartIndex) {
-          startIndex = Math.max(0, Math.min(getStartIndex(src), startIndex));
+          tempStart = getStartIndex.call(this, tempSrc);
+          if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
         });
-        if (startIndex < Infinity && startIndex > 0) {
-          cutSrc = src.substring(0, startIndex);
+        if (startIndex < Infinity && startIndex >= 0) {
+          cutSrc = src.substring(0, startIndex + 1);
         }
       }
       if (token = this.tokenizer.inlineText(cutSrc, inRawBlock, smartypants)) {
