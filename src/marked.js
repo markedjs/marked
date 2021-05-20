@@ -191,7 +191,7 @@ marked.use = function(extension) {
       const renderer = marked.defaults.renderer || new Renderer();
       for (const prop in pack.renderer) {
         const prevRenderer = renderer[prop];
-        // Replace renderer with func to run extension, but fall back if fail
+        // Replace renderer with func to run extension, but fall back if false
         renderer[prop] = (...args) => {
           let ret = pack.renderer[prop].apply(renderer, args);
           if (ret === false) {
