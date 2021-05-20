@@ -373,7 +373,7 @@ describe('use extension', () => {
             }
           },
           renderer(token) {
-            return `<${token.type}>${token.text}</${token.type}>\n`;
+            return `<${token.type}>${this.parseInline(token.tokens)}</${token.type}>\n`;
           }
         }, {
           name: `inline-${name}`,
@@ -398,16 +398,17 @@ describe('use extension', () => {
               return {
                 type: 'heading',
                 raw: `# ${name}`,
-                text: `used ${name}`
+                text: `used ${name}`,
+                depth: 1
               };
             }
             return false;
           }
         },
         renderer: {
-          heading(text, level, raw, slugger) {
+          heading(text, depth, raw, slugger) {
             if (text === name) {
-              return `<h${level}>${text}</h${level}>\n`;
+              return `<h${depth}>${text}</h${depth}>\n`;
             }
             return false;
           }
@@ -416,7 +417,8 @@ describe('use extension', () => {
           if (token.text === `used ${name}`) {
             token.text += ' walked';
           }
-        }
+        },
+        headerIds: false
       };
     }
 
@@ -434,7 +436,8 @@ describe('use extension', () => {
 
 # no extension
 `);
-      expect(`\n${html}\n`.replace(/\n+/, '\n')).toBe(`
+
+      expect(`\n${html}\n`.replace(/\n+/g, '\n')).toBe(`
 <block-extension1>used extension1 walked</block-extension1>
 <block-extension2>used extension2 walked</block-extension2>
 <p>used extension1 walked

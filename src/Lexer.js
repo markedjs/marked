@@ -246,11 +246,14 @@ module.exports = class Lexer {
       cutSrc = src;
       if (this.options.extensions?.startBlock) {
         let startIndex = Infinity;
+        const tempSrc = src.slice(1);
+        let tempStart;
         this.options.extensions.startBlock.forEach(function(getStartIndex) {
-          startIndex = Math.max(0, Math.min(getStartIndex(src), startIndex));
+          tempStart = getStartIndex(tempSrc);
+          if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
         });
-        if (startIndex < Infinity && startIndex > 0) {
-          cutSrc = src.substring(0, startIndex);
+        if (startIndex < Infinity && startIndex >= 0) {
+          cutSrc = src.substring(0, startIndex + 1);
         }
       }
       if (top && (token = this.tokenizer.paragraph(cutSrc))) {

@@ -108,7 +108,7 @@ function marked(src, opt, callback) {
   try {
     const tokens = Lexer.lex(src, opt);
     if (opt.walkTokens) {
-      marked.walkTokens(tokens, opt.walkTokens);
+      marked.walkTokens(tokens, opt.walkTokens, opt);
     }
     return Parser.parse(tokens, opt);
   } catch (e) {
@@ -145,11 +145,9 @@ marked.use = function(extension) {
   if (!Array.isArray(extension)) { // Wrap in array if not already to unify processing
     extension = [extension];
   }
+
   const opts = merge({}, ...extension);
-  opts.tokenizer = null;
-  opts.renderer = null;
-  opts.extensions = null;
-  const extensions = { renderers: {}, walkableTokens: {} };
+  const extensions = marked.defaults.extensions || { renderers: {}, walkableTokens: {} };
   let hasExtensions;
 
   extension.forEach((pack) => {
@@ -193,6 +191,7 @@ marked.use = function(extension) {
       const renderer = marked.defaults.renderer || new Renderer();
       for (const prop in pack.renderer) {
         const prevRenderer = renderer[prop];
+        // Replace renderer with func to run extension, but fall back if fail
         renderer[prop] = (...args) => {
           let ret = pack.renderer[prop].apply(renderer, args);
           if (ret === false) {
@@ -207,6 +206,7 @@ marked.use = function(extension) {
       const tokenizer = marked.defaults.tokenizer || new Tokenizer();
       for (const prop in pack.tokenizer) {
         const prevTokenizer = tokenizer[prop];
+        // Replace tokenizer with func to run extension, but fall back if fail
         tokenizer[prop] = (...args) => {
           let ret = pack.tokenizer[prop].apply(tokenizer, args);
           if (ret === false) {
@@ -228,13 +228,13 @@ marked.use = function(extension) {
         }
       };
     }
+
+    if (hasExtensions) {
+      opts.extensions = extensions;
+    }
+
+    marked.setOptions(opts);
   });
-
-  if (hasExtensions) {
-    opts.extensions = extensions;
-  }
-
-  marked.setOptions(opts);
 };
 
 /**
