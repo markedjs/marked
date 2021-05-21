@@ -466,6 +466,56 @@ used extension2 walked</p>
     });
   });
 
+  it('should allow deleting/editing tokens', () => {
+    const styleTags = {
+      extensions: [{
+        name: 'inlineStyleTag',
+        level: 'inline',
+        start(src) { return src.match(/ *{[^\{]/)?.index; },
+        tokenizer(src, tokens) {
+          const rule = /^ *{([^\{\}\n]+)}$/;
+          const match = rule.exec(src);
+          if (match) {
+            return {
+              type: 'inlineStyleTag',
+              raw: match[0], // This is the text that you want your token to consume from the source
+              text: match[1]
+            };
+          }
+        }
+      },
+      {
+        name: 'styled',
+        renderer(token) {
+          token.type = token.originalType;
+          const text = this.parse([token]);
+          const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
+          if (openingTag) {
+            return `${openingTag[1]} ${token.style}${openingTag[2]}`;
+          }
+          return text;
+        }
+      }],
+      walkTokens(token) {
+        if (token.tokens) {
+          const finalChildToken = token.tokens[token.tokens.length - 1];
+          if (finalChildToken?.type === 'inlineStyleTag') {
+            token.originalType = token.type;
+            token.type = 'styled';
+            token.style = `style="color:${finalChildToken.text};"`;
+            token.tokens.pop();
+          }
+        }
+      },
+      headerIds: false
+    };
+    marked.use(styleTags);
+    const html = marked('This is a *paragraph* with blue text. {blue}\n'
+                      + '# This is a *header* with red text {red}');
+    expect(html).toBe('<p style="color:blue;">This is a <em>paragraph</em> with blue text.</p>\n'
+                     + '<h1 style="color:red;">This is a <em>header</em> with red text</h1>\n');
+  });
+
   it('should use renderer', () => {
     const extension = {
       renderer: {
