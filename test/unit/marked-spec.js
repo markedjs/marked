@@ -183,6 +183,20 @@ describe('use extension', () => {
     expect(walked).toBe(2);
   });
 
+  it('should use walkTokens in async', (done) => {
+    let walked = 0;
+    const extension = {
+      walkTokens(token) {
+        walked++;
+      }
+    };
+    marked.use(extension);
+    marked('text', () => {
+      expect(walked).toBe(2);
+      done();
+    });
+  });
+
   it('should use options from extension', () => {
     const extension = {
       headerIds: false
