@@ -318,7 +318,7 @@ describe('use extension', () => {
     expect(html).toBe('');
   });
 
-  it('should handle list of walkable tokens', () => {
+  it('should walk only specified child tokens', () => {
     const walkableDescription = {
       extensions: [{
         name: 'walkableDescription',
@@ -332,26 +332,27 @@ describe('use extension', () => {
               type: 'walkableDescription',
               raw: match[0], // This is the text that you want your token to consume from the source
               dt: this.inlineTokens(match[1].trim()), // You can add additional properties to your tokens to pass along to the renderer
-              dd: this.inlineTokens(match[2].trim())
+              dd: this.inlineTokens(match[2].trim()),
+              tokens: this.inlineTokens('unwalked')
             };
           }
         },
         renderer(token) {
-          return `\n<dt>${this.parseInline(token.dt)}</dt><dd>${this.parseInline(token.dd)}</dd>`;
+          return `\n<dt>${this.parseInline(token.dt)} - ${this.parseInline(token.tokens)}</dt><dd>${this.parseInline(token.dd)}</dd>`;
         },
-        walkableTokens: ['dd', 'dt']
+        childTokens: ['dd', 'dt']
       }],
       walkTokens(token) {
         if (token.type === 'text') {
-          token.text += 'A';
+          token.text += ' walked';
         }
       }
     };
     marked.use(walkableDescription);
     const html = marked(':   Topic 1   :  Description 1\n'
                       + ': **Topic 2** : *Description 2*');
-    expect(html).toBe('<p>\n<dt>Topic 1A</dt><dd>Description 1A</dd>'
-                    + '\n<dt><strong>Topic 2A</strong></dt><dd><em>Description 2A</em></dd></p>\n');
+    expect(html).toBe('<p>\n<dt>Topic 1 walked - unwalked</dt><dd>Description 1 walked</dd>'
+                    + '\n<dt><strong>Topic 2 walked</strong> - unwalked</dt><dd><em>Description 2 walked</em></dd></p>\n');
   });
 
   describe('multiple extensions', () => {

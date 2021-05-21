@@ -147,7 +147,7 @@ marked.use = function(extension) {
   }
 
   const opts = merge({}, ...extension);
-  const extensions = marked.defaults.extensions || { renderers: {}, walkableTokens: {} };
+  const extensions = marked.defaults.extensions || { renderers: {}, childTokens: {} };
   let hasExtensions;
 
   extension.forEach((pack) => {
@@ -158,8 +158,8 @@ marked.use = function(extension) {
         if (ext.renderer && ext.name) { // Renderers must have 'name' property
           extensions.renderers[ext.name] = ext.renderer;
         }
-        if (ext.walkableTokens && ext.name) { // walkableTokens must have 'name'
-          extensions.walkableTokens[ext.name] = ext.walkableTokens;
+        if (ext.childTokens && ext.name) { // childTokens must have 'name'
+          extensions.childTokens[ext.name] = ext.childTokens;
         }
         if (ext.tokenizer && ext.level) { // Tokenizers must have 'level' property
           if (extensions[ext.level]) {
@@ -261,12 +261,12 @@ marked.walkTokens = function(tokens, callback) {
         break;
       }
       default: {
-        if (marked.defaults?.extensions?.walkableTokens?.[token.type]) { // Walk any extensions
-          marked.defaults?.extensions.walkableTokens[token.type].forEach(function(walkableTokens) {
-            marked.walkTokens(token[walkableTokens], callback);
+        if (marked.defaults?.extensions?.childTokens?.[token.type]) { // Walk any extensions
+          marked.defaults?.extensions.childTokens[token.type].forEach(function(childTokens) {
+            marked.walkTokens(token[childTokens], callback);
           });
         }
-        if (token.tokens && !marked.defaults?.extensions?.walkableTokens[token.type]?.tokens) {
+        if (token.tokens && !marked.defaults?.extensions?.childTokens[token.type]) {
           marked.walkTokens(token.tokens, callback);
         }
       }
