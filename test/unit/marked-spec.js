@@ -318,6 +318,42 @@ describe('use extension', () => {
     expect(html).toBe('');
   });
 
+  it('should override original tokenizer/renderer with same name, but fall back if returns false', () => {
+    const extension = {
+      extensions: [{
+        name: 'heading',
+        level: 'block',
+        tokenizer(src) {
+          return false; // fall back to default `heading` tokenizer
+        },
+        renderer(token) {
+          return '<h' + token.depth + '>' + token.text + ' RENDERER EXTENSION</h' + token.depth + '>\n';
+        }
+      },
+      {
+        name: 'code',
+        level: 'block',
+        tokenizer(src) {
+          const rule = /^:([^\n]*):(?:\n|$)/;
+          const match = rule.exec(src);
+          if (match) {
+            return {
+              type: 'code',
+              raw: match[0],
+              text: match[1].trim() + ' TOKENIZER EXTENSION'
+            };
+          }
+        },
+        renderer(token) {
+          return false; // fall back to default `code` renderer
+        }
+      }]
+    };
+    marked.use(extension);
+    const html = marked('# extension1\n:extension2:');
+    expect(html).toBe('<h1>extension1 RENDERER EXTENSION</h1>\n<pre><code>extension2 TOKENIZER EXTENSION\n</code></pre>\n');
+  });
+
   it('should walk only specified child tokens', () => {
     const walkableDescription = {
       extensions: [{

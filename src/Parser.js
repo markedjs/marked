@@ -57,11 +57,22 @@ module.exports = class Parser {
       item,
       checked,
       task,
-      checkbox;
+      checkbox,
+      ret;
 
     const l = tokens.length;
     for (i = 0; i < l; i++) {
       token = tokens[i];
+
+      // Run any renderer extensions
+      if (this.options.extensions?.renderers?.[token.type]) {
+        ret = this.options.extensions.renderers[token.type].call(this, token);
+        if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'html', 'paragraph', 'text'].includes(token.type)) {
+          out += ret || '';
+          continue;
+        }
+      }
+
       switch (token.type) {
         case 'space': {
           continue;
@@ -181,12 +192,6 @@ module.exports = class Parser {
         }
 
         default: {
-          // Run any renderer extensions
-          if (this.options.extensions?.renderers?.[token.type]) {
-            out += this.options.extensions.renderers[token.type].call(this, token) || '';
-            continue;
-          }
-
           const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
             console.error(errMsg);
@@ -208,11 +213,22 @@ module.exports = class Parser {
     renderer = renderer || this.renderer;
     let out = '',
       i,
-      token;
+      token,
+      ret;
 
     const l = tokens.length;
     for (i = 0; i < l; i++) {
       token = tokens[i];
+
+      // Run any renderer extensions
+      if (this.options.extensions?.renderers?.[token.type]) {
+        ret = this.options.extensions.renderers[token.type].call(this, token);
+        if (ret !== false || !['escape', 'html', 'link', 'image', 'strong', 'em', 'codespan', 'br', 'del', 'text'].includes(token.type)) {
+          out += ret || '';
+          continue;
+        }
+      }
+
       switch (token.type) {
         case 'escape': {
           out += renderer.text(token.text);
@@ -255,12 +271,6 @@ module.exports = class Parser {
           break;
         }
         default: {
-          // Run any renderer extensions
-          if (this.options.extensions?.renderers?.[token.type]) {
-            out += this.options.extensions.renderers[token.type].call(this, token) || '';
-            continue;
-          }
-
           const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
             console.error(errMsg);
