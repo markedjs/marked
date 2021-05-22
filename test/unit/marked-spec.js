@@ -423,6 +423,33 @@ describe('use extension', () => {
       };
     }
 
+    function createFalseExtension(name) {
+      return {
+        extensions: [{
+          name: `block-${name}`,
+          level: 'block',
+          start(src) { return src.indexOf('::'); },
+          tokenizer(src, tokens) {
+            return false;
+          },
+          renderer(token) {
+            return false;
+          }
+        }, {
+          name: `inline-${name}`,
+          level: 'inline',
+          start(src) { return src.indexOf(':'); },
+          tokenizer(src, tokens) {
+            return false;
+          },
+          renderer(token) {
+            return false;
+          }
+        }],
+        headerIds: false
+      };
+    }
+
     function runTest() {
       const html = marked(`
 ::extension1
@@ -460,6 +487,17 @@ used extension2 walked</p>
       marked.use([
         createExtension('extension1'),
         createExtension('extension2')
+      ]);
+
+      runTest();
+    });
+
+    it('should fall back to any extensions with the same name if the first returns false', () => {
+      marked.use([
+        createExtension('extension1'),
+        createExtension('extension2'),
+        createFalseExtension('extension1'),
+        createFalseExtension('extension2')
       ]);
 
       runTest();

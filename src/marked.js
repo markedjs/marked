@@ -156,14 +156,23 @@ marked.use = function(extension) {
       hasExtensions = true;
       pack.extensions.forEach((ext) => {
         if (ext.renderer && ext.name) { // Renderers must have 'name' property
-          extensions.renderers[ext.name] = ext.renderer;
-        }
-        if (ext.childTokens && ext.name) { // childTokens must have 'name'
-          extensions.childTokens[ext.name] = ext.childTokens;
+          const prevRenderer = extensions.renderers?.[ext.name] || null;
+          if (prevRenderer) {
+            // Replace extension with func to run new extension but fall back if fail
+            extensions.renderers[ext.name] = function(...args) {
+              let ret = ext.renderer.apply(this, args);// (args);
+              if (ret === false) {
+                ret = prevRenderer.apply(this, args);// (args);
+              }
+              return ret;
+            };
+          } else {
+            extensions.renderers[ext.name] = ext.renderer;
+          }
         }
         if (ext.tokenizer && ext.level) { // Tokenizers must have 'level' property
           if (extensions[ext.level]) {
-            extensions[ext.level].push(ext.tokenizer);
+            extensions[ext.level].unshift(ext.tokenizer);
           } else {
             extensions[ext.level] = [ext.tokenizer];
           }
@@ -182,6 +191,9 @@ marked.use = function(extension) {
               }
             }
           }
+        }
+        if (ext.childTokens && ext.name) { // childTokens must have 'name'
+          extensions.childTokens[ext.name] = ext.childTokens;
         }
       });
     }
