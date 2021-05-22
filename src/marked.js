@@ -156,13 +156,13 @@ marked.use = function(extension) {
       hasExtensions = true;
       pack.extensions.forEach((ext) => {
         if (ext.renderer && ext.name) { // Renderers must have 'name' property
-          const prevRenderer = extensions.renderers?.[ext.name] || null;
+          const prevRenderer = extensions.renderers?.[ext.name];
           if (prevRenderer) {
-            // Replace extension with func to run new extension but fall back if fail
+            // Replace extension with func to run new extension but fall back if false
             extensions.renderers[ext.name] = function(...args) {
-              let ret = ext.renderer.apply(this, args);// (args);
+              let ret = ext.renderer.apply(this, args);
               if (ret === false) {
-                ret = prevRenderer.apply(this, args);// (args);
+                ret = prevRenderer.apply(this, args);
               }
               return ret;
             };
@@ -218,7 +218,7 @@ marked.use = function(extension) {
       const tokenizer = marked.defaults.tokenizer || new Tokenizer();
       for (const prop in pack.tokenizer) {
         const prevTokenizer = tokenizer[prop];
-        // Replace tokenizer with func to run extension, but fall back if fail
+        // Replace tokenizer with func to run extension, but fall back if false
         tokenizer[prop] = (...args) => {
           let ret = pack.tokenizer[prop].apply(tokenizer, args);
           if (ret === false) {
@@ -234,7 +234,7 @@ marked.use = function(extension) {
     if (pack.walkTokens) {
       const walkTokens = marked.defaults.walkTokens;
       opts.walkTokens = (token) => {
-        pack.walkTokens(token);
+        pack.walkTokens.call(this, token);
         if (walkTokens) {
           walkTokens(token);
         }
