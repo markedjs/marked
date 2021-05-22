@@ -155,7 +155,10 @@ marked.use = function(extension) {
     if (pack.extensions) {
       hasExtensions = true;
       pack.extensions.forEach((ext) => {
-        if (ext.renderer && ext.name) { // Renderers must have 'name' property
+        if (!ext.name) {
+          throw new Error('extension name required');
+        }
+        if (ext.renderer) { // Renderer extensions
           const prevRenderer = extensions.renderers?.[ext.name];
           if (prevRenderer) {
             // Replace extension with func to run new extension but fall back if false
@@ -170,7 +173,10 @@ marked.use = function(extension) {
             extensions.renderers[ext.name] = ext.renderer;
           }
         }
-        if (ext.tokenizer && ext.level) { // Tokenizers must have 'level' property
+        if (ext.tokenizer) { // Tokenizer Extensions
+          if (!ext.level || (ext.level !== 'block' && ext.level !== 'inline')) {
+            throw new Error("extension level must be 'block' or 'inline'");
+          }
           if (extensions[ext.level]) {
             extensions[ext.level].unshift(ext.tokenizer);
           } else {
@@ -192,7 +198,7 @@ marked.use = function(extension) {
             }
           }
         }
-        if (ext.childTokens && ext.name) { // childTokens must have 'name'
+        if (ext.childTokens) { // Child tokens to be visited by walkTokens
           extensions.childTokens[ext.name] = ext.childTokens;
         }
       });
