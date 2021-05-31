@@ -310,12 +310,68 @@ describe('use extension', () => {
         }
       },
       renderer(token) {
+        if (token.text === 'test') {
+          return 'test';
+        }
         return false;
       }
     };
-    marked.use({ extensions: [extension] });
-    const html = marked(':Test:');
-    expect(html).toBe('');
+    const fallbackRenderer = {
+      name: 'test',
+      level: 'block',
+      renderer(token) {
+        if (token.text === 'Test') {
+          return 'fallback';
+        }
+        return false;
+      }
+    };
+    marked.use({ extensions: [fallbackRenderer, extension] });
+    const html = marked(':Test:\n\n:test:\n\n:none:');
+    expect(html).toBe('fallbacktest');
+  });
+
+  it('should fall back when tokenizers return false', () => {
+    const extension = {
+      name: 'test',
+      level: 'block',
+      tokenizer(src) {
+        const rule = /^:([^\n]*):(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'test',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+          };
+        }
+        return false;
+      },
+      renderer(token) {
+        return token.text;
+      }
+    };
+    const extension2 = {
+      name: 'test',
+      level: 'block',
+      tokenizer(src) {
+        const rule = /^:([^\n]*):(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          if (match[1].match(/^[A-Z]/)) {
+            return {
+              type: 'test',
+              raw: match[0],
+              text: match[1].trim().toUpperCase()
+            };
+          }
+        }
+        return false;
+      }
+    };
+    marked.use({ extensions: [extension, extension2] });
+    const html = marked(':Test:\n\n:test:');
+    expect(html).toBe('TESTtest');
   });
 
   it('should override original tokenizer/renderer with same name, but fall back if returns false', () => {
