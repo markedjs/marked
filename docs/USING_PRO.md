@@ -105,7 +105,7 @@ console.log(marked('# heading+'));
 
 ### Block-level renderer methods
 
-- <code>**code**</strong>(*string* code, *string* infostring, *boolean* escaped)</code>
+- <code>**code**(*string* code, *string* infostring, *boolean* escaped)</code>
 - <code>**blockquote**(*string* quote)</code>
 - <code>**html**(*string* html)</code>
 - <code>**heading**(*string* text, *number* level, *string* raw, *Slugger* slugger)</code>
