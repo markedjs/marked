@@ -550,7 +550,8 @@ module.exports = class Tokenizer {
     let match = this.rules.inline.emStrong.lDelim.exec(src);
     if (!match) return;
 
-    if (match[3] && prevChar.match(/[\p{L}\p{N}]/u)) return; // _ can't be between two alphanumerics. \p{L}\p{N} includes non-english alphabet/numbers as well
+    // _ can't be between two alphanumerics. \p{L}\p{N} includes non-english alphabet/numbers as well
+    if (match[3] && prevChar.match(/[\p{L}\p{N}]/u)) return;
 
     const nextChar = match[1] || match[2] || '';
 
@@ -561,12 +562,13 @@ module.exports = class Tokenizer {
       const endReg = match[0][0] === '*' ? this.rules.inline.emStrong.rDelimAst : this.rules.inline.emStrong.rDelimUnd;
       endReg.lastIndex = 0;
 
-      maskedSrc = maskedSrc.slice(-1 * src.length + lLength); // Bump maskedSrc to same section of string as src (move to lexer?)
+      // Clip maskedSrc to same section of string as src (move to lexer?)
+      maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
 
       while ((match = endReg.exec(maskedSrc)) != null) {
         rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
-        if (!rDelim) continue; // matched the first alternative in rules.js (skip the * in __abc*abc__)
+        if (!rDelim) continue; // skip single * in __abc*abc__
 
         rLength = rDelim.length;
 
@@ -584,11 +586,10 @@ module.exports = class Tokenizer {
 
         if (delimTotal > 0) continue; // Haven't found enough closing delimiters
 
-        // If this is the last rDelimiter, remove extra characters. *a*** -> *a*
-        if (delimTotal + midDelimTotal - rLength <= 0 && !maskedSrc.slice(endReg.lastIndex).match(endReg)) {
-          rLength = Math.min(rLength, rLength + delimTotal + midDelimTotal);
-        }
+        // Remove extra characters. *a*** -> *a*
+        rLength = Math.min(rLength, rLength + delimTotal + midDelimTotal);
 
+        // Create `em` if smallest delimiter has odd char count. *a***
         if (Math.min(lLength, rLength) % 2) {
           return {
             type: 'em',
@@ -596,13 +597,13 @@ module.exports = class Tokenizer {
             text: src.slice(1, lLength + match.index + rLength)
           };
         }
-        if (Math.min(lLength, rLength) % 2 === 0) {
-          return {
-            type: 'strong',
-            raw: src.slice(0, lLength + match.index + rLength + 1),
-            text: src.slice(2, lLength + match.index + rLength - 1)
-          };
-        }
+
+        // Create 'strong' if smallest delimiter has even char count. **a***
+        return {
+          type: 'strong',
+          raw: src.slice(0, lLength + match.index + rLength + 1),
+          text: src.slice(2, lLength + match.index + rLength - 1)
+        };
       }
     }
   }
