@@ -21,10 +21,10 @@ marked.use({
 });
 ```
 
-You can also supply an array of multiple `extension` objects.
+You can also supply multiple `extension` objects at once.
 
 ```
-marked.use([myExtension, extension2, extension3]);
+marked.use(myExtension, extension2, extension3);
 
 \\ EQUIVALENT TO:
 
