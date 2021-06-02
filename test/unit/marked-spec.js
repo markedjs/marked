@@ -576,21 +576,21 @@ used extension2 walked</p>
     });
 
     it('should merge extensions when calling marked.use with multiple extensions', () => {
-      marked.use([
+      marked.use(
         createExtension('extension1'),
         createExtension('extension2')
-      ]);
+      );
 
       runTest();
     });
 
     it('should fall back to any extensions with the same name if the first returns false', () => {
-      marked.use([
+      marked.use(
         createExtension('extension1'),
         createExtension('extension2'),
         createFalseExtension('extension1'),
         createFalseExtension('extension2')
-      ]);
+      );
 
       runTest();
     });

@@ -141,16 +141,12 @@ marked.defaults = defaults;
  * Use Extension
  */
 
-marked.use = function(extension) {
-  if (!Array.isArray(extension)) { // Wrap in array if not already to unify processing
-    extension = [extension];
-  }
-
-  const opts = merge({}, ...extension);
+marked.use = function(...args) {
+  const opts = merge({}, ...args);
   const extensions = marked.defaults.extensions || { renderers: {}, childTokens: {} };
   let hasExtensions;
 
-  extension.forEach((pack) => {
+  args.forEach((pack) => {
     // ==-- Parse "addon" extensions --== //
     if (pack.extensions) {
       hasExtensions = true;
