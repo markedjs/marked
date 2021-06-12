@@ -126,6 +126,14 @@ module.exports = class Lexer {
     let token, i, l, lastToken;
 
     while (src) {
+      // update relational parameters
+      if (lastToken) {
+        lastToken.nextSibling = token;
+        token.prevSibling = lastToken;
+      }
+
+      lastToken = token;
+
       // newline
       if (token = this.tokenizer.space(src)) {
         src = src.substring(token.raw.length);
@@ -138,7 +146,7 @@ module.exports = class Lexer {
       // code
       if (token = this.tokenizer.code(src)) {
         src = src.substring(token.raw.length);
-        lastToken = tokens[tokens.length - 1];
+        // lastToken = tokens[tokens.length - 1];
         // An indented code block cannot interrupt a paragraph.
         if (lastToken && lastToken.type === 'paragraph') {
           lastToken.raw += '\n' + token.raw;
@@ -239,7 +247,7 @@ module.exports = class Lexer {
       // text
       if (token = this.tokenizer.text(src)) {
         src = src.substring(token.raw.length);
-        lastToken = tokens[tokens.length - 1];
+        // lastToken = tokens[tokens.length - 1];
         if (lastToken && lastToken.type === 'text') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
@@ -258,6 +266,11 @@ module.exports = class Lexer {
           throw new Error(errMsg);
         }
       }
+    }
+
+    if (lastToken) {
+      lastToken.nextSibling = token;
+      token.prevSibling = lastToken;
     }
 
     return tokens;
@@ -365,6 +378,14 @@ module.exports = class Lexer {
         prevChar = '';
       }
       keepPrevChar = false;
+
+      // update relational parameters
+      if (lastToken) {
+        lastToken.nextSibling = token;
+        token.prevSibling = lastToken;
+      }
+
+      lastToken = token;
 
       // escape
       if (token = this.tokenizer.escape(src)) {
@@ -484,6 +505,11 @@ module.exports = class Lexer {
           throw new Error(errMsg);
         }
       }
+    }
+
+    if (lastToken) {
+      lastToken.nextSibling = token;
+      token.prevSibling = lastToken;
     }
 
     return tokens;
