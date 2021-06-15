@@ -288,7 +288,7 @@ console.log(marked('# heading 2\n\n## heading 3'));
 
 ***
 
-<h2>Custom Extensions : <code>extensions</code></h2>
+<h2 id="extensions">Custom Extensions : <code>extensions</code></h2>
 
 You may supply an `extensions` array to the `options` object. This array can contain any number of `extension` objects, using the following properties:
 
