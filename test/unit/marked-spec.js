@@ -137,6 +137,515 @@ describe('parseInline', () => {
 });
 
 describe('use extension', () => {
+  it('should use custom block tokenizer + renderer extensions', () => {
+    const underline = {
+      name: 'underline',
+      level: 'block',
+      tokenizer(src) {
+        const rule = /^:([^\n]*)(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'underline',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+          };
+        }
+      },
+      renderer(token) {
+        return `<u>${token.text}</u>\n`;
+      }
+    };
+    marked.use({ extensions: [underline] });
+    let html = marked('Not Underlined\n:Underlined\nNot Underlined');
+    expect(html).toBe('<p>Not Underlined\n:Underlined\nNot Underlined</p>\n');
+
+    html = marked('Not Underlined\n\n:Underlined\n\nNot Underlined');
+    expect(html).toBe('<p>Not Underlined</p>\n<u>Underlined</u>\n<p>Not Underlined</p>\n');
+  });
+
+  it('should interrupt paragraphs if using "start" property', () => {
+    const underline = {
+      extensions: [{
+        name: 'underline',
+        level: 'block',
+        start(src) { return src.match(/:/)?.index; },
+        tokenizer(src) {
+          const rule = /^:([^\n]*):(?:\n|$)/;
+          const match = rule.exec(src);
+          if (match) {
+            return {
+              type: 'underline',
+              raw: match[0], // This is the text that you want your token to consume from the source
+              text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+            };
+          }
+        },
+        renderer(token) {
+          return `<u>${token.text}</u>\n`;
+        }
+      }]
+    };
+    marked.use(underline);
+    const html = marked('Not Underlined A\n:Underlined B:\nNot Underlined C\n:Not Underlined D');
+    expect(html).toBe('<p>Not Underlined A</p>\n<u>Underlined B</u>\n<p>Not Underlined C\n:Not Underlined D</p>\n');
+  });
+
+  it('should use custom inline tokenizer + renderer extensions', () => {
+    const underline = {
+      name: 'underline',
+      level: 'inline',
+      start(src) { return src.match(/=/)?.index; },
+      tokenizer(src) {
+        const rule = /^=([^=]+)=/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'underline',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+          };
+        }
+      },
+      renderer(token) {
+        return `<u>${token.text}</u>`;
+      }
+    };
+    marked.use({ extensions: [underline] });
+    const html = marked('Not Underlined =Underlined= Not Underlined');
+    expect(html).toBe('<p>Not Underlined <u>Underlined</u> Not Underlined</p>\n');
+  });
+
+  it('should handle interacting block and inline extensions', () => {
+    const descriptionlist = {
+      name: 'descriptionList',
+      level: 'block',
+      start(src) { return src.match(/:[^:\n]/)?.index; },
+      tokenizer(src, tokens) {
+        const rule = /^(?::[^:\n]+:[^:\n]*(?:\n|$))+/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'descriptionList',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            text: match[0].trim(), // You can add additional properties to your tokens to pass along to the renderer
+            tokens: this.inlineTokens(match[0].trim())
+          };
+        }
+      },
+      renderer(token) {
+        return `<dl>${this.parseInline(token.tokens)}\n</dl>`;
+      }
+    };
+
+    const description = {
+      name: 'description',
+      level: 'inline',
+      start(src) { return src.match(/:/)?.index; },
+      tokenizer(src, tokens) {
+        const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'description',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            dt: this.inlineTokens(match[1].trim()), // You can add additional properties to your tokens to pass along to the renderer
+            dd: this.inlineTokens(match[2].trim())
+          };
+        }
+      },
+      renderer(token) {
+        return `\n<dt>${this.parseInline(token.dt)}</dt><dd>${this.parseInline(token.dd)}</dd>`;
+      }
+    };
+    marked.use({ extensions: [descriptionlist, description] });
+    const html = marked('A Description List with One Description:\n'
+                        + ':   Topic 1   :  Description 1\n'
+                        + ': **Topic 2** : *Description 2*');
+    expect(html).toBe('<p>A Description List with One Description:</p>\n'
+                      + '<dl>'
+                      + '\n<dt>Topic 1</dt><dd>Description 1</dd>'
+                      + '\n<dt><strong>Topic 2</strong></dt><dd><em>Description 2</em></dd>'
+                      + '\n</dl>');
+  });
+
+  it('should allow other options mixed into the extension', () => {
+    const extension = {
+      name: 'underline',
+      level: 'block',
+      start(src) { return src.indexOf(':'); },
+      tokenizer(src) {
+        const rule = /^:([^\n]*):(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'underline',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+          };
+        }
+      },
+      renderer(token) {
+        return `<u>${token.text}</u>\n`;
+      }
+    };
+    marked.use({ sanitize: true, silent: true, extensions: [extension] });
+    const html = marked(':test:\ntest\n<div></div>');
+    expect(html).toBe('<u>test</u>\n<p>test</p>\n<p>&lt;div&gt;&lt;/div&gt;</p>\n');
+  });
+
+  it('should handle renderers that return false', () => {
+    const extension = {
+      name: 'test',
+      level: 'block',
+      tokenizer(src) {
+        const rule = /^:([^\n]*):(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'test',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+          };
+        }
+      },
+      renderer(token) {
+        if (token.text === 'test') {
+          return 'test';
+        }
+        return false;
+      }
+    };
+    const fallbackRenderer = {
+      name: 'test',
+      level: 'block',
+      renderer(token) {
+        if (token.text === 'Test') {
+          return 'fallback';
+        }
+        return false;
+      }
+    };
+    marked.use({ extensions: [fallbackRenderer, extension] });
+    const html = marked(':Test:\n\n:test:\n\n:none:');
+    expect(html).toBe('fallbacktest');
+  });
+
+  it('should fall back when tokenizers return false', () => {
+    const extension = {
+      name: 'test',
+      level: 'block',
+      tokenizer(src) {
+        const rule = /^:([^\n]*):(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          return {
+            type: 'test',
+            raw: match[0], // This is the text that you want your token to consume from the source
+            text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+          };
+        }
+        return false;
+      },
+      renderer(token) {
+        return token.text;
+      }
+    };
+    const extension2 = {
+      name: 'test',
+      level: 'block',
+      tokenizer(src) {
+        const rule = /^:([^\n]*):(?:\n|$)/;
+        const match = rule.exec(src);
+        if (match) {
+          if (match[1].match(/^[A-Z]/)) {
+            return {
+              type: 'test',
+              raw: match[0],
+              text: match[1].trim().toUpperCase()
+            };
+          }
+        }
+        return false;
+      }
+    };
+    marked.use({ extensions: [extension, extension2] });
+    const html = marked(':Test:\n\n:test:');
+    expect(html).toBe('TESTtest');
+  });
+
+  it('should override original tokenizer/renderer with same name, but fall back if returns false', () => {
+    const extension = {
+      extensions: [{
+        name: 'heading',
+        level: 'block',
+        tokenizer(src) {
+          return false; // fall back to default `heading` tokenizer
+        },
+        renderer(token) {
+          return '<h' + token.depth + '>' + token.text + ' RENDERER EXTENSION</h' + token.depth + '>\n';
+        }
+      },
+      {
+        name: 'code',
+        level: 'block',
+        tokenizer(src) {
+          const rule = /^:([^\n]*):(?:\n|$)/;
+          const match = rule.exec(src);
+          if (match) {
+            return {
+              type: 'code',
+              raw: match[0],
+              text: match[1].trim() + ' TOKENIZER EXTENSION'
+            };
+          }
+        },
+        renderer(token) {
+          return false; // fall back to default `code` renderer
+        }
+      }]
+    };
+    marked.use(extension);
+    const html = marked('# extension1\n:extension2:');
+    expect(html).toBe('<h1>extension1 RENDERER EXTENSION</h1>\n<pre><code>extension2 TOKENIZER EXTENSION\n</code></pre>\n');
+  });
+
+  it('should walk only specified child tokens', () => {
+    const walkableDescription = {
+      extensions: [{
+        name: 'walkableDescription',
+        level: 'inline',
+        start(src) { return src.match(/:/)?.index; },
+        tokenizer(src, tokens) {
+          const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;
+          const match = rule.exec(src);
+          if (match) {
+            return {
+              type: 'walkableDescription',
+              raw: match[0], // This is the text that you want your token to consume from the source
+              dt: this.inlineTokens(match[1].trim()), // You can add additional properties to your tokens to pass along to the renderer
+              dd: this.inlineTokens(match[2].trim()),
+              tokens: this.inlineTokens('unwalked')
+            };
+          }
+        },
+        renderer(token) {
+          return `\n<dt>${this.parseInline(token.dt)} - ${this.parseInline(token.tokens)}</dt><dd>${this.parseInline(token.dd)}</dd>`;
+        },
+        childTokens: ['dd', 'dt']
+      }],
+      walkTokens(token) {
+        if (token.type === 'text') {
+          token.text += ' walked';
+        }
+      }
+    };
+    marked.use(walkableDescription);
+    const html = marked(':   Topic 1   :  Description 1\n'
+                      + ': **Topic 2** : *Description 2*');
+    expect(html).toBe('<p>\n<dt>Topic 1 walked - unwalked</dt><dd>Description 1 walked</dd>'
+                    + '\n<dt><strong>Topic 2 walked</strong> - unwalked</dt><dd><em>Description 2 walked</em></dd></p>\n');
+  });
+
+  describe('multiple extensions', () => {
+    function createExtension(name) {
+      return {
+        extensions: [{
+          name: `block-${name}`,
+          level: 'block',
+          start(src) { return src.indexOf('::'); },
+          tokenizer(src, tokens) {
+            if (src.startsWith(`::${name}\n`)) {
+              const text = `:${name}`;
+              return {
+                type: `block-${name}`,
+                raw: `::${name}\n`,
+                text,
+                tokens: this.inlineTokens(text)
+              };
+            }
+          },
+          renderer(token) {
+            return `<${token.type}>${this.parseInline(token.tokens)}</${token.type}>\n`;
+          }
+        }, {
+          name: `inline-${name}`,
+          level: 'inline',
+          start(src) { return src.indexOf(':'); },
+          tokenizer(src, tokens) {
+            if (src.startsWith(`:${name}`)) {
+              return {
+                type: `inline-${name}`,
+                raw: `:${name}`,
+                text: `used ${name}`
+              };
+            }
+          },
+          renderer(token) {
+            return token.text;
+          }
+        }],
+        tokenizer: {
+          heading(src) {
+            if (src.startsWith(`# ${name}`)) {
+              return {
+                type: 'heading',
+                raw: `# ${name}`,
+                text: `used ${name}`,
+                depth: 1
+              };
+            }
+            return false;
+          }
+        },
+        renderer: {
+          heading(text, depth, raw, slugger) {
+            if (text === name) {
+              return `<h${depth}>${text}</h${depth}>\n`;
+            }
+            return false;
+          }
+        },
+        walkTokens(token) {
+          if (token.text === `used ${name}`) {
+            token.text += ' walked';
+          }
+        },
+        headerIds: false
+      };
+    }
+
+    function createFalseExtension(name) {
+      return {
+        extensions: [{
+          name: `block-${name}`,
+          level: 'block',
+          start(src) { return src.indexOf('::'); },
+          tokenizer(src, tokens) {
+            return false;
+          },
+          renderer(token) {
+            return false;
+          }
+        }, {
+          name: `inline-${name}`,
+          level: 'inline',
+          start(src) { return src.indexOf(':'); },
+          tokenizer(src, tokens) {
+            return false;
+          },
+          renderer(token) {
+            return false;
+          }
+        }],
+        headerIds: false
+      };
+    }
+
+    function runTest() {
+      const html = marked(`
+::extension1
+::extension2
+
+:extension1
+:extension2
+
+# extension1
+
+# extension2
+
+# no extension
+`);
+
+      expect(`\n${html}\n`.replace(/\n+/g, '\n')).toBe(`
+<block-extension1>used extension1 walked</block-extension1>
+<block-extension2>used extension2 walked</block-extension2>
+<p>used extension1 walked
+used extension2 walked</p>
+<h1>used extension1 walked</h1>
+<h1>used extension2 walked</h1>
+<h1>no extension</h1>
+`);
+    }
+
+    it('should merge extensions when calling marked.use multiple times', () => {
+      marked.use(createExtension('extension1'));
+      marked.use(createExtension('extension2'));
+
+      runTest();
+    });
+
+    it('should merge extensions when calling marked.use with multiple extensions', () => {
+      marked.use(
+        createExtension('extension1'),
+        createExtension('extension2')
+      );
+
+      runTest();
+    });
+
+    it('should fall back to any extensions with the same name if the first returns false', () => {
+      marked.use(
+        createExtension('extension1'),
+        createExtension('extension2'),
+        createFalseExtension('extension1'),
+        createFalseExtension('extension2')
+      );
+
+      runTest();
+    });
+  });
+
+  it('should allow deleting/editing tokens', () => {
+    const styleTags = {
+      extensions: [{
+        name: 'inlineStyleTag',
+        level: 'inline',
+        start(src) { return src.match(/ *{[^\{]/)?.index; },
+        tokenizer(src, tokens) {
+          const rule = /^ *{([^\{\}\n]+)}$/;
+          const match = rule.exec(src);
+          if (match) {
+            return {
+              type: 'inlineStyleTag',
+              raw: match[0], // This is the text that you want your token to consume from the source
+              text: match[1]
+            };
+          }
+        }
+      },
+      {
+        name: 'styled',
+        renderer(token) {
+          token.type = token.originalType;
+          const text = this.parse([token]);
+          const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
+          if (openingTag) {
+            return `${openingTag[1]} ${token.style}${openingTag[2]}`;
+          }
+          return text;
+        }
+      }],
+      walkTokens(token) {
+        if (token.tokens) {
+          const finalChildToken = token.tokens[token.tokens.length - 1];
+          if (finalChildToken?.type === 'inlineStyleTag') {
+            token.originalType = token.type;
+            token.type = 'styled';
+            token.style = `style="color:${finalChildToken.text};"`;
+            token.tokens.pop();
+          }
+        }
+      },
+      headerIds: false
+    };
+    marked.use(styleTags);
+    const html = marked('This is a *paragraph* with blue text. {blue}\n'
+                      + '# This is a *header* with red text {red}');
+    expect(html).toBe('<p style="color:blue;">This is a <em>paragraph</em> with blue text.</p>\n'
+                     + '<h1 style="color:red;">This is a <em>header</em> with red text</h1>\n');
+  });
+
   it('should use renderer', () => {
     const extension = {
       renderer: {

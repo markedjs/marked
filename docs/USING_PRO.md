@@ -1,24 +1,71 @@
 ## Extending Marked
 
-To champion the single-responsibility and open/closed principles, we have tried to make it relatively painless to extend marked. If you are looking to add custom functionality, this is the place to start.
+To champion the single-responsibility and open/closed principles, we have tried to make it relatively painless to extend Marked. If you are looking to add custom functionality, this is the place to start.
 
 <h2 id="use">marked.use()</h2>
 
-`marked.use(options)` is the recommended way to extend marked. The options object can contain any [option](/using_advanced#options) available in marked.
+`marked.use(extension)` is the recommended way to extend Marked. The `extension` object can contain any [option](/using_advanced#options) available in Marked:
 
-The `renderer` and `tokenizer` options can be an object with functions that will be merged into the `renderer` and `tokenizer` respectively.
 
-The `renderer` and `tokenizer` functions can return false to fallback to the previous function.
+```js
+const marked = require('marked');
 
-The `walkTokens` option can be a function that will be called with every token before rendering. When calling `use` multiple times with different `walkTokens` functions each function will be called in the **reverse** order in which they were assigned.
+marked.use({
+  pedantic: false,
+  gfm: true,
+  breaks: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false,
+  xhtml: false
+});
+```
 
-All other options will overwrite previously set options.
+You can also supply multiple `extension` objects at once.
 
-<h2 id="renderer">The renderer</h2>
+```
+marked.use(myExtension, extension2, extension3);
 
-The renderer defines the output of the parser.
+\\ EQUIVALENT TO:
 
-**Example:** Overriding default heading token by adding an embedded anchor tag like on GitHub.
+marked.use(myExtension);
+marked.use(extension2);
+marked.use(extension3);
+
+```
+
+All options will overwrite those previously set, except for the following options which will be merged with the existing framework and can be used to change or extend the functionality of Marked: `renderer`, `tokenizer`, `walkTokens`, and `extensions`.
+
+* The `renderer` and `tokenizer` options are objects with functions that will be merged into the built-in `renderer` and `tokenizer` respectively.
+
+* The `walkTokens` option is a function that will be called to post-process every token before rendering.
+
+* The `extensions` option is an array of objects that can contain additional custom `renderer` and `tokenizer` steps that will execute before any of the default parsing logic occurs.
+
+***
+
+<h2>The Marked Pipeline</h2>
+
+Before building your custom extensions, it is important to understand the components that Marked uses to translate from Markdown to HTML:
+
+1) The user supplies Marked with an input string to be translated.
+2) The `lexer` feeds segments of the input text string into each `tokenizer`, and from their output, generates a series of tokens in a nested tree structure.
+3) Each `tokenizer` receives a segment of Markdown text and, if it matches a particular pattern, generates a token object containing any relevant information.
+4) The `walkTokens` function will traverse every token in the tree and perform any final adjustments to the token contents.
+4) The `parser` traverses the token tree and feeds each token into the appropriate `renderer`, and concatenates their outputs into the final HTML result.
+5) Each `renderer` receives a token and manipulates its contents to generate a segment of HTML.
+
+Marked provides methods of directly overriding the `renderer` and `tokenizer` for any existing token type, as well as inserting additional custom `renderer` and `tokenizer` functions to handle entirely custom syntax.
+
+***
+
+<h2 id="renderer">The Renderer : <code>renderer</code></h2>
+
+The renderer defines the HTML output of a given token. If you supply a `renderer` object to the Marked options, it will be merged with the built-in renderer and any functions inside will override the default handling of that token type.
+
+Calling `marked.use()` to override the same function multiple times will give priority to the version that was assigned *last*. Overriding functions can return `false` to fall back to the previous override in the sequence, or resume default behavior if all overrides return `false`. Returning any other value (including nothing) will prevent fallback behavior.
+
+**Example:** Overriding output of the default `heading` token by adding an embedded anchor tag like on GitHub.
 
 ```js
 // Create reference instance
@@ -56,20 +103,31 @@ console.log(marked('# heading+'));
 </h1>
 ```
 
-### Block level renderer methods
+### Block-level renderer methods
 
-- code(*string* code, *string* infostring, *boolean* escaped)
-- blockquote(*string* quote)
-- html(*string* html)
-- heading(*string* text, *number* level, *string* raw, *Slugger* slugger)
-- hr()
-- list(*string* body, *boolean* ordered, *number* start)
-- listitem(*string* text, *boolean* task, *boolean* checked)
-- checkbox(*boolean* checked)
-- paragraph(*string* text)
-- table(*string* header, *string* body)
-- tablerow(*string* content)
-- tablecell(*string* content, *object* flags)
+- <code>**code**(*string* code, *string* infostring, *boolean* escaped)</code>
+- <code>**blockquote**(*string* quote)</code>
+- <code>**html**(*string* html)</code>
+- <code>**heading**(*string* text, *number* level, *string* raw, *Slugger* slugger)</code>
+- <code>**hr**()</code>
+- <code>**list**(*string* body, *boolean* ordered, *number* start)</code>
+- <code>**listitem**(*string* text, *boolean* task, *boolean* checked)</code>
+- <code>**checkbox**(*boolean* checked)</code>
+- <code>**paragraph**(*string* text)</code>
+- <code>**table**(*string* header, *string* body)</code>
+- <code>**tablerow**(*string* content)</code>
+- <code>**tablecell**(*string* content, *object* flags)</code>
+
+### Inline-level renderer methods
+
+- <code>**strong**(*string* text)</code>
+- <code>**em**(*string* text)</code>
+- <code>**codespan**(*string* code)</code>
+- <code>**br**()</code>
+- <code>**del**(*string* text)</code>
+- <code>**link**(*string* href, *string* title, *string* text)</code>
+- <code>**image**(*string* href, *string* title, *string* text)</code>
+- <code>**text**(*string* text)</code>
 
 `slugger` has the `slug` method to create a unique id from value:
 
@@ -103,20 +161,13 @@ slugger.slug('foo')                    // foo-4
 }
 ```
 
-### Inline level renderer methods
+***
 
-- strong(*string* text)
-- em(*string* text)
-- codespan(*string* code)
-- br()
-- del(*string* text)
-- link(*string* href, *string* title, *string* text)
-- image(*string* href, *string* title, *string* text)
-- text(*string* text)
+<h2 id="tokenizer">The Tokenizer : <code>tokenizer</code></h2>
 
-<h2 id="tokenizer">The tokenizer</h2>
+The tokenizer defines how to turn markdown text into tokens. If you supply a `tokenizer` object to the Marked options, it will be merged with the built-in tokenizer and any functions inside will override the default handling of that token type.
 
-The tokenizer defines how to turn markdown text into tokens.
+Calling `marked.use()` to override the same function multiple times will give priority to the version that was assigned *last*. Overriding functions can return `false` to fall back to the previous override in the sequence, or resume default behavior if all overrides return `false`. Returning any other value (including nothing) will prevent fallback behavior.
 
 **Example:** Overriding default `codespan` tokenizer to include LaTeX.
 
@@ -157,34 +208,34 @@ console.log(marked('$ latex code $\n\n` other code `'));
 
 ### Block level tokenizer methods
 
-- space(*string* src)
-- code(*string* src)
-- fences(*string* src)
-- heading(*string* src)
-- nptable(*string* src)
-- hr(*string* src)
-- blockquote(*string* src)
-- list(*string* src)
-- html(*string* src)
-- def(*string* src)
-- table(*string* src)
-- lheading(*string* src)
-- paragraph(*string* src)
-- text(*string* src)
+- <code>**space**(*string* src)</code>
+- <code>**code**(*string* src)</code>
+- <code>**fences**(*string* src)</code>
+- <code>**heading**(*string* src)</code>
+- <code>**nptable**(*string* src)</code>
+- <code>**hr**(*string* src)</code>
+- <code>**blockquote**(*string* src)</code>
+- <code>**list**(*string* src)</code>
+- <code>**html**(*string* src)</code>
+- <code>**def**(*string* src)</code>
+- <code>**table**(*string* src)</code>
+- <code>**lheading**(*string* src)</code>
+- <code>**paragraph**(*string* src)</code>
+- <code>**text**(*string* src)</code>
 
 ### Inline level tokenizer methods
 
-- escape(*string* src)
-- tag(*string* src, *bool* inLink, *bool* inRawBlock)
-- link(*string* src)
-- reflink(*string* src, *object* links)
-- emStrong(*string* src, *string* maskedSrc, *string* prevChar)
-- codespan(*string* src)
-- br(*string* src)
-- del(*string* src)
-- autolink(*string* src, *function* mangle)
-- url(*string* src, *function* mangle)
-- inlineText(*string* src, *bool* inRawBlock, *function* smartypants)
+- <code>**escape**(*string* src)</code>
+- <code>**tag**(*string* src, *bool* inLink, *bool* inRawBlock)</code>
+- <code>**link**(*string* src)</code>
+- <code>**reflink**(*string* src, *object* links)</code>
+- <code>**emStrong**(*string* src, *string* maskedSrc, *string* prevChar)</code>
+- <code>**codespan**(*string* src)</code>
+- <code>**br**(*string* src)</code>
+- <code>**del**(*string* src)</code>
+- <code>**autolink**(*string* src, *function* mangle)</code>
+- <code>**url**(*string* src, *function* mangle)</code>
+- <code>**inlineText**(*string* src, *bool* inRawBlock, *function* smartypants)</code>
 
 `mangle` is a method that changes text to HTML character references:
 
@@ -202,9 +253,13 @@ smartypants('"this ... string"')
 // "“this … string”"
 ```
 
-<h2 id="walk-tokens">Walk Tokens</h2>
+***
+
+<h2 id="walk-tokens">Walk Tokens : <code>walkTokens</code></h2>
 
 The walkTokens function gets called with every token. Child tokens are called before moving on to sibling tokens. Each token is passed by reference so updates are persisted when passed to the parser. The return value of the function is ignored.
+
+`marked.use()` can be called multiple times with different `walkTokens` functions. Each function will be called in order, starting with the function that was assigned *last*.
 
 **Example:** Overriding heading tokens to start at h2.
 
@@ -231,17 +286,165 @@ console.log(marked('# heading 2\n\n## heading 3'));
 <h3 id="heading-3">heading 3</h3>
 ```
 
-<h2 id="lexer">The lexer</h2>
+***
 
-The lexer takes a markdown string and calls the tokenizer functions.
+<h2>Custom Extensions : <code>extensions</code></h2>
 
-<h2 id="parser">The parser</h2>
+You may supply an `extensions` array to the `options` object. This array can contain any number of `extension` objects, using the following properties:
 
-The parser takes tokens as input and calls the renderer functions.
+<dl>
+<dt><code><strong>name</strong></code></dt>
+<dd>A string used to identify the token that will be handled by this extension.
+
+If the name matches an existing extension name, or an existing method in the tokenizer/renderer methods listed above, they will override the previously assigned behavior, with priority on the extension that was assigned **last**. An extension can return `false` to fall back to the previous behavior.</dd>
+
+<dt><code><strong>level</strong></code></dt>
+<dd>A string to determine when to run the extension tokenizer. Must be equal to 'block' or 'inline'.
+
+A **block-level** extension will be handled before any of the block-level tokenizer methods listed above, and generally consists of 'container-type' text (paragraphs, tables, blockquotes, etc.).
+
+An **inline-level** extension will be handled inside each block-level token, before any of the inline-level tokenizer methods listed above. These generally consist of 'style-type' text (italics, bold, etc.).</dd>
+
+<dt><code><strong>start</strong>(<i>string</i> src)</code></dt>
+<dd>A function that returns the index of the next potential start of the custom token.
+
+The index can be the result of a <code>src.match().index</code>, or even a simple <code>src.index()</code>. Marked will use this function to ensure that it does not skip over any text that should be part of the custom token.</dd>
+
+<dt><code><strong>tokenizer</strong>(<i>string</i> src, <i>array</i> tokens)</code></dt>
+<dd>A function that reads a string of Markdown text and returns a generated token. The <code>tokens</code> parameter contains the array of tokens that have been generated by the lexer up to that point, and can be used to access the previous token, for instance.
+
+The return value should be an object with the following parameters:
+
+  <dl>
+  <dt><code><strong>type</strong></code></dt>
+  <dd>A string that matches the <code>name</code> parameter of the extension.</dd>
+
+  <dt><code><strong>raw</strong></code></dt>
+  <dd>A string containing all of the text that this token consumes from the source.</dd>
+
+  <dt><code><strong>tokens</strong> [optional]</code></dt>
+  <dd>An array of child tokens that will be traversed by the <code>walkTokens</code> function by default.</dd>
+  </dl>
+
+The returned token can also contain any other custom parameters of your choice that your custom `renderer` might need to access.
+
+The tokenizer function has access to the lexer in the `this` object, which can be used if any internal section of the string needs to be parsed further, such as in handling any inline syntax on the text within a block token. The key functions that may be useful include:
+
+  <dl>
+  <dt><code><strong>this.blockTokens</strong>(<i>string</i> text)</code></dt>
+  <dd>Runs the block tokenizer functions (including any extensions) on the provided text, and returns an array containing a nested tree of tokens.</dd>
+
+  <dt><code><strong>this.inlineTokens</strong>(<i>string</i> text)</code></dt>
+  <dd>Runs the inline tokenizer functions (including any extensions) on the provided text, and returns an array containing a nested tree of tokens. This can be used to generate the <code>tokens</code> parameter.</dd>
+  </dl>
+
+<dt><code><strong>renderer</strong>(<i>object</i> token)</code></dt>
+<dd>A function that reads a token and returns the generated HTML output string.
+
+The renderer function has access to the parser in the `this` object, which can be used if any part of the token needs needs to be parsed further, such as any child tokens. The key functions that may be useful include:
+
+  <dl>
+  <dt><code><strong>this.parse</strong>(<i>array</i> tokens)</code></dt>
+  <dd>Runs the block renderer functions (including any extensions) on the provided array of tokens, and returns the resulting HTML string output.</dd>
+
+  <dt><code><strong>this.parseInline</strong>(<i>array</i> tokens)</code></dt>
+  <dd>Runs the inline renderer functions (including any extensions) on the provided array of tokens, and returns the resulting HTML string output. This could be used to generate text from any child tokens, for example.</dd>
+  </dl>
+
+</dd>
+
+<dt><code><strong>childTokens</strong> [optional]</code></dt>
+<dd>An array of strings that match the names of any token parameters that should be traversed by the <code>walkTokens</code> functions. For instance, if you want to use a second custom parameter to contain child tokens in addition to <code>tokens</code>, it could be listed here. If <code>childTokens</code> is provided, the <code>tokens</code> array will not be walked by default unless it is also included in the <code>childTokens</code> array.
+  </dl>
+
+</dd>
+</dl>
+
+**Example:** Add a custom syntax to generate `<dl>` description lists.
+
+``` js
+const descriptionlist = {
+  name: 'descriptionList',
+  level: 'block',                                     // Is this a block-level or inline-level tokenizer?
+  start(src) { return src.match(/:[^:\n]/)?.index; }, // Hint to Marked.js to stop and check for a match
+  tokenizer(src, tokens) {
+    const rule = /^(?::[^:\n]+:[^:\n]*(?:\n|$))+/;    // Regex for the complete token
+    const match = rule.exec(src);
+    if (match) {
+      return {                                        // Token to generate
+        type: 'descriptionList',                      // Should match "name" above
+        raw: match[0],                                // Text to consume from the source
+        text: match[0].trim(),                        // Additional custom properties
+        tokens: this.inlineTokens(match[0].trim())    // inlineTokens to process **bold**, *italics*, etc.
+      };
+    }
+  },
+  renderer(token) {
+    return `<dl>${this.parseInline(token.tokens)}\n</dl>`; // parseInline to turn child tokens into HTML
+  }
+};
+
+const description = {
+  name: 'description',
+  level: 'inline',                                 // Is this a block-level or inline-level tokenizer?
+  start(src) { return src.match(/:/)?.index; },    // Hint to Marked.js to stop and check for a match
+  tokenizer(src, tokens) {
+    const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;  // Regex for the complete token
+    const match = rule.exec(src);
+    if (match) {
+      return {                                     // Token to generate
+        type: 'description',                       // Should match "name" above
+        raw: match[0],                             // Text to consume from the source
+        dt: this.inlineTokens(match[1].trim()),    // Additional custom properties
+        dd: this.inlineTokens(match[2].trim())
+      };
+    }
+  },
+  renderer(token) {
+    return `\n<dt>${this.parseInline(token.dt)}</dt><dd>${this.parseInline(token.dd)}</dd>`;
+  },
+  childTokens: ['dt', 'dd'],                 // Any child tokens to be visited by walkTokens
+  walkTokens(token) {                        // Post-processing on the completed token tree
+    if (token.type === 'strong') {
+      token.text += ' walked';
+    }
+  }
+};
+
+marked.use({ extensions: [descriptionlist, description] });
+
+\\ EQUIVALENT TO:
+
+marked.use({extensions: [descriptionList] });
+marked.use({extensions: [description]     });
+
+console.log(marked('A Description List:\n'
+                 + ':   Topic 1   :  Description 1\n'
+                 + ': **Topic 2** : *Description 2*'));
+```
+
+**Output**
+
+``` bash
+<p>A Description List:</p>
+<dl>
+<dt>Topic 1</dt><dd>Description 1</dd>
+<dt><strong>Topic 2 walked</strong></dt><dd><em>Description 2</em></dd>
+</dl>
+```
 
 ***
 
-<h2 id="extend">Access to lexer and parser</h2>
+<h2 id="lexer">The Lexer</h2>
+
+The lexer takes a markdown string and calls the tokenizer functions.
+
+
+<h2 id="parser">The Parser</h2>
+
+The parser takes tokens as input and calls the renderer functions.
+
+<h2 id="extend">Access to Lexer and Parser</h2>
 
 You also have direct access to the lexer and parser if you so desire.
 
