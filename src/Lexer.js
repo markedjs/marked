@@ -126,7 +126,8 @@ module.exports = class Lexer {
     let token, i, l, lastToken, cutSrc, lastParagraphClipped;
 
     while (src) {
-      if (this.options?.extensions?.block
+      if (this.options.extensions
+        && this.options.extensions.block
         && this.options.extensions.block.some((extTokenizer) => {
           if (token = extTokenizer.call(this, src, tokens)) {
             src = src.substring(token.raw.length);
@@ -244,7 +245,7 @@ module.exports = class Lexer {
       // top-level paragraph
       // prevent paragraph consuming extensions by clipping 'src' to extension start
       cutSrc = src;
-      if (this.options.extensions?.startBlock) {
+      if (this.options.extensions && this.options.extensions.startBlock) {
         let startIndex = Infinity;
         const tempSrc = src.slice(1);
         let tempStart;
@@ -400,7 +401,8 @@ module.exports = class Lexer {
       keepPrevChar = false;
 
       // extensions
-      if (this.options?.extensions?.inline
+      if (this.options.extensions
+        && this.options.extensions.inline
         && this.options.extensions.inline.some((extTokenizer) => {
           if (token = extTokenizer.call(this, src, tokens)) {
             src = src.substring(token.raw.length);
@@ -507,7 +509,7 @@ module.exports = class Lexer {
       // text
       // prevent inlineText consuming extensions by clipping 'src' to extension start
       cutSrc = src;
-      if (this.options.extensions?.startInline) {
+      if (this.options.extensions && this.options.extensions.startInline) {
         let startIndex = Infinity;
         const tempSrc = src.slice(1);
         let tempStart;
