@@ -169,7 +169,7 @@ describe('use extension', () => {
       extensions: [{
         name: 'underline',
         level: 'block',
-        start(src) { return src.match(/:/)?.index; },
+        start(src) { return src.indexOf(':'); },
         tokenizer(src) {
           const rule = /^:([^\n]*):(?:\n|$)/;
           const match = rule.exec(src);
@@ -195,7 +195,7 @@ describe('use extension', () => {
     const underline = {
       name: 'underline',
       level: 'inline',
-      start(src) { return src.match(/=/)?.index; },
+      start(src) { return src.indexOf('='); },
       tokenizer(src) {
         const rule = /^=([^=]+)=/;
         const match = rule.exec(src);
@@ -220,7 +220,12 @@ describe('use extension', () => {
     const descriptionlist = {
       name: 'descriptionList',
       level: 'block',
-      start(src) { return src.match(/:[^:\n]/)?.index; },
+      start(src) {
+        const match = src.match(/:[^:\n]/);
+        if (match) {
+          return match.index;
+        }
+      },
       tokenizer(src, tokens) {
         const rule = /^(?::[^:\n]+:[^:\n]*(?:\n|$))+/;
         const match = rule.exec(src);
@@ -241,7 +246,7 @@ describe('use extension', () => {
     const description = {
       name: 'description',
       level: 'inline',
-      start(src) { return src.match(/:/)?.index; },
+      start(src) { return src.indexOf(':'); },
       tokenizer(src, tokens) {
         const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;
         const match = rule.exec(src);
@@ -415,7 +420,7 @@ describe('use extension', () => {
       extensions: [{
         name: 'walkableDescription',
         level: 'inline',
-        start(src) { return src.match(/:/)?.index; },
+        start(src) { return src.indexOf(':'); },
         tokenizer(src, tokens) {
           const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;
           const match = rule.exec(src);
@@ -601,7 +606,12 @@ used extension2 walked</p>
       extensions: [{
         name: 'inlineStyleTag',
         level: 'inline',
-        start(src) { return src.match(/ *{[^\{]/)?.index; },
+        start(src) {
+          const match = src.match(/ *{[^\{]/);
+          if (match) {
+            return match.index;
+          }
+        },
         tokenizer(src, tokens) {
           const rule = /^ *{([^\{\}\n]+)}$/;
           const match = rule.exec(src);
@@ -629,7 +639,7 @@ used extension2 walked</p>
       walkTokens(token) {
         if (token.tokens) {
           const finalChildToken = token.tokens[token.tokens.length - 1];
-          if (finalChildToken?.type === 'inlineStyleTag') {
+          if (finalChildToken && finalChildToken.type === 'inlineStyleTag') {
             token.originalType = token.type;
             token.type = 'styled';
             token.style = `style="color:${finalChildToken.text};"`;

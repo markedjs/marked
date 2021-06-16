@@ -155,7 +155,7 @@ marked.use = function(...args) {
           throw new Error('extension name required');
         }
         if (ext.renderer) { // Renderer extensions
-          const prevRenderer = extensions.renderers?.[ext.name];
+          const prevRenderer = extensions.renderers ? extensions.renderers[ext.name] : null;
           if (prevRenderer) {
             // Replace extension with func to run new extension but fall back if false
             extensions.renderers[ext.name] = function(...args) {
@@ -275,12 +275,11 @@ marked.walkTokens = function(tokens, callback) {
         break;
       }
       default: {
-        if (marked.defaults?.extensions?.childTokens?.[token.type]) { // Walk any extensions
-          marked.defaults?.extensions.childTokens[token.type].forEach(function(childTokens) {
+        if (marked.defaults.extensions && marked.defaults.extensions.childTokens && marked.defaults.extensions.childTokens[token.type]) { // Walk any extensions
+          marked.defaults.extensions.childTokens[token.type].forEach(function(childTokens) {
             marked.walkTokens(token[childTokens], callback);
           });
-        }
-        if (token.tokens && !marked.defaults?.extensions?.childTokens[token.type]) {
+        } else if (token.tokens) {
           marked.walkTokens(token.tokens, callback);
         }
       }
