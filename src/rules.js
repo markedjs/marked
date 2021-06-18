@@ -14,7 +14,7 @@ const block = {
   hr: /^ {0,3}((?:- *){3,}|(?:_ *){3,}|(?:\* *){3,})(?:\n+|$)/,
   heading: /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/,
   blockquote: /^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/,
-  list: /^( {0,3})(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?! {0,3}bull )\n*|\s*$)/,
+  list: /^( {0,3}bull)( [^\n]+?)(?:\n|$)/,
   html: '^ {0,3}(?:' // optional indentation
     + '<(script|pre|style)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n+|$)' // (1)
     + '|comment[^\\n]*(\\n+|$)' // (2)
@@ -43,10 +43,10 @@ block.def = edit(block.def)
   .getRegex();
 
 block.bullet = /(?:[*+-]|\d{1,9}[.)])/;
-block.item = /^( *)(bull) ?[^\n]*(?:\n(?! *bull ?)[^\n]*)*/;
-block.item = edit(block.item, 'gm')
-  .replace(/bull/g, block.bullet)
-  .getRegex();
+// block.item = /^( {0,3})(bull)( [^\n]*(?:\n(?! {0,3}bull )[^\n]*)*\n?)/;
+// block.item = edit(block.item, 'gm')
+//   .replace(/bull/g, block.bullet)
+//   .getRegex();
 
 block.listItemStart = edit(/^( *)(bull) */)
   .replace('bull', block.bullet)

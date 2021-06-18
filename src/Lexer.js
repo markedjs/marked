@@ -140,7 +140,7 @@ module.exports = class Lexer {
         src = src.substring(token.raw.length);
         lastToken = tokens[tokens.length - 1];
         // An indented code block cannot interrupt a paragraph.
-        if (lastToken && lastToken.type === 'paragraph') {
+        if (lastToken && (lastToken.type === 'paragraph' || lastToken.type === 'text')) {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
         } else {
@@ -190,7 +190,7 @@ module.exports = class Lexer {
         src = src.substring(token.raw.length);
         l = token.items.length;
         for (i = 0; i < l; i++) {
-          token.items[i].tokens = this.blockTokens(token.items[i].text, [], false);
+          token.items[i].tokens = this.blockTokens(token.items[i].text, [], token.loose);
         }
         tokens.push(token);
         continue;
@@ -203,7 +203,7 @@ module.exports = class Lexer {
         continue;
       }
 
-      // def
+      // def //NOTE: 'top' here doesn't make a difference on spec tests, and CM spec says definitions *can* go inside other blocks
       if (top && (token = this.tokenizer.def(src))) {
         src = src.substring(token.raw.length);
         if (!this.tokens.links[token.tag]) {

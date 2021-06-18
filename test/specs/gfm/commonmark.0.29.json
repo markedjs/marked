@@ -1861,8 +1861,7 @@
     "example": 232,
     "start_line": 3954,
     "end_line": 3966,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "1.  foo\n\n    ```\n    bar\n    ```\n\n    baz\n\n    > bam\n",
@@ -1878,8 +1877,7 @@
     "example": 234,
     "start_line": 3999,
     "end_line": 4017,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "123456789. ok\n",
@@ -2220,8 +2218,7 @@
     "example": 276,
     "start_line": 5029,
     "end_line": 5048,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- foo\n  - bar\n    - baz\n\n\n      bim\n",
@@ -2310,8 +2307,7 @@
     "example": 287,
     "start_line": 5286,
     "end_line": 5304,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- a\n- ```\n  b\n\n\n  ```\n- c\n",

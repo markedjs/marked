@@ -3,7 +3,8 @@ const {
   rtrim,
   splitCells,
   escape,
-  findClosingBracket
+  findClosingBracket,
+  edit
 } = require('./helpers.js');
 
 function outputLink(cap, link, raw) {
@@ -194,132 +195,129 @@ module.exports = class Tokenizer {
   }
 
   list(src) {
-    const cap = this.rules.block.list.exec(src);
+    let cap = this.rules.block.list.exec(src);
     if (cap) {
       let raw = cap[0];
-      const bull = cap[2];
+      let bull = cap[1].trim();
+      let indent = cap[1].length + cap[2].search(/[^ ]/); //Find first non-space char
       const isordered = bull.length > 1;
 
       const list = {
         type: 'list',
-        raw,
+        raw: '',
         ordered: isordered,
         start: isordered ? +bull.slice(0, -1) : '',
         loose: false,
         items: []
       };
 
-      // Get each top-level item.
-      const itemMatch = cap[0].match(this.rules.block.item);
+      let istask,
+          ischecked;
 
-      let next = false,
-        item,
-        space,
-        bcurr,
-        bnext,
-        addBack,
-        loose,
-        istask,
-        ischecked,
-        endMatch;
+      bull = isordered ? `\\d{1,9}\\${bull.slice(-1)}` : `\\${bull}`;
 
-      let l = itemMatch.length;
-      bcurr = this.rules.block.listItemStart.exec(itemMatch[0]);
-      for (let i = 0; i < l; i++) {
-        item = itemMatch[i];
-        raw = item;
+      if(this.options.pedantic) {
+        bull = isordered ? bull : '[*+-]';
+      }
 
-        if (!this.options.pedantic) {
-          // Determine if current item contains the end of the list
-          endMatch = item.match(new RegExp('\\n\\s*\\n {0,' + (bcurr[0].length - 1) + '}\\S'));
-          if (endMatch) {
-            addBack = item.length - endMatch.index + itemMatch.slice(i + 1).join('\n').length;
-            list.raw = list.raw.substring(0, list.raw.length - addBack);
+      //Get next list item, stopping at next top-level bullet or blank line followed by insufficient indent. TODO: REPLACE \\s*\\n with \\h*\\n so \n isn't included in \s, then just trim string.
+      //let itemRegex = `^( {0,3}${bull})( [^\\n]*(?:\\n(?!hr)(?! {0,1}bull)(?!\\s*\\n {0,${indent - 1}}[^\\s])[^\\n]*)*(?:\\s*\\n)*|\\s*)`;
+      let itemRegex = new RegExp(`^( {0,3}${bull})((?: [^\\n]*|\\h*)(?:\\n[^\\n]*)*(?:\\n|$))`);
 
-            item = item.substring(0, endMatch.index);
-            raw = item;
-            l = i + 1;
-          }
-        }
+      let blankLine = false;
+      let endsWithBlankLine = false;
 
-        // Determine whether the next list item belongs here.
-        // Backpedal if it does not belong in this list.
-        if (i !== l - 1) {
-          bnext = this.rules.block.listItemStart.exec(itemMatch[i + 1]);
-          if (
-            !this.options.pedantic
-              ? bnext[1].length >= bcurr[0].length || bnext[1].length > 3
-              : bnext[1].length > bcurr[1].length
-          ) {
-            // nested list or continuation
-            itemMatch.splice(i, 2, itemMatch[i] + (!this.options.pedantic && bnext[1].length < bcurr[0].length && !itemMatch[i].match(/\n$/) ? '' : '\n') + itemMatch[i + 1]);
-            i--;
-            l--;
-            continue;
-          } else if (
-            // different bullet style
-            !this.options.pedantic || this.options.smartLists
-              ? bnext[2][bnext[2].length - 1] !== bull[bull.length - 1]
-              : isordered === (bnext[2].length === 1)
-          ) {
-            addBack = itemMatch.slice(i + 1).join('\n').length;
-            list.raw = list.raw.substring(0, list.raw.length - addBack);
-            i = l - 1;
-          }
-          bcurr = bnext;
-        }
+      // Get each top-level item
+      while(src) {
+        if(this.rules.block.hr.exec(src)) // End list if we encounter an HR (possibly move into itemRegex?)
+          break;
 
-        // Remove the list item's bullet
-        // so it is seen as the next token.
-        space = item.length;
-        item = item.replace(/^ *([*+-]|\d+[.)]) ?/, '');
+        cap = itemRegex.exec(src);
+        if (!cap)
+          break;
 
-        // Outdent whatever the
-        // list item contains. Hacky.
-        if (~item.indexOf('\n ')) {
-          space -= item.length;
-          item = !this.options.pedantic
-            ? item.replace(new RegExp('^ {1,' + space + '}', 'gm'), '')
-            : item.replace(/^ {1,4}/gm, '');
-        }
-
-        // trim item newlines at end
-        item = rtrim(item, '\n');
-        if (i !== l - 1) {
-          raw = raw + '\n';
-        }
-
-        // Determine whether item is loose or not.
-        // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
-        // for discount behavior.
-        loose = next || /\n\n(?!\s*$)/.test(raw);
-        if (i !== l - 1) {
-          next = raw.slice(-2) === '\n\n';
-          if (!loose) loose = next;
-        }
-
-        if (loose) {
+        // If the previous item ended with a blank line, the list is loose
+        if(endsWithBlankLine) {
           list.loose = true;
+        }
+
+        let lines = cap[2].split('\n');
+        indent = cap[1].length + Math.min(4, cap[2].search(/[^ ]/)); //Find first non-space char
+
+        let line;
+        blankLine = false;
+        let itemContents = lines[0].slice(indent - cap[1].length);
+
+        raw = cap[0];
+
+        let i;
+        for (i = 1; i < lines.length; i++) {
+          line = lines[i];
+
+          // End list item if found start of new bullet
+          if(line.match(new RegExp(`^ {0,${Math.min(3, indent - 1)}}[*+-]|\\d{1,9}[.)]`))) {
+            raw = cap[1] + cap[2].split('\n').slice(0, i).join('\n') + '\n';
+            break;
+          }
+
+          // Until we encounter a blank line, item contents do not need indentation
+          if(!blankLine) {
+            if(!line.trim()) { // Check if current line is empty
+              blankLine = true;
+            }
+
+            // Dedent if possible
+            if(line.search(/[^ ]/) >= indent) {
+              itemContents += '\n' + line.slice(indent);
+            }
+            else {
+              itemContents += '\n' + line;
+            }
+            continue;
+          }
+
+          // Dedent this line
+          if(line.search(/[^ ]/) >= indent || !line.trim()) {
+            itemContents += '\n' + line.slice(indent);
+            continue;
+          }
+          else { // Line was not properly indented; end of this item
+            raw = cap[1] + cap[2].split('\n').slice(0, i).join('\n') + '\n';
+            break;
+          }
+        }
+
+        // List is loose if this item had any blank lines
+        if(itemContents.match(/\n\h*\n[^\n]/)) {
+          list.loose = true;
+        }
+
+        // List is loose if item ended in blank lines, unless it's the final item
+        if(raw.match(/\n\h*\n\h*$/)) {
+            endsWithBlankLine = true;
         }
 
         // Check for task list items
         if (this.options.gfm) {
-          istask = /^\[[ xX]\] /.test(item);
+          istask = /^\[[ xX]\] /.exec(itemContents);
           ischecked = undefined;
           if (istask) {
-            ischecked = item[1] !== ' ';
-            item = item.replace(/^\[[ xX]\] +/, '');
+            ischecked = istask[0] !== '[ ] ';
+            itemContents = itemContents.replace(/^\[[ xX]\] +/, '');
           }
         }
 
         list.items.push({
           type: 'list_item',
-          raw,
-          task: istask,
+          raw: raw,
+          task: istask ? true : false,
           checked: ischecked,
-          loose: loose,
-          text: item
+          loose: blankLine,
+          text: itemContents
         });
+
+        list.raw += raw;
+        src = src.slice(raw.length);
       }
 
       return list;
