@@ -3,8 +3,7 @@ const {
   rtrim,
   splitCells,
   escape,
-  findClosingBracket,
-  edit
+  findClosingBracket
 } = require('./helpers.js');
 
 function outputLink(cap, link, raw) {
@@ -294,7 +293,6 @@ module.exports = class Tokenizer {
         // Check for task list items
         if (this.options.gfm) {
           istask = /^\[[ xX]\] /.exec(itemContents);
-          ischecked = undefined;
           if (istask) {
             ischecked = istask[0] !== '[ ] ';
             itemContents = itemContents.replace(/^\[[ xX]\] +/, '');
