@@ -197,9 +197,10 @@ module.exports = class Tokenizer {
   list(src) {
     let cap = this.rules.block.list.exec(src);
     if (cap) {
-      let raw = cap[0];
+      let raw, istask, ischecked, indent, i, blankLine, endsWithBlankLine,
+          line, lines, itemContents;
+
       let bull = cap[1].trim();
-      let indent = cap[1].length + cap[2].search(/[^ ]/); //Find first non-space char
       const isordered = bull.length > 1;
 
       const list = {
@@ -211,52 +212,38 @@ module.exports = class Tokenizer {
         items: []
       };
 
-      let istask,
-          ischecked;
-
       bull = isordered ? `\\d{1,9}\\${bull.slice(-1)}` : `\\${bull}`;
 
       if(this.options.pedantic) {
         bull = isordered ? bull : '[*+-]';
       }
 
-      //Get next list item, stopping at next top-level bullet or blank line followed by insufficient indent. TODO: REPLACE \\s*\\n with \\h*\\n so \n isn't included in \s, then just trim string.
+      //Get next list item
       //let itemRegex = `^( {0,3}${bull})( [^\\n]*(?:\\n(?!hr)(?! {0,1}bull)(?!\\s*\\n {0,${indent - 1}}[^\\s])[^\\n]*)*(?:\\s*\\n)*|\\s*)`;
-      let itemRegex = new RegExp(`^( {0,3}${bull})((?: [^\\n]*|\\h*)(?:\\n[^\\n]*)*(?:\\n|$))`);
-
-      let blankLine = false;
-      let endsWithBlankLine = false;
+      const itemRegex = new RegExp(`^( {0,3}${bull})((?: [^\\n]*|\\h*)(?:\\n[^\\n]*)*(?:\\n|$))`);
 
       // Get each top-level item
       while(src) {
         if(this.rules.block.hr.exec(src)) // End list if we encounter an HR (possibly move into itemRegex?)
           break;
 
-        cap = itemRegex.exec(src);
-        if (!cap)
+        if(!(cap = itemRegex.exec(src)))
           break;
 
-        // If the previous item ended with a blank line, the list is loose
-        if(endsWithBlankLine) {
-          list.loose = true;
-        }
-
-        let lines = cap[2].split('\n');
+        lines = cap[2].split('\n');
         indent = cap[1].length + Math.min(4, cap[2].search(/[^ ]/)); //Find first non-space char
+        itemContents = lines[0].slice(indent - cap[1].length);
 
-        let line;
         blankLine = false;
-        let itemContents = lines[0].slice(indent - cap[1].length);
 
         raw = cap[0];
 
-        let i;
         for (i = 1; i < lines.length; i++) {
           line = lines[i];
 
           // End list item if found start of new bullet
           if(line.match(new RegExp(`^ {0,${Math.min(3, indent - 1)}}[*+-]|\\d{1,9}[.)]`))) {
-            raw = cap[1] + cap[2].split('\n').slice(0, i).join('\n') + '\n';
+            raw = cap[1] + lines.slice(0, i).join('\n') + '\n';
             break;
           }
 
@@ -282,19 +269,26 @@ module.exports = class Tokenizer {
             continue;
           }
           else { // Line was not properly indented; end of this item
-            raw = cap[1] + cap[2].split('\n').slice(0, i).join('\n') + '\n';
+            raw = cap[1] + lines.slice(0, i).join('\n') + '\n';
             break;
           }
         }
 
-        // List is loose if this item had any blank lines
-        if(itemContents.match(/\n\h*\n[^\n]/)) {
-          list.loose = true;
-        }
+        if(!list.loose) {
+          // List is loose if this item had any internal blank lines
+          if(itemContents.match(/\n\h*\n[^\n]/)) {
+            list.loose = true;
+          }
 
-        // List is loose if item ended in blank lines, unless it's the final item
-        if(raw.match(/\n\h*\n\h*$/)) {
-            endsWithBlankLine = true;
+          // If the previous item ended with a blank line, the list is loose
+          else if(endsWithBlankLine) {
+            list.loose = true;
+          }
+
+          // Check if current item ended in a blank line
+          else if(raw.match(/\n\h*\n\h*$/)) {
+              endsWithBlankLine = true;
+          }
         }
 
         // Check for task list items
