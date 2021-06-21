@@ -223,11 +223,13 @@ module.exports = class Tokenizer {
 
       // Get each top-level item
       while (src) {
-        if (this.rules.block.hr.exec(src)) // End list if we encounter an HR (possibly move into itemRegex?)
+        if (this.rules.block.hr.exec(src)) { // End list if we encounter an HR (possibly move into itemRegex?)
           break;
+        }
 
-        if (!(cap = itemRegex.exec(src)))
+        if (!(cap = itemRegex.exec(src))) {
           break;
+        }
 
         lines = cap[2].split('\n');
 
@@ -285,10 +287,7 @@ module.exports = class Tokenizer {
           // If the previous item ended with a blank line, the list is loose
           if (endsWithBlankLine) {
             list.loose = true;
-          }
-
-          // Check if current item ended in a blank line
-          else if (raw.match(/\n\h*\n\h*$/)) {
+          } else if (raw.match(/\n\h*\n\h*$/)) {
             endsWithBlankLine = true;
           }
         }
