@@ -197,7 +197,7 @@ module.exports = class Tokenizer {
     let cap = this.rules.block.list.exec(src);
     if (cap) {
       let raw, istask, ischecked, indent, i, blankLine, endsWithBlankLine,
-          line, lines, itemContents;
+        line, lines, itemContents;
 
       let bull = cap[1].trim();
       const isordered = bull.length > 1;
@@ -213,25 +213,31 @@ module.exports = class Tokenizer {
 
       bull = isordered ? `\\d{1,9}\\${bull.slice(-1)}` : `\\${bull}`;
 
-      if(this.options.pedantic) {
+      if (this.options.pedantic) {
         bull = isordered ? bull : '[*+-]';
       }
 
-      //Get next list item
-      //let itemRegex = `^( {0,3}${bull})( [^\\n]*(?:\\n(?!hr)(?! {0,1}bull)(?!\\s*\\n {0,${indent - 1}}[^\\s])[^\\n]*)*(?:\\s*\\n)*|\\s*)`;
+      // Get next list item
+      // let itemRegex = `^( {0,3}${bull})( [^\\n]*(?:\\n(?!hr)(?! {0,1}bull)(?!\\s*\\n {0,${indent - 1}}[^\\s])[^\\n]*)*(?:\\s*\\n)*|\\s*)`;
       const itemRegex = new RegExp(`^( {0,3}${bull})((?: [^\\n]*|\\h*)(?:\\n[^\\n]*)*(?:\\n|$))`);
 
       // Get each top-level item
-      while(src) {
-        if(this.rules.block.hr.exec(src)) // End list if we encounter an HR (possibly move into itemRegex?)
+      while (src) {
+        if (this.rules.block.hr.exec(src)) // End list if we encounter an HR (possibly move into itemRegex?)
           break;
 
-        if(!(cap = itemRegex.exec(src)))
+        if (!(cap = itemRegex.exec(src)))
           break;
 
         lines = cap[2].split('\n');
-        indent = cap[1].length + Math.min(4, cap[2].search(/[^ ]/)); //Find first non-space char
-        itemContents = lines[0].slice(indent - cap[1].length);
+
+        if (this.options.pedantic) {
+          indent = 2;
+          itemContents = lines[0].trimLeft();
+        } else {
+          indent = cap[1].length + Math.min(4, cap[2].search(/[^ ]/)); // Find first non-space char
+          itemContents = lines[0].slice(indent - cap[1].length);
+        }
 
         blankLine = false;
 
@@ -240,53 +246,50 @@ module.exports = class Tokenizer {
         for (i = 1; i < lines.length; i++) {
           line = lines[i];
 
+          if (this.options.pedantic) { // Re-align to follow commonmark nesting rules
+            line = line.replace(/^ {1,4}(?=( {4})*[^ ])/g, '  ');
+          }
+
           // End list item if found start of new bullet
-          if(line.match(new RegExp(`^ {0,${Math.min(3, indent - 1)}}[*+-]|\\d{1,9}[.)]`))) {
+          if (line.match(new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])`))) {
             raw = cap[1] + lines.slice(0, i).join('\n') + '\n';
             break;
           }
 
           // Until we encounter a blank line, item contents do not need indentation
-          if(!blankLine) {
-            if(!line.trim()) { // Check if current line is empty
+          if (!blankLine) {
+            if (!line.trim()) { // Check if current line is empty
               blankLine = true;
             }
 
             // Dedent if possible
-            if(line.search(/[^ ]/) >= indent) {
+            if (line.search(/[^ ]/) >= indent) {
               itemContents += '\n' + line.slice(indent);
-            }
-            else {
+            } else {
               itemContents += '\n' + line;
             }
             continue;
           }
 
           // Dedent this line
-          if(line.search(/[^ ]/) >= indent || !line.trim()) {
+          if (line.search(/[^ ]/) >= indent || !line.trim()) {
             itemContents += '\n' + line.slice(indent);
             continue;
-          }
-          else { // Line was not properly indented; end of this item
+          } else { // Line was not properly indented; end of this item
             raw = cap[1] + lines.slice(0, i).join('\n') + '\n';
             break;
           }
         }
 
-        if(!list.loose) {
-          // List is loose if this item had any internal blank lines
-          if(itemContents.match(/\n\h*\n[^\n]/)) {
-            list.loose = true;
-          }
-
+        if (!list.loose) {
           // If the previous item ended with a blank line, the list is loose
-          else if(endsWithBlankLine) {
+          if (endsWithBlankLine) {
             list.loose = true;
           }
 
           // Check if current item ended in a blank line
-          else if(raw.match(/\n\h*\n\h*$/)) {
-              endsWithBlankLine = true;
+          else if (raw.match(/\n\h*\n\h*$/)) {
+            endsWithBlankLine = true;
           }
         }
 
@@ -302,7 +305,7 @@ module.exports = class Tokenizer {
         list.items.push({
           type: 'list_item',
           raw: raw,
-          task: istask ? true : false,
+          task: !!istask,
           checked: ischecked,
           loose: blankLine,
           text: itemContents
@@ -311,6 +314,11 @@ module.exports = class Tokenizer {
         list.raw += raw;
         src = src.slice(raw.length);
       }
+
+      // Do not consume ending newlines. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
+      list.items[list.items.length - 1].raw = raw.trimRight();
+      list.items[list.items.length - 1].text = itemContents.trimRight();
+      list.raw = list.raw.trimRight();
 
       return list;
     }

@@ -2226,8 +2226,7 @@
     "example": 277,
     "start_line": 5050,
     "end_line": 5072,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- foo\n- bar\n\n<!-- -->\n\n- baz\n- bim\n",
@@ -2315,8 +2314,7 @@
     "example": 288,
     "start_line": 5309,
     "end_line": 5328,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- a\n  - b\n\n    c\n- d\n",
@@ -2324,8 +2322,7 @@
     "example": 289,
     "start_line": 5335,
     "end_line": 5353,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "* a\n  > b\n  >\n* c\n",
