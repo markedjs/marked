@@ -1991,8 +1991,7 @@
     "example": 248,
     "start_line": 4237,
     "end_line": 4258,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "-   \n  foo\n",
@@ -2041,8 +2040,7 @@
     "example": 254,
     "start_line": 4336,
     "end_line": 4342,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "foo\n*\n\nfoo\n1.\n",
