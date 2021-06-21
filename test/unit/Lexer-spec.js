@@ -349,7 +349,7 @@ a | b
         tokens: jasmine.arrayContaining([
           jasmine.objectContaining({
             type: 'list',
-            raw: '1. item 1\n2. item 2\n',
+            raw: '1. item 1\n2. item 2',
             ordered: true,
             start: 1,
             items: [
@@ -357,7 +357,7 @@ a | b
                 raw: '1. item 1\n'
               }),
               jasmine.objectContaining({
-                raw: '2. item 2\n'
+                raw: '2. item 2'
               })
             ]
           })
@@ -401,7 +401,7 @@ paragraph
         tokens: [
           {
             type: 'list',
-            raw: '- item 1\n- item 2\n\n',
+            raw: '- item 1\n- item 2',
             ordered: false,
             start: '',
             loose: false,
@@ -422,7 +422,7 @@ paragraph
               },
               {
                 type: 'list_item',
-                raw: '- item 2\n\n',
+                raw: '- item 2',
                 task: false,
                 checked: undefined,
                 loose: false,
@@ -436,6 +436,7 @@ paragraph
               }
             ]
           },
+          { type: 'space', raw: '\n\n' },
           {
             type: 'paragraph',
             raw: 'paragraph',
@@ -459,7 +460,7 @@ paragraph
         tokens: jasmine.arrayContaining([
           jasmine.objectContaining({
             type: 'list',
-            raw: '2. item 1\n3. item 2\n',
+            raw: '2. item 1\n3. item 2',
             ordered: true,
             start: 2,
             items: [
@@ -467,7 +468,7 @@ paragraph
                 raw: '2. item 1\n'
               }),
               jasmine.objectContaining({
-                raw: '3. item 2\n'
+                raw: '3. item 2'
               })
             ]
           })
@@ -509,7 +510,7 @@ paragraph
         tokens: jasmine.arrayContaining([
           jasmine.objectContaining({
             type: 'list',
-            raw: '- [ ] item 1\n- [x] item 2\n',
+            raw: '- [ ] item 1\n- [x] item 2',
             items: [
               jasmine.objectContaining({
                 raw: '- [ ] item 1\n',
@@ -517,7 +518,7 @@ paragraph
                 checked: false
               }),
               jasmine.objectContaining({
-                raw: '- [x] item 2\n',
+                raw: '- [x] item 2',
                 task: true,
                 checked: true
               })
