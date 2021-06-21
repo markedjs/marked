@@ -57,7 +57,7 @@
     "node-fetch": "^2.6.1",
     "rollup": "^2.51.2",
     "rollup-plugin-license": "^2.5.0",
-    "semantic-release": "^17.4.3",
+    "semantic-release": "^17.4.4",
     "titleize": "^2.1.0",
     "uglify-js": "^3.13.9",
     "vuln-regex-detector": "^1.3.0"
