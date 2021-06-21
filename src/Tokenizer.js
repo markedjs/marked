@@ -307,7 +307,7 @@ module.exports = class Tokenizer {
           raw: raw,
           task: !!istask,
           checked: ischecked,
-          loose: blankLine,
+          loose: false,
           text: itemContents
         });
 

@@ -301,7 +301,7 @@ a | b
         tokens: [
           {
             type: 'list',
-            raw: '- item 1\n- item 2\n',
+            raw: '- item 1\n- item 2',
             ordered: false,
             start: '',
             loose: false,
@@ -322,7 +322,7 @@ a | b
               },
               {
                 type: 'list_item',
-                raw: '- item 2\n',
+                raw: '- item 2',
                 task: false,
                 checked: undefined,
                 loose: false,
@@ -374,7 +374,7 @@ a | b
         tokens: jasmine.arrayContaining([
           jasmine.objectContaining({
             type: 'list',
-            raw: '1) item 1\n2) item 2\n',
+            raw: '1) item 1\n2) item 2',
             ordered: true,
             start: 1,
             items: [
@@ -382,7 +382,7 @@ a | b
                 raw: '1) item 1\n'
               }),
               jasmine.objectContaining({
-                raw: '2) item 2\n'
+                raw: '2) item 2'
               })
             ]
           })
@@ -485,14 +485,14 @@ paragraph
         tokens: jasmine.arrayContaining([
           jasmine.objectContaining({
             type: 'list',
-            raw: '- item 1\n\n- item 2\n',
+            raw: '- item 1\n\n- item 2',
             loose: true,
             items: [
               jasmine.objectContaining({
                 raw: '- item 1\n\n'
               }),
               jasmine.objectContaining({
-                raw: '- item 2\n'
+                raw: '- item 2'
               })
             ]
           })

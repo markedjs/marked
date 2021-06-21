@@ -206,6 +206,7 @@ module.exports = class Lexer {
           token.items[i].tokens = this.blockTokens(token.items[i].text, [], false);
           if (token.items[i].tokens.some(t => t.type === 'space')) {
             token.loose = true;
+            token.items[i].loose = true;
           }
         }
         tokens.push(token);
