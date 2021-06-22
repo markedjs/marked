@@ -83,6 +83,6 @@
     "preversion": "npm run build && (git diff --quiet || git commit -am build)"
   },
   "engines": {
-    "node": ">= 12"
+    "node": ">= 10"
   }
 }
