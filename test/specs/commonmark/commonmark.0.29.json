@@ -1949,8 +1949,7 @@
     "example": 243,
     "start_line": 4133,
     "end_line": 4149,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "1.      indented code\n\n   paragraph\n\n       more code\n",
@@ -1958,8 +1957,7 @@
     "example": 244,
     "start_line": 4155,
     "end_line": 4171,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "   foo\n\nbar\n",
@@ -2007,8 +2005,7 @@
     "example": 250,
     "start_line": 4277,
     "end_line": 4286,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "- foo\n-\n- bar\n",

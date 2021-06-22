@@ -218,7 +218,6 @@ module.exports = class Tokenizer {
       }
 
       // Get next list item
-      // let itemRegex = `^( {0,3}${bull})( [^\\n]*(?:\\n(?!hr)(?! {0,1}bull)(?!\\s*\\n {0,${indent - 1}}[^\\s])[^\\n]*)*(?:\\s*\\n)*|\\s*)`;
       const itemRegex = new RegExp(`^( {0,3}${bull})((?: [^\\n]*|\\h*)(?:\\n[^\\n]*)*(?:\\n|$))`);
 
       // Get each top-level item
@@ -237,13 +236,19 @@ module.exports = class Tokenizer {
           indent = 2;
           itemContents = lines[0].trimLeft();
         } else {
-          indent = cap[1].length + Math.min(4, cap[2].search(/[^ ]/)); // Find first non-space char
+          indent = cap[2].search(/[^ ]/); // Find first non-space char
+          indent = cap[1].length + (indent > 4 ? 1 : indent); // intented code blocks after 4 spaces; indent is always 1
           itemContents = lines[0].slice(indent - cap[1].length);
         }
 
         blankLine = false;
-
         raw = cap[0];
+
+        if (!lines[0] && lines[1].match(/^\h*$/)) { // items begin with at most one blank line
+          raw = cap[1] + lines.slice(0, 2).join('\n') + '\n';
+          list.loose = true;
+          lines = [];
+        }
 
         for (i = 1; i < lines.length; i++) {
           line = lines[i];
