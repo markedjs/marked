@@ -218,7 +218,7 @@ module.exports = class Tokenizer {
       }
 
       // Get next list item
-      const itemRegex = new RegExp(`^( {0,3}${bull})((?: [^\\n]*|\\h*)(?:\\n[^\\n]*)*(?:\\n|$))`);
+      const itemRegex = new RegExp(`^( {0,3}${bull})((?: [^\\n]*| *)(?:\\n[^\\n]*)*(?:\\n|$))`);
 
       // Get each top-level item
       while (src) {
@@ -244,7 +244,7 @@ module.exports = class Tokenizer {
         blankLine = false;
         raw = cap[0];
 
-        if (!lines[0] && lines[1].match(/^\h*$/)) { // items begin with at most one blank line
+        if (!lines[0] && lines[1].match(/^ *$/)) { // items begin with at most one blank line
           raw = cap[1] + lines.slice(0, 2).join('\n') + '\n';
           list.loose = true;
           lines = [];
@@ -292,7 +292,7 @@ module.exports = class Tokenizer {
           // If the previous item ended with a blank line, the list is loose
           if (endsWithBlankLine) {
             list.loose = true;
-          } else if (raw.match(/\n\h*\n\h*$/)) {
+          } else if (raw.match(/\n *\n *$/)) {
             endsWithBlankLine = true;
           }
         }
