@@ -43,11 +43,6 @@ block.def = edit(block.def)
   .getRegex();
 
 block.bullet = /(?:[*+-]|\d{1,9}[.)])/;
-// block.item = /^( {0,3})(bull)( [^\n]*(?:\n(?! {0,3}bull )[^\n]*)*\n?)/;
-// block.item = edit(block.item, 'gm')
-//   .replace(/bull/g, block.bullet)
-//   .getRegex();
-
 block.listItemStart = edit(/^( *)(bull) */)
   .replace('bull', block.bullet)
   .getRegex();
