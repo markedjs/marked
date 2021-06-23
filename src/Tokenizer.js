@@ -250,6 +250,8 @@ module.exports = class Tokenizer {
           lines = [];
         }
 
+        const nextBulletRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])`);
+
         for (i = 1; i < lines.length; i++) {
           line = lines[i];
 
@@ -258,7 +260,7 @@ module.exports = class Tokenizer {
           }
 
           // End list item if found start of new bullet
-          if (line.match(new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])`))) {
+          if (nextBulletRegex.test(line)) {
             raw = cap[1] + lines.slice(0, i).join('\n') + '\n';
             break;
           }
