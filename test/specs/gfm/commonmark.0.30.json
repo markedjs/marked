@@ -2107,8 +2107,7 @@
     "example": 262,
     "start_line": 4314,
     "end_line": 4326,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "1.  foo\n\n    ```\n    bar\n    ```\n\n    baz\n\n    > bam\n",
@@ -2124,8 +2123,7 @@
     "example": 264,
     "start_line": 4359,
     "end_line": 4377,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "123456789. ok\n",
@@ -2197,8 +2195,7 @@
     "example": 273,
     "start_line": 4493,
     "end_line": 4509,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "1.      indented code\n\n   paragraph\n\n       more code\n",
@@ -2206,8 +2203,7 @@
     "example": 274,
     "start_line": 4515,
     "end_line": 4531,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "   foo\n\nbar\n",
@@ -2239,8 +2235,7 @@
     "example": 278,
     "start_line": 4596,
     "end_line": 4617,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "-   \n  foo\n",
@@ -2256,8 +2251,7 @@
     "example": 280,
     "start_line": 4636,
     "end_line": 4645,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "- foo\n-\n- bar\n",
@@ -2289,8 +2283,7 @@
     "example": 284,
     "start_line": 4695,
     "end_line": 4701,
-    "section": "List items",
-    "shouldFail": true
+    "section": "List items"
   },
   {
     "markdown": "foo\n*\n\nfoo\n1.\n",
@@ -2466,8 +2459,7 @@
     "example": 306,
     "start_line": 5388,
     "end_line": 5407,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- foo\n  - bar\n    - baz\n\n\n      bim\n",
@@ -2475,8 +2467,7 @@
     "example": 307,
     "start_line": 5409,
     "end_line": 5431,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- foo\n- bar\n\n<!-- -->\n\n- baz\n- bim\n",
@@ -2556,8 +2547,7 @@
     "example": 317,
     "start_line": 5645,
     "end_line": 5663,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- a\n- ```\n  b\n\n\n  ```\n- c\n",
@@ -2565,8 +2555,7 @@
     "example": 318,
     "start_line": 5668,
     "end_line": 5687,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "- a\n  - b\n\n    c\n- d\n",
@@ -2574,8 +2563,7 @@
     "example": 319,
     "start_line": 5694,
     "end_line": 5712,
-    "section": "Lists",
-    "shouldFail": true
+    "section": "Lists"
   },
   {
     "markdown": "* a\n  > b\n  >\n* c\n",
