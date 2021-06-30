@@ -55,6 +55,7 @@ module.exports = class Lexer {
     this.options.tokenizer = this.options.tokenizer || new Tokenizer();
     this.tokenizer = this.options.tokenizer;
     this.tokenizer.options = this.options;
+    this.tokenizer.lexer = this;
 
     const rules = {
       block: block.normal,
@@ -191,9 +192,8 @@ module.exports = class Lexer {
       }
 
       // blockquote
-      if (token = this.tokenizer.blockquote(src)) {
+      if (token = this.tokenizer.blockquote(src, top)) {
         src = src.substring(token.raw.length);
-        token.tokens = this.blockTokens(token.text, [], top);
         tokens.push(token);
         continue;
       }
@@ -201,10 +201,6 @@ module.exports = class Lexer {
       // list
       if (token = this.tokenizer.list(src)) {
         src = src.substring(token.raw.length);
-        l = token.items.length;
-        for (i = 0; i < l; i++) {
-          token.items[i].tokens = this.blockTokens(token.items[i].text, [], false);
-        }
         tokens.push(token);
         continue;
       }
@@ -437,23 +433,17 @@ module.exports = class Lexer {
       }
 
       // link
-      if (token = this.tokenizer.link(src)) {
+      if (token = this.tokenizer.link(src, inRawBlock)) {
         src = src.substring(token.raw.length);
-        if (token.type === 'link') {
-          token.tokens = this.inlineTokens(token.text, [], true, inRawBlock);
-        }
         tokens.push(token);
         continue;
       }
 
       // reflink, nolink
-      if (token = this.tokenizer.reflink(src, this.tokens.links)) {
+      if (token = this.tokenizer.reflink(src, this.tokens.links, inRawBlock)) {
         src = src.substring(token.raw.length);
         lastToken = tokens[tokens.length - 1];
-        if (token.type === 'link') {
-          token.tokens = this.inlineTokens(token.text, [], true, inRawBlock);
-          tokens.push(token);
-        } else if (lastToken && token.type === 'text' && lastToken.type === 'text') {
+        if (lastToken && token.type === 'text' && lastToken.type === 'text') {
           lastToken.raw += token.raw;
           lastToken.text += token.text;
         } else {
@@ -463,9 +453,8 @@ module.exports = class Lexer {
       }
 
       // em & strong
-      if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar)) {
+      if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar, inLink, inRawBlock)) {
         src = src.substring(token.raw.length);
-        token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
         tokens.push(token);
         continue;
       }

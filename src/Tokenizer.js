@@ -6,7 +6,7 @@ const {
   findClosingBracket
 } = require('./helpers.js');
 
-function outputLink(cap, link, raw) {
+function outputLink(cap, link, raw, inRawBlock) {
   const href = link.href;
   const title = link.title ? escape(link.title) : null;
   const text = cap[1].replace(/\\([\[\]])/g, '$1');
@@ -17,7 +17,8 @@ function outputLink(cap, link, raw) {
       raw,
       href,
       title,
-      text
+      text,
+      tokens: this.lexer.inlineTokens(text, [], true, inRawBlock)
     };
   } else {
     return {
@@ -180,7 +181,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  blockquote(src) {
+  blockquote(src, top) {
     const cap = this.rules.block.blockquote.exec(src);
     if (cap) {
       const text = cap[0].replace(/^ *> ?/gm, '');
@@ -188,6 +189,7 @@ module.exports = class Tokenizer {
       return {
         type: 'blockquote',
         raw: cap[0],
+        tokens : this.lexer.blockTokens(text, [], top),
         text
       };
     }
@@ -318,7 +320,8 @@ module.exports = class Tokenizer {
           task: istask,
           checked: ischecked,
           loose: loose,
-          text: item
+          text: item,
+          tokens: this.lexer.blockTokens(item, [], false)
         });
       }
 
@@ -472,7 +475,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  link(src) {
+  link(src, inRawBlock) {
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
       const trimmedUrl = cap[2].trim();
@@ -521,14 +524,14 @@ module.exports = class Tokenizer {
           href = href.slice(1, -1);
         }
       }
-      return outputLink(cap, {
+      return outputLink.call(this, cap, {
         href: href ? href.replace(this.rules.inline._escapes, '$1') : href,
         title: title ? title.replace(this.rules.inline._escapes, '$1') : title
-      }, cap[0]);
+      }, cap[0], inRawBlock);
     }
   }
 
-  reflink(src, links) {
+  reflink(src, links, inRawBlock) {
     let cap;
     if ((cap = this.rules.inline.reflink.exec(src))
         || (cap = this.rules.inline.nolink.exec(src))) {
@@ -542,11 +545,11 @@ module.exports = class Tokenizer {
           text
         };
       }
-      return outputLink(cap, link, cap[0]);
+      return outputLink.call(this, cap, link, cap[0], inRawBlock);
     }
   }
 
-  emStrong(src, maskedSrc, prevChar = '') {
+  emStrong(src, maskedSrc, prevChar = '', inLink, inRawBlock) {
     let match = this.rules.inline.emStrong.lDelim.exec(src);
     if (!match) return;
 
@@ -591,18 +594,22 @@ module.exports = class Tokenizer {
 
         // Create `em` if smallest delimiter has odd char count. *a***
         if (Math.min(lLength, rLength) % 2) {
+          const text = src.slice(1, lLength + match.index + rLength);
           return {
             type: 'em',
             raw: src.slice(0, lLength + match.index + rLength + 1),
-            text: src.slice(1, lLength + match.index + rLength)
+            text,
+            tokens: this.lexer.inlineTokens(text, [], inLink, inRawBlock)
           };
         }
 
         // Create 'strong' if smallest delimiter has even char count. **a***
+        const text = src.slice(2, lLength + match.index + rLength - 1);
         return {
           type: 'strong',
           raw: src.slice(0, lLength + match.index + rLength + 1),
-          text: src.slice(2, lLength + match.index + rLength - 1)
+          text,
+          tokens: this.lexer.inlineTokens(text, [], inLink, inRawBlock)
         };
       }
     }
