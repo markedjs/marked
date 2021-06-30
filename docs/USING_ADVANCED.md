@@ -86,7 +86,7 @@ marked.setOptions({
   }
 });
 
-marked(markdownString, (html) => {
+marked(markdownString, (err, html) => {
   console.log(html);
 });
 ```
