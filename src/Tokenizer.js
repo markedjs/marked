@@ -650,7 +650,8 @@ module.exports = class Tokenizer {
       return {
         type: 'del',
         raw: cap[0],
-        text: cap[2]
+        text: cap[2],
+        tokens: this.lexer.inlineTokens(cap[2], [])
       };
     }
   }

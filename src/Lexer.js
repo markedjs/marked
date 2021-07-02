@@ -478,7 +478,6 @@ module.exports = class Lexer {
       // del (gfm)
       if (token = this.tokenizer.del(src)) {
         src = src.substring(token.raw.length);
-        token.tokens = this.inlineTokens(token.text, []);
         tokens.push(token);
         continue;
       }
