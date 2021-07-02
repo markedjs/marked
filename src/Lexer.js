@@ -56,6 +56,10 @@ module.exports = class Lexer {
     this.tokenizer = this.options.tokenizer;
     this.tokenizer.options = this.options;
     this.tokenizer.lexer = this;
+    this.state = {
+      inLink: false,
+      inRawBlock: false
+    };
 
     const rules = {
       block: block.normal,
@@ -124,7 +128,7 @@ module.exports = class Lexer {
     if (this.options.pedantic) {
       src = src.replace(/^ +$/gm, '');
     }
-    let token, i, l, lastToken, cutSrc, lastParagraphClipped;
+    let token, lastToken, cutSrc, lastParagraphClipped;
 
     while (src) {
       if (this.options.extensions
@@ -361,7 +365,7 @@ module.exports = class Lexer {
   /**
    * Lexing/Compiling
    */
-  inlineTokens(src, tokens = [], inLink = false, inRawBlock = false) {
+  inlineTokens(src, tokens = []) {
     let token, lastToken, cutSrc;
 
     // String with links masked to avoid interference with em and strong
@@ -418,10 +422,8 @@ module.exports = class Lexer {
       }
 
       // tag
-      if (token = this.tokenizer.tag(src, inLink, inRawBlock)) {
+      if (token = this.tokenizer.tag(src)) {
         src = src.substring(token.raw.length);
-        inLink = token.inLink;
-        inRawBlock = token.inRawBlock;
         lastToken = tokens[tokens.length - 1];
         if (lastToken && token.type === 'text' && lastToken.type === 'text') {
           lastToken.raw += token.raw;
@@ -433,14 +435,14 @@ module.exports = class Lexer {
       }
 
       // link
-      if (token = this.tokenizer.link(src, inRawBlock)) {
+      if (token = this.tokenizer.link(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
 
       // reflink, nolink
-      if (token = this.tokenizer.reflink(src, this.tokens.links, inRawBlock)) {
+      if (token = this.tokenizer.reflink(src, this.tokens.links)) {
         src = src.substring(token.raw.length);
         lastToken = tokens[tokens.length - 1];
         if (lastToken && token.type === 'text' && lastToken.type === 'text') {
@@ -453,7 +455,7 @@ module.exports = class Lexer {
       }
 
       // em & strong
-      if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar, inLink, inRawBlock)) {
+      if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -476,7 +478,7 @@ module.exports = class Lexer {
       // del (gfm)
       if (token = this.tokenizer.del(src)) {
         src = src.substring(token.raw.length);
-        token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
+        token.tokens = this.inlineTokens(token.text, []);
         tokens.push(token);
         continue;
       }
@@ -489,7 +491,7 @@ module.exports = class Lexer {
       }
 
       // url (gfm)
-      if (!inLink && (token = this.tokenizer.url(src, mangle))) {
+      if (!this.state.inLink && (token = this.tokenizer.url(src, mangle))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -510,7 +512,7 @@ module.exports = class Lexer {
           cutSrc = src.substring(0, startIndex + 1);
         }
       }
-      if (token = this.tokenizer.inlineText(cutSrc, inRawBlock, smartypants)) {
+      if (token = this.tokenizer.inlineText(cutSrc, smartypants)) {
         src = src.substring(token.raw.length);
         if (token.raw.slice(-1) !== '_') { // Track prevChar before string of ____ started
           prevChar = token.raw.slice(-1);

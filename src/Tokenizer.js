@@ -6,19 +6,20 @@ const {
   findClosingBracket
 } = require('./helpers.js');
 
-function outputLink(cap, link, raw, inRawBlock) {
+function outputLink(cap, link, raw) {
   const href = link.href;
   const title = link.title ? escape(link.title) : null;
   const text = cap[1].replace(/\\([\[\]])/g, '$1');
 
   if (cap[0].charAt(0) !== '!') {
+    this.lexer.state.inLink = true;
     return {
       type: 'link',
       raw,
       href,
       title,
       text,
-      tokens: this.lexer.inlineTokens(text, [], true, inRawBlock)
+      tokens: this.lexer.inlineTokens(text, [])
     };
   } else {
     return {
@@ -189,7 +190,7 @@ module.exports = class Tokenizer {
       return {
         type: 'blockquote',
         raw: cap[0],
-        tokens : this.lexer.blockTokens(text, [], top),
+        tokens: this.lexer.blockTokens(text, [], top),
         text
       };
     }
@@ -445,18 +446,18 @@ module.exports = class Tokenizer {
     }
   }
 
-  tag(src, inLink, inRawBlock) {
+  tag(src) {
     const cap = this.rules.inline.tag.exec(src);
     if (cap) {
-      if (!inLink && /^<a /i.test(cap[0])) {
-        inLink = true;
-      } else if (inLink && /^<\/a>/i.test(cap[0])) {
-        inLink = false;
+      if (!this.lexer.state.inLink && /^<a /i.test(cap[0])) {
+        this.lexer.state.inLink = true;
+      } else if (this.lexer.state.inLink && /^<\/a>/i.test(cap[0])) {
+        this.lexer.state.inLink = false;
       }
-      if (!inRawBlock && /^<(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
-        inRawBlock = true;
-      } else if (inRawBlock && /^<\/(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
-        inRawBlock = false;
+      if (!this.lexer.state.inRawBlock && /^<(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+        this.lexer.state.inRawBlock = true;
+      } else if (this.lexer.state.inRawBlock && /^<\/(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+        this.lexer.state.inRawBlock = false;
       }
 
       return {
@@ -464,8 +465,8 @@ module.exports = class Tokenizer {
           ? 'text'
           : 'html',
         raw: cap[0],
-        inLink,
-        inRawBlock,
+        inLink: this.lexer.state.inLink,
+        inRawBlock: this.lexer.state.inRawBlock,
         text: this.options.sanitize
           ? (this.options.sanitizer
             ? this.options.sanitizer(cap[0])
@@ -475,7 +476,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  link(src, inRawBlock) {
+  link(src) {
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
       const trimmedUrl = cap[2].trim();
@@ -527,11 +528,11 @@ module.exports = class Tokenizer {
       return outputLink.call(this, cap, {
         href: href ? href.replace(this.rules.inline._escapes, '$1') : href,
         title: title ? title.replace(this.rules.inline._escapes, '$1') : title
-      }, cap[0], inRawBlock);
+      }, cap[0]);
     }
   }
 
-  reflink(src, links, inRawBlock) {
+  reflink(src, links) {
     let cap;
     if ((cap = this.rules.inline.reflink.exec(src))
         || (cap = this.rules.inline.nolink.exec(src))) {
@@ -545,11 +546,11 @@ module.exports = class Tokenizer {
           text
         };
       }
-      return outputLink.call(this, cap, link, cap[0], inRawBlock);
+      return outputLink.call(this, cap, link, cap[0]);
     }
   }
 
-  emStrong(src, maskedSrc, prevChar = '', inLink, inRawBlock) {
+  emStrong(src, maskedSrc, prevChar = '') {
     let match = this.rules.inline.emStrong.lDelim.exec(src);
     if (!match) return;
 
@@ -599,7 +600,7 @@ module.exports = class Tokenizer {
             type: 'em',
             raw: src.slice(0, lLength + match.index + rLength + 1),
             text,
-            tokens: this.lexer.inlineTokens(text, [], inLink, inRawBlock)
+            tokens: this.lexer.inlineTokens(text, [])
           };
         }
 
@@ -609,7 +610,7 @@ module.exports = class Tokenizer {
           type: 'strong',
           raw: src.slice(0, lLength + match.index + rLength + 1),
           text,
-          tokens: this.lexer.inlineTokens(text, [], inLink, inRawBlock)
+          tokens: this.lexer.inlineTokens(text, [])
         };
       }
     }
@@ -719,11 +720,11 @@ module.exports = class Tokenizer {
     }
   }
 
-  inlineText(src, inRawBlock, smartypants) {
+  inlineText(src, smartypants) {
     const cap = this.rules.inline.text.exec(src);
     if (cap) {
       let text;
-      if (inRawBlock) {
+      if (this.lexer.state.inRawBlock) {
         text = this.options.sanitize ? (this.options.sanitizer ? this.options.sanitizer(cap[0]) : escape(cap[0])) : cap[0];
       } else {
         text = escape(this.options.smartypants ? smartypants(cap[0]) : cap[0]);
