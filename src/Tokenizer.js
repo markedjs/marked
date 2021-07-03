@@ -321,8 +321,7 @@ module.exports = class Tokenizer {
   }
 
   table(src) {
-    const cap = this.rules.block.table.exec(src)
-             || this.rules.block.nptable.exec(src);
+    const cap = this.rules.block.table.exec(src);
     if (cap) {
       const item = {
         type: 'table',
