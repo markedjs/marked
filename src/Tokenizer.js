@@ -338,7 +338,7 @@ module.exports = class Tokenizer {
         item.raw = cap[0];
 
         let l = item.align.length;
-        let i;
+        let i, j, k, row;
         for (i = 0; i < l; i++) {
           if (/^ *-+: *$/.test(item.align[i])) {
             item.align[i] = 'right';
@@ -354,6 +354,30 @@ module.exports = class Tokenizer {
         l = item.cells.length;
         for (i = 0; i < l; i++) {
           item.cells[i] = splitCells(item.cells[i], item.header.length);
+        }
+
+        // parse child tokens inside headers and cells
+        item.tokens = {
+          header: [],
+          cells: []
+        };
+
+        // header child tokens
+        l = item.header.length;
+        for (j = 0; j < l; j++) {
+          item.tokens.header[j] = [];
+          this.lexer.inlineTokens(item.header[j], item.tokens.header[j]);
+        }
+
+        // cell child tokens
+        l = item.cells.length;
+        for (j = 0; j < l; j++) {
+          row = item.cells[j];
+          item.tokens.cells[j] = [];
+          for (k = 0; k < row.length; k++) {
+            item.tokens.cells[j][k] = [];
+            this.lexer.inlineTokens(row[k], item.tokens.cells[j][k]);
+          }
         }
 
         return item;
