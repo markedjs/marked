@@ -293,9 +293,7 @@ module.exports = class Lexer {
   inline(tokens) {
     let i,
       j,
-      k,
       l2,
-      row,
       token;
 
     const l = tokens.length;
