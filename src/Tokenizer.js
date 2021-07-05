@@ -136,42 +136,6 @@ module.exports = class Tokenizer {
     }
   }
 
-  nptable(src) {
-    const cap = this.rules.block.nptable.exec(src);
-    if (cap) {
-      const item = {
-        type: 'table',
-        header: splitCells(cap[1].replace(/^ *| *\| *$/g, '')),
-        align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
-        cells: cap[3] ? cap[3].replace(/\n$/, '').split('\n') : [],
-        raw: cap[0]
-      };
-
-      if (item.header.length === item.align.length) {
-        let l = item.align.length;
-        let i;
-        for (i = 0; i < l; i++) {
-          if (/^ *-+: *$/.test(item.align[i])) {
-            item.align[i] = 'right';
-          } else if (/^ *:-+: *$/.test(item.align[i])) {
-            item.align[i] = 'center';
-          } else if (/^ *:-+ *$/.test(item.align[i])) {
-            item.align[i] = 'left';
-          } else {
-            item.align[i] = null;
-          }
-        }
-
-        l = item.cells.length;
-        for (i = 0; i < l; i++) {
-          item.cells[i] = splitCells(item.cells[i], item.header.length);
-        }
-
-        return item;
-      }
-    }
-  }
-
   hr(src) {
     const cap = this.rules.block.hr.exec(src);
     if (cap) {
@@ -389,9 +353,7 @@ module.exports = class Tokenizer {
 
         l = item.cells.length;
         for (i = 0; i < l; i++) {
-          item.cells[i] = splitCells(
-            item.cells[i].replace(/^ *\| *| *\| *$/g, ''),
-            item.header.length);
+          item.cells[i] = splitCells(item.cells[i], item.header.length);
         }
 
         return item;
