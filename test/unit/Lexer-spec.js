@@ -627,29 +627,6 @@ paragraph
         });
       });
 
-      it('table', () => {
-        expectInline({
-          token: {
-            type: 'table',
-            header: ['a', 'b'],
-            align: [null, null],
-            cells: [['1', '2']]
-          },
-          tokens: {
-            header: [
-              [{ type: 'text', raw: 'a', text: 'a' }],
-              [{ type: 'text', raw: 'b', text: 'b' }]
-            ],
-            cells: [
-              [
-                [{ type: 'text', raw: '1', text: '1' }],
-                [{ type: 'text', raw: '2', text: '2' }]
-              ]
-            ]
-          }
-        });
-      });
-
       it('code no inline tokens', () => {
         expectInline({
           token: { type: 'code', text: 'code' },

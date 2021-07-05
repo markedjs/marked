@@ -154,7 +154,7 @@ module.exports = class Tokenizer {
       return {
         type: 'blockquote',
         raw: cap[0],
-        tokens: this.lexer.blockTokens(text, [], top),
+        tokens: this.lexer.inline(this.lexer.blockTokens(text, [], top)),
         text
       };
     }

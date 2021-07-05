@@ -307,10 +307,6 @@ module.exports = class Lexer {
           this.inlineTokens(token.text, token.tokens);
           break;
         }
-        case 'blockquote': {
-          this.inline(token.tokens);
-          break;
-        }
         case 'list': {
           l2 = token.items.length;
           for (j = 0; j < l2; j++) {
