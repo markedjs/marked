@@ -127,12 +127,15 @@ module.exports = class Tokenizer {
         }
       }
 
-      return {
+      const token = {
         type: 'heading',
         raw: cap[0],
         depth: cap[1].length,
-        text: text
+        text: text,
+        tokens: []
       };
+      this.lexer.inline(token.text, token.tokens);
+      return token;
     }
   }
 
@@ -154,7 +157,7 @@ module.exports = class Tokenizer {
       return {
         type: 'blockquote',
         raw: cap[0],
-        tokens: this.lexer.inline(this.lexer.blockTokens(text, [], top)),
+        tokens: this.lexer.blockTokens(text, [], top),
         text
       };
     }
@@ -279,7 +282,7 @@ module.exports = class Tokenizer {
           }
         }
 
-        list.items.push({
+        const token = {
           type: 'list_item',
           raw,
           task: istask,
@@ -287,8 +290,17 @@ module.exports = class Tokenizer {
           loose: loose,
           text: item,
           tokens: this.lexer.blockTokens(item, [], false)
-        });
+        };
+
+        // this.lexer.inline(token.text, )
+        list.items.push(token);
       }
+
+      // l2 = token.items.length;
+      // for (j = 0; j < l2; j++) {
+      //   this.inline(token.items[j].tokens);
+      // }
+      // break;
 
       return list;
     }
@@ -388,36 +400,45 @@ module.exports = class Tokenizer {
   lheading(src) {
     const cap = this.rules.block.lheading.exec(src);
     if (cap) {
-      return {
+      const token = {
         type: 'heading',
         raw: cap[0],
         depth: cap[2].charAt(0) === '=' ? 1 : 2,
-        text: cap[1]
+        text: cap[1],
+        tokens: []
       };
+      this.lexer.inline(token.text, token.tokens);
+      return token;
     }
   }
 
   paragraph(src) {
     const cap = this.rules.block.paragraph.exec(src);
     if (cap) {
-      return {
+      const token = {
         type: 'paragraph',
         raw: cap[0],
         text: cap[1].charAt(cap[1].length - 1) === '\n'
           ? cap[1].slice(0, -1)
-          : cap[1]
+          : cap[1],
+        tokens: []
       };
+      this.lexer.inline(token.text, token.tokens);
+      return token;
     }
   }
 
   text(src) {
     const cap = this.rules.block.text.exec(src);
     if (cap) {
-      return {
+      const token = {
         type: 'text',
         raw: cap[0],
-        text: cap[0]
+        text: cap[0],
+        tokens: []
       };
+      this.lexer.inline(token.text, token.tokens);
+      return token;
     }
   }
 

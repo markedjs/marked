@@ -56,6 +56,7 @@ module.exports = class Lexer {
     this.tokenizer = this.options.tokenizer;
     this.tokenizer.options = this.options;
     this.tokenizer.lexer = this;
+    this.inlineQueue = [];
     this.state = {
       inLink: false,
       inRawBlock: false
@@ -116,7 +117,12 @@ module.exports = class Lexer {
 
     this.blockTokens(src, this.tokens, true);
 
-    this.inline(this.tokens);
+    let next;
+    while (next = this.inlineQueue.shift()) {
+      this.inlineTokens(next.src, next.tokens);
+    }
+
+    //this.inline(this.tokens);
 
     return this.tokens;
   }
@@ -161,6 +167,8 @@ module.exports = class Lexer {
         if (lastToken && lastToken.type === 'paragraph') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
+          this.inlineQueue.pop();
+          this.inlineQueue[this.inlineQueue.length - 1].src = lastToken.text;
         } else {
           tokens.push(token);
         }
@@ -255,6 +263,8 @@ module.exports = class Lexer {
         if (lastParagraphClipped && lastToken.type === 'paragraph') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
+          this.inlineQueue.pop();
+          this.inlineQueue[this.inlineQueue.length - 1].src = lastToken.text;
         } else {
           tokens.push(token);
         }
@@ -270,6 +280,8 @@ module.exports = class Lexer {
         if (lastToken && lastToken.type === 'text') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
+          this.inlineQueue.pop();
+          this.inlineQueue[this.inlineQueue.length - 1].src = lastToken.text;
         } else {
           tokens.push(token);
         }
@@ -290,37 +302,8 @@ module.exports = class Lexer {
     return tokens;
   }
 
-  inline(tokens) {
-    let i,
-      j,
-      l2,
-      token;
-
-    const l = tokens.length;
-    for (i = 0; i < l; i++) {
-      token = tokens[i];
-      switch (token.type) {
-        case 'paragraph':
-        case 'text':
-        case 'heading': {
-          token.tokens = [];
-          this.inlineTokens(token.text, token.tokens);
-          break;
-        }
-        case 'list': {
-          l2 = token.items.length;
-          for (j = 0; j < l2; j++) {
-            this.inline(token.items[j].tokens);
-          }
-          break;
-        }
-        default: {
-          // do nothing
-        }
-      }
-    }
-
-    return tokens;
+  inline(src, tokens) {
+    this.inlineQueue.push({src, tokens});
   }
 
   /**
