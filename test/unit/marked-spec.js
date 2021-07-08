@@ -462,12 +462,14 @@ describe('use extension', () => {
           tokenizer(src, tokens) {
             if (src.startsWith(`::${name}\n`)) {
               const text = `:${name}`;
-              return {
+              const token = {
                 type: `block-${name}`,
                 raw: `::${name}\n`,
                 text,
-                tokens: this.inlineTokens(text)
+                tokens: []
               };
+              this.inline(token.text, token.tokens);
+              return token;
             }
           },
           renderer(token) {
@@ -493,12 +495,15 @@ describe('use extension', () => {
         tokenizer: {
           heading(src) {
             if (src.startsWith(`# ${name}`)) {
-              return {
+              const token = {
                 type: 'heading',
                 raw: `# ${name}`,
                 text: `used ${name}`,
-                depth: 1
+                depth: 1,
+                tokens: []
               };
+              this.lexer.inline(token.text, token.tokens);
+              return token;
             }
             return false;
           }
@@ -675,11 +680,15 @@ used extension2 walked</p>
     const extension = {
       tokenizer: {
         paragraph(text) {
-          return {
+          const token = {
             type: 'paragraph',
             raw: text,
-            text: 'extension'
+            text: 'extension',
+            tokens: []
           };
+          console.log(this);
+          this.lexer.inline(token.text, token.tokens);
+          return token;
         }
       }
     };
