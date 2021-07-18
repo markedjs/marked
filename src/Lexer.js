@@ -59,7 +59,8 @@ module.exports = class Lexer {
     this.inlineQueue = [];
     this.state = {
       inLink: false,
-      inRawBlock: false
+      inRawBlock: false,
+      top: true
     };
 
     const rules = {
@@ -115,7 +116,7 @@ module.exports = class Lexer {
       .replace(/\r\n|\r/g, '\n')
       .replace(/\t/g, '    ');
 
-    this.blockTokens(src, this.tokens, true);
+    this.blockTokens(src, this.tokens);
 
     let next;
     while (next = this.inlineQueue.shift()) {
@@ -128,7 +129,7 @@ module.exports = class Lexer {
   /**
    * Lexing
    */
-  blockTokens(src, tokens = [], top = true) {
+  blockTokens(src, tokens = []) {
     if (this.options.pedantic) {
       src = src.replace(/^ +$/gm, '');
     }
@@ -195,7 +196,7 @@ module.exports = class Lexer {
       }
 
       // blockquote
-      if (token = this.tokenizer.blockquote(src, top)) {
+      if (token = this.tokenizer.blockquote(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -216,7 +217,7 @@ module.exports = class Lexer {
       }
 
       // def
-      if (top && (token = this.tokenizer.def(src))) {
+      if (this.state.top && (token = this.tokenizer.def(src))) {
         src = src.substring(token.raw.length);
         if (!this.tokens.links[token.tag]) {
           this.tokens.links[token.tag] = {
@@ -256,7 +257,7 @@ module.exports = class Lexer {
           cutSrc = src.substring(0, startIndex + 1);
         }
       }
-      if (top && (token = this.tokenizer.paragraph(cutSrc))) {
+      if (this.state.top && (token = this.tokenizer.paragraph(cutSrc))) {
         lastToken = tokens[tokens.length - 1];
         if (lastParagraphClipped && lastToken.type === 'paragraph') {
           lastToken.raw += '\n' + token.raw;
@@ -297,6 +298,7 @@ module.exports = class Lexer {
       }
     }
 
+    this.state.top = true;
     return tokens;
   }
 

@@ -149,7 +149,7 @@ module.exports = class Tokenizer {
     }
   }
 
-  blockquote(src, top) {
+  blockquote(src) {
     const cap = this.rules.block.blockquote.exec(src);
     if (cap) {
       const text = cap[0].replace(/^ *> ?/gm, '');
@@ -157,7 +157,7 @@ module.exports = class Tokenizer {
       return {
         type: 'blockquote',
         raw: cap[0],
-        tokens: this.lexer.blockTokens(text, [], top),
+        tokens: this.lexer.blockTokens(text, []),
         text
       };
     }
@@ -282,6 +282,8 @@ module.exports = class Tokenizer {
           }
         }
 
+        this.lexer.state.top = false;
+
         const token = {
           type: 'list_item',
           raw,
@@ -289,7 +291,7 @@ module.exports = class Tokenizer {
           checked: ischecked,
           loose: loose,
           text: item,
-          tokens: this.lexer.blockTokens(item, [], false)
+          tokens: this.lexer.blockTokens(item, [])
         };
 
         // this.lexer.inline(token.text, )
