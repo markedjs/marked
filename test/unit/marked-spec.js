@@ -686,7 +686,6 @@ used extension2 walked</p>
             text: 'extension',
             tokens: []
           };
-          console.log(this);
           this.lexer.inline(token.text, token.tokens);
           return token;
         }
