@@ -122,8 +122,6 @@ module.exports = class Lexer {
       this.inlineTokens(next.src, next.tokens);
     }
 
-    //this.inline(this.tokens);
-
     return this.tokens;
   }
 
@@ -140,7 +138,7 @@ module.exports = class Lexer {
       if (this.options.extensions
         && this.options.extensions.block
         && this.options.extensions.block.some((extTokenizer) => {
-          if (token = extTokenizer.call(this, src, tokens)) {
+          if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
             src = src.substring(token.raw.length);
             tokens.push(token);
             return true;
@@ -251,7 +249,7 @@ module.exports = class Lexer {
         const tempSrc = src.slice(1);
         let tempStart;
         this.options.extensions.startBlock.forEach(function(getStartIndex) {
-          tempStart = getStartIndex.call(this, tempSrc);
+          tempStart = getStartIndex.call({ lexer: this }, tempSrc);
           if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
         });
         if (startIndex < Infinity && startIndex >= 0) {
@@ -303,7 +301,7 @@ module.exports = class Lexer {
   }
 
   inline(src, tokens) {
-    this.inlineQueue.push({src, tokens});
+    this.inlineQueue.push({ src, tokens });
   }
 
   /**
@@ -348,7 +346,7 @@ module.exports = class Lexer {
       if (this.options.extensions
         && this.options.extensions.inline
         && this.options.extensions.inline.some((extTokenizer) => {
-          if (token = extTokenizer.call(this, src, tokens)) {
+          if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
             src = src.substring(token.raw.length);
             tokens.push(token);
             return true;
@@ -448,7 +446,7 @@ module.exports = class Lexer {
         const tempSrc = src.slice(1);
         let tempStart;
         this.options.extensions.startInline.forEach(function(getStartIndex) {
-          tempStart = getStartIndex.call(this, tempSrc);
+          tempStart = getStartIndex.call({ lexer: this }, tempSrc);
           if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
         });
         if (startIndex < Infinity && startIndex >= 0) {

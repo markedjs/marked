@@ -230,16 +230,18 @@ describe('use extension', () => {
         const rule = /^(?::[^:\n]+:[^:\n]*(?:\n|$))+/;
         const match = rule.exec(src);
         if (match) {
-          return {
+          const token = {
             type: 'descriptionList',
             raw: match[0], // This is the text that you want your token to consume from the source
             text: match[0].trim(), // You can add additional properties to your tokens to pass along to the renderer
-            tokens: this.inlineTokens(match[0].trim())
+            tokens: []
           };
+          this.lexer.inlineTokens(token.text, token.tokens);
+          return token;
         }
       },
       renderer(token) {
-        return `<dl>${this.parseInline(token.tokens)}\n</dl>`;
+        return `<dl>${this.parser.parseInline(token.tokens)}\n</dl>`;
       }
     };
 
@@ -251,16 +253,19 @@ describe('use extension', () => {
         const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;
         const match = rule.exec(src);
         if (match) {
-          return {
+          const token = {
             type: 'description',
-            raw: match[0], // This is the text that you want your token to consume from the source
-            dt: this.inlineTokens(match[1].trim()), // You can add additional properties to your tokens to pass along to the renderer
-            dd: this.inlineTokens(match[2].trim())
+            raw: match[0],
+            dt: [],
+            dd: []
           };
+          this.lexer.inline(match[1].trim(), token.dt);
+          this.lexer.inline(match[2].trim(), token.dd);
+          return token;
         }
       },
       renderer(token) {
-        return `\n<dt>${this.parseInline(token.dt)}</dt><dd>${this.parseInline(token.dd)}</dd>`;
+        return `\n<dt>${this.parser.parseInline(token.dt)}</dt><dd>${this.parser.parseInline(token.dd)}</dd>`;
       }
     };
     marked.use({ extensions: [descriptionlist, description] });
@@ -425,17 +430,21 @@ describe('use extension', () => {
           const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;
           const match = rule.exec(src);
           if (match) {
-            return {
+            const token = {
               type: 'walkableDescription',
-              raw: match[0], // This is the text that you want your token to consume from the source
-              dt: this.inlineTokens(match[1].trim()), // You can add additional properties to your tokens to pass along to the renderer
-              dd: this.inlineTokens(match[2].trim()),
-              tokens: this.inlineTokens('unwalked')
+              raw: match[0],
+              dt: [],
+              dd: [],
+              tokens: []
             };
+            this.lexer.inline(match[1].trim(), token.dt);
+            this.lexer.inline(match[2].trim(), token.dd);
+            this.lexer.inline('unwalked', token.tokens);
+            return token;
           }
         },
         renderer(token) {
-          return `\n<dt>${this.parseInline(token.dt)} - ${this.parseInline(token.tokens)}</dt><dd>${this.parseInline(token.dd)}</dd>`;
+          return `\n<dt>${this.parser.parseInline(token.dt)} - ${this.parser.parseInline(token.tokens)}</dt><dd>${this.parser.parseInline(token.dd)}</dd>`;
         },
         childTokens: ['dd', 'dt']
       }],
@@ -468,12 +477,12 @@ describe('use extension', () => {
                 text,
                 tokens: []
               };
-              this.inline(token.text, token.tokens);
+              this.lexer.inline(token.text, token.tokens);
               return token;
             }
           },
           renderer(token) {
-            return `<${token.type}>${this.parseInline(token.tokens)}</${token.type}>\n`;
+            return `<${token.type}>${this.parser.parseInline(token.tokens)}</${token.type}>\n`;
           }
         }, {
           name: `inline-${name}`,
@@ -633,7 +642,7 @@ used extension2 walked</p>
         name: 'styled',
         renderer(token) {
           token.type = token.originalType;
-          const text = this.parse([token]);
+          const text = this.parser.parse([token]);
           const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
           if (openingTag) {
             return `${openingTag[1]} ${token.style}${openingTag[2]}`;

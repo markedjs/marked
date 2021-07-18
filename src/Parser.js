@@ -66,7 +66,7 @@ module.exports = class Parser {
 
       // Run any renderer extensions
       if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[token.type]) {
-        ret = this.options.extensions.renderers[token.type].call(this, token);
+        ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
         if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'html', 'paragraph', 'text'].includes(token.type)) {
           out += ret || '';
           continue;
@@ -222,7 +222,7 @@ module.exports = class Parser {
 
       // Run any renderer extensions
       if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[token.type]) {
-        ret = this.options.extensions.renderers[token.type].call(this, token);
+        ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
         if (ret !== false || !['escape', 'html', 'link', 'image', 'strong', 'em', 'codespan', 'br', 'del', 'text'].includes(token.type)) {
           out += ret || '';
           continue;
