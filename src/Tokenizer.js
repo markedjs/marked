@@ -6,20 +6,20 @@ const {
   findClosingBracket
 } = require('./helpers.js');
 
-function outputLink(cap, link, raw) {
+function outputLink(cap, link, raw, lexer) {
   const href = link.href;
   const title = link.title ? escape(link.title) : null;
   const text = cap[1].replace(/\\([\[\]])/g, '$1');
 
   if (cap[0].charAt(0) !== '!') {
-    this.lexer.state.inLink = true;
+    lexer.state.inLink = true;
     return {
       type: 'link',
       raw,
       href,
       title,
       text,
-      tokens: this.lexer.inlineTokens(text, [])
+      tokens: lexer.inlineTokens(text, [])
     };
   } else {
     return {
@@ -537,10 +537,10 @@ module.exports = class Tokenizer {
           href = href.slice(1, -1);
         }
       }
-      return outputLink.call(this, cap, {
+      return outputLink(cap, {
         href: href ? href.replace(this.rules.inline._escapes, '$1') : href,
         title: title ? title.replace(this.rules.inline._escapes, '$1') : title
-      }, cap[0]);
+      }, cap[0], this.lexer);
     }
   }
 
@@ -558,7 +558,7 @@ module.exports = class Tokenizer {
           text
         };
       }
-      return outputLink.call(this, cap, link, cap[0]);
+      return outputLink(cap, link, cap[0], this.lexer);
     }
   }
 
