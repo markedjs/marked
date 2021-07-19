@@ -45,7 +45,7 @@
     "@semantic-release/release-notes-generator": "^9.0.3",
     "cheerio": "^1.0.0-rc.10",
     "commonmark": "0.30.0",
-    "eslint": "^7.30.0",
+    "eslint": "^7.31.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
