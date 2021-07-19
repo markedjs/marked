@@ -331,11 +331,15 @@ The returned token can also contain any other custom parameters of your choice t
 The tokenizer function has access to the lexer in the `this` object, which can be used if any internal section of the string needs to be parsed further, such as in handling any inline syntax on the text within a block token. The key functions that may be useful include:
 
   <dl>
-  <dt><code><strong>this.blockTokens</strong>(<i>string</i> text)</code></dt>
-  <dd>Runs the block tokenizer functions (including any extensions) on the provided text, and returns an array containing a nested tree of tokens.</dd>
+  <dt><code><strong>this.lexer.blockTokens</strong>(<i>string</i> text, <i>array</i> tokens)</code></dt>
+  <dd>This runs the block tokenizer functions (including any block-level extensions) on the provided text, and appends any resulting tokens onto the <code>tokens</code> array. The <code>tokens</code> array is also returned by the function. You might use this, for example, if your extension creates a "container"-type token (such as a blockquote) that can potentially include other block-level tokens inside.</dd>
 
-  <dt><code><strong>this.inlineTokens</strong>(<i>string</i> text)</code></dt>
-  <dd>Runs the inline tokenizer functions (including any extensions) on the provided text, and returns an array containing a nested tree of tokens. This can be used to generate the <code>tokens</code> parameter.</dd>
+  <dl>
+  <dt><code><strong>this.lexer.inline</strong>(<i>string</i> text, <i>array</i> tokens)</code></dt>
+  <dd>Parsing of inline-level tokens only occurs after all block-level tokens have been generated. This function adds <code>text</code> and <code>tokens</code> to a queue to be processed using inline-level tokenizers (including any inline-level extensions) at that later step. Tokens will be generated using the provided <code>text</code>, and any resulting tokens will be appended to the <code>tokens</code> array. Note that this function does **NOT** return anything since the inline processing cannot happen until the block-level processing is complete.</dd>
+
+  <dt><code><strong>this.lexer.inlineTokens</strong>(<i>string</i> text, <i>array</i> tokens)</code></dt>
+  <dd>Sometimes an inline-level token contains further nested inline tokens (such as a <pre><code>**strong**</code></pre> token inside of a <pre><code>### Heading</code></pre>). This runs the inline tokenizer functions (including any inline-level extensions) on the provided text, and appends any resulting tokens onto the <code>tokens</code> array. The <code>tokens</code> array is also returned by the function.</dd>
   </dl>
 
 <dt><code><strong>renderer</strong>(<i>object</i> token)</code></dt>
@@ -344,11 +348,11 @@ The tokenizer function has access to the lexer in the `this` object, which can b
 The renderer function has access to the parser in the `this` object, which can be used if any part of the token needs needs to be parsed further, such as any child tokens. The key functions that may be useful include:
 
   <dl>
-  <dt><code><strong>this.parse</strong>(<i>array</i> tokens)</code></dt>
-  <dd>Runs the block renderer functions (including any extensions) on the provided array of tokens, and returns the resulting HTML string output.</dd>
+  <dt><code><strong>this.parser.parse</strong>(<i>array</i> tokens)</code></dt>
+  <dd>Runs the block renderer functions (including any extensions) on the provided array of tokens, and returns the resulting HTML string output. This is used to generate the HTML from any child block-level tokens, for example if your extension is a "container"-type token (such as a blockquote) that can potentially include other block-level tokens inside.</dd>
 
-  <dt><code><strong>this.parseInline</strong>(<i>array</i> tokens)</code></dt>
-  <dd>Runs the inline renderer functions (including any extensions) on the provided array of tokens, and returns the resulting HTML string output. This could be used to generate text from any child tokens, for example.</dd>
+  <dt><code><strong>this.parser.parseInline</strong>(<i>array</i> tokens)</code></dt>
+  <dd>Runs the inline renderer functions (including any extensions) on the provided array of tokens, and returns the resulting HTML string output. This is used to generate the HTML from any child inline-level tokens.</dd>
   </dl>
 
 </dd>
@@ -371,16 +375,18 @@ const descriptionlist = {
     const rule = /^(?::[^:\n]+:[^:\n]*(?:\n|$))+/;    // Regex for the complete token
     const match = rule.exec(src);
     if (match) {
-      return {                                        // Token to generate
+      const token = {                                 // Token to generate
         type: 'descriptionList',                      // Should match "name" above
         raw: match[0],                                // Text to consume from the source
         text: match[0].trim(),                        // Additional custom properties
-        tokens: this.inlineTokens(match[0].trim())    // inlineTokens to process **bold**, *italics*, etc.
+        tokens: []                                    // Array where child inline tokens will be generated
       };
+      this.lexer.inline(token.text, token.tokens);    // Queue this data to be processed for inline tokens
+      return token;
     }
   },
   renderer(token) {
-    return `<dl>${this.parseInline(token.tokens)}\n</dl>`; // parseInline to turn child tokens into HTML
+    return `<dl>${this.parser.parseInline(token.tokens)}\n</dl>`; // parseInline to turn child tokens into HTML
   }
 };
 
@@ -392,16 +398,16 @@ const description = {
     const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;  // Regex for the complete token
     const match = rule.exec(src);
     if (match) {
-      return {                                     // Token to generate
-        type: 'description',                       // Should match "name" above
-        raw: match[0],                             // Text to consume from the source
-        dt: this.inlineTokens(match[1].trim()),    // Additional custom properties
-        dd: this.inlineTokens(match[2].trim())
+      return {                                         // Token to generate
+        type: 'description',                           // Should match "name" above
+        raw: match[0],                                 // Text to consume from the source
+        dt: this.lexer.inlineTokens(match[1].trim()),  // Additional custom properties, including
+        dd: this.lexer.inlineTokens(match[2].trim())   //   any further-nested inline tokens
       };
     }
   },
   renderer(token) {
-    return `\n<dt>${this.parseInline(token.dt)}</dt><dd>${this.parseInline(token.dd)}</dd>`;
+    return `\n<dt>${this.parser.parseInline(token.dt)}</dt><dd>${this.parser.parseInline(token.dd)}</dd>`;
   },
   childTokens: ['dt', 'dd'],                 // Any child tokens to be visited by walkTokens
   walkTokens(token) {                        // Post-processing on the completed token tree
