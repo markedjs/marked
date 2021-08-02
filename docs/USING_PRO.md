@@ -226,7 +226,7 @@ console.log(marked('$ latex code $\n\n` other code `'));
 ### Inline level tokenizer methods
 
 - <code>**escape**(*string* src)</code>
-- <code>**tag**(*string* src, *bool* inLink, *bool* inRawBlock)</code>
+- <code>**tag**(*string* src)</code>
 - <code>**link**(*string* src)</code>
 - <code>**reflink**(*string* src, *object* links)</code>
 - <code>**emStrong**(*string* src, *string* maskedSrc, *string* prevChar)</code>
@@ -235,7 +235,7 @@ console.log(marked('$ latex code $\n\n` other code `'));
 - <code>**del**(*string* src)</code>
 - <code>**autolink**(*string* src, *function* mangle)</code>
 - <code>**url**(*string* src, *function* mangle)</code>
-- <code>**inlineText**(*string* src, *bool* inRawBlock, *function* smartypants)</code>
+- <code>**inlineText**(*string* src, *function* smartypants)</code>
 
 `mangle` is a method that changes text to HTML character references:
 
