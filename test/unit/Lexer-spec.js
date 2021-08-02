@@ -17,12 +17,6 @@ function expectInlineTokens({ md, options, tokens = jasmine.any(Array), links = 
   expect(outTokens).toEqual(tokens);
 }
 
-function expectInline({ token, options, tokens }) {
-  const lexer = new Lexer(options);
-  lexer.inline([token]);
-  expect(token.tokens).toEqual(tokens);
-}
-
 describe('Lexer', () => {
   describe('paragraph', () => {
     it('space between paragraphs', () => {
@@ -599,65 +593,6 @@ paragraph
   });
 
   describe('inline', () => {
-    describe('inline', () => {
-      it('paragraph', () => {
-        expectInline({
-          token: { type: 'paragraph', text: 'text' },
-          tokens: [
-            { type: 'text', raw: 'text', text: 'text' }
-          ]
-        });
-      });
-
-      it('text', () => {
-        expectInline({
-          token: { type: 'text', text: 'text' },
-          tokens: [
-            { type: 'text', raw: 'text', text: 'text' }
-          ]
-        });
-      });
-
-      it('heading', () => {
-        expectInline({
-          token: { type: 'heading', text: 'text' },
-          tokens: [
-            { type: 'text', raw: 'text', text: 'text' }
-          ]
-        });
-      });
-
-      it('table', () => {
-        expectInline({
-          token: {
-            type: 'table',
-            header: ['a', 'b'],
-            align: [null, null],
-            cells: [['1', '2']]
-          },
-          tokens: {
-            header: [
-              [{ type: 'text', raw: 'a', text: 'a' }],
-              [{ type: 'text', raw: 'b', text: 'b' }]
-            ],
-            cells: [
-              [
-                [{ type: 'text', raw: '1', text: '1' }],
-                [{ type: 'text', raw: '2', text: '2' }]
-              ]
-            ]
-          }
-        });
-      });
-
-      it('code no inline tokens', () => {
-        expectInline({
-          token: { type: 'code', text: 'code' },
-          tokens: undefined
-        });
-      });
-    });
-
     describe('inlineTokens', () => {
       it('escape', () => {
         expectInlineTokens({

@@ -160,6 +160,10 @@ function splitCells(tableRow, count) {
     cells = row.split(/ \|/);
   let i = 0;
 
+  // First/last cell in a row cannot be empty if it has no leading/trailing pipe
+  if (!cells[0].trim()) { cells.shift(); }
+  if (!cells[cells.length - 1].trim()) { cells.pop(); }
+
   if (cells.length > count) {
     cells.splice(count);
   } else {

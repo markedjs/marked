@@ -55,6 +55,13 @@ module.exports = class Lexer {
     this.options.tokenizer = this.options.tokenizer || new Tokenizer();
     this.tokenizer = this.options.tokenizer;
     this.tokenizer.options = this.options;
+    this.tokenizer.lexer = this;
+    this.inlineQueue = [];
+    this.state = {
+      inLink: false,
+      inRawBlock: false,
+      top: true
+    };
 
     const rules = {
       block: block.normal,
@@ -109,9 +116,12 @@ module.exports = class Lexer {
       .replace(/\r\n|\r/g, '\n')
       .replace(/\t/g, '    ');
 
-    this.blockTokens(src, this.tokens, true);
+    this.blockTokens(src, this.tokens);
 
-    this.inline(this.tokens);
+    let next;
+    while (next = this.inlineQueue.shift()) {
+      this.inlineTokens(next.src, next.tokens);
+    }
 
     return this.tokens;
   }
@@ -119,17 +129,17 @@ module.exports = class Lexer {
   /**
    * Lexing
    */
-  blockTokens(src, tokens = [], top = true) {
+  blockTokens(src, tokens = []) {
     if (this.options.pedantic) {
       src = src.replace(/^ +$/gm, '');
     }
-    let token, i, l, lastToken, cutSrc, lastParagraphClipped;
+    let token, lastToken, cutSrc, lastParagraphClipped;
 
     while (src) {
       if (this.options.extensions
         && this.options.extensions.block
         && this.options.extensions.block.some((extTokenizer) => {
-          if (token = extTokenizer.call(this, src, tokens)) {
+          if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
             src = src.substring(token.raw.length);
             tokens.push(token);
             return true;
@@ -156,6 +166,8 @@ module.exports = class Lexer {
         if (lastToken && lastToken.type === 'paragraph') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
+          this.inlineQueue.pop();
+          this.inlineQueue[this.inlineQueue.length - 1].src = lastToken.text;
         } else {
           tokens.push(token);
         }
@@ -176,13 +188,6 @@ module.exports = class Lexer {
         continue;
       }
 
-      // table no leading pipe (gfm)
-      if (token = this.tokenizer.nptable(src)) {
-        src = src.substring(token.raw.length);
-        tokens.push(token);
-        continue;
-      }
-
       // hr
       if (token = this.tokenizer.hr(src)) {
         src = src.substring(token.raw.length);
@@ -193,7 +198,6 @@ module.exports = class Lexer {
       // blockquote
       if (token = this.tokenizer.blockquote(src)) {
         src = src.substring(token.raw.length);
-        token.tokens = this.blockTokens(token.text, [], top);
         tokens.push(token);
         continue;
       }
@@ -201,10 +205,6 @@ module.exports = class Lexer {
       // list
       if (token = this.tokenizer.list(src)) {
         src = src.substring(token.raw.length);
-        l = token.items.length;
-        for (i = 0; i < l; i++) {
-          token.items[i].tokens = this.blockTokens(token.items[i].text, [], false);
-        }
         tokens.push(token);
         continue;
       }
@@ -217,7 +217,7 @@ module.exports = class Lexer {
       }
 
       // def
-      if (top && (token = this.tokenizer.def(src))) {
+      if (this.state.top && (token = this.tokenizer.def(src))) {
         src = src.substring(token.raw.length);
         if (!this.tokens.links[token.tag]) {
           this.tokens.links[token.tag] = {
@@ -250,18 +250,20 @@ module.exports = class Lexer {
         const tempSrc = src.slice(1);
         let tempStart;
         this.options.extensions.startBlock.forEach(function(getStartIndex) {
-          tempStart = getStartIndex.call(this, tempSrc);
+          tempStart = getStartIndex.call({ lexer: this }, tempSrc);
           if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
         });
         if (startIndex < Infinity && startIndex >= 0) {
           cutSrc = src.substring(0, startIndex + 1);
         }
       }
-      if (top && (token = this.tokenizer.paragraph(cutSrc))) {
+      if (this.state.top && (token = this.tokenizer.paragraph(cutSrc))) {
         lastToken = tokens[tokens.length - 1];
         if (lastParagraphClipped && lastToken.type === 'paragraph') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
+          this.inlineQueue.pop();
+          this.inlineQueue[this.inlineQueue.length - 1].src = lastToken.text;
         } else {
           tokens.push(token);
         }
@@ -277,6 +279,8 @@ module.exports = class Lexer {
         if (lastToken && lastToken.type === 'text') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
+          this.inlineQueue.pop();
+          this.inlineQueue[this.inlineQueue.length - 1].src = lastToken.text;
         } else {
           tokens.push(token);
         }
@@ -294,78 +298,18 @@ module.exports = class Lexer {
       }
     }
 
+    this.state.top = true;
     return tokens;
   }
 
-  inline(tokens) {
-    let i,
-      j,
-      k,
-      l2,
-      row,
-      token;
-
-    const l = tokens.length;
-    for (i = 0; i < l; i++) {
-      token = tokens[i];
-      switch (token.type) {
-        case 'paragraph':
-        case 'text':
-        case 'heading': {
-          token.tokens = [];
-          this.inlineTokens(token.text, token.tokens);
-          break;
-        }
-        case 'table': {
-          token.tokens = {
-            header: [],
-            cells: []
-          };
-
-          // header
-          l2 = token.header.length;
-          for (j = 0; j < l2; j++) {
-            token.tokens.header[j] = [];
-            this.inlineTokens(token.header[j], token.tokens.header[j]);
-          }
-
-          // cells
-          l2 = token.cells.length;
-          for (j = 0; j < l2; j++) {
-            row = token.cells[j];
-            token.tokens.cells[j] = [];
-            for (k = 0; k < row.length; k++) {
-              token.tokens.cells[j][k] = [];
-              this.inlineTokens(row[k], token.tokens.cells[j][k]);
-            }
-          }
-
-          break;
-        }
-        case 'blockquote': {
-          this.inline(token.tokens);
-          break;
-        }
-        case 'list': {
-          l2 = token.items.length;
-          for (j = 0; j < l2; j++) {
-            this.inline(token.items[j].tokens);
-          }
-          break;
-        }
-        default: {
-          // do nothing
-        }
-      }
-    }
-
-    return tokens;
+  inline(src, tokens) {
+    this.inlineQueue.push({ src, tokens });
   }
 
   /**
    * Lexing/Compiling
    */
-  inlineTokens(src, tokens = [], inLink = false, inRawBlock = false) {
+  inlineTokens(src, tokens = []) {
     let token, lastToken, cutSrc;
 
     // String with links masked to avoid interference with em and strong
@@ -404,7 +348,7 @@ module.exports = class Lexer {
       if (this.options.extensions
         && this.options.extensions.inline
         && this.options.extensions.inline.some((extTokenizer) => {
-          if (token = extTokenizer.call(this, src, tokens)) {
+          if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
             src = src.substring(token.raw.length);
             tokens.push(token);
             return true;
@@ -422,10 +366,8 @@ module.exports = class Lexer {
       }
 
       // tag
-      if (token = this.tokenizer.tag(src, inLink, inRawBlock)) {
+      if (token = this.tokenizer.tag(src)) {
         src = src.substring(token.raw.length);
-        inLink = token.inLink;
-        inRawBlock = token.inRawBlock;
         lastToken = tokens[tokens.length - 1];
         if (lastToken && token.type === 'text' && lastToken.type === 'text') {
           lastToken.raw += token.raw;
@@ -439,9 +381,6 @@ module.exports = class Lexer {
       // link
       if (token = this.tokenizer.link(src)) {
         src = src.substring(token.raw.length);
-        if (token.type === 'link') {
-          token.tokens = this.inlineTokens(token.text, [], true, inRawBlock);
-        }
         tokens.push(token);
         continue;
       }
@@ -450,10 +389,7 @@ module.exports = class Lexer {
       if (token = this.tokenizer.reflink(src, this.tokens.links)) {
         src = src.substring(token.raw.length);
         lastToken = tokens[tokens.length - 1];
-        if (token.type === 'link') {
-          token.tokens = this.inlineTokens(token.text, [], true, inRawBlock);
-          tokens.push(token);
-        } else if (lastToken && token.type === 'text' && lastToken.type === 'text') {
+        if (lastToken && token.type === 'text' && lastToken.type === 'text') {
           lastToken.raw += token.raw;
           lastToken.text += token.text;
         } else {
@@ -465,7 +401,6 @@ module.exports = class Lexer {
       // em & strong
       if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar)) {
         src = src.substring(token.raw.length);
-        token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
         tokens.push(token);
         continue;
       }
@@ -487,7 +422,6 @@ module.exports = class Lexer {
       // del (gfm)
       if (token = this.tokenizer.del(src)) {
         src = src.substring(token.raw.length);
-        token.tokens = this.inlineTokens(token.text, [], inLink, inRawBlock);
         tokens.push(token);
         continue;
       }
@@ -500,7 +434,7 @@ module.exports = class Lexer {
       }
 
       // url (gfm)
-      if (!inLink && (token = this.tokenizer.url(src, mangle))) {
+      if (!this.state.inLink && (token = this.tokenizer.url(src, mangle))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -514,14 +448,14 @@ module.exports = class Lexer {
         const tempSrc = src.slice(1);
         let tempStart;
         this.options.extensions.startInline.forEach(function(getStartIndex) {
-          tempStart = getStartIndex.call(this, tempSrc);
+          tempStart = getStartIndex.call({ lexer: this }, tempSrc);
           if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
         });
         if (startIndex < Infinity && startIndex >= 0) {
           cutSrc = src.substring(0, startIndex + 1);
         }
       }
-      if (token = this.tokenizer.inlineText(cutSrc, inRawBlock, smartypants)) {
+      if (token = this.tokenizer.inlineText(cutSrc, smartypants)) {
         src = src.substring(token.raw.length);
         if (token.raw.slice(-1) !== '_') { // Track prevChar before string of ____ started
           prevChar = token.raw.slice(-1);
