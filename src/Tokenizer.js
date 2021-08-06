@@ -166,7 +166,7 @@ module.exports = class Tokenizer {
   list(src) {
     let cap = this.rules.block.list.exec(src);
     if (cap) {
-      let raw, istask, ischecked, indent, i, l, blankLine, endsWithBlankLine,
+      let raw, istask, ischecked, indent, i, blankLine, endsWithBlankLine,
         line, lines, itemContents;
 
       let bull = cap[1].trim();
@@ -296,7 +296,7 @@ module.exports = class Tokenizer {
       list.items[list.items.length - 1].text = itemContents.trimRight();
       list.raw = list.raw.trimRight();
 
-      l = list.items.length;
+      const l = list.items.length;
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first
       for (i = 0; i < l; i++) {
