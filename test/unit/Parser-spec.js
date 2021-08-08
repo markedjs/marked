@@ -68,15 +68,17 @@ describe('Parser', () => {
       await expectHtml({
         tokens: [{
           type: 'table',
-          header: ['a', 'b'],
           align: ['left', 'right'],
-          cells: [['1', '2']],
-          tokens: {
-            header: [
+          header: {
+            text: ['a', 'b'],
+            tokens: [
               [{ type: 'text', text: 'a' }],
               [{ type: 'text', text: 'b' }]
-            ],
-            cells: [
+            ]
+          },
+          cells: {
+            text: [['1', '2']],
+            tokens: [
               [
                 [{ type: 'text', text: '1' }],
                 [{ type: 'text', text: '2' }]

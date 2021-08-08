@@ -100,19 +100,19 @@ module.exports = class Parser {
 
           // header
           cell = '';
-          l2 = token.header.length;
+          l2 = token.header.text.length;
           for (j = 0; j < l2; j++) {
             cell += this.renderer.tablecell(
-              this.parseInline(token.tokens.header[j]),
+              this.parseInline(token.header.tokens[j]),
               { header: true, align: token.align[j] }
             );
           }
           header += this.renderer.tablerow(cell);
 
           body = '';
-          l2 = token.cells.length;
+          l2 = token.cells.text.length;
           for (j = 0; j < l2; j++) {
-            row = token.tokens.cells[j];
+            row = token.cells.tokens[j];
 
             cell = '';
             l3 = row.length;

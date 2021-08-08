@@ -348,12 +348,16 @@ module.exports = class Tokenizer {
     if (cap) {
       const item = {
         type: 'table',
-        header: splitCells(cap[1].replace(/^ *| *\| *$/g, '')),
+        header: {
+          text: splitCells(cap[1].replace(/^ *| *\| *$/g, ''))
+        },
         align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
-        cells: cap[3] ? cap[3].replace(/\n$/, '').split('\n') : []
+        cells: {
+          text: cap[3] ? cap[3].replace(/\n$/, '').split('\n') : []
+        }
       };
 
-      if (item.header.length === item.align.length) {
+      if (item.header.text.length === item.align.length) {
         item.raw = cap[0];
 
         let l = item.align.length;
@@ -370,32 +374,30 @@ module.exports = class Tokenizer {
           }
         }
 
-        l = item.cells.length;
+        l = item.cells.text.length;
         for (i = 0; i < l; i++) {
-          item.cells[i] = splitCells(item.cells[i], item.header.length);
+          item.cells.text[i] = splitCells(item.cells.text[i], item.header.text.length);
         }
 
         // parse child tokens inside headers and cells
-        item.tokens = {
-          header: [],
-          cells: []
-        };
+        item.header.tokens = [];
+        item.cells.tokens = [];
 
         // header child tokens
-        l = item.header.length;
+        l = item.header.text.length;
         for (j = 0; j < l; j++) {
-          item.tokens.header[j] = [];
-          this.lexer.inlineTokens(item.header[j], item.tokens.header[j]);
+          item.header.tokens[j] = [];
+          this.lexer.inlineTokens(item.header.text[j], item.header.tokens[j]);
         }
 
         // cell child tokens
-        l = item.cells.length;
+        l = item.cells.text.length;
         for (j = 0; j < l; j++) {
-          row = item.cells[j];
-          item.tokens.cells[j] = [];
+          row = item.cells.text[j];
+          item.cells.tokens[j] = [];
           for (k = 0; k < row.length; k++) {
-            item.tokens.cells[j][k] = [];
-            this.lexer.inlineTokens(row[k], item.tokens.cells[j][k]);
+            item.cells.tokens[j][k] = [];
+            this.lexer.inlineTokens(row[k], item.cells.tokens[j][k]);
           }
         }
 
