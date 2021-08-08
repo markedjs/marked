@@ -7,7 +7,7 @@ const htmlDiffer = new HtmlDiffer({
 module.exports = {
   isEqual: htmlDiffer.isEqual.bind(htmlDiffer),
   firstDiff: async(actual, expected, padding) => {
-    padding = padding || 100;
+    padding = padding || 30;
     const diffHtml = await htmlDiffer.diffHtml(actual, expected);
     const result = diffHtml.reduce((obj, diff) => {
       if (diff.added) {
