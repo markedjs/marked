@@ -349,7 +349,7 @@ module.exports = class Tokenizer {
       const item = {
         type: 'table',
         header: {
-          text: splitCells(cap[1].replace(/^ *| *\| *$/g, ''))
+          text: splitCells(cap[1])
         },
         align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
         cells: {
