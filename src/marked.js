@@ -260,12 +260,12 @@ marked.walkTokens = function(tokens, callback) {
     callback(token);
     switch (token.type) {
       case 'table': {
-        for (const cell of token.header.tokens) {
-          marked.walkTokens(cell, callback);
+        for (const cell of token.header) {
+          marked.walkTokens(cell.tokens, callback);
         }
-        for (const row of token.cells.tokens) {
+        for (const row of token.rows) {
           for (const cell of row) {
-            marked.walkTokens(cell, callback);
+            marked.walkTokens(cell.tokens, callback);
           }
         }
         break;

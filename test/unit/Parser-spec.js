@@ -69,22 +69,28 @@ describe('Parser', () => {
         tokens: [{
           type: 'table',
           align: ['left', 'right'],
-          header: {
-            text: ['a', 'b'],
-            tokens: [
-              [{ type: 'text', text: 'a' }],
-              [{ type: 'text', text: 'b' }]
+          header: [
+            {
+              text: 'a',
+              tokens: [{ type: 'text', raw: 'a', text: 'a' }]
+            },
+            {
+              text: 'b',
+              tokens: [{ type: 'text', raw: 'b', text: 'b' }]
+            }
+          ],
+          rows: [
+            [
+              {
+                text: '1',
+                tokens: [{ type: 'text', raw: '1', text: '1' }]
+              },
+              {
+                text: '2',
+                tokens: [{ type: 'text', raw: '2', text: '2' }]
+              }
             ]
-          },
-          cells: {
-            text: [['1', '2']],
-            tokens: [
-              [
-                [{ type: 'text', text: '1' }],
-                [{ type: 'text', text: '2' }]
-              ]
-            ]
-          }
+          ]
         }],
         html: `
 <table>

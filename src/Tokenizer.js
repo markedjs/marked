@@ -348,16 +348,12 @@ module.exports = class Tokenizer {
     if (cap) {
       const item = {
         type: 'table',
-        header: {
-          text: splitCells(cap[1])
-        },
+        header: splitCells(cap[1]).map(c => { return { text: c }; }),
         align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
-        cells: {
-          text: cap[3] ? cap[3].replace(/\n$/, '').split('\n') : []
-        }
+        rows: cap[3] ? cap[3].replace(/\n$/, '').split('\n') : []
       };
 
-      if (item.header.text.length === item.align.length) {
+      if (item.header.length === item.align.length) {
         item.raw = cap[0];
 
         let l = item.align.length;
@@ -374,30 +370,27 @@ module.exports = class Tokenizer {
           }
         }
 
-        l = item.cells.text.length;
+        l = item.rows.length;
         for (i = 0; i < l; i++) {
-          item.cells.text[i] = splitCells(item.cells.text[i], item.header.text.length);
+          item.rows[i] = splitCells(item.rows[i], item.header.length).map(c => { return { text: c }; });
         }
 
         // parse child tokens inside headers and cells
-        item.header.tokens = [];
-        item.cells.tokens = [];
 
         // header child tokens
-        l = item.header.text.length;
+        l = item.header.length;
         for (j = 0; j < l; j++) {
-          item.header.tokens[j] = [];
-          this.lexer.inlineTokens(item.header.text[j], item.header.tokens[j]);
+          item.header[j].tokens = [];
+          this.lexer.inlineTokens(item.header[j].text, item.header[j].tokens);
         }
 
         // cell child tokens
-        l = item.cells.text.length;
+        l = item.rows.length;
         for (j = 0; j < l; j++) {
-          row = item.cells.text[j];
-          item.cells.tokens[j] = [];
+          row = item.rows[j];
           for (k = 0; k < row.length; k++) {
-            item.cells.tokens[j][k] = [];
-            this.lexer.inlineTokens(row[k], item.cells.tokens[j][k]);
+            row[k].tokens = [];
+            this.lexer.inlineTokens(row[k].text, row[k].tokens);
           }
         }
 
