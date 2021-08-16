@@ -103,22 +103,22 @@ module.exports = class Parser {
           l2 = token.header.length;
           for (j = 0; j < l2; j++) {
             cell += this.renderer.tablecell(
-              this.parseInline(token.tokens.header[j]),
+              this.parseInline(token.header[j].tokens),
               { header: true, align: token.align[j] }
             );
           }
           header += this.renderer.tablerow(cell);
 
           body = '';
-          l2 = token.cells.length;
+          l2 = token.rows.length;
           for (j = 0; j < l2; j++) {
-            row = token.tokens.cells[j];
+            row = token.rows[j];
 
             cell = '';
             l3 = row.length;
             for (k = 0; k < l3; k++) {
               cell += this.renderer.tablecell(
-                this.parseInline(row[k]),
+                this.parseInline(row[k].tokens),
                 { header: false, align: token.align[k] }
               );
             }

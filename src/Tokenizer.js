@@ -352,9 +352,9 @@ module.exports = class Tokenizer {
     if (cap) {
       const item = {
         type: 'table',
-        header: splitCells(cap[1].replace(/^ *| *\| *$/g, '')),
+        header: splitCells(cap[1]).map(c => { return { text: c }; }),
         align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
-        cells: cap[3] ? cap[3].replace(/\n$/, '').split('\n') : []
+        rows: cap[3] ? cap[3].replace(/\n$/, '').split('\n') : []
       };
 
       if (item.header.length === item.align.length) {
@@ -374,32 +374,27 @@ module.exports = class Tokenizer {
           }
         }
 
-        l = item.cells.length;
+        l = item.rows.length;
         for (i = 0; i < l; i++) {
-          item.cells[i] = splitCells(item.cells[i], item.header.length);
+          item.rows[i] = splitCells(item.rows[i], item.header.length).map(c => { return { text: c }; });
         }
 
         // parse child tokens inside headers and cells
-        item.tokens = {
-          header: [],
-          cells: []
-        };
 
         // header child tokens
         l = item.header.length;
         for (j = 0; j < l; j++) {
-          item.tokens.header[j] = [];
-          this.lexer.inlineTokens(item.header[j], item.tokens.header[j]);
+          item.header[j].tokens = [];
+          this.lexer.inlineTokens(item.header[j].text, item.header[j].tokens);
         }
 
         // cell child tokens
-        l = item.cells.length;
+        l = item.rows.length;
         for (j = 0; j < l; j++) {
-          row = item.cells[j];
-          item.tokens.cells[j] = [];
+          row = item.rows[j];
           for (k = 0; k < row.length; k++) {
-            item.tokens.cells[j][k] = [];
-            this.lexer.inlineTokens(row[k], item.tokens.cells[j][k]);
+            row[k].tokens = [];
+            this.lexer.inlineTokens(row[k].text, row[k].tokens);
           }
         }
 

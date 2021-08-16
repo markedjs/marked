@@ -176,20 +176,30 @@ lheading 2
 `,
         tokens: [{
           type: 'table',
-          header: ['a', 'b'],
           align: [null, null],
-          cells: [['1', '2']],
           raw: '| a | b |\n|---|---|\n| 1 | 2 |\n',
-          tokens: {
-            header: [
-              [{ type: 'text', raw: 'a', text: 'a' }],
-              [{ type: 'text', raw: 'b', text: 'b' }]
-            ],
-            cells: [[
-              [{ type: 'text', raw: '1', text: '1' }],
-              [{ type: 'text', raw: '2', text: '2' }]
-            ]]
-          }
+          header: [
+            {
+              text: 'a',
+              tokens: [{ type: 'text', raw: 'a', text: 'a' }]
+            },
+            {
+              text: 'b',
+              tokens: [{ type: 'text', raw: 'b', text: 'b' }]
+            }
+          ],
+          rows: [
+            [
+              {
+                text: '1',
+                tokens: [{ type: 'text', raw: '1', text: '1' }]
+              },
+              {
+                text: '2',
+                tokens: [{ type: 'text', raw: '2', text: '2' }]
+              }
+            ]
+          ]
         }]
       });
     });
@@ -203,22 +213,38 @@ lheading 2
 `,
         tokens: [{
           type: 'table',
-          header: ['a', 'b', 'c'],
           align: ['left', 'center', 'right'],
-          cells: [['1', '2', '3']],
           raw: '| a | b | c |\n|:--|:-:|--:|\n| 1 | 2 | 3 |\n',
-          tokens: {
-            header: [
-              [{ type: 'text', raw: 'a', text: 'a' }],
-              [{ type: 'text', raw: 'b', text: 'b' }],
-              [{ type: 'text', raw: 'c', text: 'c' }]
-            ],
-            cells: [[
-              [{ type: 'text', raw: '1', text: '1' }],
-              [{ type: 'text', raw: '2', text: '2' }],
-              [{ type: 'text', raw: '3', text: '3' }]
-            ]]
-          }
+          header: [
+            {
+              text: 'a',
+              tokens: [{ type: 'text', raw: 'a', text: 'a' }]
+            },
+            {
+              text: 'b',
+              tokens: [{ type: 'text', raw: 'b', text: 'b' }]
+            },
+            {
+              text: 'c',
+              tokens: [{ type: 'text', raw: 'c', text: 'c' }]
+            }
+          ],
+          rows: [
+            [
+              {
+                text: '1',
+                tokens: [{ type: 'text', raw: '1', text: '1' }]
+              },
+              {
+                text: '2',
+                tokens: [{ type: 'text', raw: '2', text: '2' }]
+              },
+              {
+                text: '3',
+                tokens: [{ type: 'text', raw: '3', text: '3' }]
+              }
+            ]
+          ]
         }]
       });
     });
@@ -232,20 +258,30 @@ a | b
 `,
         tokens: [{
           type: 'table',
-          header: ['a', 'b'],
           align: [null, null],
-          cells: [['1', '2']],
           raw: 'a | b\n--|--\n1 | 2\n',
-          tokens: {
-            header: [
-              [{ type: 'text', raw: 'a', text: 'a' }],
-              [{ type: 'text', raw: 'b', text: 'b' }]
-            ],
-            cells: [[
-              [{ type: 'text', raw: '1', text: '1' }],
-              [{ type: 'text', raw: '2', text: '2' }]
-            ]]
-          }
+          header: [
+            {
+              text: 'a',
+              tokens: [{ type: 'text', raw: 'a', text: 'a' }]
+            },
+            {
+              text: 'b',
+              tokens: [{ type: 'text', raw: 'b', text: 'b' }]
+            }
+          ],
+          rows: [
+            [
+              {
+                text: '1',
+                tokens: [{ type: 'text', raw: '1', text: '1' }]
+              },
+              {
+                text: '2',
+                tokens: [{ type: 'text', raw: '2', text: '2' }]
+              }
+            ]
+          ]
         }]
       });
     });
