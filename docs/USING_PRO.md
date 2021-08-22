@@ -315,53 +315,49 @@ The index can be the result of a <code>src.match().index</code>, or even a simpl
 
 The return value should be an object with the following parameters:
 
-  <dl>
-  <dt><code><strong>type</strong></code></dt>
-  <dd>A string that matches the <code>name</code> parameter of the extension.</dd>
+<dl>
+<dt><code><strong>type</strong></code></dt>
+<dd>A string that matches the <code>name</code> parameter of the extension.</dd>
 
-  <dt><code><strong>raw</strong></code></dt>
-  <dd>A string containing all of the text that this token consumes from the source.</dd>
+<dt><code><strong>raw</strong></code></dt>
+<dd>A string containing all of the text that this token consumes from the source.</dd>
 
-  <dt><code><strong>tokens</strong> [optional]</code></dt>
-  <dd>An array of child tokens that will be traversed by the <code>walkTokens</code> function by default.</dd>
-  </dl>
+<dt><code><strong>tokens</strong> [optional]</code></dt>
+<dd>An array of child tokens that will be traversed by the <code>walkTokens</code> function by default.</dd>
+</dl>
 
 The returned token can also contain any other custom parameters of your choice that your custom `renderer` might need to access.
 
 The tokenizer function has access to the lexer in the `this` object, which can be used if any internal section of the string needs to be parsed further, such as in handling any inline syntax on the text within a block token. The key functions that may be useful include:
 
-  <dl>
-  <dt><code><strong>this.lexer.blockTokens</strong>(<i>string</i> text, <i>array</i> tokens)</code></dt>
-  <dd>This runs the block tokenizer functions (including any block-level extensions) on the provided text, and appends any resulting tokens onto the <code>tokens</code> array. The <code>tokens</code> array is also returned by the function. You might use this, for example, if your extension creates a "container"-type token (such as a blockquote) that can potentially include other block-level tokens inside.</dd>
+<dl>
+<dt><code><strong>this.lexer.blockTokens</strong>(<i>string</i> text, <i>array</i> tokens)</code></dt>
+<dd>This runs the block tokenizer functions (including any block-level extensions) on the provided text, and appends any resulting tokens onto the <code>tokens</code> array. The <code>tokens</code> array is also returned by the function. You might use this, for example, if your extension creates a "container"-type token (such as a blockquote) that can potentially include other block-level tokens inside.</dd>
 
-  <dl>
-  <dt><code><strong>this.lexer.inline</strong>(<i>string</i> text, <i>array</i> tokens)</code></dt>
-  <dd>Parsing of inline-level tokens only occurs after all block-level tokens have been generated. This function adds <code>text</code> and <code>tokens</code> to a queue to be processed using inline-level tokenizers (including any inline-level extensions) at that later step. Tokens will be generated using the provided <code>text</code>, and any resulting tokens will be appended to the <code>tokens</code> array. Note that this function does **NOT** return anything since the inline processing cannot happen until the block-level processing is complete.</dd>
+<dt><code><strong>this.lexer.inline</strong>(<i>string</i> text, <i>array</i> tokens)</code></dt>
+<dd>Parsing of inline-level tokens only occurs after all block-level tokens have been generated. This function adds <code>text</code> and <code>tokens</code> to a queue to be processed using inline-level tokenizers (including any inline-level extensions) at that later step. Tokens will be generated using the provided <code>text</code>, and any resulting tokens will be appended to the <code>tokens</code> array. Note that this function does **NOT** return anything since the inline processing cannot happen until the block-level processing is complete.</dd>
 
-  <dt><code><strong>this.lexer.inlineTokens</strong>(<i>string</i> text, <i>array</i> tokens)</code></dt>
-  <dd>Sometimes an inline-level token contains further nested inline tokens (such as a <pre><code>**strong**</code></pre> token inside of a <pre><code>### Heading</code></pre>). This runs the inline tokenizer functions (including any inline-level extensions) on the provided text, and appends any resulting tokens onto the <code>tokens</code> array. The <code>tokens</code> array is also returned by the function.</dd>
-  </dl>
+<dt><code><strong>this.lexer.inlineTokens</strong>(<i>string</i> text, <i>array</i> tokens)</code></dt>
+<dd>Sometimes an inline-level token contains further nested inline tokens (such as a <pre><code>**strong**</code></pre> token inside of a <pre><code>### Heading</code></pre>). This runs the inline tokenizer functions (including any inline-level extensions) on the provided text, and appends any resulting tokens onto the <code>tokens</code> array. The <code>tokens</code> array is also returned by the function.</dd>
+</dl>
+</dd>
 
 <dt><code><strong>renderer</strong>(<i>object</i> token)</code></dt>
 <dd>A function that reads a token and returns the generated HTML output string.
 
 The renderer function has access to the parser in the `this` object, which can be used if any part of the token needs needs to be parsed further, such as any child tokens. The key functions that may be useful include:
 
-  <dl>
-  <dt><code><strong>this.parser.parse</strong>(<i>array</i> tokens)</code></dt>
-  <dd>Runs the block renderer functions (including any extensions) on the provided array of tokens, and returns the resulting HTML string output. This is used to generate the HTML from any child block-level tokens, for example if your extension is a "container"-type token (such as a blockquote) that can potentially include other block-level tokens inside.</dd>
+<dl>
+<dt><code><strong>this.parser.parse</strong>(<i>array</i> tokens)</code></dt>
+<dd>Runs the block renderer functions (including any extensions) on the provided array of tokens, and returns the resulting HTML string output. This is used to generate the HTML from any child block-level tokens, for example if your extension is a "container"-type token (such as a blockquote) that can potentially include other block-level tokens inside.</dd>
 
-  <dt><code><strong>this.parser.parseInline</strong>(<i>array</i> tokens)</code></dt>
-  <dd>Runs the inline renderer functions (including any extensions) on the provided array of tokens, and returns the resulting HTML string output. This is used to generate the HTML from any child inline-level tokens.</dd>
-  </dl>
-
+<dt><code><strong>this.parser.parseInline</strong>(<i>array</i> tokens)</code></dt>
+<dd>Runs the inline renderer functions (including any extensions) on the provided array of tokens, and returns the resulting HTML string output. This is used to generate the HTML from any child inline-level tokens.</dd>
+</dl>
 </dd>
 
 <dt><code><strong>childTokens</strong> [optional]</code></dt>
-<dd>An array of strings that match the names of any token parameters that should be traversed by the <code>walkTokens</code> functions. For instance, if you want to use a second custom parameter to contain child tokens in addition to <code>tokens</code>, it could be listed here. If <code>childTokens</code> is provided, the <code>tokens</code> array will not be walked by default unless it is also included in the <code>childTokens</code> array.
-  </dl>
-
-</dd>
+<dd>An array of strings that match the names of any token parameters that should be traversed by the <code>walkTokens</code> functions. For instance, if you want to use a second custom parameter to contain child tokens in addition to <code>tokens</code>, it could be listed here. If <code>childTokens</code> is provided, the <code>tokens</code> array will not be walked by default unless it is also included in the <code>childTokens</code> array.</dd>
 </dl>
 
 **Example:** Add a custom syntax to generate `<dl>` description lists.
