@@ -13,7 +13,7 @@ function outputLink(cap, link, raw, lexer) {
 
   if (cap[0].charAt(0) !== '!') {
     lexer.state.inLink = true;
-    return {
+    const token = {
       type: 'link',
       raw,
       href,
@@ -21,6 +21,8 @@ function outputLink(cap, link, raw, lexer) {
       text,
       tokens: lexer.inlineTokens(text, [])
     };
+    lexer.state.inLink = false;
+    return token;
   } else {
     return {
       type: 'image',
