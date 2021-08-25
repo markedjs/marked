@@ -93,7 +93,7 @@ block.normal = merge({}, block);
 block.gfm = merge({}, block.normal, {
   table: '^ *([^\\n ].*\\|.*)\\n' // Header
     + ' {0,3}(?:\\| *)?(:?-+:? *(?:\\| *:?-+:? *)*)\\|?' // Align
-    + '(?:\\n *((?:(?!\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)' // Cells
+    + '(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)' // Cells
 });
 
 block.gfm.table = edit(block.gfm.table)
