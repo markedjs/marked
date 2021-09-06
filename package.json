@@ -55,7 +55,7 @@
     "highlight.js": "^11.2.0",
     "jasmine": "^3.9.0",
     "markdown-it": "12.2.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.0.0",
     "rollup": "^2.56.3",
     "rollup-plugin-license": "^2.5.0",
     "semantic-release": "^17.4.7",
