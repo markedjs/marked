@@ -1,8 +1,8 @@
 ---
 gfm: true
 ---
-| a | b |
-|---|---|
-| 1 | 2 |
+| a | b | 
+|---|---| 
+| 1 | 2 | 
  
-there should be a single space in the line above
+there should be a single space at the end of every line above
