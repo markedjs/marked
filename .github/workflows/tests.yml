@@ -47,6 +47,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+      - name: Install Node
+        uses: dcodeIO/setup-node-nvm@master
+        with:
+          node-version: 'lts/*'
       - name: Install Dependencies
         run: npm ci
       - name: Build 🗜️
