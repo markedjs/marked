@@ -248,7 +248,7 @@ function repeatString(pattern, count) {
   return result + pattern;
 }
 
-module.exports = {
+const helpers = {
   escape,
   unescape,
   edit,
@@ -261,4 +261,20 @@ module.exports = {
   findClosingBracket,
   checkSanitizeDeprecation,
   repeatString
+};
+
+module.exports = {
+  escape,
+  unescape,
+  edit,
+  cleanUrl,
+  resolveUrl,
+  noopTest,
+  merge,
+  splitCells,
+  rtrim,
+  findClosingBracket,
+  checkSanitizeDeprecation,
+  repeatString,
+  helpers
 };

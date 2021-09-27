@@ -7,7 +7,8 @@ const Slugger = require('./Slugger.js');
 const {
   merge,
   checkSanitizeDeprecation,
-  escape
+  escape,
+  helpers
 } = require('./helpers.js');
 const {
   getDefaults,
@@ -336,6 +337,8 @@ marked.lexer = Lexer.lex;
 marked.Tokenizer = Tokenizer;
 
 marked.Slugger = Slugger;
+
+marked.helpers = helpers;
 
 marked.parse = marked;
 
