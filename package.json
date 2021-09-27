@@ -39,7 +39,7 @@
     "@markedjs/html-differ": "^3.0.4",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^20.0.0",
-    "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/commit-analyzer": "^9.0.1",
     "@semantic-release/git": "^10.0.0",
     "@semantic-release/github": "^7.2.3",
     "@semantic-release/npm": "^7.1.3",
