@@ -335,12 +335,3 @@ marked.Slugger = Slugger;
 marked.parse = marked;
 
 module.exports = marked;
-module.exports.parse = marked;
-module.exports.Parser = Parser;
-module.exports.parser = Parser.parse;
-module.exports.Renderer = Renderer;
-module.exports.TextRenderer = TextRenderer;
-module.exports.Lexer = Lexer;
-module.exports.lexer = Lexer.lex;
-module.exports.Tokenizer = Tokenizer;
-module.exports.Slugger = Slugger;
