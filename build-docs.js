@@ -1,8 +1,10 @@
-const { mkdir, rmdir, readdir, stat, readFile, writeFile, copyFile } = require('fs').promises;
-const { join, dirname, parse, format } = require('path');
-const marked = require('./');
-const { highlight, highlightAuto } = require('highlight.js');
-const titleize = require('titleize');
+import { promises } from 'fs';
+import { join, dirname, parse, format } from 'path';
+import { parse as marked } from './lib/marked.esm.js';
+import { HighlightJS } from 'highlight.js';
+import titleize from 'titleize';
+const { mkdir, rmdir, readdir, stat, readFile, writeFile, copyFile } = promises;
+const { highlight, highlightAuto } = HighlightJS;
 const cwd = process.cwd();
 const inputDir = join(cwd, 'docs');
 const outputDir = join(cwd, 'public');

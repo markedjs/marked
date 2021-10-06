@@ -56,7 +56,7 @@ $ marked -s "*hello world*"
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     document.getElementById('content').innerHTML =
-      marked('# Marked in browser\n\nRendered by **marked**.');
+      marked.parse('# Marked in browser\n\nRendered by **marked**.');
   </script>
 </body>
 </html>
@@ -65,8 +65,8 @@ $ marked -s "*hello world*"
 **Node.js**
 
 ```js
-const marked = require("marked");
-const html = marked('# Marked in Node.js\n\nRendered by **marked**.');
+const { parse } = require("marked");
+const html = parse('# Marked in Node.js\n\nRendered by **marked**.');
 ```
 
 

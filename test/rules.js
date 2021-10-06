@@ -1,4 +1,4 @@
-const rules = require('../src/rules.js');
+import rules from '../src/rules.js';
 
 const COLOR = {
   reset: '\x1b[0m',

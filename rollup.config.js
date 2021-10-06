@@ -7,8 +7,7 @@ module.exports = {
   output: {
     file: 'lib/marked.js',
     format: 'umd',
-    name: 'marked',
-    exports: 'default'
+    name: 'marked'
   },
   plugins: [
     license({

@@ -1,7 +1,7 @@
-const Tokenizer = require('./Tokenizer.js');
-const { defaults } = require('./defaults.js');
-const { block, inline } = require('./rules.js');
-const { repeatString } = require('./helpers.js');
+import Tokenizer from './Tokenizer.js';
+import { defaults } from './defaults.js';
+import { block, inline } from './rules.js';
+import { repeatString } from './helpers.js';
 
 /**
  * smartypants text replacement
@@ -47,7 +47,7 @@ function mangle(text) {
 /**
  * Block Lexer
  */
-module.exports = class Lexer {
+export class Lexer {
   constructor(options) {
     this.tokens = [];
     this.tokens.links = Object.create(null);
@@ -488,4 +488,6 @@ module.exports = class Lexer {
 
     return tokens;
   }
-};
+}
+
+export default Lexer;

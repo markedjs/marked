@@ -1,15 +1,15 @@
-const marked = require('../../src/marked.js');
+import marked, { Renderer, Slugger, lexer, parseInline, use, getDefaults, walkTokens as _walkTokens } from '../../src/marked.js';
 
 describe('Test heading ID functionality', () => {
   it('should add id attribute by default', () => {
-    const renderer = new marked.Renderer();
-    const slugger = new marked.Slugger();
+    const renderer = new Renderer();
+    const slugger = new Slugger();
     const header = renderer.heading('test', 1, 'test', slugger);
     expect(header).toBe('<h1 id="test">test</h1>\n');
   });
 
   it('should NOT add id attribute when options set false', () => {
-    const renderer = new marked.Renderer({ headerIds: false });
+    const renderer = new Renderer({ headerIds: false });
     const header = renderer.heading('test', 1, 'test');
     expect(header).toBe('<h1>test</h1>\n');
   });
@@ -17,26 +17,26 @@ describe('Test heading ID functionality', () => {
 
 describe('Test slugger functionality', () => {
   it('should use lowercase slug', () => {
-    const slugger = new marked.Slugger();
+    const slugger = new Slugger();
     expect(slugger.slug('Test')).toBe('test');
   });
 
   it('should be unique to avoid collisions 1280', () => {
-    const slugger = new marked.Slugger();
+    const slugger = new Slugger();
     expect(slugger.slug('test')).toBe('test');
     expect(slugger.slug('test')).toBe('test-1');
     expect(slugger.slug('test')).toBe('test-2');
   });
 
   it('should be unique when slug ends with number', () => {
-    const slugger = new marked.Slugger();
+    const slugger = new Slugger();
     expect(slugger.slug('test 1')).toBe('test-1');
     expect(slugger.slug('test')).toBe('test');
     expect(slugger.slug('test')).toBe('test-2');
   });
 
   it('should be unique when slug ends with hyphen number', () => {
-    const slugger = new marked.Slugger();
+    const slugger = new Slugger();
     expect(slugger.slug('foo')).toBe('foo');
     expect(slugger.slug('foo')).toBe('foo-1');
     expect(slugger.slug('foo 1')).toBe('foo-1-1');
@@ -45,39 +45,39 @@ describe('Test slugger functionality', () => {
   });
 
   it('should allow non-latin chars', () => {
-    const slugger = new marked.Slugger();
+    const slugger = new Slugger();
     expect(slugger.slug('привет')).toBe('привет');
   });
 
   it('should remove ampersands 857', () => {
-    const slugger = new marked.Slugger();
+    const slugger = new Slugger();
     expect(slugger.slug('This & That Section')).toBe('this--that-section');
   });
 
   it('should remove periods', () => {
-    const slugger = new marked.Slugger();
+    const slugger = new Slugger();
     expect(slugger.slug('file.txt')).toBe('filetxt');
   });
 
   it('should remove html tags', () => {
-    const slugger = new marked.Slugger();
+    const slugger = new Slugger();
     expect(slugger.slug('<em>html</em>')).toBe('html');
   });
 
   it('should not increment seen when using dryrun option', () => {
-    const slugger = new marked.Slugger();
+    const slugger = new Slugger();
     expect(slugger.slug('<h1>This Section</h1>', { dryrun: true })).toBe('this-section');
     expect(slugger.slug('<h1>This Section</h1>')).toBe('this-section');
   });
 
   it('should still return the next unique id when using dryrun', () => {
-    const slugger = new marked.Slugger();
+    const slugger = new Slugger();
     expect(slugger.slug('<h1>This Section</h1>')).toBe('this-section');
     expect(slugger.slug('<h1>This Section</h1>', { dryrun: true })).toBe('this-section-1');
   });
 
   it('should be repeatable in a sequence', () => {
-    const slugger = new marked.Slugger();
+    const slugger = new Slugger();
     expect(slugger.slug('foo')).toBe('foo');
     expect(slugger.slug('foo')).toBe('foo-1');
     expect(slugger.slug('foo')).toBe('foo-2');
@@ -92,7 +92,7 @@ describe('Test paragraph token type', () => {
   it('should use the "paragraph" type on top level', () => {
     const md = 'A Paragraph.\n\n> A blockquote\n\n- list item\n';
 
-    const tokens = marked.lexer(md);
+    const tokens = lexer(md);
 
     expect(tokens[0].type).toBe('paragraph');
     expect(tokens[2].tokens[0].type).toBe('paragraph');
@@ -101,17 +101,17 @@ describe('Test paragraph token type', () => {
 });
 
 describe('changeDefaults', () => {
-  it('should change global defaults', () => {
-    const { defaults, changeDefaults } = require('../../src/defaults');
+  it('should change global defaults', async() => {
+    const { defaults, changeDefaults } = await import('../../src/defaults.js');
     expect(defaults.test).toBeUndefined();
     changeDefaults({ test: true });
-    expect(require('../../src/defaults').defaults.test).toBe(true);
+    expect((await import('../../src/defaults.js')).defaults.test).toBe(true);
   });
 });
 
 describe('inlineLexer', () => {
   it('should send html to renderer.html', () => {
-    const renderer = new marked.Renderer();
+    const renderer = new Renderer();
     spyOn(renderer, 'html').and.callThrough();
     const md = 'HTML Image: <img alt="MY IMAGE" src="example.png" />';
     marked(md, { renderer });
@@ -123,14 +123,14 @@ describe('inlineLexer', () => {
 describe('parseInline', () => {
   it('should parse inline tokens', () => {
     const md = '**strong** _em_';
-    const html = marked.parseInline(md);
+    const html = parseInline(md);
 
     expect(html).toBe('<strong>strong</strong> <em>em</em>');
   });
 
   it('should not parse block tokens', () => {
     const md = '# header\n\n_em_';
-    const html = marked.parseInline(md);
+    const html = parseInline(md);
 
     expect(html).toBe('# header\n\n<em>em</em>');
   });
@@ -156,7 +156,7 @@ describe('use extension', () => {
         return `<u>${token.text}</u>\n`;
       }
     };
-    marked.use({ extensions: [underline] });
+    use({ extensions: [underline] });
     let html = marked('Not Underlined\n:Underlined\nNot Underlined');
     expect(html).toBe('<p>Not Underlined\n:Underlined\nNot Underlined</p>\n');
 
@@ -186,7 +186,7 @@ describe('use extension', () => {
         }
       }]
     };
-    marked.use(underline);
+    use(underline);
     const html = marked('Not Underlined A\n:Underlined B:\nNot Underlined C\n:Not Underlined D');
     expect(html).toBe('<p>Not Underlined A</p>\n<u>Underlined B</u>\n<p>Not Underlined C\n:Not Underlined D</p>\n');
   });
@@ -211,7 +211,7 @@ describe('use extension', () => {
         return `<u>${token.text}</u>`;
       }
     };
-    marked.use({ extensions: [underline] });
+    use({ extensions: [underline] });
     const html = marked('Not Underlined =Underlined= Not Underlined');
     expect(html).toBe('<p>Not Underlined <u>Underlined</u> Not Underlined</p>\n');
   });
@@ -268,7 +268,7 @@ describe('use extension', () => {
         return `\n<dt>${this.parser.parseInline(token.dt)}</dt><dd>${this.parser.parseInline(token.dd)}</dd>`;
       }
     };
-    marked.use({ extensions: [descriptionlist, description] });
+    use({ extensions: [descriptionlist, description] });
     const html = marked('A Description List with One Description:\n'
                         + ':   Topic 1   :  Description 1\n'
                         + ': **Topic 2** : *Description 2*');
@@ -299,7 +299,7 @@ describe('use extension', () => {
         return `<u>${token.text}</u>\n`;
       }
     };
-    marked.use({ sanitize: true, silent: true, extensions: [extension] });
+    use({ sanitize: true, silent: true, extensions: [extension] });
     const html = marked(':test:\ntest\n<div></div>');
     expect(html).toBe('<u>test</u>\n<p>test</p>\n<p>&lt;div&gt;&lt;/div&gt;</p>\n');
   });
@@ -336,7 +336,7 @@ describe('use extension', () => {
         return false;
       }
     };
-    marked.use({ extensions: [fallbackRenderer, extension] });
+    use({ extensions: [fallbackRenderer, extension] });
     const html = marked(':Test:\n\n:test:\n\n:none:');
     expect(html).toBe('fallbacktest');
   });
@@ -379,7 +379,7 @@ describe('use extension', () => {
         return false;
       }
     };
-    marked.use({ extensions: [extension, extension2] });
+    use({ extensions: [extension, extension2] });
     const html = marked(':Test:\n\n:test:');
     expect(html).toBe('TESTtest');
   });
@@ -415,7 +415,7 @@ describe('use extension', () => {
         }
       }]
     };
-    marked.use(extension);
+    use(extension);
     const html = marked('# extension1\n:extension2:');
     expect(html).toBe('<h1>extension1 RENDERER EXTENSION</h1>\n<pre><code>extension2 TOKENIZER EXTENSION\n</code></pre>\n');
   });
@@ -454,7 +454,7 @@ describe('use extension', () => {
         }
       }
     };
-    marked.use(walkableDescription);
+    use(walkableDescription);
     const html = marked(':   Topic 1   :  Description 1\n'
                       + ': **Topic 2** : *Description 2*');
     expect(html).toBe('<p>\n<dt>Topic 1 walked - unwalked</dt><dd>Description 1 walked</dd>'
@@ -588,14 +588,14 @@ used extension2 walked</p>
     }
 
     it('should merge extensions when calling marked.use multiple times', () => {
-      marked.use(createExtension('extension1'));
-      marked.use(createExtension('extension2'));
+      use(createExtension('extension1'));
+      use(createExtension('extension2'));
 
       runTest();
     });
 
     it('should merge extensions when calling marked.use with multiple extensions', () => {
-      marked.use(
+      use(
         createExtension('extension1'),
         createExtension('extension2')
       );
@@ -604,7 +604,7 @@ used extension2 walked</p>
     });
 
     it('should fall back to any extensions with the same name if the first returns false', () => {
-      marked.use(
+      use(
         createExtension('extension1'),
         createExtension('extension2'),
         createFalseExtension('extension1'),
@@ -663,7 +663,7 @@ used extension2 walked</p>
       },
       headerIds: false
     };
-    marked.use(styleTags);
+    use(styleTags);
     const html = marked('This is a *paragraph* with blue text. {blue}\n'
                       + '# This is a *header* with red text {red}');
     expect(html).toBe('<p style="color:blue;">This is a <em>paragraph</em> with blue text.</p>\n'
@@ -679,7 +679,7 @@ used extension2 walked</p>
       }
     };
     spyOn(extension.renderer, 'paragraph').and.callThrough();
-    marked.use(extension);
+    use(extension);
     const html = marked('text');
     expect(extension.renderer.paragraph).toHaveBeenCalledWith('text');
     expect(html).toBe('extension');
@@ -701,7 +701,7 @@ used extension2 walked</p>
       }
     };
     spyOn(extension.tokenizer, 'paragraph').and.callThrough();
-    marked.use(extension);
+    use(extension);
     const html = marked('text');
     expect(extension.tokenizer.paragraph).toHaveBeenCalledWith('text');
     expect(html).toBe('<p>extension</p>\n');
@@ -714,7 +714,7 @@ used extension2 walked</p>
         walked++;
       }
     };
-    marked.use(extension);
+    use(extension);
     marked('text');
     expect(walked).toBe(2);
   });
@@ -726,7 +726,7 @@ used extension2 walked</p>
         walked++;
       }
     };
-    marked.use(extension);
+    use(extension);
     marked('text', () => {
       expect(walked).toBe(2);
       done();
@@ -737,7 +737,7 @@ used extension2 walked</p>
     const extension = {
       headerIds: false
     };
-    marked.use(extension);
+    use(extension);
     const html = marked('# heading');
     expect(html).toBe('<h1>heading</h1>\n');
   });
@@ -758,8 +758,8 @@ used extension2 walked</p>
         token.walkedOnce = true;
       }
     };
-    marked.use(extension1);
-    marked.use(extension2);
+    use(extension1);
+    use(extension2);
     marked('text');
     expect(walkedOnce).toBe(2);
     expect(walkedTwice).toBe(2);
@@ -783,8 +783,8 @@ used extension2 walked</p>
         }
       }
     };
-    marked.use(extension1);
-    marked.use(extension2);
+    use(extension1);
+    use(extension2);
     const html = marked(`
 paragraph
 
@@ -816,8 +816,8 @@ paragraph
         }
       }
     };
-    marked.use(extension1);
-    marked.use(extension2);
+    use(extension1);
+    use(extension2);
     const html = marked(`
 paragraph
 
@@ -832,7 +832,7 @@ original
     const extension = {
       renderer: {
         heading: () => {
-          return this.options ? 'arrow options\n' : 'arrow no options\n';
+          return this && this.options ? 'arrow options\n' : 'arrow no options\n';
         },
         html: function() {
           return this.options ? 'function options\n' : 'function no options\n';
@@ -842,7 +842,7 @@ original
         }
       }
     };
-    marked.use(extension);
+    use(extension);
     const html = marked(`
 # heading
 
@@ -987,9 +987,9 @@ code
 br
 br
 `;
-    const tokens = marked.lexer(markdown, { ...marked.getDefaults(), breaks: true });
+    const tokens = lexer(markdown, { ...getDefaults(), breaks: true });
     const tokensSeen = [];
-    marked.walkTokens(tokens, (token) => {
+    _walkTokens(tokens, (token) => {
       tokensSeen.push([token.type, (token.raw || '').replace(/\n/g, '')]);
     });
 

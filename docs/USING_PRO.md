@@ -89,7 +89,7 @@ const renderer = {
 marked.use({ renderer });
 
 // Run marked
-console.log(marked('# heading+'));
+console.log(marked.parse('# heading+'));
 ```
 
 **Output:**
@@ -195,7 +195,7 @@ const tokenizer = {
 marked.use({ tokenizer });
 
 // Run marked
-console.log(marked('$ latex code $\n\n` other code `'));
+console.log(marked.parse('$ latex code $\n\n` other code `'));
 ```
 
 **Output:**
@@ -276,7 +276,7 @@ const walkTokens = (token) => {
 marked.use({ walkTokens });
 
 // Run marked
-console.log(marked('# heading 2\n\n## heading 3'));
+console.log(marked.parse('# heading 2\n\n## heading 3'));
 ```
 
 **Output:**
@@ -422,7 +422,7 @@ marked.use({ extensions: [descriptionList] });
 marked.use({ extensions: [description]     });
 marked.use({ walkTokens })
 
-console.log(marked('A Description List:\n'
+console.log(marked.parse('A Description List:\n'
                  + ':   Topic 1   :  Description 1\n'
                  + ': **Topic 2** : *Description 2*'));
 ```
