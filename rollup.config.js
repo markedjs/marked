@@ -8,7 +8,7 @@ module.exports = {
     file: 'lib/marked.js',
     format: 'umd',
     name: 'marked',
-    esModule: false
+    exports: 'default'
   },
   plugins: [
     license({
