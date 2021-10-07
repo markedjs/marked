@@ -323,7 +323,6 @@ marked.parseInline = function(src, opt) {
 /**
  * Expose
  */
-
 marked.Parser = Parser;
 marked.parser = Parser.parse;
 marked.Renderer = Renderer;
