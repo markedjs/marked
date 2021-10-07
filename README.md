@@ -69,7 +69,7 @@ $ cat hello.html
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     document.getElementById('content').innerHTML =
-      marked('# Marked in the browser\n\nRendered by **marked**.');
+      marked.parse('# Marked in the browser\n\nRendered by **marked**.');
   </script>
 </body>
 </html>
