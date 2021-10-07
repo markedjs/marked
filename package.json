@@ -17,6 +17,13 @@
     "man/",
     "marked.min.js"
   ],
+  "exports": {
+    ".": {
+      "import": "./lib/marked.esm.js",
+      "default": "./lib/marked.js"
+    },
+    "./package.json": "./package.json"
+  },
   "repository": "git://github.com/markedjs/marked.git",
   "homepage": "https://marked.js.org",
   "bugs": {
