@@ -2,7 +2,7 @@
   "name": "marked",
   "description": "A markdown parser built for speed",
   "author": "Christopher Jeffrey",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "main": "./src/marked.js",
   "module": "./lib/marked.esm.js",
   "browser": "./lib/marked.js",
