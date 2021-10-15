@@ -80,6 +80,7 @@ td, th {
 a {
     color: #0366d6;
     text-decoration: none;
+    white-space: nowrap;
 }
 
 a:hover {
