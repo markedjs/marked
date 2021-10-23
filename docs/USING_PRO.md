@@ -406,19 +406,21 @@ const description = {
     return `\n<dt>${this.parser.parseInline(token.dt)}</dt><dd>${this.parser.parseInline(token.dd)}</dd>`;
   },
   childTokens: ['dt', 'dd'],                 // Any child tokens to be visited by walkTokens
-  walkTokens(token) {                        // Post-processing on the completed token tree
-    if (token.type === 'strong') {
-      token.text += ' walked';
-    }
-  }
 };
 
-marked.use({ extensions: [descriptionlist, description] });
+function walkTokens(token) {                        // Post-processing on the completed token tree
+  if (token.type === 'strong') {
+    token.text += ' walked';
+    token.tokens = this.Lexer.lexInline(token.text)
+  }
+}
+marked.use({ extensions: [descriptionlist, description], walkTokens });
 
-\\ EQUIVALENT TO:
+// EQUIVALENT TO:
 
-marked.use({extensions: [descriptionList] });
-marked.use({extensions: [description]     });
+marked.use({ extensions: [descriptionList] });
+marked.use({ extensions: [description]     });
+marked.use({ walkTokens })
 
 console.log(marked('A Description List:\n'
                  + ':   Topic 1   :  Description 1\n'
