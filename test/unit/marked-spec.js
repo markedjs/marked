@@ -1046,4 +1046,16 @@ br
       ['text', 'br']
     ]);
   });
+
+  it('should asign marked to `this`', () => {
+    marked.use({
+      walkTokens(token) {
+        if (token.type === 'em') {
+          token.text += ' walked';
+          token.tokens = this.Lexer.lexInline(token.text);
+        }
+      }
+    });
+    expect(marked('*text*').trim()).toBe('<p><em>text walked</em></p>');
+  });
 });
