@@ -1,4 +1,4 @@
-import marked, { setOptions, getDefaults } from '../../src/marked.js';
+import { marked, setOptions, getDefaults } from '../../src/marked.js';
 import { isEqual, firstDiff } from './html-differ.js';
 import { strictEqual } from 'assert';
 

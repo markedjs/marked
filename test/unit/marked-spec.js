@@ -1,4 +1,4 @@
-import marked, { Renderer, Slugger, lexer, parseInline, use, getDefaults, walkTokens as _walkTokens } from '../../src/marked.js';
+import { marked, Renderer, Slugger, lexer, parseInline, use, getDefaults, walkTokens as _walkTokens } from '../../src/marked.js';
 
 describe('Test heading ID functionality', () => {
   it('should add id attribute by default', () => {

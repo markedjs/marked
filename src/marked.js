@@ -18,7 +18,7 @@ import {
 /**
  * Marked
  */
-function marked(src, opt, callback) {
+export function marked(src, opt, callback) {
   // throw error in case of non string input
   if (typeof src === 'undefined' || src === null) {
     throw new Error('marked(): input parameter is undefined or null');
@@ -333,7 +333,6 @@ marked.Tokenizer = Tokenizer;
 marked.Slugger = Slugger;
 marked.parse = marked;
 
-export default marked;
 export const options = marked.options;
 export const setOptions = marked.setOptions;
 export const use = marked.use;
