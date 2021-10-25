@@ -40,5 +40,3 @@ export class TextRenderer {
     return '';
   }
 }
-
-export default TextRenderer;

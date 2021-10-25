@@ -753,5 +753,3 @@ export class Tokenizer {
     }
   }
 }
-
-export default Tokenizer;

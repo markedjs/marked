@@ -47,5 +47,3 @@ export class Slugger {
     return this.getNextSafeSlug(slug, options.dryrun);
   }
 }
-
-export default Slugger;

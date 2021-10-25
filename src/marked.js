@@ -1,9 +1,9 @@
-import Lexer from './Lexer.js';
-import Parser from './Parser.js';
-import Tokenizer from './Tokenizer.js';
-import Renderer from './Renderer.js';
-import TextRenderer from './TextRenderer.js';
-import Slugger from './Slugger.js';
+import { Lexer } from './Lexer.js';
+import { Parser } from './Parser.js';
+import { Tokenizer } from './Tokenizer.js';
+import { Renderer } from './Renderer.js';
+import { TextRenderer } from './TextRenderer.js';
+import { Slugger } from './Slugger.js';
 import {
   merge,
   checkSanitizeDeprecation,
@@ -342,9 +342,9 @@ export const parse = marked;
 export const parser = Parser.parse;
 export const lexer = Lexer.lex;
 export { defaults, getDefaults } from './defaults.js';
-export { default as Lexer } from './Lexer.js';
-export { default as Parser } from './Parser.js';
-export { default as Tokenizer } from './Tokenizer.js';
-export { default as Renderer } from './Renderer.js';
-export { default as TextRenderer } from './TextRenderer.js';
-export { default as Slugger } from './Slugger.js';
+export { Lexer } from './Lexer.js';
+export { Parser } from './Parser.js';
+export { Tokenizer } from './Tokenizer.js';
+export { Renderer } from './Renderer.js';
+export { TextRenderer } from './TextRenderer.js';
+export { Slugger } from './Slugger.js';

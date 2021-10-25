@@ -164,5 +164,3 @@ export class Renderer {
     return text;
   }
 }
-
-export default Renderer;

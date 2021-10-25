@@ -1,6 +1,6 @@
-import Renderer from './Renderer.js';
-import TextRenderer from './TextRenderer.js';
-import Slugger from './Slugger.js';
+import { Renderer } from './Renderer.js';
+import { TextRenderer } from './TextRenderer.js';
+import { Slugger } from './Slugger.js';
 import { defaults } from './defaults.js';
 import {
   unescape
@@ -284,5 +284,3 @@ export class Parser {
     return out;
   }
 }
-
-export default Parser;

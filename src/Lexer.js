@@ -1,4 +1,4 @@
-import Tokenizer from './Tokenizer.js';
+import { Tokenizer } from './Tokenizer.js';
 import { defaults } from './defaults.js';
 import { block, inline } from './rules.js';
 import { repeatString } from './helpers.js';
@@ -489,5 +489,3 @@ export class Lexer {
     return tokens;
   }
 }
-
-export default Lexer;
