@@ -1,6 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import fm from 'front-matter';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 function node4Polyfills() {
   // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
@@ -91,10 +94,10 @@ export function loadFiles(dir) {
         }];
         break;
       }
-      case '.js':
+      case '.cjs':
       case '.json': {
         try {
-          specs = JSON.parse(fs.readFileSync(absFile, 'utf8'));
+          specs = require(absFile);
         } catch (err) {
           console.log(`Error loading ${absFile}`);
           throw err;
