@@ -10,7 +10,6 @@ import { marked } from '../lib/marked.esm.js';
 
 const { readFile, writeFile } = promises;
 
-
 /**
  * Man Page
  */
@@ -154,7 +153,6 @@ async function main(argv) {
   }
 
   process.stdout.write(html + '\n');
-  return;
 }
 
 /**
