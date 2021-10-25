@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 import { isEqual } from './helpers/html-differ.js';
 import { loadFiles } from './helpers/load.js';
 
-import es6marked from '../src/marked.js';
+import { marked as esmMarked } from '../lib/marked.esm.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -42,9 +42,9 @@ export async function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  await bench('es5 marked', specs, marked.parse);
+  await bench('cjs marked', specs, marked.parse);
 
-  es6marked.setOptions({
+  esmMarked.setOptions({
     gfm: false,
     breaks: false,
     pedantic: false,
@@ -52,9 +52,9 @@ export async function runBench(options) {
     smartLists: false
   });
   if (options.marked) {
-    es6marked.setOptions(options.marked);
+    esmMarked.setOptions(options.marked);
   }
-  await bench('es6 marked', specs, es6marked.parse);
+  await bench('esm marked', specs, esmMarked.parse);
 
   // GFM
   marked.setOptions({
@@ -67,9 +67,9 @@ export async function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  await bench('es5 marked (gfm)', specs, marked.parse);
+  await bench('cjs marked (gfm)', specs, marked.parse);
 
-  es6marked.setOptions({
+  esmMarked.setOptions({
     gfm: true,
     breaks: false,
     pedantic: false,
@@ -77,9 +77,9 @@ export async function runBench(options) {
     smartLists: false
   });
   if (options.marked) {
-    es6marked.setOptions(options.marked);
+    esmMarked.setOptions(options.marked);
   }
-  await bench('es6 marked (gfm)', specs, es6marked.parse);
+  await bench('esm marked (gfm)', specs, esmMarked.parse);
 
   // Pedantic
   marked.setOptions({
@@ -92,9 +92,9 @@ export async function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  await bench('es5 marked (pedantic)', specs, marked.parse);
+  await bench('cjs marked (pedantic)', specs, marked.parse);
 
-  es6marked.setOptions({
+  esmMarked.setOptions({
     gfm: false,
     breaks: false,
     pedantic: true,
@@ -102,9 +102,9 @@ export async function runBench(options) {
     smartLists: false
   });
   if (options.marked) {
-    es6marked.setOptions(options.marked);
+    esmMarked.setOptions(options.marked);
   }
-  await bench('es6 marked (pedantic)', specs, es6marked.parse);
+  await bench('esm marked (pedantic)', specs, esmMarked.parse);
 
   try {
     await bench('commonmark', specs, (await (async() => {
@@ -257,12 +257,12 @@ function camelize(text) {
  * Main
  */
 export default async function main(argv) {
-  marked = await import('../lib/marked.esm.js');
+  marked = (await import('../lib/marked.cjs')).marked;
 
   const opt = parseArg(argv);
 
   if (opt.minified) {
-    marked = await import('../marked.min.js');
+    marked = (await import('../marked.min.js')).marked;
   }
 
   if (opt.time) {
