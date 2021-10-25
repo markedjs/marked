@@ -8,7 +8,7 @@
   "module": "./lib/marked.esm.js",
   "browser": "./lib/marked.cjs",
   "bin": {
-    "marked": "bin/marked"
+    "marked": "bin/marked.js"
   },
   "man": "./man/marked.1",
   "files": [
