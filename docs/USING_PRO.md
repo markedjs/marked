@@ -8,7 +8,7 @@ To champion the single-responsibility and open/closed principles, we have tried 
 
 
 ```js
-const marked = require('marked');
+import { marked } from 'marked';
 
 marked.use({
   pedantic: false,
@@ -69,7 +69,7 @@ Calling `marked.use()` to override the same function multiple times will give pr
 
 ```js
 // Create reference instance
-const marked = require('marked');
+import { marked } from 'marked';
 
 // Override function
 const renderer = {
@@ -173,7 +173,7 @@ Calling `marked.use()` to override the same function multiple times will give pr
 
 ```js
 // Create reference instance
-const marked = require('marked');
+import { marked } from 'marked';
 
 // Override function
 const tokenizer = {
@@ -264,7 +264,7 @@ The walkTokens function gets called with every token. Child tokens are called be
 **Example:** Overriding heading tokens to start at h2.
 
 ```js
-const marked = require('marked');
+import { marked } from 'marked';
 
 // Override function
 const walkTokens = (token) => {
@@ -497,7 +497,7 @@ The Lexer builds an array of tokens, which will be passed to the Parser.
 The Parser processes each token in the token array:
 
 ``` js
-const marked = require('marked');
+import { marked } from 'marked';
 
 const md = `
   # heading
