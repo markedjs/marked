@@ -3,7 +3,7 @@ import { join, dirname, parse, format } from 'path';
 import { parse as marked } from './lib/marked.esm.js';
 import { HighlightJS } from 'highlight.js';
 import titleize from 'titleize';
-const { mkdir, rmdir, readdir, stat, readFile, writeFile, copyFile } = promises;
+const { mkdir, rm, readdir, stat, readFile, writeFile, copyFile } = promises;
 const { highlight, highlightAuto } = HighlightJS;
 const cwd = process.cwd();
 const inputDir = join(cwd, 'docs');
@@ -14,7 +14,7 @@ const getTitle = str => str === 'INDEX' ? '' : titleize(str.replace(/_/g, ' ')) 
 
 async function init() {
   console.log('Cleaning up output directory ' + outputDir);
-  await rmdir(outputDir, { recursive: true });
+  await rm(outputDir, { force: true, recursive: true });
   await mkdir(outputDir);
   await copyFile(join(cwd, 'LICENSE.md'), join(inputDir, 'LICENSE.md'));
   const tmpl = await readFile(templateFile, 'utf8');
