@@ -10,7 +10,7 @@ SYNOPSIS
 
 
 DESCRIPTION
-       marked  is a full-featured javascript markdown parser, built for speed.
+       marked is a full-featured javascript markdown parser, built for speed.
        It also includes multiple GFM features.
 
 EXAMPLES
@@ -27,7 +27,7 @@ OPTIONS
 	      Specify file output. If none is specified, write to stdout.
 
        -i, --input [input]
-	      Specify file input, otherwise use last argument as  input  file.
+	      Specify file input, otherwise use last argument as input file.
 	      If no input file is specified, read from stdin.
 
        -s, --string [string]
@@ -37,7 +37,7 @@ OPTIONS
 	      Output a token stream instead of html.
 
        --pedantic
-	      Conform  to  obscure  parts  of markdown.pl as much as possible.
+	      Conform to obscure parts of markdown.pl as much as possible.
 	      Don't fix original markdown bugs.
 
        --gfm  Enable github flavored markdown.
