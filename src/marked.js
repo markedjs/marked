@@ -1,24 +1,24 @@
-const Lexer = require('./Lexer.js');
-const Parser = require('./Parser.js');
-const Tokenizer = require('./Tokenizer.js');
-const Renderer = require('./Renderer.js');
-const TextRenderer = require('./TextRenderer.js');
-const Slugger = require('./Slugger.js');
-const {
+import { Lexer } from './Lexer.js';
+import { Parser } from './Parser.js';
+import { Tokenizer } from './Tokenizer.js';
+import { Renderer } from './Renderer.js';
+import { TextRenderer } from './TextRenderer.js';
+import { Slugger } from './Slugger.js';
+import {
   merge,
   checkSanitizeDeprecation,
   escape
-} = require('./helpers.js');
-const {
+} from './helpers.js';
+import {
   getDefaults,
   changeDefaults,
   defaults
-} = require('./defaults.js');
+} from './defaults.js';
 
 /**
  * Marked
  */
-function marked(src, opt, callback) {
+export function marked(src, opt, callback) {
   // throw error in case of non string input
   if (typeof src === 'undefined' || src === null) {
     throw new Error('marked(): input parameter is undefined or null');
@@ -333,4 +333,18 @@ marked.Tokenizer = Tokenizer;
 marked.Slugger = Slugger;
 marked.parse = marked;
 
-module.exports = marked;
+export const options = marked.options;
+export const setOptions = marked.setOptions;
+export const use = marked.use;
+export const walkTokens = marked.walkTokens;
+export const parseInline = marked.parseInline;
+export const parse = marked;
+export const parser = Parser.parse;
+export const lexer = Lexer.lex;
+export { defaults, getDefaults } from './defaults.js';
+export { Lexer } from './Lexer.js';
+export { Parser } from './Parser.js';
+export { Tokenizer } from './Tokenizer.js';
+export { Renderer } from './Renderer.js';
+export { TextRenderer } from './TextRenderer.js';
+export { Slugger } from './Slugger.js';

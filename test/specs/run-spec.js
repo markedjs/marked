@@ -1,12 +1,15 @@
-const path = require('path');
-const load = require('../helpers/load.js');
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
+import { loadFiles, outputCompletionTable } from '../helpers/load.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function runSpecs(title, dir, showCompletionTable, options) {
   options = options || {};
-  const specs = load.loadFiles(path.resolve(__dirname, dir));
+  const specs = loadFiles(resolve(__dirname, dir));
 
   if (showCompletionTable) {
-    load.outputCompletionTable(title, specs);
+    outputCompletionTable(title, specs);
   }
 
   describe(title, () => {

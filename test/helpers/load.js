@@ -1,8 +1,9 @@
-'use strict';
+import fs from 'fs';
+import path from 'path';
+import fm from 'front-matter';
+import { createRequire } from 'module';
 
-const fs = require('fs');
-const path = require('path');
-const fm = require('front-matter');
+const require = createRequire(import.meta.url);
 
 function node4Polyfills() {
   // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
@@ -45,7 +46,7 @@ function node4Polyfills() {
 }
 node4Polyfills();
 
-function outputCompletionTable(title, specs) {
+export function outputCompletionTable(title, specs) {
   let longestName = 0;
   let maxSpecs = 0;
 
@@ -67,7 +68,7 @@ function outputCompletionTable(title, specs) {
   console.log();
 }
 
-function loadFiles(dir) {
+export function loadFiles(dir) {
   const files = fs.readdirSync(dir);
 
   return files.reduce((obj, file) => {
@@ -93,9 +94,14 @@ function loadFiles(dir) {
         }];
         break;
       }
-      case '.js':
+      case '.cjs':
       case '.json': {
-        specs = require(absFile);
+        try {
+          specs = require(absFile);
+        } catch (err) {
+          console.log(`Error loading ${absFile}`);
+          throw err;
+        }
         if (!Array.isArray(specs)) {
           specs = [specs];
         }
@@ -125,8 +131,3 @@ function loadFiles(dir) {
     return obj;
   }, {});
 }
-
-module.exports = {
-  outputCompletionTable,
-  loadFiles
-};

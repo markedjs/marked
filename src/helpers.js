@@ -13,7 +13,7 @@ const escapeReplacements = {
   "'": '&#39;'
 };
 const getEscapeReplacement = (ch) => escapeReplacements[ch];
-function escape(html, encode) {
+export function escape(html, encode) {
   if (encode) {
     if (escapeTest.test(html)) {
       return html.replace(escapeReplace, getEscapeReplacement);
@@ -29,7 +29,7 @@ function escape(html, encode) {
 
 const unescapeTest = /&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig;
 
-function unescape(html) {
+export function unescape(html) {
   // explicitly match decimal, hex, and named HTML entities
   return html.replace(unescapeTest, (_, n) => {
     n = n.toLowerCase();
@@ -44,7 +44,7 @@ function unescape(html) {
 }
 
 const caret = /(^|[^\[])\^/g;
-function edit(regex, opt) {
+export function edit(regex, opt) {
   regex = regex.source || regex;
   opt = opt || '';
   const obj = {
@@ -63,7 +63,7 @@ function edit(regex, opt) {
 
 const nonWordAndColonTest = /[^\w:]/g;
 const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
-function cleanUrl(sanitize, base, href) {
+export function cleanUrl(sanitize, base, href) {
   if (sanitize) {
     let prot;
     try {
@@ -93,7 +93,7 @@ const justDomain = /^[^:]+:\/*[^/]*$/;
 const protocol = /^([^:]+:)[\s\S]*$/;
 const domain = /^([^:]+:\/*[^/]*)[\s\S]*$/;
 
-function resolveUrl(base, href) {
+export function resolveUrl(base, href) {
   if (!baseUrls[' ' + base]) {
     // we can ignore everything in base after the last slash of its path component,
     // but we might need to add _that_
@@ -122,9 +122,9 @@ function resolveUrl(base, href) {
   }
 }
 
-const noopTest = { exec: function noopTest() {} };
+export const noopTest = { exec: function noopTest() {} };
 
-function merge(obj) {
+export function merge(obj) {
   let i = 1,
     target,
     key;
@@ -141,7 +141,7 @@ function merge(obj) {
   return obj;
 }
 
-function splitCells(tableRow, count) {
+export function splitCells(tableRow, count) {
   // ensure that every cell-delimiting pipe has a space
   // before it to distinguish it from an escaped pipe
   const row = tableRow.replace(/\|/g, (match, offset, str) => {
@@ -180,7 +180,7 @@ function splitCells(tableRow, count) {
 // Remove trailing 'c's. Equivalent to str.replace(/c*$/, '').
 // /c*$/ is vulnerable to REDOS.
 // invert: Remove suffix of non-c chars instead. Default falsey.
-function rtrim(str, c, invert) {
+export function rtrim(str, c, invert) {
   const l = str.length;
   if (l === 0) {
     return '';
@@ -204,7 +204,7 @@ function rtrim(str, c, invert) {
   return str.substr(0, l - suffLen);
 }
 
-function findClosingBracket(str, b) {
+export function findClosingBracket(str, b) {
   if (str.indexOf(b[1]) === -1) {
     return -1;
   }
@@ -226,14 +226,14 @@ function findClosingBracket(str, b) {
   return -1;
 }
 
-function checkSanitizeDeprecation(opt) {
+export function checkSanitizeDeprecation(opt) {
   if (opt && opt.sanitize && !opt.silent) {
     console.warn('marked(): sanitize and sanitizer parameters are deprecated since version 0.7.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/#/USING_ADVANCED.md#options');
   }
 }
 
 // copied from https://stackoverflow.com/a/5450113/806777
-function repeatString(pattern, count) {
+export function repeatString(pattern, count) {
   if (count < 1) {
     return '';
   }
@@ -247,18 +247,3 @@ function repeatString(pattern, count) {
   }
   return result + pattern;
 }
-
-module.exports = {
-  escape,
-  unescape,
-  edit,
-  cleanUrl,
-  resolveUrl,
-  noopTest,
-  merge,
-  splitCells,
-  rtrim,
-  findClosingBracket,
-  checkSanitizeDeprecation,
-  repeatString
-};

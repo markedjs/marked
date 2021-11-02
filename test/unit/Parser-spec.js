@@ -1,4 +1,4 @@
-const Parser = require('../../src/Parser.js');
+import { Parser } from '../../src/Parser.js';
 
 async function expectHtml({ tokens, options, html, inline }) {
   const parser = new Parser(options);

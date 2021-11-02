@@ -1,13 +1,13 @@
-const {
+import {
   noopTest,
   edit,
   merge
-} = require('./helpers.js');
+} from './helpers.js';
 
 /**
  * Block-Level Grammar
  */
-const block = {
+export const block = {
   newline: /^(?: *(?:\n|$))+/,
   code: /^( {4}[^\n]+(?:\n(?: *(?:\n|$))*)?)+/,
   fences: /^ {0,3}(`{3,}(?=[^`\n]*\n)|~{3,})([^\n]*)\n(?:|([\s\S]*?)\n)(?: {0,3}\1[~`]* *(?=\n|$)|$)/,
@@ -139,7 +139,7 @@ block.pedantic = merge({}, block.normal, {
 /**
  * Inline-Level Grammar
  */
-const inline = {
+export const inline = {
   escape: /^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/,
   autolink: /^<(scheme:[^\s\x00-\x1f<>]*|email)>/,
   url: noopTest,
@@ -283,8 +283,3 @@ inline.breaks = merge({}, inline.gfm, {
     .replace(/\{2,\}/g, '*')
     .getRegex()
 });
-
-module.exports = {
-  block,
-  inline
-};

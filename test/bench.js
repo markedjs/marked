@@ -1,15 +1,19 @@
-const path = require('path');
-const htmlDiffer = require('./helpers/html-differ.js');
-const { loadFiles } = require('./helpers/load.js');
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
+import { isEqual } from './helpers/html-differ.js';
+import { loadFiles } from './helpers/load.js';
 
-let marked = require('../lib/marked.js');
-const es6marked = require('../src/marked.js');
+import { marked as esmMarked } from '../lib/marked.esm.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+let marked;
 
 /**
  * Load specs
  */
-function load() {
-  const dir = path.resolve(__dirname, './specs/commonmark');
+export function load() {
+  const dir = resolve(__dirname, './specs/commonmark');
   const sections = loadFiles(dir);
   let specs = [];
 
@@ -23,7 +27,7 @@ function load() {
 /**
  * Run all benchmarks
  */
-async function runBench(options) {
+export async function runBench(options) {
   options = options || {};
   const specs = load();
 
@@ -38,9 +42,9 @@ async function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  await bench('es5 marked', specs, marked);
+  await bench('cjs marked', specs, marked.parse);
 
-  es6marked.setOptions({
+  esmMarked.setOptions({
     gfm: false,
     breaks: false,
     pedantic: false,
@@ -48,9 +52,9 @@ async function runBench(options) {
     smartLists: false
   });
   if (options.marked) {
-    es6marked.setOptions(options.marked);
+    esmMarked.setOptions(options.marked);
   }
-  await bench('es6 marked', specs, es6marked);
+  await bench('esm marked', specs, esmMarked.parse);
 
   // GFM
   marked.setOptions({
@@ -63,9 +67,9 @@ async function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  await bench('es5 marked (gfm)', specs, marked);
+  await bench('cjs marked (gfm)', specs, marked.parse);
 
-  es6marked.setOptions({
+  esmMarked.setOptions({
     gfm: true,
     breaks: false,
     pedantic: false,
@@ -73,9 +77,9 @@ async function runBench(options) {
     smartLists: false
   });
   if (options.marked) {
-    es6marked.setOptions(options.marked);
+    esmMarked.setOptions(options.marked);
   }
-  await bench('es6 marked (gfm)', specs, es6marked);
+  await bench('esm marked (gfm)', specs, esmMarked.parse);
 
   // Pedantic
   marked.setOptions({
@@ -88,9 +92,9 @@ async function runBench(options) {
   if (options.marked) {
     marked.setOptions(options.marked);
   }
-  await bench('es5 marked (pedantic)', specs, marked);
+  await bench('cjs marked (pedantic)', specs, marked.parse);
 
-  es6marked.setOptions({
+  esmMarked.setOptions({
     gfm: false,
     breaks: false,
     pedantic: true,
@@ -98,35 +102,35 @@ async function runBench(options) {
     smartLists: false
   });
   if (options.marked) {
-    es6marked.setOptions(options.marked);
+    esmMarked.setOptions(options.marked);
   }
-  await bench('es6 marked (pedantic)', specs, es6marked);
+  await bench('esm marked (pedantic)', specs, esmMarked.parse);
 
   try {
-    await bench('commonmark', specs, (() => {
-      const commonmark = require('commonmark');
-      const parser = new commonmark.Parser();
-      const writer = new commonmark.HtmlRenderer();
+    await bench('commonmark', specs, (await (async() => {
+      const { Parser, HtmlRenderer } = await import('commonmark');
+      const parser = new Parser();
+      const writer = new HtmlRenderer();
       return function(text) {
         return writer.render(parser.parse(text));
       };
-    })());
+    })()));
   } catch (e) {
     console.error('Could not bench commonmark. (Error: %s)', e.message);
   }
 
   try {
-    await bench('markdown-it', specs, (() => {
-      const MarkdownIt = require('markdown-it');
+    await bench('markdown-it', specs, (await (async() => {
+      const MarkdownIt = (await import('markdown-it')).default;
       const md = new MarkdownIt();
       return md.render.bind(md);
-    })());
+    })()));
   } catch (e) {
     console.error('Could not bench markdown-it. (Error: %s)', e.message);
   }
 }
 
-async function bench(name, specs, engine) {
+export async function bench(name, specs, engine) {
   const before = process.hrtime();
   for (let i = 0; i < 1e3; i++) {
     for (const spec of specs) {
@@ -138,7 +142,7 @@ async function bench(name, specs, engine) {
 
   let correct = 0;
   for (const spec of specs) {
-    if (await htmlDiffer.isEqual(spec.html, await engine(spec.markdown))) {
+    if (await isEqual(spec.html, await engine(spec.markdown))) {
       correct++;
     }
   }
@@ -150,7 +154,7 @@ async function bench(name, specs, engine) {
 /**
  * A simple one-time benchmark
  */
-async function time(options) {
+export async function time(options) {
   options = options || {};
   const specs = load();
   if (options.marked) {
@@ -252,11 +256,13 @@ function camelize(text) {
 /**
  * Main
  */
-async function main(argv) {
+export default async function main(argv) {
+  marked = (await import('../lib/marked.cjs')).marked;
+
   const opt = parseArg(argv);
 
   if (opt.minified) {
-    marked = require('../marked.min.js');
+    marked = (await import('../marked.min.js')).marked;
   }
 
   if (opt.time) {
@@ -275,14 +281,5 @@ function prettyElapsedTime(hrtimeElapsed) {
   return seconds * 1e3 + frac;
 }
 
-if (!module.parent) {
-  process.title = 'marked bench';
-  main(process.argv.slice());
-} else {
-  module.exports = main;
-  module.exports.main = main;
-  module.exports.time = time;
-  module.exports.runBench = runBench;
-  module.exports.load = load;
-  module.exports.bench = bench;
-}
+process.title = 'marked bench';
+main(process.argv.slice());

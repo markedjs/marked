@@ -1,7 +1,7 @@
 /**
  * Slugger generates header id
  */
-module.exports = class Slugger {
+export class Slugger {
   constructor() {
     this.seen = {};
   }
@@ -46,4 +46,4 @@ module.exports = class Slugger {
     const slug = this.serialize(value);
     return this.getNextSafeSlug(slug, options.dryrun);
   }
-};
+}

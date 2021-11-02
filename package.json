@@ -3,11 +3,12 @@
   "description": "A markdown parser built for speed",
   "author": "Christopher Jeffrey",
   "version": "3.0.8",
-  "main": "./src/marked.js",
+  "type": "module",
+  "main": "./lib/marked.esm.js",
   "module": "./lib/marked.esm.js",
-  "browser": "./lib/marked.js",
+  "browser": "./lib/marked.cjs",
   "bin": {
-    "marked": "bin/marked"
+    "marked": "bin/marked.js"
   },
   "man": "./man/marked.1",
   "files": [
@@ -17,6 +18,13 @@
     "man/",
     "marked.min.js"
   ],
+  "exports": {
+    ".": {
+      "import": "./lib/marked.esm.js",
+      "default": "./lib/marked.cjs"
+    },
+    "./package.json": "./package.json"
+  },
   "repository": "git://github.com/markedjs/marked.git",
   "homepage": "https://marked.js.org",
   "bugs": {
@@ -68,19 +76,19 @@
     "test:all": "npm test && npm run test:lint",
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",
-    "test:lint": "eslint bin/marked .",
+    "test:lint": "eslint .",
     "test:redos": "node test/vuln-regex.js",
     "test:update": "node test/update-specs.js",
     "rules": "node test/rules.js",
     "bench": "npm run rollup && node test/bench.js",
-    "lint": "eslint --fix bin/marked .",
-    "build:reset": "git checkout upstream/master lib/marked.js lib/marked.esm.js marked.min.js",
+    "lint": "eslint --fix .",
+    "build:reset": "git checkout upstream/master lib/marked.cjs lib/marked.esm.js marked.min.js",
     "build": "npm run rollup && npm run minify",
     "build:docs": "node build-docs.js",
     "rollup": "npm run rollup:umd && npm run rollup:esm",
     "rollup:umd": "rollup -c rollup.config.js",
     "rollup:esm": "rollup -c rollup.config.esm.js",
-    "minify": "uglifyjs lib/marked.js -cm  --comments /Copyright/ -o marked.min.js",
+    "minify": "uglifyjs lib/marked.cjs -cm  --comments /Copyright/ -o marked.min.js",
     "preversion": "npm run build && (git diff --quiet || git commit -am build)"
   },
   "engines": {

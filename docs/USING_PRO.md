@@ -8,7 +8,7 @@ To champion the single-responsibility and open/closed principles, we have tried 
 
 
 ```js
-const marked = require('marked');
+import { marked } from 'marked';
 
 marked.use({
   pedantic: false,
@@ -69,7 +69,7 @@ Calling `marked.use()` to override the same function multiple times will give pr
 
 ```js
 // Create reference instance
-const marked = require('marked');
+import { marked } from 'marked';
 
 // Override function
 const renderer = {
@@ -89,7 +89,7 @@ const renderer = {
 marked.use({ renderer });
 
 // Run marked
-console.log(marked('# heading+'));
+console.log(marked.parse('# heading+'));
 ```
 
 **Output:**
@@ -173,7 +173,7 @@ Calling `marked.use()` to override the same function multiple times will give pr
 
 ```js
 // Create reference instance
-const marked = require('marked');
+import { marked } from 'marked';
 
 // Override function
 const tokenizer = {
@@ -195,7 +195,7 @@ const tokenizer = {
 marked.use({ tokenizer });
 
 // Run marked
-console.log(marked('$ latex code $\n\n` other code `'));
+console.log(marked.parse('$ latex code $\n\n` other code `'));
 ```
 
 **Output:**
@@ -264,7 +264,7 @@ The walkTokens function gets called with every token. Child tokens are called be
 **Example:** Overriding heading tokens to start at h2.
 
 ```js
-const marked = require('marked');
+import { marked } from 'marked';
 
 // Override function
 const walkTokens = (token) => {
@@ -276,7 +276,7 @@ const walkTokens = (token) => {
 marked.use({ walkTokens });
 
 // Run marked
-console.log(marked('# heading 2\n\n## heading 3'));
+console.log(marked.parse('# heading 2\n\n## heading 3'));
 ```
 
 **Output:**
@@ -422,7 +422,7 @@ marked.use({ extensions: [descriptionList] });
 marked.use({ extensions: [description]     });
 marked.use({ walkTokens })
 
-console.log(marked('A Description List:\n'
+console.log(marked.parse('A Description List:\n'
                  + ':   Topic 1   :  Description 1\n'
                  + ': **Topic 2** : *Description 2*'));
 ```
@@ -497,7 +497,7 @@ The Lexer builds an array of tokens, which will be passed to the Parser.
 The Parser processes each token in the token array:
 
 ``` js
-const marked = require('marked');
+import { marked } from 'marked';
 
 const md = `
   # heading

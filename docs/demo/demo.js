@@ -34,7 +34,7 @@ var inputDirty = true;
 var $activeOutputElem = null;
 var search = searchToObject();
 var markedVersions = {
-  master: 'https://cdn.jsdelivr.net/gh/markedjs/marked/lib/marked.js'
+  master: 'https://cdn.jsdelivr.net/gh/markedjs/marked/marked.min.js'
 };
 var markedVersionCache = {};
 var delayTime = 1;
@@ -109,7 +109,7 @@ function setInitialVersion() {
     .then(function(json) {
       for (var i = 0; i < json.versions.length; i++) {
         var ver = json.versions[i];
-        markedVersions[ver] = 'https://cdn.jsdelivr.net/npm/marked@' + ver + '/lib/marked.js';
+        markedVersions[ver] = 'https://cdn.jsdelivr.net/npm/marked@' + ver + '/marked.min.js';
         var opt = document.createElement('option');
         opt.textContent = ver;
         opt.value = ver;
@@ -122,7 +122,7 @@ function setInitialVersion() {
           return res.json();
         })
         .then(function(json) {
-          markedVersions.master = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + json[0].sha + '/lib/marked.js';
+          markedVersions.master = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + json[0].sha + '/marked.min.js';
         })
         .catch(function() {
           // do nothing
@@ -262,7 +262,7 @@ function addCommitVersion(value, text, commit) {
   if (markedVersions[value]) {
     return;
   }
-  markedVersions[value] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + commit + '/lib/marked.js';
+  markedVersions[value] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + commit + '/marked.min.js';
   var opt = document.createElement('option');
   opt.textContent = text;
   opt.value = value;

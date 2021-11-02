@@ -5,10 +5,9 @@ const license = require('rollup-plugin-license');
 module.exports = {
   input: 'src/marked.js',
   output: {
-    file: 'lib/marked.js',
+    file: 'lib/marked.cjs',
     format: 'umd',
-    name: 'marked',
-    exports: 'default'
+    name: 'marked'
   },
   plugins: [
     license({

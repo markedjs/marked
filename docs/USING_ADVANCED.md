@@ -1,7 +1,8 @@
-## The `marked` function
+## The `parse` function
 
 ```js
-marked(markdownString [,options] [,callback])
+import { marked } from 'marked';
+marked.parse(markdownString [,options] [,callback])
 ```
 
 |Argument              |Type         |Notes                                                                                                |
@@ -14,7 +15,7 @@ marked(markdownString [,options] [,callback])
 
 ```js
 // Create reference instance
-const marked = require('marked');
+import { marked } from 'marked';
 
 // Set options
 // `highlight` example uses https://highlightjs.org
@@ -36,7 +37,7 @@ marked.setOptions({
 });
 
 // Compile
-console.log(marked(markdownString));
+console.log(marked.parse(markdownString));
 ```
 
 <h2 id="options">Options</h2>
@@ -67,7 +68,7 @@ console.log(marked(markdownString));
 You can parse inline markdown by running markdown through `marked.parseInline`.
 
 ```js
-const blockHtml = marked('**strong** _em_');
+const blockHtml = marked.parse('**strong** _em_');
 console.log(blockHtml); // '<p><strong>strong</strong> <em>em</em></p>'
 
 const inlineHtml = marked.parseInline('**strong** _em_');
@@ -87,7 +88,7 @@ marked.setOptions({
   }
 });
 
-marked(markdownString, (err, html) => {
+marked.parse(markdownString, (err, html) => {
   console.log(html);
 });
 ```
@@ -105,18 +106,18 @@ Marked can be run in a [worker thread](https://nodejs.org/api/worker_threads.htm
 ```js
 // markedWorker.js
 
-const marked = require('marked');
-const { parentPort } = require('worker_threads');
+import { marked } from 'marked';
+import { parentPort } from 'worker_threads';
 
 parentPort.on('message', (markdownString) => {
-  parentPort.postMessage(marked(markdownString));
+  parentPort.postMessage(marked.parse(markdownString));
 });
 ```
 
 ```js
 // index.js
 
-const { Worker } = require('worker_threads');
+import { Worker } from 'worker_threads';
 const markedWorker = new Worker('./markedWorker.js');
 
 const markedTimeout = setTimeout(() => {
@@ -144,7 +145,7 @@ importScripts('path/to/marked.min.js');
 
 onmessage = (e) => {
   const markdownString = e.data
-  postMessage(marked(markdownString));
+  postMessage(marked.parse(markdownString));
 };
 ```
 

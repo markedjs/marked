@@ -1,15 +1,15 @@
-const Renderer = require('./Renderer.js');
-const TextRenderer = require('./TextRenderer.js');
-const Slugger = require('./Slugger.js');
-const { defaults } = require('./defaults.js');
-const {
+import { Renderer } from './Renderer.js';
+import { TextRenderer } from './TextRenderer.js';
+import { Slugger } from './Slugger.js';
+import { defaults } from './defaults.js';
+import {
   unescape
-} = require('./helpers.js');
+} from './helpers.js';
 
 /**
  * Parsing & Compiling
  */
-module.exports = class Parser {
+export class Parser {
   constructor(options) {
     this.options = options || defaults;
     this.options.renderer = this.options.renderer || new Renderer();
@@ -283,4 +283,4 @@ module.exports = class Parser {
     }
     return out;
   }
-};
+}

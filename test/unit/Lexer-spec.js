@@ -1,4 +1,4 @@
-const Lexer = require('../../src/Lexer.js');
+import { Lexer } from '../../src/Lexer.js';
 
 function expectTokens({ md, options, tokens = [], links = {} }) {
   const lexer = new Lexer(options);

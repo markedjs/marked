@@ -5,16 +5,17 @@
  * Copyright (c) 2011-2013, Christopher Jeffrey (MIT License)
  */
 
-const fs = require('fs'),
-  path = require('path'),
-  marked = require('../');
+import { promises } from 'fs';
+import { marked } from '../lib/marked.esm.js';
+
+const { readFile, writeFile } = promises;
 
 /**
  * Man Page
  */
 
-function help() {
-  const spawn = require('child_process').spawn;
+async function help() {
+  const { spawn } = await import('child_process');
 
   const options = {
     cwd: process.cwd(),
@@ -23,16 +24,18 @@ function help() {
     stdio: 'inherit'
   };
 
-  spawn('man', [path.resolve(__dirname, '../man/marked.1')], options)
-    .on('error', function() {
-      fs.readFile(path.resolve(__dirname, '../man/marked.1.txt'), 'utf8', function(err, data) {
-        if (err) throw err;
-        console.log(data);
-      });
+  const { dirname, resolve } = await import('path');
+  const { fileURLToPath } = await import('url');
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+  spawn('man', [resolve(__dirname, '../man/marked.1')], options)
+    .on('error', async() => {
+      console.log(await readFile(resolve(__dirname, '../man/marked.1.txt'), 'utf8'));
     });
 }
 
-function version() {
+async function version() {
+  const { createRequire } = await import('module');
+  const require = createRequire(import.meta.url);
   const pkg = require('../package.json');
   console.log(pkg.version);
 }
@@ -41,15 +44,15 @@ function version() {
  * Main
  */
 
-function main(argv, callback) {
-  const files = [],
-    options = {};
-  let input,
-    output,
-    string,
-    arg,
-    tokens,
-    opt;
+async function main(argv) {
+  const files = [];
+  const options = {};
+  let input;
+  let output;
+  let string;
+  let arg;
+  let tokens;
+  let opt;
 
   function getarg() {
     let arg = argv.shift();
@@ -82,8 +85,6 @@ function main(argv, callback) {
   while (argv.length) {
     arg = getarg();
     switch (arg) {
-      case '--test':
-        return require('../test').main(process.argv.slice());
       case '-o':
       case '--output':
         output = argv.shift();
@@ -102,10 +103,10 @@ function main(argv, callback) {
         break;
       case '-h':
       case '--help':
-        return help();
+        return await help();
       case '-v':
       case '--version':
-        return version();
+        return await version();
       default:
         if (arg.indexOf('--') === 0) {
           opt = camelize(arg.replace(/^--(no-)?/, ''));
@@ -128,62 +129,57 @@ function main(argv, callback) {
     }
   }
 
-  function getData(callback) {
+  async function getData() {
     if (!input) {
       if (files.length <= 2) {
         if (string) {
-          return callback(null, string);
+          return string;
         }
-        return getStdin(callback);
+        return await getStdin();
       }
       input = files.pop();
     }
-    return fs.readFile(input, 'utf8', callback);
+    return await readFile(input, 'utf8');
   }
 
-  return getData(function(err, data) {
-    if (err) return callback(err);
+  const data = await getData();
 
-    data = tokens
-      ? JSON.stringify(marked.lexer(data, options), null, 2)
-      : marked(data, options);
+  const html = tokens
+    ? JSON.stringify(marked.lexer(data, options), null, 2)
+    : marked(data, options);
 
-    if (!output) {
-      process.stdout.write(data + '\n');
-      return callback();
-    }
+  if (output) {
+    return await writeFile(output, data);
+  }
 
-    return fs.writeFile(output, data, callback);
-  });
+  process.stdout.write(html + '\n');
 }
 
 /**
  * Helpers
  */
 
-function getStdin(callback) {
-  const stdin = process.stdin;
-  let buff = '';
+function getStdin() {
+  return new Promise((resolve, reject) => {
+    const stdin = process.stdin;
+    let buff = '';
 
-  stdin.setEncoding('utf8');
+    stdin.setEncoding('utf8');
 
-  stdin.on('data', function(data) {
-    buff += data;
-  });
+    stdin.on('data', function(data) {
+      buff += data;
+    });
 
-  stdin.on('error', function(err) {
-    return callback(err);
-  });
+    stdin.on('error', function(err) {
+      reject(err);
+    });
 
-  stdin.on('end', function() {
-    return callback(null, buff);
-  });
+    stdin.on('end', function() {
+      resolve(buff);
+    });
 
-  try {
     stdin.resume();
-  } catch (e) {
-    callback(e);
-  }
+  });
 }
 
 function camelize(text) {
@@ -204,12 +200,9 @@ function handleError(err) {
  * Expose / Entry Point
  */
 
-if (!module.parent) {
-  process.title = 'marked';
-  main(process.argv.slice(), function(err, code) {
-    if (err) return handleError(err);
-    return process.exit(code || 0);
-  });
-} else {
-  module.exports = main;
-}
+process.title = 'marked';
+main(process.argv.slice()).then(code => {
+  process.exit(code || 0);
+}).catch(err => {
+  handleError(err);
+});

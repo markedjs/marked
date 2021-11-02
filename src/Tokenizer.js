@@ -1,10 +1,10 @@
-const { defaults } = require('./defaults.js');
-const {
+import { defaults } from './defaults.js';
+import {
   rtrim,
   splitCells,
   escape,
   findClosingBracket
-} = require('./helpers.js');
+} from './helpers.js';
 
 function outputLink(cap, link, raw, lexer) {
   const href = link.href;
@@ -65,7 +65,7 @@ function indentCodeCompensation(raw, text) {
 /**
  * Tokenizer
  */
-module.exports = class Tokenizer {
+export class Tokenizer {
   constructor(options) {
     this.options = options || defaults;
   }
@@ -752,4 +752,4 @@ module.exports = class Tokenizer {
       };
     }
   }
-};
+}
