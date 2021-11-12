@@ -6,7 +6,7 @@
   "type": "module",
   "main": "./lib/marked.cjs",
   "module": "./lib/marked.esm.js",
-  "browser": "./lib/marked.cjs",
+  "browser": "./lib/marked.umd.js",
   "bin": {
     "marked": "bin/marked.js"
   },
