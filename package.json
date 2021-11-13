@@ -82,13 +82,13 @@
     "rules": "node test/rules.js",
     "bench": "npm run rollup && node test/bench.js",
     "lint": "eslint --fix .",
-    "build:reset": "git checkout upstream/master lib/marked.cjs lib/marked.esm.js marked.min.js",
+    "build:reset": "git checkout upstream/master lib/marked.cjs lib/marked.umd.js lib/marked.esm.js marked.min.js",
     "build": "npm run rollup && npm run minify",
     "build:docs": "node build-docs.js",
     "rollup": "npm run rollup:umd && npm run rollup:esm",
     "rollup:umd": "rollup -c rollup.config.js",
     "rollup:esm": "rollup -c rollup.config.esm.js",
-    "minify": "uglifyjs lib/marked.cjs -cm  --comments /Copyright/ -o marked.min.js",
+    "minify": "uglifyjs lib/marked.umd.js -cm  --comments /Copyright/ -o marked.min.js",
     "preversion": "npm run build && (git diff --quiet || git commit -am build)"
   },
   "engines": {
