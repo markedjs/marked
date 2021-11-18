@@ -212,7 +212,6 @@ console.log(marked.parse('$ latex code $\n\n` other code `'));
 - <code>**code**(*string* src)</code>
 - <code>**fences**(*string* src)</code>
 - <code>**heading**(*string* src)</code>
-- <code>**nptable**(*string* src)</code>
 - <code>**hr**(*string* src)</code>
 - <code>**blockquote**(*string* src)</code>
 - <code>**list**(*string* src)</code>
