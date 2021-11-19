@@ -27,10 +27,16 @@ async function help() {
   const { dirname, resolve } = await import('path');
   const { fileURLToPath } = await import('url');
   const __dirname = dirname(fileURLToPath(import.meta.url));
-  spawn('man', [resolve(__dirname, '../man/marked.1')], options)
-    .on('error', async() => {
-      console.log(await readFile(resolve(__dirname, '../man/marked.1.txt'), 'utf8'));
-    });
+  const helpText = await readFile(resolve(__dirname, '../man/marked.1.txt'), 'utf8');
+
+  // eslint-disable-next-line promise/param-names
+  await new Promise(res => {
+    spawn('man', [resolve(__dirname, '../man/marked.1')], options)
+      .on('error', () => {
+        console.log(helpText);
+      })
+      .on('close', res);
+  });
 }
 
 async function version() {
@@ -149,7 +155,7 @@ async function main(argv) {
     : marked(data, options);
 
   if (output) {
-    return await writeFile(output, data);
+    return await writeFile(output, html);
   }
 
   process.stdout.write(html + '\n');
