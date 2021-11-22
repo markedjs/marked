@@ -204,6 +204,52 @@ lheading 2
       });
     });
 
+    it('table after para', () => {
+      expectTokens({
+        md: `
+paragraph 1
+| a | b |
+|---|---|
+| 1 | 2 |
+`,
+        tokens: [
+          {
+            type: 'paragraph',
+            raw: 'paragraph 1',
+            text: 'paragraph 1',
+            tokens: [{ type: 'text', raw: 'paragraph 1', text: 'paragraph 1' }]
+          },
+          {
+            type: 'table',
+            align: [null, null],
+            raw: '| a | b |\n|---|---|\n| 1 | 2 |\n',
+            header: [
+              {
+                text: 'a',
+                tokens: [{ type: 'text', raw: 'a', text: 'a' }]
+              },
+              {
+                text: 'b',
+                tokens: [{ type: 'text', raw: 'b', text: 'b' }]
+              }
+            ],
+            rows: [
+              [
+                {
+                  text: '1',
+                  tokens: [{ type: 'text', raw: '1', text: '1' }]
+                },
+                {
+                  text: '2',
+                  tokens: [{ type: 'text', raw: '2', text: '2' }]
+                }
+              ]
+            ]
+          }
+        ]
+      });
+    });
+
     it('align table', () => {
       expectTokens({
         md: `
