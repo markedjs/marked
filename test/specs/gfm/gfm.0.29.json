@@ -48,18 +48,6 @@
     "example": 205
   },
   {
-    "section": "[extension] Tables",
-    "html": "<p>paragraph 1</p><table>\n<thead>\n<tr>\n<th>abc</th>\n<th>def</th>\n</tr>\n</thead>\n</table>",
-    "markdown": "paragraph 1\n| abc | def |\n| --- | --- |",
-    "example": 206
-  },
-  {
-    "section": "[extension] Tables",
-    "html": "<p>paragraph with <code>inline code</code></p><table>\n<thead>\n<tr>\n<th>abc</th>\n<th>def</th>\n</tr>\n</thead>\n</table>",
-    "markdown": "paragraph with `inline code`\n| abc | def |\n| --- | --- |",
-    "example": 207
-  },
-  {
     "section": "[extension] Task list items",
     "html": "<ul>\n<li><input disabled=\"\" type=\"checkbox\"> foo</li>\n<li><input checked=\"\" disabled=\"\" type=\"checkbox\"> bar</li>\n</ul>",
     "markdown": "- [ ] foo\n- [x] bar",
