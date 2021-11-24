@@ -190,7 +190,7 @@ export class Tokenizer {
       }
 
       // Get next list item
-      const itemRegex = new RegExp(`^( {0,3}${bull})((?: [^\\n]*| *)(?:\\n[^\\n]*)*(?:\\n|$))`);
+      const itemRegex = new RegExp(`^( {0,3}${bull})((?: [^\\n]*)?(?:\\n|$))`);
 
       // Get each top-level item
       while (src) {
@@ -202,30 +202,39 @@ export class Tokenizer {
           break;
         }
 
-        lines = cap[2].split('\n');
+        //lines = cap[2].split('\n');
+        raw = cap[0];
+        line = cap[2].split('\n',1)[0];
+        src = src.substring(raw.length);
+        let nextLine = src.split('\n',1)[0];
 
         if (this.options.pedantic) {
           indent = 2;
-          itemContents = lines[0].trimLeft();
+          itemContents = line.trimLeft();
         } else {
           indent = cap[2].search(/[^ ]/); // Find first non-space char
-          indent = cap[1].length + (indent > 4 ? 1 : indent); // intented code blocks after 4 spaces; indent is always 1
-          itemContents = lines[0].slice(indent - cap[1].length);
+          indent = indent > 4 ? 1 : indent; // Treat indented code blocks (> 4 spaces) as having only 1 indent
+          itemContents = line.slice(indent);
+          indent += cap[1].length;
         }
 
         blankLine = false;
-        raw = cap[0];
 
-        if (!lines[0] && /^ *$/.test(lines[1])) { // items begin with at most one blank line
-          raw = cap[1] + lines.slice(0, 2).join('\n') + '\n';
+
+        if (!line && /^ *$/.test(nextLine)) { // items begin with at most one blank line
+          raw += nextLine + '\n';
+          src = src.substring(nextLine.length + 1);
           list.loose = true;
           lines = [];
         }
 
         const nextBulletRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])`);
 
-        for (i = 1; i < lines.length; i++) {
-          line = lines[i];
+        let rawLine;
+
+        while(src && !list.loose) {
+          rawLine = src.split('\n',1)[0];
+          line = rawLine;
 
           if (this.options.pedantic) { // Re-align to follow commonmark nesting rules
             line = line.replace(/^ {1,4}(?=( {4})*[^ ])/g, '  ');
@@ -233,7 +242,6 @@ export class Tokenizer {
 
           // End list item if found start of new bullet
           if (nextBulletRegex.test(line)) {
-            raw = cap[1] + lines.slice(0, i).join('\n') + '\n';
             break;
           }
 
@@ -249,15 +257,18 @@ export class Tokenizer {
             } else {
               itemContents += '\n' + line;
             }
+            raw += rawLine + '\n';
+            src = src.substring(rawLine.length + 1);
             continue;
           }
 
           // Dedent this line
           if (line.search(/[^ ]/) >= indent || !line.trim()) {
             itemContents += '\n' + line.slice(indent);
+            raw += rawLine + '\n';
+            src = src.substring(rawLine.length + 1);
             continue;
           } else { // Line was not properly indented; end of this item
-            raw = cap[1] + lines.slice(0, i).join('\n') + '\n';
             break;
           }
         }
@@ -290,7 +301,7 @@ export class Tokenizer {
         });
 
         list.raw += raw;
-        src = src.slice(raw.length);
+        //src = src.slice(raw.length);
       }
 
       // Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
@@ -304,9 +315,9 @@ export class Tokenizer {
       for (i = 0; i < l; i++) {
         this.lexer.state.top = false;
         list.items[i].tokens = this.lexer.blockTokens(list.items[i].text, []);
-        if (list.items[i].tokens.some(t => t.type === 'space')) {
+        if (!list.loose && list.items[i].tokens.some(t => t.type === 'space')) {
           list.loose = true;
-          list.items[i].loose = true;
+          //list.items[i].loose = true;
         }
       }
 
