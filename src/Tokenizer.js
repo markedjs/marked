@@ -169,7 +169,7 @@ export class Tokenizer {
     let cap = this.rules.block.list.exec(src);
     if (cap) {
       let raw, istask, ischecked, indent, i, blankLine, endsWithBlankLine,
-        line, lines, itemContents;
+        line, nextLine, rawLine, itemContents;
 
       let bull = cap[1].trim();
       const isordered = bull.length > 1;
@@ -192,7 +192,7 @@ export class Tokenizer {
       // Get next list item
       const itemRegex = new RegExp(`^( {0,3}${bull})((?: [^\\n]*)?(?:\\n|$))`);
 
-      // Get each top-level item
+      // Check if current bullet point can start a new List Item
       while (src) {
         if (this.rules.block.hr.test(src)) { // End list if we encounter an HR (possibly move into itemRegex?)
           break;
@@ -202,11 +202,10 @@ export class Tokenizer {
           break;
         }
 
-        //lines = cap[2].split('\n');
         raw = cap[0];
-        line = cap[2].split('\n',1)[0];
+        line = cap[2].split('\n', 1)[0];
         src = src.substring(raw.length);
-        let nextLine = src.split('\n',1)[0];
+        nextLine = src.split('\n', 1)[0];
 
         if (this.options.pedantic) {
           indent = 2;
@@ -220,20 +219,17 @@ export class Tokenizer {
 
         blankLine = false;
 
-
         if (!line && /^ *$/.test(nextLine)) { // items begin with at most one blank line
           raw += nextLine + '\n';
           src = src.substring(nextLine.length + 1);
           list.loose = true;
-          lines = [];
         }
 
         const nextBulletRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])`);
 
-        let rawLine;
-
-        while(src && !list.loose) {
-          rawLine = src.split('\n',1)[0];
+        // Check following lines if they should be included in List Item
+        while (src && !list.loose) {
+          rawLine = src.split('\n', 1)[0];
           line = rawLine;
 
           if (this.options.pedantic) { // Re-align to follow commonmark nesting rules
@@ -301,7 +297,6 @@ export class Tokenizer {
         });
 
         list.raw += raw;
-        //src = src.slice(raw.length);
       }
 
       // Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
@@ -317,7 +312,7 @@ export class Tokenizer {
         list.items[i].tokens = this.lexer.blockTokens(list.items[i].text, []);
         if (!list.loose && list.items[i].tokens.some(t => t.type === 'space')) {
           list.loose = true;
-          //list.items[i].loose = true;
+          // list.items[i].loose = true;
         }
       }
 
