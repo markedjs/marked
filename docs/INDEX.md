@@ -30,6 +30,7 @@ These documentation pages are also rendered using marked 💯
 **CLI**
 
 ``` bash
+# Example with stdin input
 $ marked -o hello.html
 hello world
 ^D
@@ -38,8 +39,24 @@ $ cat hello.html
 ```
 
 ``` bash
+# Example with string input
 $ marked -s "*hello world*"
 <p><em>hello world</em></p>
+```
+
+```bash
+# Example with file input
+
+echo "**bold text example**" > readme.md
+
+$ marked -i readme.md -o readme.html
+$ cat readme.html
+<p><strong>bold text example</strong></p>
+```
+
+```bash
+# Print all options
+$ marked --help
 ```
 
 **Browser**
