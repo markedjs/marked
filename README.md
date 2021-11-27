@@ -47,12 +47,19 @@ Also read about:
 
 **CLI**
 
+
 ``` bash
+# Example with stdin input
 $ marked -o hello.html
 hello world
 ^D
 $ cat hello.html
 <p>hello world</p>
+```
+
+```bash
+# Print all options
+$ marked --help
 ```
 
 **Browser**
