@@ -194,17 +194,18 @@ export class Tokenizer {
 
       // Check if current bullet point can start a new List Item
       while (src) {
-        if (this.rules.block.hr.test(src)) { // End list if we encounter an HR (possibly move into itemRegex?)
-          break;
-        }
-
         if (!(cap = itemRegex.exec(src))) {
           break;
         }
 
+        if (this.rules.block.hr.test(src)) { // End list if bullet was actually HR (possibly move into itemRegex?)
+          break;
+        }
+
         raw = cap[0];
-        line = cap[2].split('\n', 1)[0];
         src = src.substring(raw.length);
+
+        line = cap[2].split('\n', 1)[0];
         nextLine = src.split('\n', 1)[0];
 
         if (this.options.pedantic) {
@@ -219,7 +220,7 @@ export class Tokenizer {
 
         blankLine = false;
 
-        if (!line && /^ *$/.test(nextLine)) { // items begin with at most one blank line
+        if (!line && /^ *$/.test(nextLine)) { // Items begin with at most one blank line
           raw += nextLine + '\n';
           src = src.substring(nextLine.length + 1);
           list.loose = true;
@@ -227,12 +228,13 @@ export class Tokenizer {
 
         const nextBulletRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])`);
 
-        // Check following lines if they should be included in List Item
+        // Check if following lines should be included in List Item
         while (src && !list.loose) {
           rawLine = src.split('\n', 1)[0];
           line = rawLine;
 
-          if (this.options.pedantic) { // Re-align to follow commonmark nesting rules
+          // Re-align to follow commonmark nesting rules
+          if (this.options.pedantic) {
             line = line.replace(/^ {1,4}(?=( {4})*[^ ])/g, '  ');
           }
 
@@ -241,32 +243,20 @@ export class Tokenizer {
             break;
           }
 
-          // Until we encounter a blank line, item contents do not need indentation
-          if (!blankLine) {
-            if (!line.trim()) { // Check if current line is empty
-              blankLine = true;
-            }
-
-            // Dedent if possible
-            if (line.search(/[^ ]/) >= indent) {
-              itemContents += '\n' + line.slice(indent);
-            } else {
-              itemContents += '\n' + line;
-            }
-            raw += rawLine + '\n';
-            src = src.substring(rawLine.length + 1);
-            continue;
-          }
-
-          // Dedent this line
-          if (line.search(/[^ ]/) >= indent || !line.trim()) {
+          if (line.search(/[^ ]/) >= indent || !line.trim()) { // Dedent if possible
             itemContents += '\n' + line.slice(indent);
-            raw += rawLine + '\n';
-            src = src.substring(rawLine.length + 1);
-            continue;
-          } else { // Line was not properly indented; end of this item
+          } else if (!blankLine) { // Until blank line, item doesn't need indentation
+            itemContents += '\n' + line;
+          } else { // Otherwise, improper indentation ends this item
             break;
           }
+
+          if (!blankLine && !line.trim()) { // Check if current line is blank
+            blankLine = true;
+          }
+
+          raw += rawLine + '\n';
+          src = src.substring(rawLine.length + 1);
         }
 
         if (!list.loose) {
