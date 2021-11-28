@@ -302,7 +302,7 @@ export class Tokenizer {
         list.items[i].tokens = this.lexer.blockTokens(list.items[i].text, []);
         if (!list.loose && list.items[i].tokens.some(t => t.type === 'space')) {
           list.loose = true;
-          // list.items[i].loose = true;
+          list.items[i].loose = true;
         }
       }
 
