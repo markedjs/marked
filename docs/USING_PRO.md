@@ -362,7 +362,7 @@ The renderer function has access to the parser in the `this` object, which can b
 **Example:** Add a custom syntax to generate `<dl>` description lists.
 
 ``` js
-const descriptionlist = {
+const descriptionList = {
   name: 'descriptionList',
   level: 'block',                                     // Is this a block-level or inline-level tokenizer?
   start(src) { return src.match(/:[^:\n]/)?.index; }, // Hint to Marked.js to stop and check for a match
@@ -413,7 +413,7 @@ function walkTokens(token) {                        // Post-processing on the co
     token.tokens = this.Lexer.lexInline(token.text)
   }
 }
-marked.use({ extensions: [descriptionlist, description], walkTokens });
+marked.use({ extensions: [descriptionList, description], walkTokens });
 
 // EQUIVALENT TO:
 
