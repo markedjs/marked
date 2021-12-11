@@ -377,7 +377,7 @@ export class Tokenizer {
 
         l = item.rows.length;
         for (i = 0; i < l; i++) {
-          if (/^\s{1,4}$/.test(item.rows[i])) {
+          if (/^ {1,4}]$/.test(item.rows[i])) {
             item.rows.pop();
             continue;
           }
