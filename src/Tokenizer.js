@@ -374,6 +374,10 @@ export class Tokenizer {
 
         l = item.rows.length;
         for (i = 0; i < l; i++) {
+          if (/^\s{1,4}$/.test(item.rows[i])) {
+            item.rows.pop();
+            continue;
+          }
           item.rows[i] = splitCells(item.rows[i], item.header.length).map(c => { return { text: c }; });
         }
 
