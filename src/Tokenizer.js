@@ -355,7 +355,7 @@ export class Tokenizer {
         type: 'table',
         header: splitCells(cap[1]).map(c => { return { text: c }; }),
         align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
-        rows: cap[3] ? cap[3].replace(/\n$/, '').split('\n') : []
+        rows: cap[3] ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : []
       };
 
       if (item.header.length === item.align.length) {
@@ -377,10 +377,6 @@ export class Tokenizer {
 
         l = item.rows.length;
         for (i = 0; i < l; i++) {
-          if (/(^ {1,4}$)|(^\t$)/.test(item.rows[i])) {
-            item.rows.pop();
-            continue;
-          }
           item.rows[i] = splitCells(item.rows[i], item.header.length).map(c => { return { text: c }; });
         }
 
