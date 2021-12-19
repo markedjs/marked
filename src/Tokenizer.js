@@ -355,7 +355,7 @@ export class Tokenizer {
         type: 'table',
         header: splitCells(cap[1]).map(c => { return { text: c }; }),
         align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
-        rows: cap[3] ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : []
+        rows: cap[3] && cap[3].trim() ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : []
       };
 
       if (item.header.length === item.align.length) {
