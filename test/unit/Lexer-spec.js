@@ -73,8 +73,7 @@ describe('Lexer', () => {
   describe('headings', () => {
     it('depth', () => {
       expectTokens({
-        md: `
-# heading 1
+        md: `# heading 1
 
 ## heading 2
 
@@ -169,8 +168,7 @@ lheading 2
   describe('table', () => {
     it('pipe table', () => {
       expectTokens({
-        md: `
-| a | b |
+        md: `| a | b |
 |---|---|
 | 1 | 2 |
 `,
@@ -206,8 +204,7 @@ lheading 2
 
     it('table after para', () => {
       expectTokens({
-        md: `
-paragraph 1
+        md: `paragraph 1
 | a | b |
 |---|---|
 | 1 | 2 |
@@ -215,7 +212,7 @@ paragraph 1
         tokens: [
           {
             type: 'paragraph',
-            raw: 'paragraph 1',
+            raw: 'paragraph 1\n',
             text: 'paragraph 1',
             tokens: [{ type: 'text', raw: 'paragraph 1', text: 'paragraph 1' }]
           },
@@ -252,8 +249,7 @@ paragraph 1
 
     it('align table', () => {
       expectTokens({
-        md: `
-| a | b | c |
+        md: `| a | b | c |
 |:--|:-:|--:|
 | 1 | 2 | 3 |
 `,
@@ -297,8 +293,7 @@ paragraph 1
 
     it('no pipe table', () => {
       expectTokens({
-        md: `
-a | b
+        md: `a | b
 --|--
 1 | 2
 `,
@@ -370,14 +365,13 @@ a | b
   describe('list', () => {
     it('unordered', () => {
       expectTokens({
-        md: `
-- item 1
+        md: `- item 1
 - item 2
 `,
         tokens: [
           {
             type: 'list',
-            raw: '- item 1\n- item 2',
+            raw: '- item 1\n- item 2\n',
             ordered: false,
             start: '',
             loose: false,
@@ -418,14 +412,13 @@ a | b
 
     it('ordered', () => {
       expectTokens({
-        md: `
-1. item 1
+        md: `1. item 1
 2. item 2
 `,
         tokens: jasmine.arrayContaining([
           jasmine.objectContaining({
             type: 'list',
-            raw: '1. item 1\n2. item 2',
+            raw: '1. item 1\n2. item 2\n',
             ordered: true,
             start: 1,
             items: [
@@ -443,14 +436,13 @@ a | b
 
     it('ordered with parenthesis', () => {
       expectTokens({
-        md: `
-1) item 1
+        md: `1) item 1
 2) item 2
 `,
         tokens: jasmine.arrayContaining([
           jasmine.objectContaining({
             type: 'list',
-            raw: '1) item 1\n2) item 2',
+            raw: '1) item 1\n2) item 2\n',
             ordered: true,
             start: 1,
             items: [
@@ -468,8 +460,7 @@ a | b
 
     it('space after list', () => {
       expectTokens({
-        md: `
-- item 1
+        md: `- item 1
 - item 2
 
 paragraph
@@ -515,7 +506,7 @@ paragraph
           { type: 'space', raw: '\n\n' },
           {
             type: 'paragraph',
-            raw: 'paragraph',
+            raw: 'paragraph\n',
             text: 'paragraph',
             tokens: [{
               type: 'text',
@@ -529,14 +520,13 @@ paragraph
 
     it('start', () => {
       expectTokens({
-        md: `
-2. item 1
+        md: `2. item 1
 3. item 2
 `,
         tokens: jasmine.arrayContaining([
           jasmine.objectContaining({
             type: 'list',
-            raw: '2. item 1\n3. item 2',
+            raw: '2. item 1\n3. item 2\n',
             ordered: true,
             start: 2,
             items: [
@@ -554,15 +544,14 @@ paragraph
 
     it('loose', () => {
       expectTokens({
-        md: `
-- item 1
+        md: `- item 1
 
 - item 2
 `,
         tokens: jasmine.arrayContaining([
           jasmine.objectContaining({
             type: 'list',
-            raw: '- item 1\n\n- item 2',
+            raw: '- item 1\n\n- item 2\n',
             loose: true,
             items: [
               jasmine.objectContaining({
@@ -579,14 +568,13 @@ paragraph
 
     it('task', () => {
       expectTokens({
-        md: `
-- [ ] item 1
+        md: `- [ ] item 1
 - [x] item 2
 `,
         tokens: jasmine.arrayContaining([
           jasmine.objectContaining({
             type: 'list',
-            raw: '- [ ] item 1\n- [x] item 2',
+            raw: '- [ ] item 1\n- [x] item 2\n',
             items: [
               jasmine.objectContaining({
                 raw: '- [ ] item 1\n',

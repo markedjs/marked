@@ -73,7 +73,7 @@ export class Tokenizer {
   space(src) {
     const cap = this.rules.block.newline.exec(src);
     if (cap) {
-      if (cap[0].length > 1) {
+      if (cap[0].length) {
         return {
           type: 'space',
           raw: cap[0]
@@ -303,7 +303,10 @@ export class Tokenizer {
       for (i = 0; i < l; i++) {
         this.lexer.state.top = false;
         list.items[i].tokens = this.lexer.blockTokens(list.items[i].text, []);
-        if (!list.loose && list.items[i].tokens.some(t => t.type === 'space')) {
+        const spacers = list.items[i].tokens.filter(t => t.type === 'space');
+        const hasMultipleSpaces = spacers.every(t => t.raw.length > 1);
+        if (!list.loose && spacers.length && hasMultipleSpaces) {
+          // Having a single line break doesn't mean a list is loose. A single line break is terminating the last list item
           list.loose = true;
           list.items[i].loose = true;
         }
