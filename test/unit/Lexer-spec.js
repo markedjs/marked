@@ -579,6 +579,35 @@ paragraph
       });
     });
 
+    it('not loose with spaces', () => {
+      expectTokens({
+        md: `- item 1
+  - item 2
+`,
+        tokens: jasmine.arrayContaining([
+          jasmine.objectContaining({
+            type: 'list',
+            raw: '- item 1\n  - item 2\n',
+            loose: false,
+            items: [
+              jasmine.objectContaining({
+                raw: '- item 1\n  - item 2',
+                tokens: jasmine.arrayContaining([
+                  jasmine.objectContaining({
+                    raw: 'item 1\n'
+                  }),
+                  jasmine.objectContaining({
+                    type: 'list',
+                    raw: '- item 2'
+                  }),
+                ])
+              })
+            ]
+          })
+        ])
+      });
+    });
+
     it('task', () => {
       expectTokens({
         md: `- [ ] item 1
