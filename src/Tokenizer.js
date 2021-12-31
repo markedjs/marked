@@ -307,16 +307,16 @@ export class Tokenizer {
         const hasMultipleLineBreaks = spacers.every(t => {
           const chars = t.raw.split('');
           let lineBreaks = 0;
-          for (let char of chars) {
+          for (const char of chars) {
             if (char === '\n') {
               lineBreaks += 1;
             }
             if (lineBreaks > 1) {
-              return true
+              return true;
             }
           }
 
-          return false
+          return false;
         });
 
         if (!list.loose && spacers.length && hasMultipleLineBreaks) {

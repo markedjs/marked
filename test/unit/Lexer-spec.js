@@ -344,7 +344,7 @@ lheading 2
         tokens:
         jasmine.arrayContaining([
           jasmine.objectContaining({
-            raw: "T\nh\n"
+            raw: 'T\nh\n'
           }),
           { type: 'hr', raw: '---' }
         ])
@@ -599,7 +599,7 @@ paragraph
                   jasmine.objectContaining({
                     type: 'list',
                     raw: '- item 2'
-                  }),
+                  })
                 ])
               })
             ]

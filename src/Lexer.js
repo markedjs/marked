@@ -154,8 +154,8 @@ export class Lexer {
         src = src.substring(token.raw.length);
         if (token.raw.length === 1 && tokens[tokens.length - 1]) {
           // if there's a single \n as a spacer, it's terminating the last line, so move it there so that we don't get unecessary paragraph tags
-          tokens[tokens.length - 1].raw = `${tokens[tokens.length - 1].raw}\n`
-          continue
+          tokens[tokens.length - 1].raw = `${tokens[tokens.length - 1].raw}\n`;
+          continue;
         }
         if (token.type) {
           tokens.push(token);
