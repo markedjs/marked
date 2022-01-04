@@ -73,7 +73,8 @@ describe('Lexer', () => {
   describe('headings', () => {
     it('depth', () => {
       expectTokens({
-        md: `# heading 1
+        md: `
+# heading 1
 
 ## heading 2
 
@@ -92,6 +93,10 @@ lheading 2
 ----------
 `,
         tokens: [
+          {
+            type: 'space',
+            raw: '\n'
+          },
           {
             type: 'heading',
             raw: '# heading 1\n\n',
@@ -168,11 +173,15 @@ lheading 2
   describe('table', () => {
     it('pipe table', () => {
       expectTokens({
-        md: `| a | b |
+        md: `
+| a | b |
 |---|---|
 | 1 | 2 |
 `,
         tokens: [{
+          type: 'space',
+          raw: '\n'
+        }, {
           type: 'table',
           align: [null, null],
           raw: '| a | b |\n|---|---|\n| 1 | 2 |\n',
@@ -204,56 +213,63 @@ lheading 2
 
     it('table after para', () => {
       expectTokens({
-        md: `paragraph 1
+        md: `
+paragraph 1
 | a | b |
 |---|---|
 | 1 | 2 |
 `,
-        tokens: [
-          {
-            type: 'paragraph',
-            raw: 'paragraph 1\n',
-            text: 'paragraph 1',
-            tokens: [{ type: 'text', raw: 'paragraph 1', text: 'paragraph 1' }]
-          },
-          {
-            type: 'table',
-            align: [null, null],
-            raw: '| a | b |\n|---|---|\n| 1 | 2 |\n',
-            header: [
+        tokens: [{
+          type: 'space',
+          raw: '\n'
+        }, {
+          type: 'paragraph',
+          raw: 'paragraph 1\n',
+          text: 'paragraph 1',
+          tokens: [{ type: 'text', raw: 'paragraph 1', text: 'paragraph 1' }]
+        },
+        {
+          type: 'table',
+          align: [null, null],
+          raw: '| a | b |\n|---|---|\n| 1 | 2 |\n',
+          header: [
+            {
+              text: 'a',
+              tokens: [{ type: 'text', raw: 'a', text: 'a' }]
+            },
+            {
+              text: 'b',
+              tokens: [{ type: 'text', raw: 'b', text: 'b' }]
+            }
+          ],
+          rows: [
+            [
               {
-                text: 'a',
-                tokens: [{ type: 'text', raw: 'a', text: 'a' }]
+                text: '1',
+                tokens: [{ type: 'text', raw: '1', text: '1' }]
               },
               {
-                text: 'b',
-                tokens: [{ type: 'text', raw: 'b', text: 'b' }]
+                text: '2',
+                tokens: [{ type: 'text', raw: '2', text: '2' }]
               }
-            ],
-            rows: [
-              [
-                {
-                  text: '1',
-                  tokens: [{ type: 'text', raw: '1', text: '1' }]
-                },
-                {
-                  text: '2',
-                  tokens: [{ type: 'text', raw: '2', text: '2' }]
-                }
-              ]
             ]
-          }
+          ]
+        }
         ]
       });
     });
 
     it('align table', () => {
       expectTokens({
-        md: `| a | b | c |
+        md: `
+| a | b | c |
 |:--|:-:|--:|
 | 1 | 2 | 3 |
 `,
         tokens: [{
+          type: 'space',
+          raw: '\n'
+        }, {
           type: 'table',
           align: ['left', 'center', 'right'],
           raw: '| a | b | c |\n|:--|:-:|--:|\n| 1 | 2 | 3 |\n',
@@ -293,37 +309,42 @@ lheading 2
 
     it('no pipe table', () => {
       expectTokens({
-        md: `a | b
+        md: `
+a | b
 --|--
 1 | 2
 `,
-        tokens: [{
-          type: 'table',
-          align: [null, null],
-          raw: 'a | b\n--|--\n1 | 2\n',
-          header: [
-            {
-              text: 'a',
-              tokens: [{ type: 'text', raw: 'a', text: 'a' }]
-            },
-            {
-              text: 'b',
-              tokens: [{ type: 'text', raw: 'b', text: 'b' }]
-            }
-          ],
-          rows: [
-            [
+        tokens: [
+          {
+            type: 'space',
+            raw: '\n'
+          }, {
+            type: 'table',
+            align: [null, null],
+            raw: 'a | b\n--|--\n1 | 2\n',
+            header: [
               {
-                text: '1',
-                tokens: [{ type: 'text', raw: '1', text: '1' }]
+                text: 'a',
+                tokens: [{ type: 'text', raw: 'a', text: 'a' }]
               },
               {
-                text: '2',
-                tokens: [{ type: 'text', raw: '2', text: '2' }]
+                text: 'b',
+                tokens: [{ type: 'text', raw: 'b', text: 'b' }]
               }
+            ],
+            rows: [
+              [
+                {
+                  text: '1',
+                  tokens: [{ type: 'text', raw: '1', text: '1' }]
+                },
+                {
+                  text: '2',
+                  tokens: [{ type: 'text', raw: '2', text: '2' }]
+                }
+              ]
             ]
-          ]
-        }]
+          }]
       });
     });
   });
@@ -342,12 +363,12 @@ lheading 2
       expectTokens({
         md: 'T\nh\n---',
         tokens:
-        jasmine.arrayContaining([
-          jasmine.objectContaining({
-            raw: 'T\nh\n'
-          }),
-          { type: 'hr', raw: '---' }
-        ])
+          jasmine.arrayContaining([
+            jasmine.objectContaining({
+              raw: 'T\nh\n'
+            }),
+            { type: 'hr', raw: '---' }
+          ])
       });
     });
   });
@@ -378,11 +399,15 @@ lheading 2
   describe('list', () => {
     it('unordered', () => {
       expectTokens({
-        md: `- item 1
+        md: `
+- item 1
 - item 2
 `,
         tokens: [
           {
+            type: 'space',
+            raw: '\n'
+          }, {
             type: 'list',
             raw: '- item 1\n- item 2\n',
             ordered: false,
@@ -425,10 +450,15 @@ lheading 2
 
     it('ordered', () => {
       expectTokens({
-        md: `1. item 1
+        md: `
+1. item 1
 2. item 2
 `,
         tokens: jasmine.arrayContaining([
+          jasmine.objectContaining({
+            type: 'space',
+            raw: '\n'
+          }),
           jasmine.objectContaining({
             type: 'list',
             raw: '1. item 1\n2. item 2\n',
@@ -449,10 +479,15 @@ lheading 2
 
     it('ordered with parenthesis', () => {
       expectTokens({
-        md: `1) item 1
+        md: `
+1) item 1
 2) item 2
 `,
         tokens: jasmine.arrayContaining([
+          jasmine.objectContaining({
+            type: 'space',
+            raw: '\n'
+          }),
           jasmine.objectContaining({
             type: 'list',
             raw: '1) item 1\n2) item 2\n',
@@ -473,12 +508,17 @@ lheading 2
 
     it('space after list', () => {
       expectTokens({
-        md: `- item 1
+        md: `
+- item 1
 - item 2
 
 paragraph
 `,
         tokens: [
+          {
+            type: 'space',
+            raw: '\n'
+          },
           {
             type: 'list',
             raw: '- item 1\n- item 2',
@@ -533,10 +573,15 @@ paragraph
 
     it('start', () => {
       expectTokens({
-        md: `2. item 1
+        md: `
+2. item 1
 3. item 2
 `,
         tokens: jasmine.arrayContaining([
+          jasmine.objectContaining({
+            type: 'space',
+            raw: '\n'
+          }),
           jasmine.objectContaining({
             type: 'list',
             raw: '2. item 1\n3. item 2\n',
@@ -557,11 +602,16 @@ paragraph
 
     it('loose', () => {
       expectTokens({
-        md: `- item 1
+        md: `
+- item 1
 
 - item 2
 `,
         tokens: jasmine.arrayContaining([
+          jasmine.objectContaining({
+            type: 'space',
+            raw: '\n'
+          }),
           jasmine.objectContaining({
             type: 'list',
             raw: '- item 1\n\n- item 2\n',
@@ -581,10 +631,15 @@ paragraph
 
     it('not loose with spaces', () => {
       expectTokens({
-        md: `- item 1
+        md: `
+- item 1
   - item 2
 `,
         tokens: jasmine.arrayContaining([
+          jasmine.objectContaining({
+            type: 'space',
+            raw: '\n'
+          }),
           jasmine.objectContaining({
             type: 'list',
             raw: '- item 1\n  - item 2\n',
@@ -610,10 +665,15 @@ paragraph
 
     it('task', () => {
       expectTokens({
-        md: `- [ ] item 1
+        md: `
+- [ ] item 1
 - [x] item 2
 `,
         tokens: jasmine.arrayContaining([
+          jasmine.objectContaining({
+            type: 'space',
+            raw: '\n'
+          }),
           jasmine.objectContaining({
             type: 'list',
             raw: '- [ ] item 1\n- [x] item 2\n',
