@@ -72,14 +72,11 @@ export class Tokenizer {
 
   space(src) {
     const cap = this.rules.block.newline.exec(src);
-    if (cap) {
-      if (cap[0].length) {
-        return {
-          type: 'space',
-          raw: cap[0]
-        };
-      }
-      return { raw: '\n' };
+    if (cap && cap[0].length > 0) {
+      return {
+        type: 'space',
+        raw: cap[0]
+      };
     }
   }
 
