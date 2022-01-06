@@ -994,6 +994,7 @@ br
     });
 
     expect(tokensSeen).toEqual([
+      ['space', ''],
       ['paragraph', 'paragraph'],
       ['text', 'paragraph'],
       ['space', ''],
