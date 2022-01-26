@@ -162,7 +162,7 @@ export function splitCells(tableRow, count) {
 
   // First/last cell in a row cannot be empty if it has no leading/trailing pipe
   if (!cells[0].trim()) { cells.shift(); }
-  if (!cells[cells.length - 1].trim()) { cells.pop(); }
+  if (cells.length > 0 && !cells[cells.length - 1].trim()) { cells.pop(); }
 
   if (cells.length > count) {
     cells.splice(count);
