@@ -178,26 +178,21 @@ export class Parser {
           continue;
         }
         case 'paragraph': {
-          let raw = '',
-            i;
-
-          const l = token.tokens.length;
-          for (i = 0; i < l; i++) {
-            raw += token.tokens[i].raw;
-          }
-
           out += this.renderer.paragraph(
             this.parseInline(token.tokens),
-            raw);
+            token.tokens.map(t => t.raw).join(''));
           continue;
         }
         case 'text': {
           body = token.tokens ? this.parseInline(token.tokens) : token.text;
+          let raw = token.tokens ? token.tokens.map(t => t.raw).join('') : token.raw;
           while (i + 1 < l && tokens[i + 1].type === 'text') {
             token = tokens[++i];
             body += '\n' + (token.tokens ? this.parseInline(token.tokens) : token.text);
+            raw += '\n' + (token.tokens ? token.tokens.map(t => t.raw).join('') : token.raw);
           }
-          out += top ? this.renderer.paragraph(body) : body;
+
+          out += top ? this.renderer.paragraph(body, raw) : body;
           continue;
         }
 
