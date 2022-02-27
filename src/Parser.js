@@ -178,7 +178,17 @@ export class Parser {
           continue;
         }
         case 'paragraph': {
-          out += this.renderer.paragraph(this.parseInline(token.tokens));
+          let raw = '',
+            i;
+
+          const l = token.tokens.length;
+          for (i = 0; i < l; i++) {
+            raw += token.tokens[i].raw;
+          }
+
+          out += this.renderer.paragraph(
+            this.parseInline(token.tokens),
+            raw);
           continue;
         }
         case 'text': {

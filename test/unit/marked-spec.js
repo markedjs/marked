@@ -673,7 +673,7 @@ used extension2 walked</p>
   it('should use renderer', () => {
     const extension = {
       renderer: {
-        paragraph(text) {
+        paragraph(text, raw) {
           return 'extension';
         }
       }
@@ -681,8 +681,24 @@ used extension2 walked</p>
     spyOn(extension.renderer, 'paragraph').and.callThrough();
     use(extension);
     const html = marked('text');
-    expect(extension.renderer.paragraph).toHaveBeenCalledWith('text');
+    expect(extension.renderer.paragraph).toHaveBeenCalledWith('text', 'text');
     expect(html).toBe('extension');
+  });
+
+  it('should not be escaped', () => {
+    const extension = {
+      renderer: {
+        paragraph(text, raw) {
+          return raw;
+        }
+      }
+    };
+    const rawStr = String.raw`\smash{\big)}\,\\123`;
+    spyOn(extension.renderer, 'paragraph').and.callThrough();
+    use(extension);
+    const html = marked(rawStr);
+    expect(extension.renderer.paragraph).toHaveBeenCalledWith(String.raw`\smash{\big)},\123`, rawStr);
+    expect(html).toBe(rawStr);
   });
 
   it('should use tokenizer', () => {

@@ -113,7 +113,7 @@ console.log(marked.parse('# heading+'));
 - <code>**list**(*string* body, *boolean* ordered, *number* start)</code>
 - <code>**listitem**(*string* text, *boolean* task, *boolean* checked)</code>
 - <code>**checkbox**(*boolean* checked)</code>
-- <code>**paragraph**(*string* text)</code>
+- <code>**paragraph**(*string* text, *string* raw)</code>
 - <code>**table**(*string* header, *string* body)</code>
 - <code>**tablerow**(*string* content)</code>
 - <code>**tablecell**(*string* content, *object* flags)</code>
