@@ -16,6 +16,7 @@ function runSpecs(title, dir, showCompletionTable, options) {
     Object.keys(specs).forEach(section => {
       describe(section, () => {
         specs[section].specs.forEach((spec) => {
+          const isAsync = (spec.option || {}).async;
           spec.options = Object.assign({}, options, (spec.options || {}));
           const example = (spec.example ? ' example ' + spec.example : '');
           const passFail = (spec.shouldFail ? 'fail' : 'pass');
@@ -28,21 +29,23 @@ function runSpecs(title, dir, showCompletionTable, options) {
             // eslint-disable-next-line no-eval
             spec.options.sanitizer = eval(spec.options.sanitizer);
           }
-
-          (spec.only ? fit : (spec.skip ? xit : it))('should ' + passFail + example, async() => {
-            const before = process.hrtime();
-            if (spec.shouldFail) {
-              await expectAsync(spec).not.toRender(spec.html);
-            } else if (spec.options.renderExact) {
-              await expectAsync(spec).toRenderExact(spec.html);
-            } else {
-              await expectAsync(spec).toRender(spec.html);
-            }
-            const elapsed = process.hrtime(before);
-            if (elapsed[0] > 0) {
-              const s = (elapsed[0] + elapsed[1] * 1e-9).toFixed(3);
-              fail(`took too long: ${s}s`);
-            }
+          (typeof isAsync === 'boolean' ? [isAsync] : [true, false]).forEach(async => {
+            (spec.only ? fit : (spec.skip ? xit : it))('should ' + passFail + example, async() => {
+              spec.options.async = async;
+              const before = process.hrtime();
+              if (spec.shouldFail) {
+                await expectAsync(spec).not.toRender(spec.html);
+              } else if (spec.options.renderExact) {
+                await expectAsync(spec).toRenderExact(spec.html);
+              } else {
+                await expectAsync(spec).toRender(spec.html);
+              }
+              const elapsed = process.hrtime(before);
+              if (elapsed[0] > 0) {
+                const s = (elapsed[0] + elapsed[1] * 1e-9).toFixed(3);
+                fail(`took too long: ${s}s`);
+              }
+            });
           });
         });
       });

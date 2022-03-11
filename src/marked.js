@@ -1,5 +1,6 @@
 import { Lexer } from './Lexer.js';
 import { Parser } from './Parser.js';
+import { AsyncParser } from './AsyncParser.js';
 import { Tokenizer } from './Tokenizer.js';
 import { Renderer } from './Renderer.js';
 import { TextRenderer } from './TextRenderer.js';
@@ -46,13 +47,16 @@ export function marked(src, opt, callback) {
       return callback(e);
     }
 
-    const done = function(err) {
+    function done(err) {
       let out;
 
       if (!err) {
         try {
           if (opt.walkTokens) {
             marked.walkTokens(tokens, opt.walkTokens);
+          }
+          if (opt.async) {
+            out = AsyncParser.parse(tokens, opt);
           }
           out = Parser.parse(tokens, opt);
         } catch (e) {
@@ -65,7 +69,7 @@ export function marked(src, opt, callback) {
       return err
         ? callback(err)
         : callback(null, out);
-    };
+    }
 
     if (!highlight || highlight.length < 3) {
       return done();
@@ -109,6 +113,9 @@ export function marked(src, opt, callback) {
     const tokens = Lexer.lex(src, opt);
     if (opt.walkTokens) {
       marked.walkTokens(tokens, opt.walkTokens);
+    }
+    if (opt.async) {
+      return AsyncParser.parse(tokens, opt);
     }
     return Parser.parse(tokens, opt);
   } catch (e) {
@@ -308,6 +315,9 @@ marked.parseInline = function(src, opt) {
     if (opt.walkTokens) {
       marked.walkTokens(tokens, opt.walkTokens);
     }
+    if (opt.async) {
+      return AsyncParser.parseInline(tokens, opt);
+    }
     return Parser.parseInline(tokens, opt);
   } catch (e) {
     e.message += '\nPlease report this to https://github.com/markedjs/marked.';
@@ -325,6 +335,8 @@ marked.parseInline = function(src, opt) {
  */
 marked.Parser = Parser;
 marked.parser = Parser.parse;
+marked.AsyncParser = AsyncParser;
+marked.asyncParser = AsyncParser.parse;
 marked.Renderer = Renderer;
 marked.TextRenderer = TextRenderer;
 marked.Lexer = Lexer;
@@ -340,10 +352,12 @@ export const walkTokens = marked.walkTokens;
 export const parseInline = marked.parseInline;
 export const parse = marked;
 export const parser = Parser.parse;
+export const asyncParser = AsyncParser.parse;
 export const lexer = Lexer.lex;
 export { defaults, getDefaults } from './defaults.js';
 export { Lexer } from './Lexer.js';
 export { Parser } from './Parser.js';
+export { AsyncParser } from './AsyncParser.js';
 export { Tokenizer } from './Tokenizer.js';
 export { Renderer } from './Renderer.js';
 export { TextRenderer } from './TextRenderer.js';

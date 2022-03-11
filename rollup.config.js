@@ -25,6 +25,7 @@ https://github.com/markedjs/marked
     }),
     commonjs(),
     babel({
+      babelHelpers: 'bundled',
       presets: [['@babel/preset-env', { loose: true }]]
     })
   ]
@@ -52,6 +53,7 @@ https://github.com/markedjs/marked
     }),
     commonjs(),
     babel({
+      babelHelpers: 'bundled',
       presets: [['@babel/preset-env', { loose: true }]]
     })
   ]

@@ -1,4 +1,4 @@
-import { marked, Renderer, Slugger, lexer, parseInline, use, getDefaults, walkTokens as _walkTokens } from '../../src/marked.js';
+import { marked, Renderer, Slugger, lexer, parseInline, use, getDefaults, walkTokens } from '../../src/marked.js';
 
 describe('Test heading ID functionality', () => {
   it('should add id attribute by default', () => {
@@ -989,7 +989,7 @@ br
 `;
     const tokens = lexer(markdown, { ...getDefaults(), breaks: true });
     const tokensSeen = [];
-    _walkTokens(tokens, (token) => {
+    walkTokens(tokens, (token) => {
       tokensSeen.push([token.type, (token.raw || '').replace(/\n/g, '')]);
     });
 
@@ -1058,5 +1058,21 @@ br
       }
     });
     expect(marked('*text*').trim()).toBe('<p><em>text walked</em></p>');
+  });
+});
+
+describe('async renderer', () => {
+  it('should render asynchronously', async() => {
+    const extension = {
+      async: true,
+      renderer: {
+        async paragraph(text) {
+          return 'extension';
+        }
+      }
+    };
+    use(extension);
+    const html = await marked('text');
+    expect(html).toBe('extension');
   });
 });

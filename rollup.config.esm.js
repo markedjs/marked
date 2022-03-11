@@ -1,5 +1,6 @@
 const commonjs = require('@rollup/plugin-commonjs');
 const license = require('rollup-plugin-license');
+const babel = require('@rollup/plugin-babel').default;
 
 module.exports = {
   input: 'src/marked.js',
@@ -21,6 +22,13 @@ Copyright (c) 2011-${new Date().getFullYear()}, Christopher Jeffrey. (MIT Licens
 https://github.com/markedjs/marked
 `
     }),
-    commonjs()
+    commonjs(),
+    babel({
+      babelHelpers: 'runtime',
+      presets: [['@babel/preset-env']],
+      plugins: [
+        '@babel/plugin-transform-runtime'
+      ]
+    })
   ]
 };
