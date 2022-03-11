@@ -66,9 +66,19 @@ export function marked(src, opt, callback) {
 
       opt.highlight = highlight;
 
-      return err
-        ? callback(err)
-        : callback(null, out);
+      if (err) {
+        return callback(err);
+      }
+
+      if (opt.async) {
+        return Promise.resolve(out).then((html) => {
+          callback(null, html);
+        }, (asyncErr) => {
+          callback(asyncErr);
+        });
+      }
+
+      return callback(null, out);
     }
 
     if (!highlight || highlight.length < 3) {
