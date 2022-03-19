@@ -201,7 +201,7 @@ export function rtrim(str, c, invert) {
     }
   }
 
-  return str.substr(0, l - suffLen);
+  return str.slice(0, l - suffLen);
 }
 
 export function findClosingBracket(str, b) {
