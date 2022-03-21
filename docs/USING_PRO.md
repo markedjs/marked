@@ -178,7 +178,7 @@ import { marked } from 'marked';
 // Override function
 const tokenizer = {
   codespan(src) {
-    const match = src.match(/\$+([^\$\n]+?)\$+/);
+    const match = src.match(/^\$+([^\$\n]+?)\$+/);
     if (match) {
       return {
         type: 'codespan',
