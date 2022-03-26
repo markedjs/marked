@@ -3,6 +3,7 @@ import { join, dirname, parse, format } from 'path';
 import { parse as marked } from './lib/marked.esm.js';
 import { HighlightJS } from 'highlight.js';
 import titleize from 'titleize';
+
 const { mkdir, rm, readdir, stat, readFile, writeFile, copyFile } = promises;
 const { highlight, highlightAuto } = HighlightJS;
 const cwd = process.cwd();

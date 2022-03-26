@@ -188,6 +188,9 @@ function getStdin() {
   });
 }
 
+/**
+ * @param {string} text
+ */
 function camelize(text) {
   return text.replace(/(\w)-(\w)/g, function(_, a, b) {
     return a + b.toUpperCase();
