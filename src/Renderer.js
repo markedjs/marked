@@ -16,6 +16,9 @@ export class Renderer {
     const lang = (infostring || '').match(/\S*/)[0];
     if (this.options.highlight) {
       const out = this.options.highlight(code, lang);
+      if (typeof out?.then === 'function') {
+        return out.then(out => `<pre><code>${out}</code></pre>`);
+      }
       if (out != null && out !== code) {
         escaped = true;
         code = out;

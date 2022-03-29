@@ -23,8 +23,16 @@ export class Parser {
    * Static Parse Method
    */
   static parse(tokens, options) {
+    let out = '';
+    for (const c of Parser.getIterator(tokens, options)) {
+      out += c;
+    }
+    return out;
+  }
+
+  static getIterator(tokens, options) {
     const parser = new Parser(options);
-    return parser.parse(tokens);
+    return parser.parse(tokens)
   }
 
   /**
@@ -38,9 +46,8 @@ export class Parser {
   /**
    * Parse Loop
    */
-  parse(tokens, top = true) {
-    let out = '',
-      i,
+  * parse(tokens, top = true, asIterator = false) {
+    let i,
       j,
       k,
       l2,
@@ -68,7 +75,7 @@ export class Parser {
       if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[token.type]) {
         ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
         if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'html', 'paragraph', 'text'].includes(token.type)) {
-          out += ret || '';
+          yield ret || '';
           continue;
         }
       }
@@ -78,19 +85,19 @@ export class Parser {
           continue;
         }
         case 'hr': {
-          out += this.renderer.hr();
+          yield this.renderer.hr();
           continue;
         }
         case 'heading': {
-          out += this.renderer.heading(
+          yield (this.renderer.heading(
             this.parseInline(token.tokens),
             token.depth,
             unescape(this.parseInline(token.tokens, this.textRenderer)),
-            this.slugger);
+            this.slugger));
           continue;
         }
         case 'code': {
-          out += this.renderer.code(token.text,
+          yield this.renderer.code(token.text,
             token.lang,
             token.escaped);
           continue;
@@ -125,12 +132,12 @@ export class Parser {
 
             body += this.renderer.tablerow(cell);
           }
-          out += this.renderer.table(header, body);
+          yield this.renderer.table(header, body);
           continue;
         }
         case 'blockquote': {
-          body = this.parse(token.tokens);
-          out += this.renderer.blockquote(body);
+          body = [...this.parse(token.tokens, undefined)].join('');
+          yield this.renderer.blockquote(body);
           continue;
         }
         case 'list': {
@@ -165,20 +172,20 @@ export class Parser {
               }
             }
 
-            itemBody += this.parse(item.tokens, loose);
+            itemBody += [...this.parse(item.tokens, loose)].join('');
             body += this.renderer.listitem(itemBody, task, checked);
           }
 
-          out += this.renderer.list(body, ordered, start);
+          yield this.renderer.list(body, ordered, start);
           continue;
         }
         case 'html': {
           // TODO parse inline content if parameter markdown=1
-          out += this.renderer.html(token.text);
+          yield this.renderer.html(token.text);
           continue;
         }
         case 'paragraph': {
-          out += this.renderer.paragraph(this.parseInline(token.tokens));
+          yield this.renderer.paragraph(this.parseInline(token.tokens));
           continue;
         }
         case 'text': {
@@ -187,7 +194,7 @@ export class Parser {
             token = tokens[++i];
             body += '\n' + (token.tokens ? this.parseInline(token.tokens) : token.text);
           }
-          out += top ? this.renderer.paragraph(body) : body;
+          yield top ? this.renderer.paragraph(body) : body;
           continue;
         }
 
@@ -202,8 +209,6 @@ export class Parser {
         }
       }
     }
-
-    return out;
   }
 
   /**

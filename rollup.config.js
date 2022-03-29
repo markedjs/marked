@@ -25,7 +25,10 @@ https://github.com/markedjs/marked
     }),
     commonjs(),
     babel({
-      presets: [['@babel/preset-env', { loose: true }]]
+      presets: [['@babel/preset-env', {
+        loose: true,
+        exclude: ['transform-regenerator']
+      }]]
     })
   ]
 },
@@ -52,7 +55,10 @@ https://github.com/markedjs/marked
     }),
     commonjs(),
     babel({
-      presets: [['@babel/preset-env', { loose: true }]]
+      presets: [['@babel/preset-env', {
+        loose: true,
+        exclude: ['transform-regenerator']
+      }]]
     })
   ]
 }];

@@ -112,7 +112,7 @@ export async function runBench(options) {
       const parser = new Parser();
       const writer = new HtmlRenderer();
       return function(text) {
-        return writer.render(parser.parse(text));
+        return writer.render([...parser.parse(text)].join());
       };
     })()));
   } catch (e) {

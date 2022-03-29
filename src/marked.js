@@ -54,7 +54,7 @@ export function marked(src, opt, callback) {
           if (opt.walkTokens) {
             marked.walkTokens(tokens, opt.walkTokens);
           }
-          out = Parser.parse(tokens, opt);
+          out = [...Parser.parse(tokens, opt)].join('');
         } catch (e) {
           err = e;
         }
@@ -110,7 +110,7 @@ export function marked(src, opt, callback) {
     if (opt.walkTokens) {
       marked.walkTokens(tokens, opt.walkTokens);
     }
-    return Parser.parse(tokens, opt);
+    return [...Parser.parse(tokens, opt)].join('');
   } catch (e) {
     e.message += '\nPlease report this to https://github.com/markedjs/marked.';
     if (opt.silent) {

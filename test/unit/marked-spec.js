@@ -615,6 +615,31 @@ used extension2 walked</p>
     });
   });
 
+  it('should allow for iterator', () => {
+    const tokens = lexer(`
+# heading
+\`\`\`JSON
+{ "foo": "bar" }
+\`\`\`
+# footer
+    `);
+    use({
+      renderer: {
+        async code(code, lang) {
+          return `<pre><code>foo</code></pre>`;
+        }
+      }
+    });
+    const res = marked.Parser.getIterator(tokens);
+    return Promise.all([...res]).then(results => {
+      const actual = results.join('\n');
+      expect(actual).toBe(
+        '<h1 id="heading">heading</h1>\n\n'
+      + '<pre><code>foo</code></pre>\n'
+      + '<h1 id="footer">footer</h1>\n');
+    });
+  });
+
   it('should allow deleting/editing tokens', () => {
     const styleTags = {
       extensions: [{
@@ -642,7 +667,7 @@ used extension2 walked</p>
         name: 'styled',
         renderer(token) {
           token.type = token.originalType;
-          const text = this.parser.parse([token]);
+          const text = [...this.parser.parse([token])].join('');
           const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
           if (openingTag) {
             return `${openingTag[1]} ${token.style}${openingTag[2]}`;
