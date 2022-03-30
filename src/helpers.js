@@ -74,7 +74,7 @@ const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 
 /**
  * @param {boolean} sanitize
- * @param {any} base
+ * @param {string} base
  * @param {string} href
  */
 export function cleanUrl(sanitize, base, href) {
