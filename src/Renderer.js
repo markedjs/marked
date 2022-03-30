@@ -52,7 +52,7 @@ export class Renderer {
   /**
    * @param {string} text
    * @param {string} level
-   * @param {any} raw
+   * @param {string} raw
    * @param {any} slugger
    */
   heading(text, level, raw, slugger) {
