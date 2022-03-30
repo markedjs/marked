@@ -100,7 +100,7 @@ export class Renderer {
   tablecell(content, flags) {
     const type = flags.header ? 'th' : 'td';
     const tag = flags.align
-      ? `<${type} align="${flags.align}">'`
+      ? `<${type} align="${flags.align}">`
       : `<${type}>`;
     return tag + content + `</${type}>\n`;
   }
