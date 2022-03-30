@@ -5,6 +5,7 @@ import { repeatString } from './helpers.js';
 
 /**
  * smartypants text replacement
+ * @param {string} text
  */
 function smartypants(text) {
   return text
@@ -26,6 +27,7 @@ function smartypants(text) {
 
 /**
  * mangle email addresses
+ * @param {string} text
  */
 function mangle(text) {
   let out = '',

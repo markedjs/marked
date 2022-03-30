@@ -289,6 +289,7 @@ marked.walkTokens = function(tokens, callback) {
 
 /**
  * Parse Inline
+ * @param {string} src
  */
 marked.parseInline = function(src, opt) {
   // throw error in case of non string input

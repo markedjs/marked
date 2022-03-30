@@ -38,6 +38,9 @@ export class Renderer {
       + '</code></pre>\n';
   }
 
+  /**
+   * @param {string} quote
+   */
   blockquote(quote) {
     return '<blockquote>\n' + quote + '</blockquote>\n';
   }
@@ -46,6 +49,12 @@ export class Renderer {
     return html;
   }
 
+  /**
+   * @param {string} text
+   * @param {string} level
+   * @param {string} raw
+   * @param {any} slugger
+   */
   heading(text, level, raw, slugger) {
     if (this.options.headerIds) {
       return '<h'
@@ -73,6 +82,9 @@ export class Renderer {
     return '<' + type + startatt + '>\n' + body + '</' + type + '>\n';
   }
 
+  /**
+   * @param {string} text
+   */
   listitem(text) {
     return '<li>' + text + '</li>\n';
   }
@@ -85,10 +97,17 @@ export class Renderer {
       + '> ';
   }
 
+  /**
+   * @param {string} text
+   */
   paragraph(text) {
     return '<p>' + text + '</p>\n';
   }
 
+  /**
+   * @param {string} header
+   * @param {string} body
+   */
   table(header, body) {
     if (body) body = '<tbody>' + body + '</tbody>';
 
@@ -100,6 +119,9 @@ export class Renderer {
       + '</table>\n';
   }
 
+  /**
+   * @param {string} content
+   */
   tablerow(content) {
     return '<tr>\n' + content + '</tr>\n';
   }
@@ -112,15 +134,24 @@ export class Renderer {
     return tag + content + '</' + type + '>\n';
   }
 
-  // span level renderer
+  /**
+   * span level renderer
+   * @param {string} text
+   */
   strong(text) {
     return '<strong>' + text + '</strong>';
   }
 
+  /**
+   * @param {string} text
+   */
   em(text) {
     return '<em>' + text + '</em>';
   }
 
+  /**
+   * @param {string} text
+   */
   codespan(text) {
     return '<code>' + text + '</code>';
   }
@@ -129,10 +160,18 @@ export class Renderer {
     return this.options.xhtml ? '<br/>' : '<br>';
   }
 
+  /**
+   * @param {string} text
+   */
   del(text) {
     return '<del>' + text + '</del>';
   }
 
+  /**
+   * @param {string} href
+   * @param {string} title
+   * @param {string} text
+   */
   link(href, title, text) {
     href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
     if (href === null) {
@@ -146,6 +185,11 @@ export class Renderer {
     return out;
   }
 
+  /**
+   * @param {string} href
+   * @param {string} title
+   * @param {string} text
+   */
   image(href, title, text) {
     href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
     if (href === null) {
