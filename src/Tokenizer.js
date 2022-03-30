@@ -3,7 +3,8 @@ import {
   rtrim,
   splitCells,
   escape,
-  findClosingBracket
+  findClosingBracket,
+  isAlphanumeric
 } from './helpers.js';
 
 function outputLink(cap, link, raw, lexer) {
@@ -582,8 +583,8 @@ export class Tokenizer {
     let match = this.rules.inline.emStrong.lDelim.exec(src);
     if (!match) return;
 
-    // _ can't be between two alphanumerics. \p{L}\p{N} includes non-english alphabet/numbers as well
-    if (match[3] && prevChar.match(/[\p{L}\p{N}]/u)) return;
+    // _ can't be between two alphanumerics.
+    if (match[3] && isAlphanumeric(prevChar)) return;
 
     const nextChar = match[1] || match[2] || '';
 

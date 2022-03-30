@@ -247,3 +247,14 @@ export function repeatString(pattern, count) {
   }
   return result + pattern;
 }
+
+export function isAlphanumeric(text) {
+  // \p cases older browsers (Firefox <= 72) to throw an error
+  try {
+    // \p{L}\p{N} includes non-english alphabet/numbers as well
+    return text.match(/[\p{L}\p{N}]/u);
+  } catch {
+    // \w also will capture non-latin characters
+    return text !== '_' && text.match(/\w/i);
+  }
+}
