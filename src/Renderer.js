@@ -42,7 +42,7 @@ export class Renderer {
    * @param {string} quote
    */
   blockquote(quote) {
-    return '<blockquote>\n' + quote + '</blockquote>\n';
+    return `<blockquote>\n${quote}</blockquote>\n`;
   }
 
   html(html) {
@@ -57,19 +57,12 @@ export class Renderer {
    */
   heading(text, level, raw, slugger) {
     if (this.options.headerIds) {
-      return '<h'
-        + level
-        + ' id="'
-        + this.options.headerPrefix
-        + slugger.slug(raw)
-        + '">'
-        + text
-        + '</h'
-        + level
-        + '>\n';
+      const id = this.options.headerPrefix + slugger.slug(raw);
+      return `<h${level} id="${id}">${text}</h${level}>\n`;
     }
+
     // ignore IDs
-    return '<h' + level + '>' + text + '</h' + level + '>\n';
+    return `<h${level}>${text}</h${level}>\n`;
   }
 
   hr() {
@@ -86,7 +79,7 @@ export class Renderer {
    * @param {string} text
    */
   listitem(text) {
-    return '<li>' + text + '</li>\n';
+    return `<li>${text}</li>\n`;
   }
 
   checkbox(checked) {
@@ -101,7 +94,7 @@ export class Renderer {
    * @param {string} text
    */
   paragraph(text) {
-    return '<p>' + text + '</p>\n';
+    return `<p>${text}</p>\n`;
   }
 
   /**
@@ -109,7 +102,7 @@ export class Renderer {
    * @param {string} body
    */
   table(header, body) {
-    if (body) body = '<tbody>' + body + '</tbody>';
+    if (body) body = `<tbody>${body}</tbody>`;
 
     return '<table>\n'
       + '<thead>\n'
@@ -123,15 +116,15 @@ export class Renderer {
    * @param {string} content
    */
   tablerow(content) {
-    return '<tr>\n' + content + '</tr>\n';
+    return `<tr>\n${content}</tr>\n`;
   }
 
   tablecell(content, flags) {
     const type = flags.header ? 'th' : 'td';
     const tag = flags.align
-      ? '<' + type + ' align="' + flags.align + '">'
-      : '<' + type + '>';
-    return tag + content + '</' + type + '>\n';
+      ? `<${type} align="${flags.align}">`
+      : `<${type}>`;
+    return tag + content + `</${type}>\n`;
   }
 
   /**
@@ -139,21 +132,21 @@ export class Renderer {
    * @param {string} text
    */
   strong(text) {
-    return '<strong>' + text + '</strong>';
+    return `<strong>${text}</strong>`;
   }
 
   /**
    * @param {string} text
    */
   em(text) {
-    return '<em>' + text + '</em>';
+    return `<em>${text}</em>`;
   }
 
   /**
    * @param {string} text
    */
   codespan(text) {
-    return '<code>' + text + '</code>';
+    return `<code>${text}</code>`;
   }
 
   br() {
@@ -164,7 +157,7 @@ export class Renderer {
    * @param {string} text
    */
   del(text) {
-    return '<del>' + text + '</del>';
+    return `<del>${text}</del>`;
   }
 
   /**
@@ -196,9 +189,9 @@ export class Renderer {
       return text;
     }
 
-    let out = '<img src="' + href + '" alt="' + text + '"';
+    let out = `<img src="${href}" alt="${text}"`;
     if (title) {
-      out += ' title="' + title + '"';
+      out += ` title="${title}"`;
     }
     out += this.options.xhtml ? '/>' : '>';
     return out;
