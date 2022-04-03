@@ -14,8 +14,16 @@ function runSpecs(title, dir, showCompletionTable, options) {
 
   describe(title, () => {
     Object.keys(specs).forEach(section => {
+      //if (section !== 'Thematic breaks') { return; } // jangxyz
+      //if (section !== 'List items') { return; } // jangxyz #300
+      //if (section !== 'Setext headings') { return; } // jangxyz # 99
       describe(section, () => {
         specs[section].specs.forEach((spec) => {
+          //if (spec.example !== 57) { return; } // jangxyz
+          //if (spec.example !== 300) { return; } // jangxyz
+          //if (spec.example !== 99) { return; } // jangxyz
+          //console.log(spec);
+
           spec.options = Object.assign({}, options, (spec.options || {}));
           const example = (spec.example ? ' example ' + spec.example : '');
           const passFail = (spec.shouldFail ? 'fail' : 'pass');
@@ -50,9 +58,9 @@ function runSpecs(title, dir, showCompletionTable, options) {
   });
 }
 
-runSpecs('GFM', './gfm', true, { gfm: true, pedantic: false, headerIds: false });
-runSpecs('CommonMark', './commonmark', true, { gfm: false, pedantic: false, headerIds: false });
-runSpecs('Original', './original', false, { gfm: false, pedantic: true });
+//runSpecs('GFM', './gfm', true, { gfm: true, pedantic: false, headerIds: false });
+//runSpecs('CommonMark', './commonmark', true, { gfm: false, pedantic: false, headerIds: false });
+//runSpecs('Original', './original', false, { gfm: false, pedantic: true });
 runSpecs('New', './new');
-runSpecs('ReDOS', './redos');
-runSpecs('Security', './security', false, { silent: true }); // silent - do not show deprecation warning
+//runSpecs('ReDOS', './redos');
+//runSpecs('Security', './security', false, { silent: true }); // silent - do not show deprecation warning
