@@ -1,12 +1,17 @@
 ---
-pedantic: true
 headerIds: false
 ---
+## *list
+
+* list1
+*Not list(without space)
+* list2
+
 ## +list
 
 + list1
 +Not list(without space)
-- list2
++ list2
 
 ## -list
 
