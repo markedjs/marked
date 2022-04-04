@@ -16,7 +16,6 @@ function runSpecs(title, dir, showCompletionTable, options) {
     Object.keys(specs).forEach(section => {
       describe(section, () => {
         specs[section].specs.forEach((spec) => {
-
           spec.options = Object.assign({}, options, (spec.options || {}));
           const example = (spec.example ? ' example ' + spec.example : '');
           const passFail = (spec.shouldFail ? 'fail' : 'pass');

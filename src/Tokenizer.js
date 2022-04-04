@@ -23,15 +23,14 @@ function outputLink(cap, link, raw, lexer) {
     };
     lexer.state.inLink = false;
     return token;
-  } else {
-    return {
-      type: 'image',
-      raw,
-      href,
-      title,
-      text: escape(text)
-    };
   }
+  return {
+    type: 'image',
+    raw,
+    href,
+    title,
+    text: escape(text)
+  };
 }
 
 function indentCodeCompensation(raw, text) {
@@ -130,7 +129,7 @@ export class Tokenizer {
         type: 'heading',
         raw: cap[0],
         depth: cap[1].length,
-        text: text,
+        text,
         tokens: []
       };
       this.lexer.inline(token.text, token.tokens);
@@ -293,7 +292,7 @@ export class Tokenizer {
 
         list.items.push({
           type: 'list_item',
-          raw: raw,
+          raw,
           task: !!istask,
           checked: ischecked,
           loose: false,
