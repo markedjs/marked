@@ -135,7 +135,7 @@ export class Lexer {
       src = src.replace(/^ +$/gm, '');
     }
 
-    if (this.options.gfm || this.options.pedantic) {
+    if (this.options.pedantic) {
       src = src.replace(/\t/g, '    ');
     } else {
       src = src.replace(/^( *)(\t+)/gm, (_, leading, tabs) => {
