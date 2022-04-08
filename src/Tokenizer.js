@@ -187,7 +187,7 @@ export class Tokenizer {
       }
 
       // Get next list item
-      const itemRegex = new RegExp(`^( {0,3}${bull})((?: [^\\n]*)?(?:\\n|$))`);
+      const itemRegex = new RegExp(`^( {0,3}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`);
 
       // Check if current bullet point can start a new List Item
       while (src) {
