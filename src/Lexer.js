@@ -132,11 +132,7 @@ export class Lexer {
    */
   blockTokens(src, tokens = []) {
     if (this.options.pedantic) {
-      src = src.replace(/^ +$/gm, '');
-    }
-
-    if (this.options.pedantic) {
-      src = src.replace(/\t/g, '    ');
+      src = src.replace(/\t/g, '    ').replace(/^ +$/gm, '');
     } else {
       src = src.replace(/^( *)(\t+)/gm, (_, leading, tabs) => {
         return leading + '    '.repeat(tabs.length);
