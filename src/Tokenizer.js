@@ -151,7 +151,7 @@ export class Tokenizer {
   blockquote(src) {
     const cap = this.rules.block.blockquote.exec(src);
     if (cap) {
-      const text = cap[0].replace(/^ *> ?/gm, '');
+      const text = cap[0].replace(/^ *>[ \t]?/gm, '');
 
       return {
         type: 'blockquote',
