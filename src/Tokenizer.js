@@ -225,12 +225,11 @@ export class Tokenizer {
 
         if (!endEarly) {
           const nextBulletRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])((?: [^\\n]*)?(?:\\n|$))`);
+          const hrRegex         = new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`); 
 
           // Check if following lines should be included in List Item
-          let prevLine = line;
           while (src) {
             rawLine = src.split('\n', 1)[0];
-            prevLine = line;
             line = rawLine;
 
             // Re-align to follow commonmark nesting rules
@@ -238,22 +237,16 @@ export class Tokenizer {
               line = line.replace(/^ {1,4}(?=( {4})*[^ ])/g, '  ');
             }
 
-            if (this.rules.block.hr.test(line)) {
-              // End list if bullet was actually HR (possibly move into itemRegex?)
-              // make sure it is not a setext heading, which takes precedence
-              const twoLines = [prevLine, line].join('\n');
-              const matchLheadingPattern = this.rules.block.lheading.test(twoLines);
-              const lineIdentIsLargerThanPrev = line.search(/[^ ]/) >= indent;
-              const isNextLineSetextHeading = matchLheadingPattern && lineIdentIsLargerThanPrev;
-              if (!isNextLineSetextHeading) {
-                break;
-              }
-            }
-
             // End list item if found start of new bullet
             if (nextBulletRegex.test(line)) {
               break;
             }
+
+            // Horizontal rule found
+            if (hrRegex.test(src)) {
+              break;
+            }
+
 
             if (line.search(/[^ ]/) >= indent || !line.trim()) { // Dedent if possible
               itemContents += '\n' + line.slice(indent);
