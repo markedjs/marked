@@ -225,7 +225,7 @@ export class Tokenizer {
 
         if (!endEarly) {
           const nextBulletRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])((?: [^\\n]*)?(?:\\n|$))`);
-          const hrRegex         = new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`); 
+          const hrRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`);
 
           // Check if following lines should be included in List Item
           while (src) {
@@ -246,7 +246,6 @@ export class Tokenizer {
             if (hrRegex.test(src)) {
               break;
             }
-
 
             if (line.search(/[^ ]/) >= indent || !line.trim()) { // Dedent if possible
               itemContents += '\n' + line.slice(indent);
