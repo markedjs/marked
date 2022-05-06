@@ -81,7 +81,7 @@ $ marked --help
 
 **Secure Usage**
 
-### 🚨 To secure your website, please make sure to sanitize the *output* and not the input! [Why?](https://infosecwriteups.com/clique-writeup-%C3%A5ngstromctf-2022-e7ae871eaa0e)! 🚨
+🚨 To secure your website, please make sure to sanitize the *output* and not the input! [Why?](https://infosecwriteups.com/clique-writeup-%C3%A5ngstromctf-2022-e7ae871eaa0e) 🚨
 ```html
 <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.min.js"></script>
