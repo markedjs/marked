@@ -25,7 +25,11 @@ These documentation pages are also rendered using marked 💯
 
 <h2 id="usage">Usage</h2>
 
-### Warning: 🚨 Marked does not [sanitize](/using_advanced#options) the output HTML. Please use a sanitize library, like [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [sanitize-html](https://github.com/apostrophecms/sanitize-html) or [insane](https://github.com/bevacqua/insane) on the output HTML! 🚨
+### Warning: 🚨 Marked does not [sanitize](/using_advanced#options) the output HTML. Please use a sanitize library, like [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [sanitize-html](https://github.com/apostrophecms/sanitize-html) or [insane](https://github.com/bevacqua/insane) on the *output* HTML! 🚨
+
+```
+DOMPurify.sanitize(marked.parse(`<img src="x" onerror="alert('not happening')">`));
+```
 
 **CLI**
 
@@ -77,18 +81,6 @@ $ marked --help
   </script>
 </body>
 </html>
-```
-
-**Secure Usage**
-
-🚨 To secure your website, please make sure to sanitize the *output* and not the input! [Why?](https://infosecwriteups.com/clique-writeup-%C3%A5ngstromctf-2022-e7ae871eaa0e) 🚨
-```html
-<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.min.js"></script>
-<script>
-  document.getElementById('content').innerHTML =
-    DOMPurify.sanitize(marked.parse(`img src="x" onerror="alert('not happening')"`));
-</script>
 ```
 
 **Node.js**
