@@ -405,7 +405,7 @@ export class Tokenizer {
         l = item.header.length;
         for (j = 0; j < l; j++) {
           item.header[j].tokens = [];
-          this.lexer.inlineTokens(item.header[j].text, item.header[j].tokens);
+          this.lexer.inline(item.header[j].text, item.header[j].tokens);
         }
 
         // cell child tokens
@@ -414,7 +414,7 @@ export class Tokenizer {
           row = item.rows[j];
           for (k = 0; k < row.length; k++) {
             row[k].tokens = [];
-            this.lexer.inlineTokens(row[k].text, row[k].tokens);
+            this.lexer.inline(row[k].text, row[k].tokens);
           }
         }
 
