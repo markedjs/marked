@@ -226,41 +226,67 @@ export class Tokenizer {
         if (!endEarly) {
           const nextBulletRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])((?: [^\\n]*)?(?:\\n|$))`);
           const hrRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`);
+          const fencesBeginRegExp = new RegExp('^(```|~~~)');
 
           // Check if following lines should be included in List Item
           while (src) {
-            rawLine = src.split('\n', 1)[0];
-            line = rawLine;
-
-            // Re-align to follow commonmark nesting rules
-            if (this.options.pedantic) {
-              line = line.replace(/^ {1,4}(?=( {4})*[^ ])/g, '  ');
+            // Check if fenced code block
+            if (fencesBeginRegExp.test(src)) {
+              const fencesEndRegExp = new RegExp('(```|~~~)[\s\n]*$');
+              let fenceCap = this.rules.block.fences.exec(src);
+              let rawText = fenceCap[0];
+              let beginText = fenceCap[1];
+              itemContents += '\n' + rawText;
+              raw += rawText + '\n';
+              src = src.substring(rawText.length + 1);
+              if (!fencesEndRegExp.test(rawText)) {
+                if (/```/.test(beginText)) {
+                  itemContents += '\n```';
+                }
+                else {
+                  itemContents += '\n~~~';
+                }
+              }
             }
+            else {
+              rawLine = src.split('\n', 1)[0];
+              line = rawLine;
 
-            // End list item if found start of new bullet
-            if (nextBulletRegex.test(line)) {
-              break;
+              // Re-align to follow commonmark nesting rules
+              if (this.options.pedantic) {
+                line = line.replace(/^ {1,4}(?=( {4})*[^ ])/g, '  ');
+              }
+
+              // End list item if found start of new heading
+              if (this.rules.block.heading.test(line)) {
+                break;
+              }
+
+              // End list item if found start of new bullet
+              if (nextBulletRegex.test(line)) {
+                break;
+              }
+
+              // Horizontal rule found
+              if (hrRegex.test(src)) {
+                break;
+              }
+
+              if (line.search(/[^ ]/) >= indent || !line.trim()) { // Dedent if possible
+                itemContents += '\n' + line.slice(indent);
+              } else if (!blankLine) { // Until blank line, item doesn't need indentation
+                itemContents += '\n' + line;
+              } else { // Otherwise, improper indentation ends this item
+                break;
+              }
+
+              if (!blankLine && !line.trim()) { // Check if current line is blank
+                blankLine = true;
+              }
+
+              raw += rawLine + '\n';
+              src = src.substring(rawLine.length + 1);
             }
-
-            // Horizontal rule found
-            if (hrRegex.test(src)) {
-              break;
-            }
-
-            if (line.search(/[^ ]/) >= indent || !line.trim()) { // Dedent if possible
-              itemContents += '\n' + line.slice(indent);
-            } else if (!blankLine) { // Until blank line, item doesn't need indentation
-              itemContents += '\n' + line;
-            } else { // Otherwise, improper indentation ends this item
-              break;
-            }
-
-            if (!blankLine && !line.trim()) { // Check if current line is blank
-              blankLine = true;
-            }
-
-            raw += rawLine + '\n';
-            src = src.substring(rawLine.length + 1);
           }
         }
 
