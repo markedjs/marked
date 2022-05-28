@@ -226,29 +226,27 @@ export class Tokenizer {
         if (!endEarly) {
           const nextBulletRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])((?: [^\\n]*)?(?:\\n|$))`);
           const hrRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`);
-          const fencesBeginRegExp = new RegExp('^(```|~~~)');
+          const fencesBeginRegExp = /^(```|~~~)/;
 
           // Check if following lines should be included in List Item
           while (src) {
             // Check if fenced code block
             if (fencesBeginRegExp.test(src)) {
-              const fencesEndRegExp = new RegExp('(```|~~~)[\s\n]*$');
-              let fenceCap = this.rules.block.fences.exec(src);
-              let rawText = fenceCap[0];
-              let beginText = fenceCap[1];
+              const fencesEndRegExp = /(```|~~~)[\s\n]*$/;
+              const fenceCap = this.rules.block.fences.exec(src);
+              const rawText = fenceCap[0];
+              const beginText = fenceCap[1];
               itemContents += '\n' + rawText;
               raw += rawText + '\n';
               src = src.substring(rawText.length + 1);
               if (!fencesEndRegExp.test(rawText)) {
                 if (/```/.test(beginText)) {
                   itemContents += '\n```';
-                }
-                else {
+                } else {
                   itemContents += '\n~~~';
                 }
               }
-            }
-            else {
+            } else {
               rawLine = src.split('\n', 1)[0];
               line = rawLine;
 
