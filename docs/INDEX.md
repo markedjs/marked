@@ -25,7 +25,7 @@ These documentation pages are also rendered using marked 💯
 
 <h2 id="usage">Usage</h2>
 
-### Warning: 🚨 Marked does not [sanitize](/using_advanced#options) the output HTML. Please use a sanitize library, like [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [sanitize-html](https://github.com/apostrophecms/sanitize-html) or [insane](https://github.com/bevacqua/insane) on the *output* HTML! 🚨
+### Warning: 🚨 Marked does not [sanitize](/using_advanced#options) the output HTML. If you are processing potentially unsafe strings, it's important to filter for possible XSS attacks. Some filtering options include [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [js-xss](https://github.com/leizongmin/js-xss), [sanitize-html](https://github.com/apostrophecms/sanitize-html) and [insane](https://github.com/bevacqua/insane) on the *output* HTML! 🚨
 
 ```
 DOMPurify.sanitize(marked.parse(`<img src="x" onerror="alert('not happening')">`));
