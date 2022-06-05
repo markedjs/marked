@@ -20,9 +20,3 @@ if {
 
 }
 ~~~
-
-4. closed by the end of the document
-```
-if {
-
-}
