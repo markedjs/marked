@@ -65,7 +65,7 @@
     "markdown-it": "13.0.1",
     "node-fetch": "^3.2.5",
     "rollup": "^2.75.5",
-    "rollup-plugin-license": "^2.8.0",
+    "rollup-plugin-license": "^2.8.1",
     "semantic-release": "^19.0.3",
     "titleize": "^3.0.0",
     "uglify-js": "^3.16.0",
