@@ -226,6 +226,7 @@ export class Tokenizer {
         if (!endEarly) {
           const nextBulletRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])((?: [^\\n]*)?(?:\\n|$))`);
           const hrRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`);
+          const fencesBeginRegex = new RegExp(`^( {0,${Math.min(3, indent - 1)}})(\`\`\`|~~~)`);
 
           // Check if following lines should be included in List Item
           while (src) {
@@ -235,6 +236,16 @@ export class Tokenizer {
             // Re-align to follow commonmark nesting rules
             if (this.options.pedantic) {
               line = line.replace(/^ {1,4}(?=( {4})*[^ ])/g, '  ');
+            }
+
+            // End list item if found code fences
+            if (fencesBeginRegex.test(line)) {
+              break;
+            }
+
+            // End list item if found start of new heading
+            if (this.rules.block.heading.test(line)) {
+              break;
             }
 
             // End list item if found start of new bullet
