@@ -42,7 +42,7 @@
     "html"
   ],
   "devDependencies": {
-    "@babel/core": "^7.18.2",
+    "@babel/core": "^7.18.5",
     "@babel/preset-env": "^7.18.2",
     "@markedjs/html-differ": "^4.0.2",
     "@rollup/plugin-babel": "^5.3.1",
@@ -57,11 +57,11 @@
     "eslint": "^8.17.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.2.1",
+    "eslint-plugin-n": "^15.2.2",
     "eslint-plugin-promise": "^6.0.0",
     "front-matter": "^4.0.2",
     "highlight.js": "^11.5.1",
-    "jasmine": "^4.1.0",
+    "jasmine": "^4.2.0",
     "markdown-it": "13.0.1",
     "node-fetch": "^3.2.5",
     "rollup": "^2.75.5",
