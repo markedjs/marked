@@ -226,7 +226,8 @@ export class Tokenizer {
         if (!endEarly) {
           const nextBulletRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])((?: [^\\n]*)?(?:\\n|$))`);
           const hrRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`);
-          const fencesBeginRegex = new RegExp(`^( {0,${Math.min(3, indent - 1)}})(\`\`\`|~~~)`);
+          const fencesBeginRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:\`\`\`|~~~)`);
+          const headingBeginRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}#`);
 
           // Check if following lines should be included in List Item
           while (src) {
@@ -244,7 +245,7 @@ export class Tokenizer {
             }
 
             // End list item if found start of new heading
-            if (this.rules.block.heading.test(line)) {
+            if (headingBeginRegex.test(line)) {
               break;
             }
 
