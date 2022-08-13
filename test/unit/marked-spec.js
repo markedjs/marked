@@ -433,11 +433,10 @@ describe('use extension', () => {
             const token = {
               type: 'walkableDescription',
               raw: match[0],
-              dt: [],
+              dt: this.lexer.inline(match[1].trim()),
               dd: [],
               tokens: []
             };
-            this.lexer.inline(match[1].trim(), token.dt);
             this.lexer.inline(match[2].trim(), token.dd);
             this.lexer.inline('unwalked', token.tokens);
             return token;
