@@ -318,6 +318,7 @@ export class Lexer {
 
   inline(src, tokens = []) {
     this.inlineQueue.push({ src, tokens });
+    return tokens;
   }
 
   /**
