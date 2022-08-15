@@ -1,5 +1,6 @@
 export function getDefaults() {
   return {
+    async: false,
     baseUrl: null,
     breaks: false,
     extensions: null,
