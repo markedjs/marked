@@ -440,7 +440,7 @@ console.log(marked.parse('A Description List:\n'
 
 <h2 id="async">Async Marked : <code>async</code></h2>
 
-Marked will return a promise if the `async` options is true. The `async` option will tell marked to await any `walkTokens` functions before parsing the tokens and returning an HTML string.
+Marked will return a promise if the `async` option is true. The `async` option will tell marked to await any `walkTokens` functions before parsing the tokens and returning an HTML string.
 
 Simple Example:
 
