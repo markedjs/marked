@@ -1073,7 +1073,9 @@ br
         }
       }
     });
-    const html = await marked('*text*');
+    const promise = marked('*text*');
+    expect(promise).toBeInstanceOf(Promise);
+    const html = await promise;
     expect(html.trim()).toBe('<p><em>text walked</em></p>');
   });
 });
