@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import { isEqual } from './helpers/html-differ.js';
 import { loadFiles } from './helpers/load.js';
 
+import { marked as cjsMarked } from '../lib/marked.cjs';
 import { marked as esmMarked } from '../lib/marked.esm.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -30,9 +31,10 @@ export function load() {
 export async function runBench(options) {
   options = options || {};
   const specs = load();
+  const tests = {};
 
   // Non-GFM, Non-pedantic
-  marked.setOptions({
+  cjsMarked.setOptions({
     gfm: false,
     breaks: false,
     pedantic: false,
@@ -40,9 +42,9 @@ export async function runBench(options) {
     smartLists: false
   });
   if (options.marked) {
-    marked.setOptions(options.marked);
+    cjsMarked.setOptions(options.marked);
   }
-  await bench('cjs marked', specs, marked.parse);
+  tests['cjs marked'] = cjsMarked.parse;
 
   esmMarked.setOptions({
     gfm: false,
@@ -54,113 +56,76 @@ export async function runBench(options) {
   if (options.marked) {
     esmMarked.setOptions(options.marked);
   }
-  await bench('esm marked', specs, esmMarked.parse);
+  tests['esm marked'] = esmMarked.parse;
 
-  // GFM
-  marked.setOptions({
-    gfm: true,
-    breaks: false,
-    pedantic: false,
-    sanitize: false,
-    smartLists: false
-  });
-  if (options.marked) {
-    marked.setOptions(options.marked);
-  }
-  await bench('cjs marked (gfm)', specs, marked.parse);
-
-  esmMarked.setOptions({
-    gfm: true,
-    breaks: false,
-    pedantic: false,
-    sanitize: false,
-    smartLists: false
-  });
-  if (options.marked) {
-    esmMarked.setOptions(options.marked);
-  }
-  await bench('esm marked (gfm)', specs, esmMarked.parse);
-
-  // Pedantic
-  marked.setOptions({
-    gfm: false,
-    breaks: false,
-    pedantic: true,
-    sanitize: false,
-    smartLists: false
-  });
-  if (options.marked) {
-    marked.setOptions(options.marked);
-  }
-  await bench('cjs marked (pedantic)', specs, marked.parse);
-
-  esmMarked.setOptions({
-    gfm: false,
-    breaks: false,
-    pedantic: true,
-    sanitize: false,
-    smartLists: false
-  });
-  if (options.marked) {
-    esmMarked.setOptions(options.marked);
-  }
-  await bench('esm marked (pedantic)', specs, esmMarked.parse);
+  // esmMarked.setOptions({
+  //   gfm: true,
+  //   breaks: false,
+  //   pedantic: false,
+  //   sanitize: false,
+  //   smartLists: false
+  // });
+  // if (options.marked) {
+  //   esmMarked.setOptions(options.marked);
+  // }
+  // tests['esm marked (gfm)'] = esmMarked.parse;
 
   try {
-    await bench('commonmark', specs, (await (async() => {
+    tests.commonmark = (await (async() => {
       const { Parser, HtmlRenderer } = await import('commonmark');
       const parser = new Parser();
       const writer = new HtmlRenderer();
       return function(text) {
         return writer.render(parser.parse(text));
       };
-    })()));
+    })());
   } catch (e) {
     console.error('Could not bench commonmark. (Error: %s)', e.message);
   }
 
   try {
-    await bench('markdown-it', specs, (await (async() => {
+    tests['markdown-it'] = (await (async() => {
       const MarkdownIt = (await import('markdown-it')).default;
       const md = new MarkdownIt();
       return md.render.bind(md);
-    })()));
+    })());
   } catch (e) {
     console.error('Could not bench markdown-it. (Error: %s)', e.message);
   }
+
+  await bench(tests, specs);
 }
 
-export async function bench(name, specs, engine) {
-  const before = process.hrtime();
-  for (let i = 0; i < 1e3; i++) {
-    for (const spec of specs) {
-      await engine(spec.markdown);
+export async function bench(tests, specs) {
+  const stats = {};
+  for (const name in tests) {
+    stats[name] = {
+      elapsed: 0n,
+      correct: 0
+    };
+  }
+
+  console.log();
+  for (let i = 0; i < specs.length; i++) {
+    const spec = specs[i];
+    process.stdout.write(`${(i * 100 / specs.length).toFixed(1).padStart(5)}% ${i.toString().padStart(specs.length.toString().length)} of ${specs.length}\r`);
+    for (const name in tests) {
+      const test = tests[name];
+      const before = process.hrtime.bigint();
+      for (let n = 0; n < 1e3; n++) {
+        await test(spec.markdown);
+      }
+      const after = process.hrtime.bigint();
+      stats[name].elapsed += after - before;
+      stats[name].correct += (await isEqual(spec.html, await test(spec.markdown)) ? 1 : 0);
     }
   }
-  const elapsed = process.hrtime(before);
-  const ms = prettyElapsedTime(elapsed).toFixed();
 
-  let correct = 0;
-  for (const spec of specs) {
-    if (await isEqual(spec.html, await engine(spec.markdown))) {
-      correct++;
-    }
+  for (const name in tests) {
+    const ms = prettyElapsedTime(stats[name].elapsed);
+    const percent = (stats[name].correct / specs.length * 100).toFixed(2);
+    console.log(`${name} completed in ${ms}ms and passed ${percent}%`);
   }
-  const percent = (correct / specs.length * 100).toFixed(2);
-
-  console.log('%s completed in %sms and passed %s%', name, ms, percent);
-}
-
-/**
- * A simple one-time benchmark
- */
-export async function time(options) {
-  options = options || {};
-  const specs = load();
-  if (options.marked) {
-    marked.setOptions(options.marked);
-  }
-  await bench('marked', specs, marked);
 }
 
 /**
@@ -204,35 +169,23 @@ function parseArg(argv) {
 
   while (argv.length) {
     const arg = getarg();
-    switch (arg) {
-      case '-t':
-      case '--time':
-        options.time = true;
-        break;
-      case '-m':
-      case '--minified':
-        options.minified = true;
-        break;
-      default:
-        if (arg.indexOf('--') === 0) {
-          const opt = camelize(arg.replace(/^--(no-)?/, ''));
-          if (!defaults.hasOwnProperty(opt)) {
-            continue;
-          }
-          options.marked = options.marked || {};
-          if (arg.indexOf('--no-') === 0) {
-            options.marked[opt] = typeof defaults[opt] !== 'boolean'
-              ? null
-              : false;
-          } else {
-            options.marked[opt] = typeof defaults[opt] !== 'boolean'
-              ? argv.shift()
-              : true;
-          }
-        } else {
-          orphans.push(arg);
-        }
-        break;
+    if (arg.indexOf('--') === 0) {
+      const opt = camelize(arg.replace(/^--(no-)?/, ''));
+      if (!defaults.hasOwnProperty(opt)) {
+        continue;
+      }
+      options.marked = options.marked || {};
+      if (arg.indexOf('--no-') === 0) {
+        options.marked[opt] = typeof defaults[opt] !== 'boolean'
+          ? null
+          : false;
+      } else {
+        options.marked[opt] = typeof defaults[opt] !== 'boolean'
+          ? argv.shift()
+          : true;
+      }
+    } else {
+      orphans.push(arg);
     }
   }
 
@@ -257,28 +210,19 @@ function camelize(text) {
  * Main
  */
 export default async function main(argv) {
-  marked = (await import('../lib/marked.cjs')).marked;
+  marked = cjsMarked;
 
   const opt = parseArg(argv);
 
-  if (opt.minified) {
-    marked = (await import('../marked.min.js')).marked;
-  }
-
-  if (opt.time) {
-    await time(opt);
-  } else {
-    await runBench(opt);
-  }
+  await runBench(opt);
 }
 
 /**
  * returns time to millisecond granularity
+ * @param hrtimeElapsed {bigint}
  */
 function prettyElapsedTime(hrtimeElapsed) {
-  const seconds = hrtimeElapsed[0];
-  const frac = Math.round(hrtimeElapsed[1] / 1e3) / 1e3;
-  return seconds * 1e3 + frac;
+  return Number(hrtimeElapsed / 1_000_000n);
 }
 
 process.title = 'marked bench';

@@ -1058,4 +1058,23 @@ br
     });
     expect(marked('*text*').trim()).toBe('<p><em>text walked</em></p>');
   });
+
+  it('should wait for async `walkTokens` function', async() => {
+    marked.use({
+      async: true,
+      async walkTokens(token) {
+        if (token.type === 'em') {
+          await new Promise((resolve) => {
+            setTimeout(resolve, 100);
+          });
+          token.text += ' walked';
+          token.tokens = this.Lexer.lexInline(token.text);
+        }
+      }
+    });
+    const promise = marked('*text*');
+    expect(promise).toBeInstanceOf(Promise);
+    const html = await promise;
+    expect(html.trim()).toBe('<p><em>text walked</em></p>');
+  });
 });

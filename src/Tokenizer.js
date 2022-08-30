@@ -19,7 +19,7 @@ function outputLink(cap, link, raw, lexer) {
       href,
       title,
       text,
-      tokens: lexer.inlineTokens(text, [])
+      tokens: lexer.inlineTokens(text)
     };
     lexer.state.inLink = false;
     return token;
@@ -125,15 +125,13 @@ export class Tokenizer {
         }
       }
 
-      const token = {
+      return {
         type: 'heading',
         raw: cap[0],
         depth: cap[1].length,
         text,
-        tokens: []
+        tokens: this.lexer.inline(text)
       };
-      this.lexer.inline(token.text, token.tokens);
-      return token;
     }
   }
 
@@ -355,10 +353,10 @@ export class Tokenizer {
         text: cap[0]
       };
       if (this.options.sanitize) {
+        const text = this.options.sanitizer ? this.options.sanitizer(cap[0]) : escape(cap[0]);
         token.type = 'paragraph';
-        token.text = this.options.sanitizer ? this.options.sanitizer(cap[0]) : escape(cap[0]);
-        token.tokens = [];
-        this.lexer.inline(token.text, token.tokens);
+        token.text = text;
+        token.tokens = this.lexer.inline(text);
       }
       return token;
     }
@@ -416,8 +414,7 @@ export class Tokenizer {
         // header child tokens
         l = item.header.length;
         for (j = 0; j < l; j++) {
-          item.header[j].tokens = [];
-          this.lexer.inline(item.header[j].text, item.header[j].tokens);
+          item.header[j].tokens = this.lexer.inline(item.header[j].text);
         }
 
         // cell child tokens
@@ -425,8 +422,7 @@ export class Tokenizer {
         for (j = 0; j < l; j++) {
           row = item.rows[j];
           for (k = 0; k < row.length; k++) {
-            row[k].tokens = [];
-            this.lexer.inline(row[k].text, row[k].tokens);
+            row[k].tokens = this.lexer.inline(row[k].text);
           }
         }
 
@@ -438,45 +434,40 @@ export class Tokenizer {
   lheading(src) {
     const cap = this.rules.block.lheading.exec(src);
     if (cap) {
-      const token = {
+      return {
         type: 'heading',
         raw: cap[0],
         depth: cap[2].charAt(0) === '=' ? 1 : 2,
         text: cap[1],
-        tokens: []
+        tokens: this.lexer.inline(cap[1])
       };
-      this.lexer.inline(token.text, token.tokens);
-      return token;
     }
   }
 
   paragraph(src) {
     const cap = this.rules.block.paragraph.exec(src);
     if (cap) {
-      const token = {
+      const text = cap[1].charAt(cap[1].length - 1) === '\n'
+        ? cap[1].slice(0, -1)
+        : cap[1];
+      return {
         type: 'paragraph',
         raw: cap[0],
-        text: cap[1].charAt(cap[1].length - 1) === '\n'
-          ? cap[1].slice(0, -1)
-          : cap[1],
-        tokens: []
+        text,
+        tokens: this.lexer.inline(text)
       };
-      this.lexer.inline(token.text, token.tokens);
-      return token;
     }
   }
 
   text(src) {
     const cap = this.rules.block.text.exec(src);
     if (cap) {
-      const token = {
+      return {
         type: 'text',
         raw: cap[0],
         text: cap[0],
-        tokens: []
+        tokens: this.lexer.inline(cap[0])
       };
-      this.lexer.inline(token.text, token.tokens);
-      return token;
     }
   }
 
@@ -645,7 +636,7 @@ export class Tokenizer {
             type: 'em',
             raw: src.slice(0, lLength + match.index + rLength + 1),
             text,
-            tokens: this.lexer.inlineTokens(text, [])
+            tokens: this.lexer.inlineTokens(text)
           };
         }
 
@@ -655,7 +646,7 @@ export class Tokenizer {
           type: 'strong',
           raw: src.slice(0, lLength + match.index + rLength + 1),
           text,
-          tokens: this.lexer.inlineTokens(text, [])
+          tokens: this.lexer.inlineTokens(text)
         };
       }
     }
@@ -696,7 +687,7 @@ export class Tokenizer {
         type: 'del',
         raw: cap[0],
         text: cap[2],
-        tokens: this.lexer.inlineTokens(cap[2], [])
+        tokens: this.lexer.inlineTokens(cap[2])
       };
     }
   }

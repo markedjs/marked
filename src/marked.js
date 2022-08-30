@@ -105,13 +105,7 @@ export function marked(src, opt, callback) {
     return;
   }
 
-  try {
-    const tokens = Lexer.lex(src, opt);
-    if (opt.walkTokens) {
-      marked.walkTokens(tokens, opt.walkTokens);
-    }
-    return Parser.parse(tokens, opt);
-  } catch (e) {
+  function onError(e) {
     e.message += '\nPlease report this to https://github.com/markedjs/marked.';
     if (opt.silent) {
       return '<p>An error occurred:</p><pre>'
@@ -119,6 +113,23 @@ export function marked(src, opt, callback) {
         + '</pre>';
     }
     throw e;
+  }
+
+  try {
+    const tokens = Lexer.lex(src, opt);
+    if (opt.walkTokens) {
+      if (opt.async) {
+        return Promise.all(marked.walkTokens(tokens, opt.walkTokens))
+          .then(() => {
+            return Parser.parse(tokens, opt);
+          })
+          .catch(onError);
+      }
+      marked.walkTokens(tokens, opt.walkTokens);
+    }
+    return Parser.parse(tokens, opt);
+  } catch (e) {
+    onError(e);
   }
 }
 
@@ -236,10 +247,12 @@ marked.use = function(...args) {
     if (pack.walkTokens) {
       const walkTokens = marked.defaults.walkTokens;
       opts.walkTokens = function(token) {
-        pack.walkTokens.call(this, token);
+        let values = [];
+        values.push(pack.walkTokens.call(this, token));
         if (walkTokens) {
-          walkTokens.call(this, token);
+          values = values.concat(walkTokens.call(this, token));
         }
+        return values;
       };
     }
 
@@ -256,35 +269,37 @@ marked.use = function(...args) {
  */
 
 marked.walkTokens = function(tokens, callback) {
+  let values = [];
   for (const token of tokens) {
-    callback.call(marked, token);
+    values = values.concat(callback.call(marked, token));
     switch (token.type) {
       case 'table': {
         for (const cell of token.header) {
-          marked.walkTokens(cell.tokens, callback);
+          values = values.concat(marked.walkTokens(cell.tokens, callback));
         }
         for (const row of token.rows) {
           for (const cell of row) {
-            marked.walkTokens(cell.tokens, callback);
+            values = values.concat(marked.walkTokens(cell.tokens, callback));
           }
         }
         break;
       }
       case 'list': {
-        marked.walkTokens(token.items, callback);
+        values = values.concat(marked.walkTokens(token.items, callback));
         break;
       }
       default: {
         if (marked.defaults.extensions && marked.defaults.extensions.childTokens && marked.defaults.extensions.childTokens[token.type]) { // Walk any extensions
           marked.defaults.extensions.childTokens[token.type].forEach(function(childTokens) {
-            marked.walkTokens(token[childTokens], callback);
+            values = values.concat(marked.walkTokens(token[childTokens], callback));
           });
         } else if (token.tokens) {
-          marked.walkTokens(token.tokens, callback);
+          values = values.concat(marked.walkTokens(token.tokens, callback));
         }
       }
     }
   }
+  return values;
 };
 
 /**
