@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+
 jobs:
   Test:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
@@ -39,6 +42,8 @@ jobs:
         run: npm run test:lint
 
   Release:
+    permissions:
+      contents: write
     needs: [Test, Lint]
     if: |
       github.ref == 'refs/heads/master' &&
