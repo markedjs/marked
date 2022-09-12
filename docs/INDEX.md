@@ -21,8 +21,11 @@ These documentation pages are also rendered using marked 💯
 
 **CLI:** `npm install -g marked`
 
-**In-browser:** `npm install marked`
-
+**In-browser:**
+```
+npm install marked
+npm install @types/marked # For TypeScript projects
+```
 <h2 id="usage">Usage</h2>
 
 ### Warning: 🚨 Marked does not [sanitize](/using_advanced#options) the output HTML. If you are processing potentially unsafe strings, it's important to filter for possible XSS attacks. Some filtering options include [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [js-xss](https://github.com/leizongmin/js-xss), [sanitize-html](https://github.com/apostrophecms/sanitize-html) and [insane](https://github.com/bevacqua/insane) on the *output* HTML! 🚨
