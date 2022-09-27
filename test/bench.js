@@ -39,7 +39,6 @@ export async function runBench(options) {
     breaks: false,
     pedantic: false,
     sanitize: false,
-    smartLists: false
   });
   if (options.marked) {
     cjsMarked.setOptions(options.marked);
@@ -51,7 +50,6 @@ export async function runBench(options) {
     breaks: false,
     pedantic: false,
     sanitize: false,
-    smartLists: false
   });
   if (options.marked) {
     esmMarked.setOptions(options.marked);
@@ -63,7 +61,6 @@ export async function runBench(options) {
   //   breaks: false,
   //   pedantic: false,
   //   sanitize: false,
-  //   smartLists: false
   // });
   // if (options.marked) {
   //   esmMarked.setOptions(options.marked);
