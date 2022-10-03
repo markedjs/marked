@@ -119,7 +119,7 @@ We actively support the usability of Marked in super-fast markdown transformatio
 | [zero-md](https://zerodevx.github.io/zero-md/)             | [Active](https://github.com/zerodevx/zero-md)                      |
 | [texme](https://github.com/susam/texme)                    | [Active](https://www.jsdelivr.com/package/npm/texme)               |
 | [StrapDown.js](https://naereen.github.io/StrapDown.js/)    | [Active](https://naereen.github.io/StrapDown.js/)                  |
-| [The Homebrewery](https://homebrewery.naturalcrit.com/)    | [Active](https://github.com/naturalcrit/homebrewery)                  |
+| [The Homebrewery](https://homebrewery.naturalcrit.com/)    | [Active](https://github.com/naturalcrit/homebrewery)               |
 
 <h2 id="security">Security</h2>
 
