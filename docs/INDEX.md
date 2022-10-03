@@ -110,6 +110,17 @@ We actively support the features of the following [Markdown flavors](https://git
 
 By supporting the above Markdown flavors, it's possible that Marked can help you use other flavors as well; however, these are not actively supported by the community.
 
+<h2 id="specifications">List of Tools Using Marked</h2>
+
+We actively support the usability of Marked in super-fast markdown transformation, some of Tools using `Marked` for single-page creations are 
+
+| Tools                                                      | Status                                                             |
+| :--------------------------------------------------------- | :----------------------------------------------------------------- |
+| [zero-md](https://zerodevx.github.io/zero-md/)             | [Active](https://github.com/zerodevx/zero-md)                      |
+| [texme](https://github.com/susam/texme)                    | [Active](https://www.jsdelivr.com/package/npm/texme)               |
+| [StrapDown.js](https://naereen.github.io/StrapDown.js/)    | [Active](https://naereen.github.io/StrapDown.js/)                  |
+| [The Homebrewery](https://homebrewery.naturalcrit.com/)    | [Active](https://github.com/naturalcrit/homebrewery)                  |
+
 <h2 id="security">Security</h2>
 
 The only completely secure system is the one that doesn't exist in the first place. Having said that, we take the security of Marked very seriously.
