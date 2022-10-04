@@ -114,12 +114,12 @@ By supporting the above Markdown flavors, it's possible that Marked can help you
 
 We actively support the usability of Marked in super-fast markdown transformation, some of Tools using `Marked` for single-page creations are 
 
-| Tools                                                      | Status                                                             |
-| :--------------------------------------------------------- | :----------------------------------------------------------------- |
-| [zero-md](https://zerodevx.github.io/zero-md/)             | [Active](https://github.com/zerodevx/zero-md)                      |
-| [texme](https://github.com/susam/texme)                    | [Active](https://www.jsdelivr.com/package/npm/texme)               |
-| [StrapDown.js](https://naereen.github.io/StrapDown.js/)    | [Active](https://naereen.github.io/StrapDown.js/)                  |
-| [The Homebrewery](https://homebrewery.naturalcrit.com/)    | [Active](https://github.com/naturalcrit/homebrewery)               |
+| Tools                                                               |                  Description                                               |
+| :-----------------------------------------------------------------  | :------------------------------------------------------------------------  |
+| [zero-md](https://zerodevx.github.io/zero-md/)                      | A native markdown-to-html web component to load and display an external MD file.It uses Marked for super-fast markdown transformation. |
+| [TeXMe](https://github.com/susam/texme)                             | TeXMe is a lightweight JavaScript utility to create self-rendering Markdown + LaTeX documents.             |
+| [StrapDown.js](https://naereen.github.io/StrapDown.js/)             | StrapDown.js is an awesome on-the-fly Markdown to HTML text processor.                |
+| [Homebrewery](https://homebrewery.naturalcrit.com/)             | The Homebrewery is a tool for making authentic looking D&D content using Markdown. It is distributed under the terms of the MIT.             |
 
 <h2 id="security">Security</h2>
 
