@@ -110,6 +110,17 @@ We actively support the features of the following [Markdown flavors](https://git
 
 By supporting the above Markdown flavors, it's possible that Marked can help you use other flavors as well; however, these are not actively supported by the community.
 
+<h2 id="tools">List of Tools Using Marked</h2>
+
+We actively support the usability of Marked in super-fast markdown transformation, some of Tools using `Marked` for single-page creations are 
+
+| Tools                                                               |                  Description                                               |
+| :-----------------------------------------------------------------  | :------------------------------------------------------------------------  |
+| [zero-md](https://zerodevx.github.io/zero-md/)                      | A native markdown-to-html web component to load and display an external MD file.It uses Marked for super-fast markdown transformation. |
+| [texme](https://github.com/susam/texme)                             | TeXMe is a lightweight JavaScript utility to create self-rendering Markdown + LaTeX documents.             |
+| [StrapDown.js](https://naereen.github.io/StrapDown.js/)             | StrapDown.js is an awesome on-the-fly Markdown to HTML text processor.                |
+| [Homebrewery](https://homebrewery.naturalcrit.com/)             | The Homebrewery is a tool for making authentic looking D&D content using Markdown. It is distributed under the terms of the MIT.             |
+
 <h2 id="security">Security</h2>
 
 The only completely secure system is the one that doesn't exist in the first place. Having said that, we take the security of Marked very seriously.
