@@ -34,6 +34,15 @@ npm install @types/marked # For TypeScript projects
 DOMPurify.sanitize(marked.parse(`<img src="x" onerror="alert('not happening')">`));
 ```
 
+**⚠️ Input: special ZERO WIDTH unicode characters (for example `\uFEFF`) might interfere with parsing. Some text editors add them at the start of the file (see: [#2139](https://github.com/markedjs/marked/issues/2139)).**
+
+```js
+// remove the most common zerowidth characters from the start of the file 
+marked.parse(
+  contents.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/,"")
+)
+```
+
 **CLI**
 
 ``` bash
