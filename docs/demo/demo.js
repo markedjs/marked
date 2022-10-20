@@ -445,9 +445,9 @@ function checkForChanges() {
         delayTime = 100;
         messageWorker({
           task: 'parse',
-          version: version,
-          markdown: markdown,
-          options: options
+          version,
+          markdown,
+          options
         });
       } else {
         var startTime = new Date();
