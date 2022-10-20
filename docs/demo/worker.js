@@ -44,7 +44,7 @@ function parse(e) {
       postMessage({
         id: e.data.id,
         task: e.data.task,
-        defaults
+        defaults: defaults
       });
       break;
     case 'parse':
@@ -57,7 +57,7 @@ function parse(e) {
         id: e.data.id,
         task: e.data.task,
         lexed: lexedList,
-        parsed,
+        parsed: parsed,
         time: endTime - startTime
       });
       break;
