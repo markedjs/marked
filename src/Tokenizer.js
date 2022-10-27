@@ -99,12 +99,11 @@ export class Tokenizer {
     if (cap) {
       const raw = cap[0];
       const text = indentCodeCompensation(raw, cap[3] || '');
-      const lang = (cap[2] ? cap[2].trim() : cap[2]).replace(this.rules.inline._escapes, '$1');
 
       return {
         type: 'code',
         raw,
-        lang,
+        lang: cap[2] ? cap[2].trim().replace(this.rules.inline._escapes, '$1') : cap[2],
         text
       };
     }
