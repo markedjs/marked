@@ -372,8 +372,8 @@ export class Tokenizer {
         type: 'def',
         tag,
         raw: cap[0],
-        href: cap[2],
-        title: cap[3]
+        href: cap[2] ? cap[2].replace(this.rules.inline._escapes, '$1') : cap[2],
+        title: cap[3] ? cap[3].replace(this.rules.inline._escapes, '$1') : cap[3]
       };
     }
   }
@@ -583,10 +583,7 @@ export class Tokenizer {
           text
         };
       }
-      return outputLink(cap, {
-        href: link.href.replace(this.rules.inline._escapes, '$1'),
-        title: link.title ? link.title.replace(this.rules.inline._escapes, '$1') : link.title
-      }, cap[0], this.lexer);
+      return outputLink(cap, link, cap[0], this.lexer);
     }
   }
 
