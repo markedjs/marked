@@ -181,8 +181,7 @@
     "example": 23,
     "start_line": 605,
     "end_line": 611,
-    "section": "Backslash escapes",
-    "shouldFail": true
+    "section": "Backslash escapes"
   },
   {
     "markdown": "``` foo\\+bar\nfoo\n```\n",
@@ -190,8 +189,7 @@
     "example": 24,
     "start_line": 614,
     "end_line": 621,
-    "section": "Backslash escapes",
-    "shouldFail": true
+    "section": "Backslash escapes"
   },
   {
     "markdown": "&nbsp; &amp; &copy; &AElig; &Dcaron;\n&frac34; &HilbertSpace; &DifferentialD;\n&ClockwiseContourIntegral; &ngE;\n",
@@ -1624,8 +1622,7 @@
     "example": 202,
     "start_line": 3307,
     "end_line": 3313,
-    "section": "Link reference definitions",
-    "shouldFail": true
+    "section": "Link reference definitions"
   },
   {
     "markdown": "[foo]\n\n[foo]: url\n",

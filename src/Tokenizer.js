@@ -99,11 +99,12 @@ export class Tokenizer {
     if (cap) {
       const raw = cap[0];
       const text = indentCodeCompensation(raw, cap[3] || '');
+      const lang = (cap[2] ? cap[2].trim() : cap[2]).replace(this.rules.inline._escapes, '$1');
 
       return {
         type: 'code',
         raw,
-        lang: cap[2] ? cap[2].trim() : cap[2],
+        lang,
         text
       };
     }
@@ -582,7 +583,10 @@ export class Tokenizer {
           text
         };
       }
-      return outputLink(cap, link, cap[0], this.lexer);
+      return outputLink(cap, {
+        href: link.href.replace(this.rules.inline._escapes, '$1'),
+        title: link.title ? link.title.replace(this.rules.inline._escapes, '$1') : link.title
+      }, cap[0], this.lexer);
     }
   }
 
