@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
       copyText.value = copyText.value.substring(0, lastIndex);
       document.body.appendChild(copyText);
       copyText.select();
-      document.execCommand('copy');
+      copyText.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(copyText.value);
       document.body.removeChild(copyText);
       pre.classList.add('active');
       setTimeout(function() {
