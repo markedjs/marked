@@ -94,6 +94,7 @@ pre {
     line-height: 1.45;
     background-color: #f6f8fa;
     border-radius: 3px;
+    position: relative;
 }
 
 code:not([class]) {
@@ -105,15 +106,19 @@ code:not([class]) {
 }
 
 .icon-copy {
-    display: block;
+    display: none;
     max-height: 20px;
     max-width: 20px;
     cursor: pointer;
     float: right;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
 }
 
 .div-copy.active .icon-copy {
-    display: none;
+    display: block;
 }
 
 .tooltip-text {
@@ -121,13 +126,16 @@ code:not([class]) {
     color: #1d1d1d;
     border-color: #d4d4d4;
     box-shadow: 2px 2px 20px #9b9b9b;
-    padding: 2px 5px;
     border-radius: 5px;
+    padding: 2px;
     display: none;
     float: right;
+    position: absolute;
+    top: 3px;
+    right: 3px;
 }
   
-.div-copy.active .tooltip-text {
+.div-copy.click .tooltip-text {
     display: block;
 }
 

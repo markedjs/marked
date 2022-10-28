@@ -11,6 +11,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var getAllEl = document.querySelectorAll('.div-copy');
   getAllEl.forEach(function(pre) {
+    pre.parentElement.onmouseover = function() {
+      pre.classList.add('active');
+    };
+    pre.parentElement.onmouseleave = function() {
+      pre.classList.remove('active');
+      pre.classList.remove('click');
+    };
     pre.onclick = function() {
       var copyText = document.createElement('textarea');
       copyText.value = pre.parentElement.textContent;
@@ -21,9 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
       copyText.setSelectionRange(0, 99999);
       navigator.clipboard.writeText(copyText.value);
       document.body.removeChild(copyText);
-      pre.classList.add('active');
+      pre.classList.add('click');
       setTimeout(function() {
-        pre.classList.remove('active');
+        pre.classList.remove('click');
       }, 5000);
     };
   });
