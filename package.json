@@ -23,6 +23,7 @@
       "import": "./lib/marked.esm.js",
       "default": "./lib/marked.cjs"
     },
+    "./bin/marked": "./bin/marked.js",
     "./package.json": "./package.json"
   },
   "repository": "git://github.com/markedjs/marked.git",
