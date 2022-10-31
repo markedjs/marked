@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
       clearTimeout(timeout);
       timeout = setTimeout(function() {
         copy.classList.remove('click');
-      }, 5000);
+      }, 3000);
     };
   });
 });
