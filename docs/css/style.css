@@ -105,15 +105,38 @@ code:not([class]) {
     border-radius: 3px;
 }
 
-.icon-copy {
+.github-corner:hover .octo-arm {
+    animation:octocat-wave 560ms ease-in-out;
+}
+
+@keyframes octocat-wave {
+    0%,100%{transform:rotate(0)}
+    20%,60%{transform:rotate(-25deg)}
+    40%,80%{transform:rotate(10deg)}
+}
+
+@media (max-width:500px) {
+    .github-corner:hover .octo-arm {
+        animation:none
+    }
+    
+    .github-corner .octo-arm {
+        animation:octocat-wave 560ms ease-in-out;
+    }
+}
+
+.div-copy {
+    position: absolute;
+    top: 0;
+    right: 0;
+} 
+
+.div-copy.icon-copy {
     display: none;
     max-height: 20px;
     max-width: 20px;
     cursor: pointer;
     float: right;
-    position: absolute;
-    top: 0;
-    right: 0;
     padding: 5px;
 }
 
@@ -121,7 +144,7 @@ code:not([class]) {
     display: block;
 }
 
-.tooltip-text {
+.div-copy.tooltip-text {
     background-color: #ffffff;
     color: #1d1d1d;
     border-color: #d4d4d4;
@@ -130,13 +153,8 @@ code:not([class]) {
     padding: 2px;
     display: none;
     float: right;
-    position: absolute;
-    top: 3px;
-    right: 3px;
 }
   
 .div-copy.click .tooltip-text {
     display: block;
 }
-
-.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
