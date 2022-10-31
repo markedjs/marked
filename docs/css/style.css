@@ -94,6 +94,7 @@ pre {
     line-height: 1.45;
     background-color: #f6f8fa;
     border-radius: 3px;
+    position: relative;
 }
 
 code:not([class]) {
@@ -104,4 +105,97 @@ code:not([class]) {
     border-radius: 3px;
 }
 
-.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}
+.github-corner:hover .octo-arm {
+    animation:octocat-wave 560ms ease-in-out;
+}
+
+@keyframes octocat-wave {
+    0%,100%{transform:rotate(0)}
+    20%,60%{transform:rotate(-25deg)}
+    40%,80%{transform:rotate(10deg)}
+}
+
+@media (max-width:500px) {
+    .github-corner:hover .octo-arm {
+        animation:none
+    }
+    
+    .github-corner .octo-arm {
+        animation:octocat-wave 560ms ease-in-out;
+    }
+}
+
+.div-copy {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.div-copy .icon-copy {
+    opacity: 0;
+    transition: opacity .3s;
+    height: 18px;
+    width: 18px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.div-copy.active .icon-copy {
+    opacity: 1;
+}
+
+.div-copy .tooltip-copy {
+    position: relative;
+}
+
+.div-copy .tooltip-copy::before {
+    content: "Copied";
+    position: absolute;
+    
+    /* vertically center */
+    top: 50%;
+    transform: translateY(-50%);
+    
+    /* move to right */
+    right: 100%;
+    margin-right: 5px; /* and add a small left margin */
+    
+    /* basic styles */
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: #444;
+    color: #fff;
+    text-align: center;
+  
+    opacity: 0; /* hide by default */
+    transition: opacity .3s;
+}
+
+.div-copy.click .tooltip-copy::before {
+    opacity: 1;
+}
+
+.div-copy .tooltip-copy::after {
+    content: "";
+    position: absolute;
+    
+    /* position tooltip correctly */
+    right: 100%;
+    margin-right: -5px;
+   
+    /* vertically center */
+    top: 50%;
+    transform: translateY(-50%);
+   
+    /* the arrow */
+    border-style: solid;
+    border-width: 2px 2px 5px 8px;
+    border-color: transparent transparent transparent #444;
+    
+    opacity: 0;
+    transition: opacity .3s;
+}
+
+.div-copy.click .tooltip-copy::after {
+    opacity: 1;
+}
