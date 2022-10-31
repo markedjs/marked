@@ -184,3 +184,23 @@ markedWorker.onmessage = (e) => {
 
 markedWorker.postMessage(markdownString);
 ```
+<h2 id="cli-extensions">CLI Extensions</h2>
+
+You can use extensions in the CLI by creating a new CLI that imports marked and the marked binary.
+
+```js
+// file: myMarked
+#!/usr/bin/node
+
+import { marked } from 'marked';
+import customHeadingId from 'marked-custom-heading-id';
+
+marked.use(customHeadingId());
+
+import 'marked/bin/marked';
+```
+
+```sh
+$ ./myMarked -s "# heading {#custom-id}"
+<h1 id="custom-id">heading</h1>
+```
