@@ -195,7 +195,7 @@ You can use extensions in the CLI by creating a new CLI that imports marked and 
 import { marked } from 'marked';
 import customHeadingId from 'marked-custom-heading-id';
 
-marked.use(customHeadingId);
+marked.use(customHeadingId());
 
 import 'marked/bin/marked';
 ```
