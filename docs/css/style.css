@@ -129,32 +129,76 @@ code:not([class]) {
     position: absolute;
     top: 0;
     right: 0;
-} 
+}
 
-.div-copy.icon-copy {
+.div-copy .icon-copy {
     display: none;
-    max-height: 20px;
-    max-width: 20px;
+    height: 20px;
+    width: 20px;
     cursor: pointer;
-    float: right;
     padding: 5px;
 }
 
-.div-copy.active .icon-copy {
+.div-copy.active .icon-copy,
+.div-copy.active .tooltip-copy::before,
+.div-copy.active .tooltip-copy::after {
     display: block;
 }
 
-.div-copy.tooltip-text {
-    background-color: #ffffff;
-    color: #1d1d1d;
-    border-color: #d4d4d4;
-    box-shadow: 2px 2px 20px #9b9b9b;
-    border-radius: 5px;
-    padding: 2px;
-    display: none;
-    float: right;
+.div-copy .tooltip-copy {
+    position: relative;
 }
+
+.div-copy .tooltip-copy::before {
+    content: "Copied";
+    position: absolute;
+    
+    /* vertically center */
+    top: 50%;
+    transform: translateY(-50%);
+    
+    /* move to right */
+    right: 100%;
+    margin-right: 5px; /* and add a small left margin */
+    
+    /* basic styles */
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: #444;
+    color: #fff;
+    text-align: center;
   
-.div-copy.click .tooltip-text {
-    display: block;
+    opacity: 0; /* hide by default */
+    display: none;
+    transition: opacity .3s;
+}
+
+.div-copy.click .tooltip-copy::before {
+    opacity: 1;
+}
+
+.div-copy .tooltip-copy::after {
+    content: "";
+    position: absolute;
+    
+    /* position tooltip correctly */
+    right: 100%;
+    margin-right: -5px;
+   
+    /* vertically center */
+    top: 50%;
+    transform: translateY(-50%);
+   
+    /* the arrow */
+    border-style: solid;
+    border-width: 5px 2px 2px 8px;
+    border-color: transparent transparent transparent #444;
+    
+    opacity: 0;
+    display: none;
+    transition: opacity .3s;
+}
+
+.div-copy.click .tooltip-copy::after {
+    opacity: 1;
 }

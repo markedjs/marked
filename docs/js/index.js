@@ -26,30 +26,29 @@ window.addEventListener('hashchange', function(e) {
 hashChange();
 
 document.addEventListener('DOMContentLoaded', function() {
-  var copyHTML = '<div class="div-copy">'
-  + '<img src="/img/copy-icon.svg" class="icon-copy" title="Click to Copy" />'
-  + '<span class="tooltip-text" disabled>Copied</span>'
-  + '</div>';
+  var div = document.createElement('div');
+  div.innerHTML = '<div class="tooltip-copy"><img src="/img/copy-icon.svg" class="icon-copy" title="Click to Copy" /></div>';
+  div.className = 'div-copy';
 
-  var getAllPre = document.querySelectorAll('pre');
-  getAllPre.forEach(function(pre) {
-    pre.append(copyHTML);
-  });
-
-  var getAllEl = document.querySelectorAll('.div-copy');
-  getAllEl.forEach(function(el) {
-    el.parentElement.onmouseover = function() {
-      el.classList.add('active');
+  var allPres = document.querySelectorAll('pre');
+  allPres.forEach(function(pre) {
+    var timeout = null;
+    var copy = div.cloneNode(true);
+    pre.appendChild(copy);
+    pre.onmouseover = function() {
+      copy.classList.add('active');
     };
-    el.parentElement.onmouseleave = function() {
-      el.classList.remove('active');
-      el.classList.remove('click');
+    pre.onmouseleave = function() {
+      clearTimeout(timeout);
+      copy.classList.remove('active');
+      copy.classList.remove('click');
     };
-    el.onclick = function() {
-      navigator.clipboard.writeText(el.parentElement.textContent);
-      el.classList.add('click');
-      setTimeout(function() {
-        el.classList.remove('click');
+    copy.onclick = function() {
+      navigator.clipboard.writeText(pre.textContent);
+      copy.classList.add('click');
+      clearTimeout(timeout);
+      timeout = setTimeout(function() {
+        copy.classList.remove('click');
       }, 5000);
     };
   });
