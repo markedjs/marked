@@ -188,7 +188,7 @@ inline.punctuation = edit(inline.punctuation).replace(/punctuation/g, inline._pu
 inline.blockSkip = /\[[^\]]*?\]\([^\)]*?\)|`[^`]*?`|<[^>]*?>/g;
 // lookbehind is not available on Safari as of version 16
 // inline.escapedEmSt = /(?<=(?:^|[^\\)(?:\\[^])*)\\[*_]/g;
-inline.escapedEmSt = /(?:^|[^\\])(?:\\[^])*\\[*_]/g;
+inline.escapedEmSt = /(?:^|[^\\])(?:\\\\)*\\[*_]/g;
 
 inline._comment = edit(block._comment).replace('(?:-->|$)', '-->').getRegex();
 
