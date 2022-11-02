@@ -776,6 +776,41 @@ paragraph
         });
       });
 
+      it('escaped punctuation inside emphasis', () => {
+        expectInlineTokens({
+          md: '**strong text\\[**\\]',
+          tokens: [
+            {
+              type: 'strong',
+              raw: '**strong text\\[**',
+              text: 'strong text\\[',
+              tokens: [
+                { type: 'text', raw: 'strong text', text: 'strong text' },
+                { type: 'escape', raw: '\\[', text: '[' }
+              ]
+            },
+            { type: 'escape', raw: '\\]', text: ']' }
+          ]
+        });
+        expectInlineTokens({
+          md: '_em\\<pha\\>sis_',
+          tokens: [
+            {
+              type: 'em',
+              raw: '_em\\<pha\\>sis_',
+              text: 'em\\<pha\\>sis',
+              tokens: [
+                { type: 'text', raw: 'em', text: 'em' },
+                { type: 'escape', raw: '\\<', text: '&lt;' },
+                { type: 'text', raw: 'pha', text: 'pha' },
+                { type: 'escape', raw: '\\>', text: '&gt;' },
+                { type: 'text', raw: 'sis', text: 'sis' }
+              ]
+            }
+          ]
+        });
+      });
+
       it('html', () => {
         expectInlineTokens({
           md: '<div>html</div>',
