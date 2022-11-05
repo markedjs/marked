@@ -103,7 +103,7 @@ export class Tokenizer {
       return {
         type: 'code',
         raw,
-        lang: cap[2] ? cap[2].trim() : cap[2],
+        lang: cap[2] ? cap[2].trim().replace(this.rules.inline._escapes, '$1') : cap[2],
         text
       };
     }
@@ -371,8 +371,8 @@ export class Tokenizer {
         type: 'def',
         tag,
         raw: cap[0],
-        href: cap[2],
-        title: cap[3]
+        href: cap[2] ? cap[2].replace(this.rules.inline._escapes, '$1') : cap[2],
+        title: cap[3] ? cap[3].replace(this.rules.inline._escapes, '$1') : cap[3]
       };
     }
   }
