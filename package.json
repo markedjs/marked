@@ -64,6 +64,7 @@
     "highlight.js": "^11.6.0",
     "jasmine": "^4.5.0",
     "markdown-it": "13.0.1",
+    "marked-man": "^1.2.0",
     "node-fetch": "^3.2.10",
     "rollup": "^2.79.1",
     "rollup-plugin-license": "^3.0.1",

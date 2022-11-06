@@ -9,7 +9,10 @@ clean:
 bench:
 	@node test --bench
 
-man/marked.1.txt:
+man/marked.1.txt: man/marked.1
 	groff -man -Tascii man/marked.1 | col -b > man/marked.1.txt
+
+man/marked.1: man/marked.md
+	npx marked-man $< > $@
 
 .PHONY: clean all
