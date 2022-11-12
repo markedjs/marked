@@ -32,7 +32,7 @@ export class Renderer {
 
     return '<pre><code class="'
       + this.options.langPrefix
-      + escape(lang, true)
+      + escape(lang)
       + '">'
       + (escaped ? code : escape(code, true))
       + '</code></pre>\n';
@@ -170,7 +170,7 @@ export class Renderer {
     if (href === null) {
       return text;
     }
-    let out = '<a href="' + escape(href) + '"';
+    let out = '<a href="' + href + '"';
     if (title) {
       out += ' title="' + title + '"';
     }
