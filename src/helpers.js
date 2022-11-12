@@ -3,7 +3,7 @@
  */
 const escapeTest = /[&<>"']/;
 const escapeReplace = new RegExp(escapeTest.source, 'g');
-const escapeTestNoEncode = /[<>"']|&(?!(#\d{1,7}|#[Xx][a-fA-f0-9]{1,6}|\w+);)/;
+const escapeTestNoEncode = /[<>"']|&(?!(#\d{1,7}|#[Xx][a-fA-F0-9]{1,6}|\w+);)/;
 const escapeReplaceNoEncode = new RegExp(escapeTestNoEncode.source, 'g');
 const escapeReplacements = {
   '&': '&amp;',
