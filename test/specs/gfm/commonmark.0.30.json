@@ -1564,8 +1564,7 @@
     "example": 195,
     "start_line": 3212,
     "end_line": 3220,
-    "section": "Link reference definitions",
-    "shouldFail": true
+    "section": "Link reference definitions"
   },
   {
     "markdown": "[foo]: /url '\ntitle\nline1\nline2\n'\n\n[foo]\n",
@@ -1605,8 +1604,7 @@
     "example": 200,
     "start_line": 3283,
     "end_line": 3289,
-    "section": "Link reference definitions",
-    "shouldFail": true
+    "section": "Link reference definitions"
   },
   {
     "markdown": "[foo]: <bar>(baz)\n\n[foo]\n",
