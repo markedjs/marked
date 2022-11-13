@@ -649,8 +649,7 @@
     "example": 81,
     "start_line": 1365,
     "end_line": 1372,
-    "section": "Setext headings",
-    "shouldFail": true
+    "section": "Setext headings"
   },
   {
     "markdown": "  Foo *bar\nbaz*\t\n====\n",
@@ -658,8 +657,7 @@
     "example": 82,
     "start_line": 1379,
     "end_line": 1386,
-    "section": "Setext headings",
-    "shouldFail": true
+    "section": "Setext headings"
   },
   {
     "markdown": "Foo\n-------------------------\n\nFoo\n=\n",
@@ -747,7 +745,8 @@
     "example": 93,
     "start_line": 1531,
     "end_line": 1541,
-    "section": "Setext headings"
+    "section": "Setext headings",
+    "shouldFail": true
   },
   {
     "markdown": "- Foo\n---\n",
@@ -763,8 +762,7 @@
     "example": 95,
     "start_line": 1559,
     "end_line": 1566,
-    "section": "Setext headings",
-    "shouldFail": true
+    "section": "Setext headings"
   },
   {
     "markdown": "---\nFoo\n---\nBar\n---\nBaz\n",
