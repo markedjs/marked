@@ -63,7 +63,7 @@
     "highlight.js": "^11.6.0",
     "jasmine": "^4.5.0",
     "markdown-it": "13.0.1",
-    "node-fetch": "^3.2.10",
+    "node-fetch": "^3.3.0",
     "rollup": "^3.3.0",
     "semantic-release": "^19.0.5",
     "titleize": "^3.0.0",
