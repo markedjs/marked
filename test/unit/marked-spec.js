@@ -1,4 +1,4 @@
-import { marked, Renderer, Slugger, lexer, parseInline, use, getDefaults, walkTokens as _walkTokens } from '../../src/marked.js';
+import { marked, Renderer, Slugger, lexer, parseInline, use, getDefaults, walkTokens as _walkTokens, defaults, setOptions } from '../../src/marked.js';
 
 describe('Test heading ID functionality', () => {
   it('should add id attribute by default', () => {
@@ -612,6 +612,41 @@ used extension2 walked</p>
 
       runTest();
     });
+
+    it('should merge extensions correctly', () => {
+      use(
+        {},
+        { tokenizer: {} },
+        { renderer: {} },
+        { walkTokens: () => {} },
+        { extensions: [] }
+      );
+
+      expect(() => marked('# test')).not.toThrow();
+    });
+  });
+
+  it('should be async if any extension in use args is async', () => {
+    use(
+      { async: true },
+      { async: false }
+    );
+
+    expect(defaults.async).toBeTrue();
+  });
+
+  it('should be async if any extension in use is async', () => {
+    use({ async: true });
+    use({ async: false });
+
+    expect(defaults.async).toBeTrue();
+  });
+
+  it('should reset async with setOptions', () => {
+    use({ async: true });
+    setOptions({ async: false });
+
+    expect(defaults.async).toBeFalse();
   });
 
   it('should allow deleting/editing tokens', () => {

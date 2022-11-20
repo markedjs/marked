@@ -153,20 +153,23 @@ marked.defaults = defaults;
  */
 
 marked.use = function(...args) {
-  const opts = merge({}, ...args);
   const extensions = marked.defaults.extensions || { renderers: {}, childTokens: {} };
-  let hasExtensions;
 
   args.forEach((pack) => {
+    // copy options to new object
+    const opts = merge({}, pack);
+
+    // set async to true if it was set to true before
+    opts.async = marked.defaults.async || opts.async;
+
     // ==-- Parse "addon" extensions --== //
     if (pack.extensions) {
-      hasExtensions = true;
       pack.extensions.forEach((ext) => {
         if (!ext.name) {
           throw new Error('extension name required');
         }
         if (ext.renderer) { // Renderer extensions
-          const prevRenderer = extensions.renderers ? extensions.renderers[ext.name] : null;
+          const prevRenderer = extensions.renderers[ext.name];
           if (prevRenderer) {
             // Replace extension with func to run new extension but fall back if false
             extensions.renderers[ext.name] = function(...args) {
@@ -209,6 +212,7 @@ marked.use = function(...args) {
           extensions.childTokens[ext.name] = ext.childTokens;
         }
       });
+      opts.extensions = extensions;
     }
 
     // ==-- Parse "overwrite" extensions --== //
@@ -254,10 +258,6 @@ marked.use = function(...args) {
         }
         return values;
       };
-    }
-
-    if (hasExtensions) {
-      opts.extensions = extensions;
     }
 
     marked.setOptions(opts);
