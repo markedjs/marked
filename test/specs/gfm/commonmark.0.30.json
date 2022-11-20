@@ -221,8 +221,7 @@
     "example": 28,
     "start_line": 691,
     "end_line": 701,
-    "section": "Entity and numeric character references",
-    "shouldFail": true
+    "section": "Entity and numeric character references"
   },
   {
     "markdown": "&copy\n",
@@ -272,8 +271,7 @@
     "example": 34,
     "start_line": 752,
     "end_line": 759,
-    "section": "Entity and numeric character references",
-    "shouldFail": true
+    "section": "Entity and numeric character references"
   },
   {
     "markdown": "`f&ouml;&ouml;`\n",

@@ -2,9 +2,9 @@
  * Helpers
  */
 const escapeTest = /[&<>"']/;
-const escapeReplace = /[&<>"']/g;
-const escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
-const escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
+const escapeReplace = new RegExp(escapeTest.source, 'g');
+const escapeTestNoEncode = /[<>"']|&(?!(#\d{1,7}|#[Xx][a-fA-F0-9]{1,6}|\w+);)/;
+const escapeReplaceNoEncode = new RegExp(escapeTestNoEncode.source, 'g');
 const escapeReplacements = {
   '&': '&amp;',
   '<': '&lt;',
