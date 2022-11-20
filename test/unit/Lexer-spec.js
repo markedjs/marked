@@ -358,19 +358,6 @@ a | b
         ]
       });
     });
-
-    it('after line break does not consume raw \n', () => {
-      expectTokens({
-        md: 'T\nh\n---',
-        tokens:
-          jasmine.arrayContaining([
-            jasmine.objectContaining({
-              raw: 'T\nh\n'
-            }),
-            { type: 'hr', raw: '---' }
-          ])
-      });
-    });
   });
 
   describe('blockquote', () => {
