@@ -26,32 +26,55 @@ onmessage = function(e) {
   }
 };
 
+function getDefaults() {
+  var defaults = {};
+  if (typeof marked.getDefaults === 'function') {
+    defaults = marked.getDefaults();
+    delete defaults.renderer;
+  } else if ('defaults' in marked) {
+    for (var prop in marked.defaults) {
+      if (prop !== 'renderer') {
+        defaults[prop] = marked.defaults[prop];
+      }
+    }
+  }
+  return defaults;
+}
+
+function mergeOptions(options) {
+  var defaults = getDefaults();
+  var opts = {};
+  var invalidOptions = [
+    'renderer',
+    'tokenizer',
+    'walkTokens',
+    'extensions',
+    'highlight',
+    'sanitizer'
+  ];
+  for (var prop in defaults) {
+    opts[prop] = invalidOptions.includes(prop) || !(prop in options)
+      ? defaults[prop]
+      : options[prop];
+  }
+  return opts;
+}
+
 function parse(e) {
   switch (e.data.task) {
     case 'defaults':
-
-      var defaults = {};
-      if (typeof marked.getDefaults === 'function') {
-        defaults = marked.getDefaults();
-        delete defaults.renderer;
-      } else if ('defaults' in marked) {
-        for (var prop in marked.defaults) {
-          if (prop !== 'renderer') {
-            defaults[prop] = marked.defaults[prop];
-          }
-        }
-      }
       postMessage({
         id: e.data.id,
         task: e.data.task,
-        defaults: defaults
+        defaults: getDefaults()
       });
       break;
     case 'parse':
+      var options = mergeOptions(e.data.options);
       var startTime = new Date();
-      var lexed = marked.lexer(e.data.markdown, e.data.options);
+      var lexed = marked.lexer(e.data.markdown, options);
       var lexedList = jsonString(lexed);
-      var parsed = marked.parser(lexed, e.data.options);
+      var parsed = marked.parser(lexed, options);
       var endTime = new Date();
       postMessage({
         id: e.data.id,
