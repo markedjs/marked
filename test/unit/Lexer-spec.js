@@ -381,6 +381,48 @@ a | b
         ]
       });
     });
+
+    it('paragraph token in list', () => {
+      expectTokens({
+        md: '- > blockquote',
+        tokens: [
+          {
+            type: 'list',
+            raw: '- > blockquote',
+            ordered: false,
+            start: '',
+            loose: false,
+            items: [
+              {
+                type: 'list_item',
+                raw: '- > blockquote',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: '> blockquote',
+                tokens: [
+                  {
+                    type: 'blockquote',
+                    raw: '> blockquote',
+                    tokens: [
+                      {
+                        type: 'paragraph',
+                        raw: 'blockquote',
+                        text: 'blockquote',
+                        tokens: [
+                          { type: 'text', raw: 'blockquote', text: 'blockquote' }
+                        ]
+                      }
+                    ],
+                    text: 'blockquote'
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      });
+    });
   });
 
   describe('list', () => {
