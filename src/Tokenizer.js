@@ -739,9 +739,9 @@ export class Tokenizer {
         } while (prevCapZero !== cap[0]);
         text = escape(cap[0]);
         if (cap[1] === 'www.') {
-          href = 'http://' + text;
+          href = 'http://' + cap[0];
         } else {
-          href = text;
+          href = cap[0];
         }
       }
       return {
