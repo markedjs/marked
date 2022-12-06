@@ -319,22 +319,9 @@ export class Tokenizer {
         if (!list.loose) {
           // Check if list should be loose
           const spacers = list.items[i].tokens.filter(t => t.type === 'space');
-          const hasMultipleLineBreaks = spacers.length && spacers.every(t => {
-            const chars = t.raw.split('');
-            let lineBreaks = 0;
-            for (const char of chars) {
-              if (char === '\n') {
-                lineBreaks += 1;
-              }
-              if (lineBreaks > 1) {
-                return true;
-              }
-            }
+          const hasMultipleLineBreaks = spacers.length > 0 && spacers.every(t => /\n.*\n/.test(t.raw));
 
-            return false;
-          });
-
-          list.loose = !!hasMultipleLineBreaks;
+          list.loose = hasMultipleLineBreaks;
         }
       }
 
