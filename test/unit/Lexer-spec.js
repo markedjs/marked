@@ -605,10 +605,49 @@ paragraph
             loose: true,
             items: [
               jasmine.objectContaining({
-                raw: '- item 1\n\n'
+                raw: '- item 1\n\n',
+                loose: true
               }),
               jasmine.objectContaining({
-                raw: '- item 2'
+                raw: '- item 2',
+                loose: true
+              })
+            ]
+          })
+        ])
+      });
+    });
+
+    it('end loose', () => {
+      expectTokens({
+        md: `
+- item 1
+- item 2
+
+  item 2a
+- item 3
+`,
+        tokens: jasmine.arrayContaining([
+          jasmine.objectContaining({
+            type: 'space',
+            raw: '\n'
+          }),
+          jasmine.objectContaining({
+            type: 'list',
+            raw: '- item 1\n- item 2\n\n  item 2a\n- item 3\n',
+            loose: true,
+            items: [
+              jasmine.objectContaining({
+                raw: '- item 1\n',
+                loose: true
+              }),
+              jasmine.objectContaining({
+                raw: '- item 2\n\n  item 2a\n',
+                loose: true
+              }),
+              jasmine.objectContaining({
+                raw: '- item 3',
+                loose: true
               })
             ]
           })
@@ -634,6 +673,7 @@ paragraph
             items: [
               jasmine.objectContaining({
                 raw: '- item 1\n  - item 2',
+                loose: false,
                 tokens: jasmine.arrayContaining([
                   jasmine.objectContaining({
                     raw: 'item 1\n'
