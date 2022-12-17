@@ -9,7 +9,7 @@ How To Use The Demo
 1. Type in stuff on the left.
 2. See the live updates on the right.
 
-That's it.  Pretty simple.  There's also a drop-down option in the upper right to switch between various views:
+That's it.  Pretty simple.  There's also a drop-down option above to switch between various views:
 
 - **Preview:**  A live display of the generated HTML as it would render in a browser.
 - **HTML Source:**  The generated HTML before your browser makes it pretty.
