@@ -1,7 +1,9 @@
 import babel from '@rollup/plugin-babel';
+import { defineConfig } from 'rollup';
+import pkg from "./package.json" assert { type: "json" }
 
 const banner = `/**
- * marked - a markdown parser
+ * marked ${pkg.version} - a markdown parser
  * Copyright (c) 2011-${new Date().getFullYear()}, Christopher Jeffrey. (MIT Licensed)
  * https://github.com/markedjs/marked
  */
@@ -12,7 +14,7 @@ const banner = `/**
  */
 `;
 
-export default [{
+export default defineConfig([{
   input: 'src/marked.js',
   output: {
     file: 'lib/marked.esm.js',
@@ -22,29 +24,21 @@ export default [{
 },
 {
   input: 'src/marked.js',
-  output: {
+  output: [{
     file: 'lib/marked.umd.js',
     format: 'umd',
     name: 'marked',
     banner
   },
-  plugins: [
-    babel({
-      presets: [['@babel/preset-env', { loose: true }]]
-    })
-  ]
-},
-{
-  input: 'src/marked.js',
-  output: {
+  {
     file: 'lib/marked.cjs',
     format: 'cjs',
     name: 'marked',
     banner
-  },
+  }],
   plugins: [
     babel({
       presets: [['@babel/preset-env', { loose: true }]]
     })
   ]
-}];
+}]);
