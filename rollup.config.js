@@ -3,7 +3,7 @@ import { defineConfig } from 'rollup';
 import pkg from "./package.json" assert { type: "json" }
 
 const banner = `/**
- * marked ${pkg.version} - a markdown parser
+ * marked ${process.env.SEMANTIC_RELEASE_NEXT_VERSION || pkg.version} - a markdown parser
  * Copyright (c) 2011-${new Date().getFullYear()}, Christopher Jeffrey. (MIT Licensed)
  * https://github.com/markedjs/marked
  */
