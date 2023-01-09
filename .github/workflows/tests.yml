@@ -10,17 +10,16 @@ permissions:
 
 jobs:
   Test:
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     strategy:
       matrix:
         # lowest verison here should also be in `engines` field
-        node_version: [12, 'lts/*', 'node']
+        node_version: [12, 'lts/*', '*']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
       - name: Install Node
-        uses: dcodeIO/setup-node-nvm@master
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node_version }}
       - name: Install Dependencies
@@ -31,20 +30,37 @@ jobs:
         run: npm run test:specs
 
   Lint:
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
       - name: Install Dependencies
         run: npm ci
       - name: Lint ✨
         run: npm run test:lint
 
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+      - name: Install Dependencies
+        run: npm ci
+      - name: Lint ✨
+        run: npm run build
+
   Release:
     permissions:
       contents: write
-    needs: [Test, Lint]
+    needs: [Test, Lint, Build]
     if: |
       github.ref == 'refs/heads/master' &&
       github.event.repository.fork == false
@@ -53,7 +69,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
       - name: Install Node
-        uses: dcodeIO/setup-node-nvm@master
+        uses: actions/setup-node@v3
         with:
           node-version: 'lts/*'
       - name: Install Dependencies
@@ -71,12 +87,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
-
-  Skip:
-    permissions:
-      contents: none
-    if: contains(github.event.head_commit.message, '[skip ci]')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skip CI 🚫
-        run: echo skip ci
