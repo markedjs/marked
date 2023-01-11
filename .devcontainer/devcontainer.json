@@ -1,0 +1,18 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node
+{
+	"name": "marked",
+	// We're using node 14 for development, to keep close to the engine compatibility that marked.js uses.
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:0-14",
+	"postCreateCommand": "npm install",
+
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			"extensions": [
+				"dbaeumeur.vscode-eslint"
+			]
+		}
+	}
+}
