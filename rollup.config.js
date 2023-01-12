@@ -1,8 +1,8 @@
 import babel from '@rollup/plugin-babel';
 import { defineConfig } from 'rollup';
-import fs from "fs";
+import fs from 'fs';
 
-const pkg = JSON.parse(fs.readFileSync("./package.json"))
+const pkg = JSON.parse(fs.readFileSync('./package.json'));
 
 const banner = `/**
  * marked ${process.env.SEMANTIC_RELEASE_NEXT_VERSION || pkg.version} - a markdown parser
