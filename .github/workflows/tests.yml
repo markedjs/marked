@@ -85,7 +85,7 @@ jobs:
           if ! git diff --quiet; then
             git config --global user.email "<>"
             git config --global user.name "MarkedJS bot"
-            git commit -am "🗜️ build [skip ci]"
+            git commit -am "🗜️ build v$SEMANTIC_RELEASE_NEXT_VERSION [skip ci]"
           fi
       - name: Release 🎉
         env:
