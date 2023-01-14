@@ -54,7 +54,7 @@ jobs:
           node-version: 'lts/*'
       - name: Install Dependencies
         run: npm ci
-      - name: Build ⚒️
+      - name: Build 🗜️
         run: npm run build
 
   Release:
@@ -75,6 +75,9 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Build 🗜️
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           SEMANTIC_RELEASE_NEXT_VERSION=$(npx semantic-release --no-ci --dry-run | grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+')
           echo "$SEMANTIC_RELEASE_NEXT_VERSION"
