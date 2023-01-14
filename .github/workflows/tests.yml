@@ -54,7 +54,7 @@ jobs:
           node-version: 'lts/*'
       - name: Install Dependencies
         run: npm ci
-      - name: Lint ✨
+      - name: Build ⚒️
         run: npm run build
 
   Release:

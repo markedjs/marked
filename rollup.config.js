@@ -3,9 +3,12 @@ import { defineConfig } from 'rollup';
 import fs from 'fs';
 
 const pkg = JSON.parse(fs.readFileSync('./package.json'));
+const version = process.env.SEMANTIC_RELEASE_NEXT_VERSION || pkg.version;
+
+console.log('building version:', version);
 
 const banner = `/**
- * marked ${process.env.SEMANTIC_RELEASE_NEXT_VERSION || pkg.version} - a markdown parser
+ * marked v${version} - a markdown parser
  * Copyright (c) 2011-${new Date().getFullYear()}, Christopher Jeffrey. (MIT Licensed)
  * https://github.com/markedjs/marked
  */
@@ -16,31 +19,33 @@ const banner = `/**
  */
 `;
 
-export default defineConfig([{
-  input: 'src/marked.js',
-  output: {
-    file: 'lib/marked.esm.js',
-    format: 'esm',
-    banner
-  }
-},
-{
-  input: 'src/marked.js',
-  output: [{
-    file: 'lib/marked.umd.js',
-    format: 'umd',
-    name: 'marked',
-    banner
+export default defineConfig([
+  {
+    input: 'src/marked.js',
+    output: {
+      file: 'lib/marked.esm.js',
+      format: 'esm',
+      banner
+    }
   },
   {
-    file: 'lib/marked.cjs',
-    format: 'cjs',
-    name: 'marked',
-    banner
-  }],
-  plugins: [
-    babel({
-      presets: [['@babel/preset-env', { loose: true }]]
-    })
-  ]
-}]);
+    input: 'src/marked.js',
+    output: [{
+      file: 'lib/marked.umd.js',
+      format: 'umd',
+      name: 'marked',
+      banner
+    },
+    {
+      file: 'lib/marked.cjs',
+      format: 'cjs',
+      name: 'marked',
+      banner
+    }],
+    plugins: [
+      babel({
+        presets: [['@babel/preset-env', { loose: true }]]
+      })
+    ]
+  }
+]);
