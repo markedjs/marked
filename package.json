@@ -86,7 +86,7 @@
     "build:docs": "node build-docs.js",
     "rollup": "rollup -c rollup.config.js",
     "minify": "uglifyjs lib/marked.umd.js -cm  --comments /Copyright/ -o marked.min.js",
-    "version": "npm run build && git add ."
+    "version": "npm run build"
   },
   "engines": {
     "node": ">= 12"
