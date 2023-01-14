@@ -74,19 +74,6 @@ jobs:
           node-version: 'lts/*'
       - name: Install Dependencies
         run: npm ci
-      - name: Build 🗜️
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          export SEMANTIC_RELEASE_NEXT_VERSION=$(npx semantic-release --no-ci --dry-run | grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+')
-          echo "Next Version: $SEMANTIC_RELEASE_NEXT_VERSION"
-          npm run build
-          if ! git diff --quiet; then
-            git config --global user.email "<>"
-            git config --global user.name "MarkedJS bot"
-            git commit -am "🗜️ build [skip ci]"
-          fi
       - name: Release 🎉
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
