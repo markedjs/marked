@@ -255,7 +255,7 @@ smartypants('"this ... string"')
 
 <h2 id="walk-tokens">Walk Tokens : <code>walkTokens</code></h2>
 
-The walkTokens function gets called with every token. Child tokens are called before moving on to sibling tokens. Each token is passed by reference so updates are persisted when passed to the parser. The return value of the function is ignored but awaited if running marked in [`async`](#async) mode.
+The walkTokens function gets called with every token. Child tokens are called before moving on to sibling tokens. Each token is passed by reference so updates are persisted when passed to the parser. When [`async`](#async) mode is enabled, the return value is awaited. Otherwise the return value is ignored. 
 
 `marked.use()` can be called multiple times with different `walkTokens` functions. Each function will be called in order, starting with the function that was assigned *last*.
 
