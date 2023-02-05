@@ -112,9 +112,12 @@ export function marked(src, opt, callback) {
         + escape(e.message + '', true)
         + '</pre>';
       if (opt.async) {
-        return Promise.reject(msg);
+        return Promise.resolve(msg);
       }
       return msg;
+    }
+    if (opt.async) {
+      return Promise.reject(e);
     }
     throw e;
   }
