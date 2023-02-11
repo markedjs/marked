@@ -298,7 +298,7 @@ console.log(marked.parse('# heading 2\n\n## heading 3'));
 Hooks are methods that hook into some part of marked. The following hooks are available:
 
 | signature | description |
-|------|-------------|-----------|
+|-----------|-------------|
 | `preprocess(markdown : string) : string` | Process markdown before sending it to marked. |
 | `postprocess(html : string) : string` | Process html after marked has finished parsing. |
 
