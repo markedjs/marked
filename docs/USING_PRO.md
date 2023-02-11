@@ -293,6 +293,62 @@ console.log(marked.parse('# heading 2\n\n## heading 3'));
 
 ***
 
+<h2 id="hooks">Hooks : <code>hooks</code></h2>
+
+Hooks are methods that hook into some part of marked. The following hooks are available:
+
+| signature | description |
+|------|-------------|-----------|
+| `preprocess(markdown : string) : string` | Process markdown before sending it to marked. |
+| `postprocess(html : string) : string` | Process html after marked has finished parsing. |
+
+The `this` variable in the hooks is the `marked` object.
+
+`marked.use()` can be called multiple times with different `hooks` functions. Each function will be called in order, starting with the function that was assigned *last*.
+
+**Example:** Set options based on [front-matter](https://www.npmjs.com/package/front-matter)
+
+```js
+import { marked } from 'marked';
+import fm from 'front-matter';
+
+let defaults;
+// Override function
+const hooks = {
+  preprocess(markdown) {
+    // shallow copy options for reset;
+    defaults = { ...this.defaults };
+    const { attributes, body } = fm(markdown);
+    this.setOptions(attributes);
+    return body;
+  },
+  postprocess(html) {
+    // reset options
+    this.setOptions(defaults);
+    return html;
+  }
+};
+
+marked.use({ hooks });
+
+// Run marked
+console.log(marked.parse(`
+---
+headerIds: false
+---
+
+## test
+`.trim()));
+```
+
+**Output:**
+
+```html
+<h2>test</h2>
+```
+
+***
+
 <h2 id="extensions">Custom Extensions : <code>extensions</code></h2>
 
 You may supply an `extensions` array to the `options` object. This array can contain any number of `extension` objects, using the following properties:
