@@ -6,7 +6,6 @@ import { TextRenderer } from './TextRenderer.js';
 import { Slugger } from './Slugger.js';
 import { Hooks } from './Hooks.js';
 import {
-  merge,
   checkSanitizeDeprecation,
   escape
 } from './helpers.js';
@@ -34,17 +33,18 @@ export function marked(src, opt, callback) {
     opt = null;
   }
 
-  opt = merge({}, marked.defaults, opt || {});
+  const origOpt = { ...opt };
+  opt = { ...marked.defaults, ...origOpt };
   checkSanitizeDeprecation(opt);
 
   if (callback) {
-    marked.setOptions({ async: false });
     const highlight = opt.highlight;
     let tokens;
 
     try {
       if (opt.hooks) {
         src = opt.hooks.preprocess(src);
+        opt = { ...marked.defaults, ...origOpt };
       }
       tokens = Lexer.lex(src, opt);
     } catch (e) {
@@ -133,6 +133,10 @@ export function marked(src, opt, callback) {
 
   if (opt.async) {
     return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
+      .then(src => {
+        opt = { ...marked.defaults, ...origOpt };
+        return src;
+      })
       .then(src => Lexer.lex(src, opt))
       .then(tokens => opt.walkTokens ? Promise.all(marked.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
       .then(tokens => Parser.parse(tokens, opt))
@@ -143,6 +147,7 @@ export function marked(src, opt, callback) {
   try {
     if (opt.hooks) {
       src = opt.hooks.preprocess(src);
+      opt = { ...marked.defaults, ...origOpt };
     }
     const tokens = Lexer.lex(src, opt);
     if (opt.walkTokens) {
@@ -164,7 +169,7 @@ export function marked(src, opt, callback) {
 
 marked.options =
 marked.setOptions = function(opt) {
-  merge(marked.defaults, opt);
+  marked.defaults = { ...marked.defaults, ...opt };
   changeDefaults(marked.defaults);
   return marked;
 };
@@ -182,7 +187,7 @@ marked.use = function(...args) {
 
   args.forEach((pack) => {
     // copy options to new object
-    const opts = merge({}, pack);
+    const opts = { ...pack };
 
     // set async to true if it was set to true before
     opts.async = marked.defaults.async || opts.async || false;
@@ -370,7 +375,7 @@ marked.parseInline = function(src, opt) {
       + Object.prototype.toString.call(src) + ', string expected');
   }
 
-  opt = merge({}, marked.defaults, opt || {});
+  opt = { ...marked.defaults, ...opt };
   checkSanitizeDeprecation(opt);
 
   try {
