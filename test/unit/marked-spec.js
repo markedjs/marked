@@ -1157,6 +1157,34 @@ describe('Hooks', () => {
     expect(html.trim()).toBe('<h1 id="preprocess-async">preprocess async</h1>\n<p><em>text</em></p>');
   });
 
+  it('should preprocess options', () => {
+    marked.use({
+      hooks: {
+        preprocess(markdown) {
+          this.setOptions({ headerIds: false });
+          return markdown;
+        }
+      }
+    });
+    const html = marked('# test');
+    expect(html.trim()).toBe('<h1>test</h1>');
+  });
+
+  it('should preprocess options async', async() => {
+    marked.use({
+      async: true,
+      hooks: {
+        async preprocess(markdown) {
+          await timeout();
+          this.setOptions({ headerIds: false });
+          return markdown;
+        }
+      }
+    });
+    const html = await marked('# test');
+    expect(html.trim()).toBe('<h1>test</h1>');
+  });
+
   it('should postprocess html', () => {
     marked.use({
       hooks: {
