@@ -8,6 +8,7 @@ export function getDefaults() {
     headerIds: true,
     headerPrefix: '',
     highlight: null,
+    hooks: null,
     langPrefix: 'language-',
     mangle: true,
     pedantic: false,

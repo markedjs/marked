@@ -4,6 +4,7 @@ import { Tokenizer } from './Tokenizer.js';
 import { Renderer } from './Renderer.js';
 import { TextRenderer } from './TextRenderer.js';
 import { Slugger } from './Slugger.js';
+import { Hooks } from './Hooks.js';
 import {
   merge,
   checkSanitizeDeprecation,
@@ -37,10 +38,14 @@ export function marked(src, opt, callback) {
   checkSanitizeDeprecation(opt);
 
   if (callback) {
+    marked.setOptions({ async: false });
     const highlight = opt.highlight;
     let tokens;
 
     try {
+      if (opt.hooks) {
+        src = opt.hooks.preprocess(src);
+      }
       tokens = Lexer.lex(src, opt);
     } catch (e) {
       return callback(e);
@@ -55,6 +60,9 @@ export function marked(src, opt, callback) {
             marked.walkTokens(tokens, opt.walkTokens);
           }
           out = Parser.parse(tokens, opt);
+          if (opt.hooks) {
+            out = opt.hooks.postprocess(out);
+          }
         } catch (e) {
           err = e;
         }
@@ -107,6 +115,7 @@ export function marked(src, opt, callback) {
 
   function onError(e) {
     e.message += '\nPlease report this to https://github.com/markedjs/marked.';
+
     if (opt.silent) {
       const msg = '<p>An error occurred:</p><pre>'
         + escape(e.message + '', true)
@@ -122,22 +131,28 @@ export function marked(src, opt, callback) {
     throw e;
   }
 
-  try {
-    if (opt.async) {
-      let promise = Promise.resolve(Lexer.lex(src, opt));
-      if (opt.walkTokens) {
-        promise = promise.then((tokens) =>
-          Promise.all(marked.walkTokens(tokens, opt.walkTokens)).then(() => tokens)
-        );
-      }
-      return promise.then((tokens) => Parser.parse(tokens, opt)).catch(onError);
-    }
+  if (opt.async) {
+    return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
+      .then(src => Lexer.lex(src, opt))
+      .then(tokens => opt.walkTokens ? Promise.all(marked.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
+      .then(tokens => Parser.parse(tokens, opt))
+      .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
+      .catch(onError);
+  }
 
+  try {
+    if (opt.hooks) {
+      src = opt.hooks.preprocess(src);
+    }
     const tokens = Lexer.lex(src, opt);
     if (opt.walkTokens) {
       marked.walkTokens(tokens, opt.walkTokens);
     }
-    return Parser.parse(tokens, opt);
+    let html = Parser.parse(tokens, opt);
+    if (opt.hooks) {
+      html = opt.hooks.postprocess(html);
+    }
+    return html;
   } catch (e) {
     return onError(e);
   }
@@ -170,7 +185,7 @@ marked.use = function(...args) {
     const opts = merge({}, pack);
 
     // set async to true if it was set to true before
-    opts.async = marked.defaults.async || opts.async;
+    opts.async = marked.defaults.async || opts.async || false;
 
     // ==-- Parse "addon" extensions --== //
     if (pack.extensions) {
@@ -255,6 +270,35 @@ marked.use = function(...args) {
         };
       }
       opts.tokenizer = tokenizer;
+    }
+
+    // ==-- Parse Hooks extensions --== //
+    if (pack.hooks) {
+      const hooks = marked.defaults.hooks || new Hooks();
+      for (const prop in pack.hooks) {
+        const prevHook = hooks[prop];
+        if (Hooks.passThroughHooks.has(prop)) {
+          hooks[prop] = (arg) => {
+            if (marked.defaults.async) {
+              return Promise.resolve(pack.hooks[prop].call(marked, arg)).then(ret => {
+                return prevHook.call(marked, ret);
+              });
+            }
+
+            const ret = pack.hooks[prop].call(marked, arg);
+            return prevHook.call(marked, ret);
+          };
+        } else {
+          hooks[prop] = (...args) => {
+            let ret = pack.hooks[prop].apply(marked, args);
+            if (ret === false) {
+              ret = prevHook.apply(marked, args);
+            }
+            return ret;
+          };
+        }
+      }
+      opts.hooks = hooks;
     }
 
     // ==-- Parse WalkTokens extensions --== //
@@ -357,6 +401,7 @@ marked.Lexer = Lexer;
 marked.lexer = Lexer.lex;
 marked.Tokenizer = Tokenizer;
 marked.Slugger = Slugger;
+marked.Hooks = Hooks;
 marked.parse = marked;
 
 export const options = marked.options;
@@ -374,3 +419,4 @@ export { Tokenizer } from './Tokenizer.js';
 export { Renderer } from './Renderer.js';
 export { TextRenderer } from './TextRenderer.js';
 export { Slugger } from './Slugger.js';
+export { Hooks } from './Hooks.js';
