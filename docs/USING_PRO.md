@@ -367,7 +367,7 @@ console.log(marked.parse(`
 **Output:**
 
 ```html
-<h2>test</h2>
+<img src="x">
 ```
 
 ***
