@@ -401,15 +401,10 @@ marked.parseInline = function(src, opt) {
 
   if (opt.async) {
     return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
-      .then(([src, newOpts]) => {
-        opt = newOpts;
-        return src;
-      })
       .then(src => Lexer.lexInline(src, opt))
       .then(tokens => opt.walkTokens ? Promise.all(marked.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
       .then(tokens => Parser.parseInline(tokens, opt))
       .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
-      .then(([html]) => html)
       .catch(onError);
   }
 

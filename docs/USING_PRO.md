@@ -302,8 +302,6 @@ Hooks are methods that hook into some part of marked. The following hooks are av
 | `preprocess(markdown: string): string` | Process markdown before sending it to marked. |
 | `postprocess(html: string): string` | Process html after marked has finished parsing. |
 
-The `this` variable in the hooks is the `marked` object.
-
 `marked.use()` can be called multiple times with different `hooks` functions. Each function will be called in order, starting with the function that was assigned *last*.
 
 **Example:** Set options based on [front-matter](https://www.npmjs.com/package/front-matter)
