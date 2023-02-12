@@ -1132,8 +1132,11 @@ describe('Hooks', () => {
   it('should preprocess markdown', () => {
     marked.use({
       hooks: {
-        preprocess(markdown) {
-          return `# preprocess\n\n${markdown}`;
+        preprocess([markdown, options]) {
+          return [
+            `# preprocess\n\n${markdown}`,
+            options
+          ];
         }
       }
     });
@@ -1145,9 +1148,12 @@ describe('Hooks', () => {
     marked.use({
       async: true,
       hooks: {
-        async preprocess(markdown) {
+        async preprocess([markdown, options]) {
           await timeout();
-          return `# preprocess async\n\n${markdown}`;
+          return [
+            `# preprocess async\n\n${markdown}`,
+            options
+          ];
         }
       }
     });
@@ -1160,9 +1166,11 @@ describe('Hooks', () => {
   it('should preprocess options', () => {
     marked.use({
       hooks: {
-        preprocess(markdown) {
-          this.setOptions({ headerIds: false });
-          return markdown;
+        preprocess([markdown, options]) {
+          return [
+            markdown,
+            { ...options, headerIds: false }
+          ];
         }
       }
     });
@@ -1174,10 +1182,12 @@ describe('Hooks', () => {
     marked.use({
       async: true,
       hooks: {
-        async preprocess(markdown) {
+        async preprocess([markdown, options]) {
           await timeout();
-          this.setOptions({ headerIds: false });
-          return markdown;
+          return [
+            markdown,
+            { ...options, headerIds: false }
+          ];
         }
       }
     });
@@ -1188,8 +1198,11 @@ describe('Hooks', () => {
   it('should postprocess html', () => {
     marked.use({
       hooks: {
-        postprocess(html) {
-          return html + '<h1>postprocess</h1>';
+        postprocess([html, options]) {
+          return [
+            html + '<h1>postprocess</h1>',
+            options
+          ];
         }
       }
     });
@@ -1201,9 +1214,12 @@ describe('Hooks', () => {
     marked.use({
       async: true,
       hooks: {
-        async postprocess(html) {
+        async postprocess([html, options]) {
           await timeout();
-          return html + '<h1>postprocess async</h1>\n';
+          return [
+            html + '<h1>postprocess async</h1>\n',
+            options
+          ];
         }
       }
     });
@@ -1216,23 +1232,35 @@ describe('Hooks', () => {
   it('should process all hooks in reverse', async() => {
     marked.use({
       hooks: {
-        preprocess(markdown) {
-          return `# preprocess1\n\n${markdown}`;
+        preprocess([markdown, options]) {
+          return [
+            `# preprocess1\n\n${markdown}`,
+            options
+          ];
         },
-        postprocess(html) {
-          return html + '<h1>postprocess1</h1>\n';
+        postprocess([html, options]) {
+          return [
+            html + '<h1>postprocess1</h1>\n',
+            options
+          ];
         }
       }
     });
     marked.use({
       async: true,
       hooks: {
-        preprocess(markdown) {
-          return `# preprocess2\n\n${markdown}`;
+        preprocess([markdown, options]) {
+          return [
+            `# preprocess2\n\n${markdown}`,
+            options
+          ];
         },
-        async postprocess(html) {
+        async postprocess([html, options]) {
           await timeout();
-          return html + '<h1>postprocess2 async</h1>\n';
+          return [
+            html + '<h1>postprocess2 async</h1>\n',
+            options
+          ];
         }
       }
     });

@@ -312,20 +312,16 @@ The `this` variable in the hooks is the `marked` object.
 import { marked } from 'marked';
 import fm from 'front-matter';
 
-let defaults;
 // Override function
 const hooks = {
   preprocess(markdown) {
-    // shallow copy options for reset;
-    defaults = { ...this.defaults };
     const { attributes, body } = fm(markdown);
-    this.setOptions(attributes);
+    for (const prop in attributes) {
+      if (prop in this.options) {
+        this.options[prop] = attributes[prop];
+      }
+    }
     return body;
-  },
-  postprocess(html) {
-    // reset options
-    this.setOptions(defaults);
-    return html;
   }
 };
 
@@ -339,6 +335,33 @@ headerIds: false
 
 ## test
 `.trim()));
+```
+
+**Output:**
+
+```html
+<h2>test</h2>
+```
+
+**Example:** Sanitize HTML with [isomorphic-dompurify](https://www.npmjs.com/package/isomorphic-dompurify)
+
+```js
+import { marked } from 'marked';
+import DOMPurify from 'isomorphic-dompurify';
+
+// Override function
+const hooks = {
+  postprocess(html) {
+    return DOMPurify.sanitize(html);
+  }
+};
+
+marked.use({ hooks });
+
+// Run marked
+console.log(marked.parse(`
+<img src=x onerror=alert(1)//>
+`));
 ```
 
 **Output:**

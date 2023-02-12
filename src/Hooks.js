@@ -1,4 +1,10 @@
+import { defaults } from './defaults.js';
+
 export class Hooks {
+  constructor(options) {
+    this.options = options || defaults;
+  }
+
   static passThroughHooks = new Set([
     'preprocess',
     'postprocess'

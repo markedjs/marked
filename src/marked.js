@@ -37,6 +37,10 @@ export function marked(src, opt, callback) {
   opt = { ...marked.defaults, ...origOpt };
   checkSanitizeDeprecation(opt);
 
+  if (opt.hooks) {
+    opt.hooks.options = opt;
+  }
+
   if (callback) {
     const highlight = opt.highlight;
     let tokens;
@@ -44,7 +48,6 @@ export function marked(src, opt, callback) {
     try {
       if (opt.hooks) {
         src = opt.hooks.preprocess(src);
-        opt = { ...marked.defaults, ...origOpt };
       }
       tokens = Lexer.lex(src, opt);
     } catch (e) {
@@ -133,10 +136,6 @@ export function marked(src, opt, callback) {
 
   if (opt.async) {
     return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
-      .then(src => {
-        opt = { ...marked.defaults, ...origOpt };
-        return src;
-      })
       .then(src => Lexer.lex(src, opt))
       .then(tokens => opt.walkTokens ? Promise.all(marked.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
       .then(tokens => Parser.parse(tokens, opt))
@@ -147,7 +146,6 @@ export function marked(src, opt, callback) {
   try {
     if (opt.hooks) {
       src = opt.hooks.preprocess(src);
-      opt = { ...marked.defaults, ...origOpt };
     }
     const tokens = Lexer.lex(src, opt);
     if (opt.walkTokens) {
@@ -285,19 +283,19 @@ marked.use = function(...args) {
         if (Hooks.passThroughHooks.has(prop)) {
           hooks[prop] = (arg) => {
             if (marked.defaults.async) {
-              return Promise.resolve(pack.hooks[prop].call(marked, arg)).then(ret => {
-                return prevHook.call(marked, ret);
+              return Promise.resolve(pack.hooks[prop].call(hooks, arg)).then(ret => {
+                return prevHook.call(hooks, ret);
               });
             }
 
-            const ret = pack.hooks[prop].call(marked, arg);
-            return prevHook.call(marked, ret);
+            const ret = pack.hooks[prop].call(hooks, arg);
+            return prevHook.call(hooks, ret);
           };
         } else {
           hooks[prop] = (...args) => {
-            let ret = pack.hooks[prop].apply(marked, args);
+            let ret = pack.hooks[prop].apply(hooks, args);
             if (ret === false) {
-              ret = prevHook.apply(marked, args);
+              ret = prevHook.apply(hooks, args);
             }
             return ret;
           };
@@ -378,20 +376,58 @@ marked.parseInline = function(src, opt) {
   opt = { ...marked.defaults, ...opt };
   checkSanitizeDeprecation(opt);
 
+  if (opt.hooks) {
+    opt.hooks.options = opt;
+  }
+
+  function onError(e) {
+    e.message += '\nPlease report this to https://github.com/markedjs/marked.';
+
+    if (opt.silent) {
+      const msg = '<p>An error occurred:</p><pre>'
+        + escape(e.message + '', true)
+        + '</pre>';
+      if (opt.async) {
+        return Promise.resolve(msg);
+      }
+      return msg;
+    }
+
+    if (opt.async) {
+      return Promise.reject(e);
+    }
+    throw e;
+  }
+
+  if (opt.async) {
+    return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
+      .then(([src, newOpts]) => {
+        opt = newOpts;
+        return src;
+      })
+      .then(src => Lexer.lexInline(src, opt))
+      .then(tokens => opt.walkTokens ? Promise.all(marked.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
+      .then(tokens => Parser.parseInline(tokens, opt))
+      .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
+      .then(([html]) => html)
+      .catch(onError);
+  }
+
   try {
+    if (opt.hooks) {
+      src = opt.hooks.preprocess(src);
+    }
     const tokens = Lexer.lexInline(src, opt);
     if (opt.walkTokens) {
       marked.walkTokens(tokens, opt.walkTokens);
     }
-    return Parser.parseInline(tokens, opt);
-  } catch (e) {
-    e.message += '\nPlease report this to https://github.com/markedjs/marked.';
-    if (opt.silent) {
-      return '<p>An error occurred:</p><pre>'
-        + escape(e.message + '', true)
-        + '</pre>';
+    let html = Parser.parseInline(tokens, opt);
+    if (opt.hooks) {
+      html = opt.hooks.postprocess(html);
     }
-    throw e;
+    return html;
+  } catch (e) {
+    return onError(e);
   }
 };
 
