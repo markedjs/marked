@@ -64,7 +64,7 @@
     "jasmine": "^4.5.0",
     "markdown-it": "13.0.1",
     "node-fetch": "^3.3.0",
-    "rollup": "^3.15.0",
+    "rollup": "^3.17.2",
     "semantic-release": "^20.1.0",
     "titleize": "^3.0.0",
     "uglify-js": "^3.17.4",
