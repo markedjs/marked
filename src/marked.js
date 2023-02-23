@@ -15,150 +15,169 @@ import {
   defaults
 } from './defaults.js';
 
-/**
- * Marked
- */
-export function marked(src, opt, callback) {
-  // throw error in case of non string input
-  if (typeof src === 'undefined' || src === null) {
-    throw new Error('marked(): input parameter is undefined or null');
-  }
-  if (typeof src !== 'string') {
-    throw new Error('marked(): input parameter is of type '
-      + Object.prototype.toString.call(src) + ', string expected');
-  }
+function onError(silent, async, callback) {
+  return (e) => {
+    e.message += '\nPlease report this to https://github.com/markedjs/marked.';
 
-  if (typeof opt === 'function') {
-    callback = opt;
-    opt = null;
-  }
+    if (silent) {
+      const msg = '<p>An error occurred:</p><pre>'
+        + escape(e.message + '', true)
+        + '</pre>';
+      if (async) {
+        return Promise.resolve(msg);
+      }
+      if (callback) {
+        callback(null, msg);
+        return;
+      }
+      return msg;
+    }
 
-  const origOpt = { ...opt };
-  opt = { ...marked.defaults, ...origOpt };
-  checkSanitizeDeprecation(opt);
+    if (async) {
+      return Promise.reject(e);
+    }
+    if (callback) {
+      callback(e);
+      return;
+    }
+    throw e;
+  };
+}
 
-  if (opt.hooks) {
-    opt.hooks.options = opt;
-  }
+function parseMarkdown(lexer, parser) {
+  return (src, opt, callback) => {
+    if (typeof opt === 'function') {
+      callback = opt;
+      opt = null;
+    }
 
-  if (callback) {
-    const highlight = opt.highlight;
-    let tokens;
+    const origOpt = { ...opt };
+    opt = { ...marked.defaults, ...origOpt };
+    const throwError = onError(opt.silent, opt.async, callback);
+
+    // throw error in case of non string input
+    if (typeof src === 'undefined' || src === null) {
+      return throwError(new Error('marked(): input parameter is undefined or null'));
+    }
+    if (typeof src !== 'string') {
+      return throwError(new Error('marked(): input parameter is of type '
+        + Object.prototype.toString.call(src) + ', string expected'));
+    }
+
+    checkSanitizeDeprecation(opt);
+
+    if (opt.hooks) {
+      opt.hooks.options = opt;
+    }
+
+    if (callback) {
+      const highlight = opt.highlight;
+      let tokens;
+
+      try {
+        if (opt.hooks) {
+          src = opt.hooks.preprocess(src);
+        }
+        tokens = lexer(src, opt);
+      } catch (e) {
+        return throwError(e);
+      }
+
+      const done = function(err) {
+        let out;
+
+        if (!err) {
+          try {
+            if (opt.walkTokens) {
+              marked.walkTokens(tokens, opt.walkTokens);
+            }
+            out = parser(tokens, opt);
+            if (opt.hooks) {
+              out = opt.hooks.postprocess(out);
+            }
+          } catch (e) {
+            err = e;
+          }
+        }
+
+        opt.highlight = highlight;
+
+        return err
+          ? throwError(err)
+          : callback(null, out);
+      };
+
+      if (!highlight || highlight.length < 3) {
+        return done();
+      }
+
+      delete opt.highlight;
+
+      if (!tokens.length) return done();
+
+      let pending = 0;
+      marked.walkTokens(tokens, function(token) {
+        if (token.type === 'code') {
+          pending++;
+          setTimeout(() => {
+            highlight(token.text, token.lang, function(err, code) {
+              if (err) {
+                return done(err);
+              }
+              if (code != null && code !== token.text) {
+                token.text = code;
+                token.escaped = true;
+              }
+
+              pending--;
+              if (pending === 0) {
+                done();
+              }
+            });
+          }, 0);
+        }
+      });
+
+      if (pending === 0) {
+        done();
+      }
+
+      return;
+    }
+
+    if (opt.async) {
+      return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
+        .then(src => lexer(src, opt))
+        .then(tokens => opt.walkTokens ? Promise.all(marked.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
+        .then(tokens => parser(tokens, opt))
+        .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
+        .catch(throwError);
+    }
 
     try {
       if (opt.hooks) {
         src = opt.hooks.preprocess(src);
       }
-      tokens = Lexer.lex(src, opt);
+      const tokens = lexer(src, opt);
+      if (opt.walkTokens) {
+        marked.walkTokens(tokens, opt.walkTokens);
+      }
+      let html = parser(tokens, opt);
+      if (opt.hooks) {
+        html = opt.hooks.postprocess(html);
+      }
+      return html;
     } catch (e) {
-      return callback(e);
+      return throwError(e);
     }
+  };
+}
 
-    const done = function(err) {
-      let out;
-
-      if (!err) {
-        try {
-          if (opt.walkTokens) {
-            marked.walkTokens(tokens, opt.walkTokens);
-          }
-          out = Parser.parse(tokens, opt);
-          if (opt.hooks) {
-            out = opt.hooks.postprocess(out);
-          }
-        } catch (e) {
-          err = e;
-        }
-      }
-
-      opt.highlight = highlight;
-
-      return err
-        ? callback(err)
-        : callback(null, out);
-    };
-
-    if (!highlight || highlight.length < 3) {
-      return done();
-    }
-
-    delete opt.highlight;
-
-    if (!tokens.length) return done();
-
-    let pending = 0;
-    marked.walkTokens(tokens, function(token) {
-      if (token.type === 'code') {
-        pending++;
-        setTimeout(() => {
-          highlight(token.text, token.lang, function(err, code) {
-            if (err) {
-              return done(err);
-            }
-            if (code != null && code !== token.text) {
-              token.text = code;
-              token.escaped = true;
-            }
-
-            pending--;
-            if (pending === 0) {
-              done();
-            }
-          });
-        }, 0);
-      }
-    });
-
-    if (pending === 0) {
-      done();
-    }
-
-    return;
-  }
-
-  function onError(e) {
-    e.message += '\nPlease report this to https://github.com/markedjs/marked.';
-
-    if (opt.silent) {
-      const msg = '<p>An error occurred:</p><pre>'
-        + escape(e.message + '', true)
-        + '</pre>';
-      if (opt.async) {
-        return Promise.resolve(msg);
-      }
-      return msg;
-    }
-    if (opt.async) {
-      return Promise.reject(e);
-    }
-    throw e;
-  }
-
-  if (opt.async) {
-    return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
-      .then(src => Lexer.lex(src, opt))
-      .then(tokens => opt.walkTokens ? Promise.all(marked.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
-      .then(tokens => Parser.parse(tokens, opt))
-      .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
-      .catch(onError);
-  }
-
-  try {
-    if (opt.hooks) {
-      src = opt.hooks.preprocess(src);
-    }
-    const tokens = Lexer.lex(src, opt);
-    if (opt.walkTokens) {
-      marked.walkTokens(tokens, opt.walkTokens);
-    }
-    let html = Parser.parse(tokens, opt);
-    if (opt.hooks) {
-      html = opt.hooks.postprocess(html);
-    }
-    return html;
-  } catch (e) {
-    return onError(e);
-  }
+/**
+ * Marked
+ */
+export function marked(src, opt, callback) {
+  return parseMarkdown(Lexer.lex, Parser.parse)(src, opt, callback);
 }
 
 /**
@@ -363,68 +382,7 @@ marked.walkTokens = function(tokens, callback) {
  * Parse Inline
  * @param {string} src
  */
-marked.parseInline = function(src, opt) {
-  // throw error in case of non string input
-  if (typeof src === 'undefined' || src === null) {
-    throw new Error('marked.parseInline(): input parameter is undefined or null');
-  }
-  if (typeof src !== 'string') {
-    throw new Error('marked.parseInline(): input parameter is of type '
-      + Object.prototype.toString.call(src) + ', string expected');
-  }
-
-  opt = { ...marked.defaults, ...opt };
-  checkSanitizeDeprecation(opt);
-
-  if (opt.hooks) {
-    opt.hooks.options = opt;
-  }
-
-  function onError(e) {
-    e.message += '\nPlease report this to https://github.com/markedjs/marked.';
-
-    if (opt.silent) {
-      const msg = '<p>An error occurred:</p><pre>'
-        + escape(e.message + '', true)
-        + '</pre>';
-      if (opt.async) {
-        return Promise.resolve(msg);
-      }
-      return msg;
-    }
-
-    if (opt.async) {
-      return Promise.reject(e);
-    }
-    throw e;
-  }
-
-  if (opt.async) {
-    return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
-      .then(src => Lexer.lexInline(src, opt))
-      .then(tokens => opt.walkTokens ? Promise.all(marked.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
-      .then(tokens => Parser.parseInline(tokens, opt))
-      .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
-      .catch(onError);
-  }
-
-  try {
-    if (opt.hooks) {
-      src = opt.hooks.preprocess(src);
-    }
-    const tokens = Lexer.lexInline(src, opt);
-    if (opt.walkTokens) {
-      marked.walkTokens(tokens, opt.walkTokens);
-    }
-    let html = Parser.parseInline(tokens, opt);
-    if (opt.hooks) {
-      html = opt.hooks.postprocess(html);
-    }
-    return html;
-  } catch (e) {
-    return onError(e);
-  }
-};
+marked.parseInline = parseMarkdown(Lexer.lexInline, Parser.parseInline);
 
 /**
  * Expose
