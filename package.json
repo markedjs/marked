@@ -23,6 +23,9 @@
       "import": "./lib/marked.esm.js",
       "default": "./lib/marked.cjs"
     },
+    "./lib/marked.cjs": "./lib/marked.cjs",
+    "./lib/marked.esm": "./lib/marked.esm.js",
+    "./lib/marked.umd": "./lib/marked.umd.js",
     "./bin/marked": "./bin/marked.js",
     "./package.json": "./package.json"
   },
