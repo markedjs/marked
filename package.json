@@ -4,8 +4,7 @@
   "author": "Christopher Jeffrey",
   "version": "4.2.12",
   "type": "module",
-  "main": "./lib/marked.cjs",
-  "module": "./lib/marked.esm.js",
+  "main": "./lib/marked.esm.js",
   "browser": "./lib/marked.umd.js",
   "bin": {
     "marked": "bin/marked.js"
