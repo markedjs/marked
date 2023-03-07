@@ -128,6 +128,13 @@ console.log(marked.parse('# heading+'));
 - <code>**image**(*string* href, *string* title, *string* text)</code>
 - <code>**text**(*string* text)</code>
 
+`Slugger` is exposed from marked as `marked.Slugger`:
+
+```js
+import { marked } from 'marked'
+const slugger = new marked.Slugger()
+```
+
 `slugger` has the `slug` method to create a unique id from value:
 
 ```js
