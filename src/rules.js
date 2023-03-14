@@ -1,6 +1,7 @@
 import {
   noopTest,
-  edit
+  edit,
+  merge
 } from './helpers.js';
 
 /**
@@ -84,18 +85,17 @@ block.blockquote = edit(block.blockquote)
  * Normal Block Grammar
  */
 
-block.normal = { ...block };
+block.normal = merge({}, block);
 
 /**
  * GFM Block Grammar
  */
 
-block.gfm = {
-  ...block.normal,
+block.gfm = merge({}, block.normal, {
   table: '^ *([^\\n ].*\\|.*)\\n' // Header
     + ' {0,3}(?:\\| *)?(:?-+:? *(?:\\| *:?-+:? *)*)(?:\\| *)?' // Align
     + '(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)' // Cells
-};
+});
 
 block.gfm.table = edit(block.gfm.table)
   .replace('hr', block.hr)
@@ -123,8 +123,7 @@ block.gfm.paragraph = edit(block._paragraph)
  * Pedantic grammar (original John Gruber's loose markdown specification)
  */
 
-block.pedantic = {
-  ...block.normal,
+block.pedantic = merge({}, block.normal, {
   html: edit(
     '^ *(?:comment *(?:\\n|\\s*$)'
     + '|<(tag)[\\s\\S]+?</\\1> *(?:\\n{2,}|\\s*$)' // closed tag
@@ -148,7 +147,7 @@ block.pedantic = {
     .replace('|list', '')
     .replace('|html', '')
     .getRegex()
-};
+});
 
 /**
  * Inline-Level Grammar
@@ -250,14 +249,13 @@ inline.reflinkSearch = edit(inline.reflinkSearch, 'g')
  * Normal Inline Grammar
  */
 
-inline.normal = { ...inline };
+inline.normal = merge({}, inline);
 
 /**
  * Pedantic Inline Grammar
  */
 
-inline.pedantic = {
-  ...inline.normal,
+inline.pedantic = merge({}, inline.normal, {
   strong: {
     start: /^__|\*\*/,
     middle: /^__(?=\S)([\s\S]*?\S)__(?!_)|^\*\*(?=\S)([\s\S]*?\S)\*\*(?!\*)/,
@@ -276,21 +274,20 @@ inline.pedantic = {
   reflink: edit(/^!?\[(label)\]\s*\[([^\]]*)\]/)
     .replace('label', inline._label)
     .getRegex()
-};
+});
 
 /**
  * GFM Inline Grammar
  */
 
-inline.gfm = {
-  ...inline.normal,
+inline.gfm = merge({}, inline.normal, {
   escape: edit(inline.escape).replace('])', '~|])').getRegex(),
   _extended_email: /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/,
   url: /^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/,
   _backpedal: /(?:[^?!.,:;*_'"~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_'"~)]+(?!$))+/,
   del: /^(~~?)(?=[^\s~])([\s\S]*?[^\s~])\1(?=[^~]|$)/,
   text: /^([`~]+|[^`~])(?:(?= {2,}\n)|(?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|https?:\/\/|ftp:\/\/|www\.|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)))/
-};
+});
 
 inline.gfm.url = edit(inline.gfm.url, 'i')
   .replace('email', inline.gfm._extended_email)
@@ -299,11 +296,10 @@ inline.gfm.url = edit(inline.gfm.url, 'i')
  * GFM + Line Breaks Inline Grammar
  */
 
-inline.breaks = {
-  ...inline.gfm,
+inline.breaks = merge({}, inline.gfm, {
   br: edit(inline.br).replace('{2,}', '*').getRegex(),
   text: edit(inline.gfm.text)
     .replace('\\b_', '\\b_| {2,}\\n')
     .replace(/\{2,\}/g, '*')
     .getRegex()
-};
+});
