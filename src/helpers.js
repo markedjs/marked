@@ -142,23 +142,6 @@ export function resolveUrl(base, href) {
 
 export const noopTest = { exec: function noopTest() {} };
 
-export function merge(obj) {
-  let i = 1,
-    target,
-    key;
-
-  for (; i < arguments.length; i++) {
-    target = arguments[i];
-    for (key in target) {
-      if (Object.prototype.hasOwnProperty.call(target, key)) {
-        obj[key] = target[key];
-      }
-    }
-  }
-
-  return obj;
-}
-
 export function splitCells(tableRow, count) {
   // ensure that every cell-delimiting pipe has a space
   // before it to distinguish it from an escaped pipe

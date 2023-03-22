@@ -262,7 +262,7 @@ smartypants('"this ... string"')
 
 <h2 id="walk-tokens">Walk Tokens : <code>walkTokens</code></h2>
 
-The walkTokens function gets called with every token. Child tokens are called before moving on to sibling tokens. Each token is passed by reference so updates are persisted when passed to the parser. When [`async`](#async) mode is enabled, the return value is awaited. Otherwise the return value is ignored. 
+The walkTokens function gets called with every token. Child tokens are called before moving on to sibling tokens. Each token is passed by reference so updates are persisted when passed to the parser. When [`async`](#async) mode is enabled, the return value is awaited. Otherwise the return value is ignored.
 
 `marked.use()` can be called multiple times with different `walkTokens` functions. Each function will be called in order, starting with the function that was assigned *last*.
 
@@ -289,6 +289,83 @@ console.log(marked.parse('# heading 2\n\n## heading 3'));
 ```html
 <h2 id="heading-2">heading 2</h2>
 <h3 id="heading-3">heading 3</h3>
+```
+
+***
+
+<h2 id="hooks">Hooks : <code>hooks</code></h2>
+
+Hooks are methods that hook into some part of marked. The following hooks are available:
+
+| signature | description |
+|-----------|-------------|
+| `preprocess(markdown: string): string` | Process markdown before sending it to marked. |
+| `postprocess(html: string): string` | Process html after marked has finished parsing. |
+
+`marked.use()` can be called multiple times with different `hooks` functions. Each function will be called in order, starting with the function that was assigned *last*.
+
+**Example:** Set options based on [front-matter](https://www.npmjs.com/package/front-matter)
+
+```js
+import { marked } from 'marked';
+import fm from 'front-matter';
+
+// Override function
+const hooks = {
+  preprocess(markdown) {
+    const { attributes, body } = fm(markdown);
+    for (const prop in attributes) {
+      if (prop in this.options) {
+        this.options[prop] = attributes[prop];
+      }
+    }
+    return body;
+  }
+};
+
+marked.use({ hooks });
+
+// Run marked
+console.log(marked.parse(`
+---
+headerIds: false
+---
+
+## test
+`.trim()));
+```
+
+**Output:**
+
+```html
+<h2>test</h2>
+```
+
+**Example:** Sanitize HTML with [isomorphic-dompurify](https://www.npmjs.com/package/isomorphic-dompurify)
+
+```js
+import { marked } from 'marked';
+import DOMPurify from 'isomorphic-dompurify';
+
+// Override function
+const hooks = {
+  postprocess(html) {
+    return DOMPurify.sanitize(html);
+  }
+};
+
+marked.use({ hooks });
+
+// Run marked
+console.log(marked.parse(`
+<img src=x onerror=alert(1)//>
+`));
+```
+
+**Output:**
+
+```html
+<img src="x">
 ```
 
 ***
