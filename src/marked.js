@@ -108,28 +108,38 @@ export function marked(src, opt, callback) {
   function onError(e) {
     e.message += '\nPlease report this to https://github.com/markedjs/marked.';
     if (opt.silent) {
-      return '<p>An error occurred:</p><pre>'
+      const msg = '<p>An error occurred:</p><pre>'
         + escape(e.message + '', true)
         + '</pre>';
+      if (opt.async) {
+        return Promise.resolve(msg);
+      }
+      return msg;
+    }
+    if (opt.async) {
+      return Promise.reject(e);
     }
     throw e;
   }
 
   try {
+    if (opt.async) {
+      let promise = Promise.resolve(Lexer.lex(src, opt));
+      if (opt.walkTokens) {
+        promise = promise.then((tokens) =>
+          Promise.all(marked.walkTokens(tokens, opt.walkTokens)).then(() => tokens)
+        );
+      }
+      return promise.then((tokens) => Parser.parse(tokens, opt)).catch(onError);
+    }
+
     const tokens = Lexer.lex(src, opt);
     if (opt.walkTokens) {
-      if (opt.async) {
-        return Promise.all(marked.walkTokens(tokens, opt.walkTokens))
-          .then(() => {
-            return Parser.parse(tokens, opt);
-          })
-          .catch(onError);
-      }
       marked.walkTokens(tokens, opt.walkTokens);
     }
     return Parser.parse(tokens, opt);
   } catch (e) {
-    onError(e);
+    return onError(e);
   }
 }
 

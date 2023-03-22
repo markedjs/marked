@@ -1112,4 +1112,14 @@ br
     const html = await promise;
     expect(html.trim()).toBe('<p><em>text walked</em></p>');
   });
+
+  it('should return promise if async', async() => {
+    marked.use({
+      async: true
+    });
+    const promise = marked('*text*');
+    expect(promise).toBeInstanceOf(Promise);
+    const html = await promise;
+    expect(html.trim()).toBe('<p><em>text</em></p>');
+  });
 });
