@@ -97,20 +97,27 @@ console.log(inlineHtml); // '<strong>strong</strong> <em>em</em>'
 Unlike `highlight.js` the `pygmentize.js` library uses asynchronous highlighting. This example demonstrates that marked is agnostic when it comes to the highlighter you use.
 
 ```js
-marked.setOptions({
-  highlight: function(code, lang, callback) {
-    require('pygmentize-bundled') ({ lang: lang, format: 'html' }, code, function (err, result) {
-      callback(err, result.toString());
-    });
+import pygmentize from 'pygmentize-bundled';
+
+marked.use({
+  async: true,
+  highlight(code, lang) {
+    return new Promise((resolve, reject) => {
+      pygmentize({ lang: lang, format: 'html' }, code, (err, result) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(result.toString());
+      });
+    })
   }
 });
 
-marked.parse(markdownString, (err, html) => {
-  console.log(html);
-});
+const html = await marked.parse(markdownString);
 ```
 
-In both examples, `code` is a `string` representing the section of code to pass to the highlighter. In this example, `lang` is a `string` informing the highlighter what programming language to use for the `code` and `callback` is the `function` the asynchronous highlighter will call once complete.
+In both examples, `code` is a `string` representing the section of code to pass to the highlighter. In this example, `lang` is a `string` informing the highlighter what programming language to use for the `code`. The highlight function can return a `Promise` for asynchronous highlighting. Don't forget to set the `async` option to `true` and `await` the output of marked.
 
 <h2 id="workers">Workers</h2>
 
