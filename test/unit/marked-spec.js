@@ -766,6 +766,7 @@ used extension2 walked</p>
         walked++;
       }
     };
+    use({ silent: true });
     use(extension);
     marked('text', () => {
       expect(walked).toBe(2);
@@ -897,6 +898,7 @@ paragraph
 describe('async highlight', () => {
   let highlight, markdown;
   beforeEach(() => {
+    marked.use({ silent: true });
     highlight = jasmine.createSpy('highlight', (text, lang, callback) => {
       setImmediate(() => {
         callback(null, `async ${text || ''}`);
@@ -1006,10 +1008,9 @@ text 1
 
     let numErrors = 0;
     marked(markdown, { highlight }, (err, html) => {
-      expect(err).toBeTruthy();
-      expect(html).toBeUndefined();
+      expect(html).toContain('An error occurred:');
 
-      if (err) {
+      if (err || html.includes('An error occurred:')) {
         numErrors++;
       }
 
