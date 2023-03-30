@@ -773,6 +773,7 @@ paragraph
             type: 'html',
             raw: '<div>html</div>',
             pre: false,
+            block: true,
             text: '<div>html</div>'
           }
         ]
@@ -787,6 +788,7 @@ paragraph
             type: 'html',
             raw: '<pre>html</pre>',
             pre: true,
+            block: true,
             text: '<pre>html</pre>'
           }
         ]
@@ -802,6 +804,7 @@ paragraph
             type: 'paragraph',
             raw: '<div>html</div>',
             pre: false,
+            block: true,
             text: '&lt;div&gt;html&lt;/div&gt;',
             tokens: [{
               type: 'text',
@@ -884,9 +887,9 @@ paragraph
         expectInlineTokens({
           md: '<div>html</div>',
           tokens: [
-            { type: 'html', raw: '<div>', inLink: false, inRawBlock: false, text: '<div>' },
+            { type: 'html', raw: '<div>', inLink: false, inRawBlock: false, block: false, text: '<div>' },
             { type: 'text', raw: 'html', text: 'html' },
-            { type: 'html', raw: '</div>', inLink: false, inRawBlock: false, text: '</div>' }
+            { type: 'html', raw: '</div>', inLink: false, inRawBlock: false, block: false, text: '</div>' }
           ]
         });
       });
@@ -896,7 +899,14 @@ paragraph
           md: '<div>html</div>',
           options: { sanitize: true },
           tokens: [
-            { type: 'text', raw: '<div>html</div>', inLink: false, inRawBlock: false, text: '&lt;div&gt;html&lt;/div&gt;' }
+            {
+              type: 'text',
+              raw: '<div>html</div>',
+              inLink: false,
+              inRawBlock: false,
+              block: false,
+              text: '&lt;div&gt;html&lt;/div&gt;'
+            }
           ]
         });
       });

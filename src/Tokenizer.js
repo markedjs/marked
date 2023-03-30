@@ -362,6 +362,7 @@ export class Tokenizer {
     if (cap) {
       const token = {
         type: 'html',
+        block: true,
         raw: cap[0],
         pre: !this.options.sanitizer
           && (cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style'),
@@ -519,6 +520,7 @@ export class Tokenizer {
         raw: cap[0],
         inLink: this.lexer.state.inLink,
         inRawBlock: this.lexer.state.inRawBlock,
+        block: false,
         text: this.options.sanitize
           ? (this.options.sanitizer
             ? this.options.sanitizer(cap[0])

@@ -106,7 +106,7 @@ console.log(marked.parse('# heading+'));
 
 - <code>**code**(*string* code, *string* infostring, *boolean* escaped)</code>
 - <code>**blockquote**(*string* quote)</code>
-- <code>**html**(*string* html)</code>
+- <code>**html**(*string* html, *boolean* block)</code>
 - <code>**heading**(*string* text, *number* level, *string* raw, *Slugger* slugger)</code>
 - <code>**hr**()</code>
 - <code>**list**(*string* body, *boolean* ordered, *number* start)</code>
