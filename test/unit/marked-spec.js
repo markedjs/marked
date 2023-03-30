@@ -941,6 +941,64 @@ text 1
     });
   });
 
+  it('should highlight codeblocks with async', async() => {
+    highlight.and.callThrough();
+
+    marked.use({
+      async: true,
+      highlight: (code, lang) => new Promise((resolve, reject) => {
+        highlight(code, lang, (err, out) => {
+          if (err) {
+            reject(err);
+          }
+
+          resolve(out);
+        });
+      })
+    });
+
+    const html = await marked(markdown);
+
+    expect(html).toBe(`<pre><code class="language-lang1">async text 1
+</code></pre>
+<blockquote>
+<pre><code class="language-lang2">async text 2
+</code></pre>
+</blockquote>
+<ul>
+<li><pre><code class="language-lang3">async text 3
+</code></pre>
+</li>
+</ul>
+`);
+  });
+
+  it('should highlight codeblocks with async when sync', async() => {
+    highlight.and.callFake((text, lang) => {
+      return `async ${text || ''}`;
+    });
+
+    marked.use({
+      async: true,
+      highlight
+    });
+
+    const html = await marked(markdown);
+
+    expect(html).toBe(`<pre><code class="language-lang1">async text 1
+</code></pre>
+<blockquote>
+<pre><code class="language-lang2">async text 2
+</code></pre>
+</blockquote>
+<ul>
+<li><pre><code class="language-lang3">async text 3
+</code></pre>
+</li>
+</ul>
+`);
+  });
+
   it('should call callback for each error in highlight', (done) => {
     highlight.and.callFake((text, lang, callback) => {
       callback(new Error('highlight error'));

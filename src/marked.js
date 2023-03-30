@@ -71,6 +71,10 @@ function parseMarkdown(lexer, parser) {
     }
 
     if (callback) {
+      if (!opt.silent) {
+        console.warn('marked(): callback is deprecated since version 5.0.0 Read more here: https://marked.js.org/using_advanced#highlight');
+      }
+
       const highlight = opt.highlight;
       let tokens;
 
@@ -149,6 +153,7 @@ function parseMarkdown(lexer, parser) {
       return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
         .then(src => lexer(src, opt))
         .then(tokens => opt.walkTokens ? Promise.all(marked.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
+        .then(tokens => opt.highlight ? Promise.all(marked.walkTokens(tokens, highlightCode(opt))).then(() => tokens) : tokens)
         .then(tokens => parser(tokens, opt))
         .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
         .catch(throwError);
@@ -162,6 +167,9 @@ function parseMarkdown(lexer, parser) {
       if (opt.walkTokens) {
         marked.walkTokens(tokens, opt.walkTokens);
       }
+      if (opt.highlight) {
+        marked.walkTokens(tokens, highlightCode(opt));
+      }
       let html = parser(tokens, opt);
       if (opt.hooks) {
         html = opt.hooks.postprocess(html);
@@ -169,6 +177,31 @@ function parseMarkdown(lexer, parser) {
       return html;
     } catch (e) {
       return throwError(e);
+    }
+  };
+}
+
+function highlightCode(opt) {
+  return (token) => {
+    if (token.type !== 'code') {
+      return;
+    }
+
+    const lang = (token.lang || '').match(/\S*/)[0];
+
+    if (opt.async) {
+      return Promise.resolve(opt.highlight(token.text, lang)).then((code) => {
+        if (code !== null && code !== token.text) {
+          token.escaped = true;
+          token.text = code;
+        }
+      });
+    }
+
+    const code = opt.highlight(token.text, lang);
+    if (typeof code === 'string' && code !== token.text) {
+      token.escaped = true;
+      token.text = code;
     }
   };
 }

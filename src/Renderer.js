@@ -14,28 +14,18 @@ export class Renderer {
 
   code(code, infostring, escaped) {
     const lang = (infostring || '').match(/\S*/)[0];
-    if (this.options.highlight) {
-      const out = this.options.highlight(code, lang);
-      if (out != null && out !== code) {
-        escaped = true;
-        code = out;
-      }
+
+    if (!escaped) {
+      code = escape(code, true);
     }
 
-    code = code.replace(/\n$/, '') + '\n';
+    code = code.replace(/\n$/, '');
 
-    if (!lang) {
-      return '<pre><code>'
-        + (escaped ? code : escape(code, true))
-        + '</code></pre>\n';
-    }
+    const classAttr = lang
+      ? ` class="${this.options.langPrefix}${escape(lang)}"`
+      : '';
 
-    return '<pre><code class="'
-      + this.options.langPrefix
-      + escape(lang)
-      + '">'
-      + (escaped ? code : escape(code, true))
-      + '</code></pre>\n';
+    return `<pre><code${classAttr}>${code}\n</code></pre>\n`;
   }
 
   /**
