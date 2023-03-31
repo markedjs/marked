@@ -49,7 +49,7 @@ console.log(marked.parse(markdownString));
 |gfm         |`boolean` |`true`   |v0.2.1   |If true, use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).|
 |headerIds   |`boolean` |`true`   |v0.4.0   |If true, include an `id` attribute when emitting headings (h1, h2, h3, etc).|
 |headerPrefix|`string`  |`''`     |v0.3.0   |A string to prefix the `id` attribute when emitting headings (h1, h2, h3, etc).|
-|highlight   |`function`|`null`   |v0.3.0   |A function to highlight code blocks, see <a href="#highlight">Asynchronous highlighting</a>.|
+|highlight (**deprecated**) |`function`|`null`   |v0.3.0   |Deprecated in v5.0.0 use [`marked-highlight`](https://www.npmjs.com/package/marked-highlight) to add highlighting to code blocks. |
 |langPrefix  |`string`  |`'language-'`|v0.3.0|A string to prefix the className in a `<code>` block. Useful for syntax highlighting.|
 |mangle      |`boolean` |`true`   |v0.3.4   |If true, autolinked email address is escaped with HTML character references.|
 |pedantic    |`boolean` |`false`  |v0.2.1   |If true, conform to the original `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`.|
@@ -76,6 +76,7 @@ Marked can be extended using [custom extensions](/using_pro#extensions). This is
 |[Emoji](https://github.com/UziTech/marked-emoji)|[`marked-emoji`](https://www.npmjs.com/package/marked-emoji)|Add emoji support like on GitHub|
 |[Extended Tables](https://github.com/calculuschild/marked-extended-tables)|[`marked-extended-tables`](https://www.npmjs.com/package/marked-extended-tables)|Extends the standard Github-Flavored tables to support advanced features: Column Spanning, Row Spanning, Multi-row headers|
 |[GFM Heading ID](https://github.com/markedjs/marked-gfm-heading-id)|[`marked-gfm-heading-id`](https://www.npmjs.com/package/marked-gfm-heading-id)|Use [`github-slugger`](https://github.com/Flet/github-slugger) to create the heading IDs and allow a custom prefix.|
+|[Highlight](https://github.com/UziTech/marked-highlight)|[`marked-highlight`](https://www.npmjs.com/package/marked-highlight)|Highlight code blocks|
 |[Katex Code](https://github.com/UziTech/marked-katex-extension)|[`marked-katex-extension`](https://www.npmjs.com/package/marked-katex-extension)|Render [katex](https://katex.org/) code|
 |[LinkifyIt](https://github.com/UziTech/marked-linkify-it)|[`marked-linkify-it`](https://www.npmjs.com/package/marked-linkify-it)|Use [linkify-it](https://github.com/markdown-it/linkify-it) for urls|
 |[Misskey-flavored Markdown](https://akkoma.dev/sfr/marked-mfm)|[`marked-mfm`](https://www.npmjs.com/package/marked-mfm)|Custom extension for [Misskey-flavored Markdown](https://github.com/misskey-dev/mfm.js/blob/develop/docs/syntax.md).|
@@ -92,32 +93,9 @@ const inlineHtml = marked.parseInline('**strong** _em_');
 console.log(inlineHtml); // '<strong>strong</strong> <em>em</em>'
 ```
 
-<h2 id="highlight">Asynchronous highlighting</h2>
+<h2 id="highlight">highlighting</h2>
 
-Unlike `highlight.js` the `pygmentize.js` library uses asynchronous highlighting. This example demonstrates that marked is agnostic when it comes to the highlighter you use.
-
-```js
-import pygmentize from 'pygmentize-bundled';
-
-marked.use({
-  async: true,
-  highlight(code, lang) {
-    return new Promise((resolve, reject) => {
-      pygmentize({ lang: lang, format: 'html' }, code, (err, result) {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(result.toString());
-      });
-    })
-  }
-});
-
-const html = await marked.parse(markdownString);
-```
-
-In both examples, `code` is a `string` representing the section of code to pass to the highlighter. In this example, `lang` is a `string` informing the highlighter what programming language to use for the `code`. The highlight function can return a `Promise` for asynchronous highlighting. Don't forget to set the `async` option to `true` and `await` the output of marked.
+Use [`marked-highlight`](https://www.npmjs.com/package/marked-highlight) to highlight code blocks.
 
 <h2 id="workers">Workers</h2>
 

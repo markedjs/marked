@@ -232,9 +232,21 @@ export function findClosingBracket(str, b) {
   return -1;
 }
 
-export function checkSanitizeDeprecation(opt) {
-  if (opt && opt.sanitize && !opt.silent) {
+export function checkDeprecations(opt, callback) {
+  if (!opt || opt.silent) {
+    return;
+  }
+
+  if (callback) {
+    console.warn('marked(): callback is deprecated since version 5.0.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/using_pro#async');
+  }
+
+  if (opt.sanitize) {
     console.warn('marked(): sanitize and sanitizer parameters are deprecated since version 0.7.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/#/USING_ADVANCED.md#options');
+  }
+
+  if (opt.highlight) {
+    console.warn('marked(): highlight parameters are deprecated since version 5.0.0, should not be used and will be removed in the future. Use marked-highlight from https://www.npmjs.com/package/marked-highlight to highlight code blocks.');
   }
 }
 
