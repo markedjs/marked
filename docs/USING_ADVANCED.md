@@ -93,7 +93,7 @@ const inlineHtml = marked.parseInline('**strong** _em_');
 console.log(inlineHtml); // '<strong>strong</strong> <em>em</em>'
 ```
 
-<h2 id="highlight">highlighting</h2>
+<h2 id="highlight">Highlighting</h2>
 
 Use [`marked-highlight`](https://www.npmjs.com/package/marked-highlight) to highlight code blocks.
 
