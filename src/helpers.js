@@ -246,7 +246,11 @@ export function checkDeprecations(opt, callback) {
   }
 
   if (opt.highlight) {
-    console.warn('marked(): highlight parameters are deprecated since version 5.0.0, should not be used and will be removed in the future. Use marked-highlight from https://www.npmjs.com/package/marked-highlight to highlight code blocks.');
+    console.warn('marked(): highlight parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Use marked-highlight from https://www.npmjs.com/package/marked-highlight to highlight code blocks.');
+  }
+
+  if (opt.mangle) {
+    console.warn('marked(): mangle parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Use marked-mangle from https://www.npmjs.com/package/marked-mangle to mangle emails.');
   }
 }
 
