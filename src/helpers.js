@@ -241,16 +241,32 @@ export function checkDeprecations(opt, callback) {
     console.warn('marked(): callback is deprecated since version 5.0.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/using_pro#async');
   }
 
-  if (opt.sanitize) {
+  if (opt.sanitize || opt.sanitizer) {
     console.warn('marked(): sanitize and sanitizer parameters are deprecated since version 0.7.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/#/USING_ADVANCED.md#options');
   }
 
-  if (opt.highlight) {
-    console.warn('marked(): highlight parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Use marked-highlight from https://www.npmjs.com/package/marked-highlight to highlight code blocks.');
+  if (opt.highlight || opt.langPrefix) {
+    console.warn('marked(): highlight and langPrefix parameters are deprecated since version 5.0.0, should not be used and will be removed in the future. Use marked-highlight from https://www.npmjs.com/package/marked-highlight to highlight code blocks.');
   }
 
   if (opt.mangle) {
     console.warn('marked(): mangle parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Use marked-mangle from https://www.npmjs.com/package/marked-mangle to mangle emails.');
+  }
+
+  if (opt.baseUrl) {
+    console.warn('marked(): baseUrl parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Use marked-base-url from https://www.npmjs.com/package/marked-base-url to add a base URL to relative links.');
+  }
+
+  if (opt.smartypants) {
+    console.warn('marked(): smartypants parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Use marked-smartypants from https://www.npmjs.com/package/marked-smartypants to use "smart" punctuation.');
+  }
+
+  if (opt.xhtml) {
+    console.warn('marked(): xhtml parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Use marked-xhtml from https://www.npmjs.com/package/marked-xhtml to emit self-closing HTML tags for void elements.');
+  }
+
+  if (opt.headerIds || opt.headerPrefix) {
+    console.warn('marked(): headerIds and headerPrefix parameters are deprecated since version 5.0.0, should not be used and will be removed in the future. Use marked-gfm-heading-id from https://www.npmjs.com/package/marked-gfm-heading-id to add GFM ids to headers.');
   }
 }
 
