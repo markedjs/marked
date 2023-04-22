@@ -60,9 +60,11 @@ Marked provides methods for directly overriding the `renderer` and `tokenizer` f
 
 <h2 id="renderer">The Renderer : <code>renderer</code></h2>
 
-The renderer defines the HTML output of a given token. If you supply a `renderer` object to the Marked options, it will be merged with the built-in renderer and any functions inside will override the default handling of that token type.
+The renderer defines the HTML output of a given token. If you supply a renderer in the options object passed to `marked.use()`, any functions in the object will override the default handling of that token type.
 
-Calling `marked.use()` to override the same function multiple times will give priority to the version that was assigned *last*. Overriding functions can return `false` to fall back to the previous override in the sequence, or resume default behavior if all overrides return `false`. Returning any other value (including nothing) will prevent fallback behavior.
+Calling `marked.use()` to override the same function multiple times will give priority to the version that was assigned last. Overriding functions can return false to fall back to the previous override in the sequence, or resume default behavior if all overrides return false. Returning any other value (including nothing) will prevent fallback behavior.
+
+Note that a renderer created with `new Renderer()` will not be created with the default token handlers.
 
 **Example:** Overriding output of the default `heading` token by adding an embedded anchor tag like on GitHub.
 
