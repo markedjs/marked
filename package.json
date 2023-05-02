@@ -88,6 +88,6 @@
     "minify": "uglifyjs lib/marked.umd.js -cm  --comments /Copyright/ -o marked.min.js"
   },
   "engines": {
-    "node": ">= 12"
+    "node": ">= 18"
   }
 }
