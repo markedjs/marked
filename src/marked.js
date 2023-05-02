@@ -6,7 +6,7 @@ import { TextRenderer } from './TextRenderer.js';
 import { Slugger } from './Slugger.js';
 import { Hooks } from './Hooks.js';
 import {
-  checkSanitizeDeprecation,
+  checkDeprecations,
   escape
 } from './helpers.js';
 import {
@@ -64,7 +64,7 @@ function parseMarkdown(lexer, parser) {
         + Object.prototype.toString.call(src) + ', string expected'));
     }
 
-    checkSanitizeDeprecation(opt);
+    checkDeprecations(opt, callback);
 
     if (opt.hooks) {
       opt.hooks.options = opt;

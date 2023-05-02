@@ -232,9 +232,41 @@ export function findClosingBracket(str, b) {
   return -1;
 }
 
-export function checkSanitizeDeprecation(opt) {
-  if (opt && opt.sanitize && !opt.silent) {
+export function checkDeprecations(opt, callback) {
+  if (!opt || opt.silent) {
+    return;
+  }
+
+  if (callback) {
+    console.warn('marked(): callback is deprecated since version 5.0.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/using_pro#async');
+  }
+
+  if (opt.sanitize || opt.sanitizer) {
     console.warn('marked(): sanitize and sanitizer parameters are deprecated since version 0.7.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/#/USING_ADVANCED.md#options');
+  }
+
+  if (opt.highlight || opt.langPrefix) {
+    console.warn('marked(): highlight and langPrefix parameters are deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-highlight.');
+  }
+
+  if (opt.mangle) {
+    console.warn('marked(): mangle parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-mangle.');
+  }
+
+  if (opt.baseUrl) {
+    console.warn('marked(): baseUrl parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-base-url.');
+  }
+
+  if (opt.smartypants) {
+    console.warn('marked(): smartypants parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-smartypants.');
+  }
+
+  if (opt.xhtml) {
+    console.warn('marked(): xhtml parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-xhtml.');
+  }
+
+  if (opt.headerIds || opt.headerPrefix) {
+    console.warn('marked(): headerIds and headerPrefix parameters are deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-gfm-heading-id.');
   }
 }
 
