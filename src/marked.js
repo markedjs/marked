@@ -64,7 +64,7 @@ function parseMarkdown(lexer, parser) {
         + Object.prototype.toString.call(src) + ', string expected'));
     }
 
-    checkDeprecations(opt, callback);
+    checkDeprecations(origOpt, callback);
 
     if (opt.hooks) {
       opt.hooks.options = opt;
