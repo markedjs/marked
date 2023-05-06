@@ -245,7 +245,7 @@ export function checkDeprecations(opt, callback) {
     console.warn('marked(): sanitize and sanitizer parameters are deprecated since version 0.7.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/#/USING_ADVANCED.md#options');
   }
 
-  if (opt.highlight || opt.langPrefix) {
+  if (opt.highlight || opt.langPrefix !== 'language-') {
     console.warn('marked(): highlight and langPrefix parameters are deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-highlight.');
   }
 
