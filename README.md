@@ -47,7 +47,6 @@ npm install -g marked
 
 ```sh
 npm install marked
-npm install @types/marked # For TypeScript projects
 ```
 
 ## Usage

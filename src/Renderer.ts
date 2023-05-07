@@ -1,19 +1,22 @@
-import { defaults } from './defaults.js';
+import { _defaults } from './defaults.ts';
 import {
   cleanUrl,
   escape
-} from './helpers.js';
+} from './helpers.ts';
+import type { MarkedOptions } from './MarkedOptions.ts';
+import { Slugger } from './marked.ts';
 
 /**
  * Renderer
  */
-export class Renderer {
-  constructor(options) {
-    this.options = options || defaults;
+export class _Renderer {
+  options: MarkedOptions;
+  constructor(options?: MarkedOptions) {
+    this.options = options || _defaults;
   }
 
-  code(code, infostring, escaped) {
-    const lang = (infostring || '').match(/\S*/)[0];
+  code(code: string, infostring: string | undefined, escaped: boolean): string {
+    const lang = (infostring || '').match(/\S*/)![0];
     if (this.options.highlight) {
       const out = this.options.highlight(code, lang);
       if (out != null && out !== code) {
@@ -38,24 +41,15 @@ export class Renderer {
       + '</code></pre>\n';
   }
 
-  /**
-   * @param {string} quote
-   */
-  blockquote(quote) {
+  blockquote(quote: string): string {
     return `<blockquote>\n${quote}</blockquote>\n`;
   }
 
-  html(html, block) {
+  html(html: string, block?: boolean) : string {
     return html;
   }
 
-  /**
-   * @param {string} text
-   * @param {string} level
-   * @param {string} raw
-   * @param {any} slugger
-   */
-  heading(text, level, raw, slugger) {
+  heading(text: string, level: number, raw: string, slugger: Slugger): string {
     if (this.options.headerIds) {
       const id = this.options.headerPrefix + slugger.slug(raw);
       return `<h${level} id="${id}">${text}</h${level}>\n`;
@@ -65,24 +59,21 @@ export class Renderer {
     return `<h${level}>${text}</h${level}>\n`;
   }
 
-  hr() {
+  hr(): string {
     return this.options.xhtml ? '<hr/>\n' : '<hr>\n';
   }
 
-  list(body, ordered, start) {
+  list(body: string, ordered: boolean, start: number | ''): string {
     const type = ordered ? 'ol' : 'ul',
       startatt = (ordered && start !== 1) ? (' start="' + start + '"') : '';
     return '<' + type + startatt + '>\n' + body + '</' + type + '>\n';
   }
 
-  /**
-   * @param {string} text
-   */
-  listitem(text) {
+  listitem(text: string, task: boolean, checked: boolean): string {
     return `<li>${text}</li>\n`;
   }
 
-  checkbox(checked) {
+  checkbox(checked: boolean): string {
     return '<input '
       + (checked ? 'checked="" ' : '')
       + 'disabled="" type="checkbox"'
@@ -90,18 +81,11 @@ export class Renderer {
       + '> ';
   }
 
-  /**
-   * @param {string} text
-   */
-  paragraph(text) {
+  paragraph(text: string): string {
     return `<p>${text}</p>\n`;
   }
 
-  /**
-   * @param {string} header
-   * @param {string} body
-   */
-  table(header, body) {
+  table(header: string, body: string): string {
     if (body) body = `<tbody>${body}</tbody>`;
 
     return '<table>\n'
@@ -112,14 +96,14 @@ export class Renderer {
       + '</table>\n';
   }
 
-  /**
-   * @param {string} content
-   */
-  tablerow(content) {
+  tablerow(content: string): string {
     return `<tr>\n${content}</tr>\n`;
   }
 
-  tablecell(content, flags) {
+  tablecell(content: string, flags: {
+    header: boolean;
+    align: 'center' | 'left' | 'right' | null;
+  }): string {
     const type = flags.header ? 'th' : 'td';
     const tag = flags.align
       ? `<${type} align="${flags.align}">`
@@ -129,44 +113,29 @@ export class Renderer {
 
   /**
    * span level renderer
-   * @param {string} text
    */
-  strong(text) {
+  strong(text: string): string {
     return `<strong>${text}</strong>`;
   }
 
-  /**
-   * @param {string} text
-   */
-  em(text) {
+  em(text: string): string {
     return `<em>${text}</em>`;
   }
 
-  /**
-   * @param {string} text
-   */
-  codespan(text) {
+  codespan(text: string): string {
     return `<code>${text}</code>`;
   }
 
-  br() {
+  br(): string {
     return this.options.xhtml ? '<br/>' : '<br>';
   }
 
-  /**
-   * @param {string} text
-   */
-  del(text) {
+  del(text: string): string {
     return `<del>${text}</del>`;
   }
 
-  /**
-   * @param {string} href
-   * @param {string} title
-   * @param {string} text
-   */
-  link(href, title, text) {
-    href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+  link(href: string, title: string | null | undefined, text: string): string {
+    href = cleanUrl(this.options.sanitize, this.options.baseUrl, href) as any;
     if (href === null) {
       return text;
     }
@@ -178,13 +147,8 @@ export class Renderer {
     return out;
   }
 
-  /**
-   * @param {string} href
-   * @param {string} title
-   * @param {string} text
-   */
-  image(href, title, text) {
-    href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+  image(href: string, title: string | null, text: string): string {
+    href = cleanUrl(this.options.sanitize, this.options.baseUrl, href) as any;
     if (href === null) {
       return text;
     }
@@ -197,7 +161,7 @@ export class Renderer {
     return out;
   }
 
-  text(text) {
+  text(text: string) : string {
     return text;
   }
 }

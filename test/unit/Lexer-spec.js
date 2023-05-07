@@ -1,7 +1,7 @@
-import { Lexer } from '../../src/Lexer.js';
+import { _Lexer } from '../../src/Lexer.js';
 
 function expectTokens({ md, options, tokens = [], links = {} }) {
-  const lexer = new Lexer(options);
+  const lexer = new _Lexer(options);
   const actual = lexer.lex(md);
   const expected = tokens;
   expected.links = links;
@@ -10,7 +10,7 @@ function expectTokens({ md, options, tokens = [], links = {} }) {
 }
 
 function expectInlineTokens({ md, options, tokens = jasmine.any(Array), links = {} }) {
-  const lexer = new Lexer(options);
+  const lexer = new _Lexer(options);
   lexer.tokens.links = links;
   const outTokens = [];
   lexer.inlineTokens(md, outTokens);

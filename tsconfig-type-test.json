@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "esnext",
+    "isolatedModules": true,
+    "strict": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "bundler",
+    "noImplicitAny": false,
+    "baseUrl": ".",
+    "paths": {
+      "marked": [
+        "lib/marked.d.ts"
+      ]
+    }
+  },
+  "include": [
+    "test/types/*.ts"
+  ]
+}

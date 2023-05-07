@@ -1,4 +1,4 @@
-import { marked, Renderer, Slugger, lexer, parseInline, use, getDefaults, walkTokens as _walkTokens, defaults, setOptions } from '../../src/marked.js';
+import { marked, Renderer, Slugger, lexer, parseInline, use, getDefaults, walkTokens, defaults, setOptions } from '../../src/marked.js';
 import { timeout } from './utils.js';
 
 describe('Test heading ID functionality', () => {
@@ -30,10 +30,10 @@ describe('Test paragraph token type', () => {
 
 describe('changeDefaults', () => {
   it('should change global defaults', async() => {
-    const { defaults, changeDefaults } = await import('../../src/defaults.js');
-    expect(defaults.test).toBeUndefined();
+    const { _defaults, changeDefaults } = await import('../../src/defaults.js');
+    expect(_defaults.test).toBeUndefined();
     changeDefaults({ test: true });
-    expect((await import('../../src/defaults.js')).defaults.test).toBe(true);
+    expect((await import('../../src/defaults.js'))._defaults.test).toBe(true);
   });
 });
 
@@ -952,7 +952,7 @@ br
 `;
     const tokens = lexer(markdown, { ...getDefaults(), breaks: true });
     const tokensSeen = [];
-    _walkTokens(tokens, (token) => {
+    walkTokens(tokens, (token) => {
       tokensSeen.push([token.type, (token.raw || '').replace(/\n/g, '')]);
     });
 

@@ -1,4 +1,9 @@
-export function getDefaults() {
+import type { MarkedOptions } from './MarkedOptions.ts';
+
+/**
+ * Gets the original marked default options.
+ */
+export function _getDefaults(): MarkedOptions {
   return {
     async: false,
     baseUrl: null,
@@ -23,8 +28,8 @@ export function getDefaults() {
   };
 }
 
-export let defaults = getDefaults();
+export let _defaults = _getDefaults();
 
-export function changeDefaults(newDefaults) {
-  defaults = newDefaults;
+export function changeDefaults(newDefaults: MarkedOptions) {
+  _defaults = newDefaults;
 }

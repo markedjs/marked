@@ -1,8 +1,11 @@
-import { defaults } from './defaults.js';
+import { _defaults } from './defaults.ts';
+import type { MarkedOptions } from './MarkedOptions.ts';
 
-export class Hooks {
-  constructor(options) {
-    this.options = options || defaults;
+export class _Hooks {
+  options: MarkedOptions;
+
+  constructor(options?: MarkedOptions) {
+    this.options = options || _defaults;
   }
 
   static passThroughHooks = new Set([
@@ -13,14 +16,14 @@ export class Hooks {
   /**
    * Process markdown before marked
    */
-  preprocess(markdown) {
+  preprocess(markdown: string) {
     return markdown;
   }
 
   /**
    * Process HTML after marked is finished
    */
-  postprocess(html) {
+  postprocess(html: string | undefined) {
     return html;
   }
 }

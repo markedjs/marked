@@ -1,44 +1,50 @@
-import { Renderer } from './Renderer.js';
-import { TextRenderer } from './TextRenderer.js';
-import { Slugger } from './Slugger.js';
-import { defaults } from './defaults.js';
+import { _Renderer } from './Renderer.ts';
+import { _TextRenderer } from './TextRenderer.ts';
+import { _Slugger } from './Slugger.ts';
+import { _defaults } from './defaults.ts';
 import {
   unescape
-} from './helpers.js';
+} from './helpers.ts';
+import type { Token, Tokens } from './Tokens.ts';
+import type { MarkedOptions } from './MarkedOptions.ts';
 
 /**
  * Parsing & Compiling
  */
-export class Parser {
-  constructor(options) {
-    this.options = options || defaults;
-    this.options.renderer = this.options.renderer || new Renderer();
+export class _Parser {
+  options: MarkedOptions;
+  renderer: _Renderer;
+  textRenderer: _TextRenderer;
+  slugger: _Slugger;
+  constructor(options?: MarkedOptions) {
+    this.options = options || _defaults;
+    this.options.renderer = this.options.renderer || new _Renderer();
     this.renderer = this.options.renderer;
     this.renderer.options = this.options;
-    this.textRenderer = new TextRenderer();
-    this.slugger = new Slugger();
+    this.textRenderer = new _TextRenderer();
+    this.slugger = new _Slugger();
   }
 
   /**
    * Static Parse Method
    */
-  static parse(tokens, options) {
-    const parser = new Parser(options);
+  static parse(tokens: Token[], options?: MarkedOptions) {
+    const parser = new _Parser(options);
     return parser.parse(tokens);
   }
 
   /**
    * Static Parse Inline Method
    */
-  static parseInline(tokens, options) {
-    const parser = new Parser(options);
+  static parseInline(tokens: Token[], options?: MarkedOptions) {
+    const parser = new _Parser(options);
     return parser.parseInline(tokens);
   }
 
   /**
    * Parse Loop
    */
-  parse(tokens, top = true) {
+  parse(tokens: Token[], top = true): string {
     let out = '',
       i,
       j,
@@ -83,16 +89,16 @@ export class Parser {
         }
         case 'heading': {
           out += this.renderer.heading(
-            this.parseInline(token.tokens),
+            this.parseInline(token.tokens) as string,
             token.depth,
-            unescape(this.parseInline(token.tokens, this.textRenderer)),
+            unescape(this.parseInline(token.tokens, this.textRenderer) as string),
             this.slugger);
           continue;
         }
         case 'code': {
           out += this.renderer.code(token.text,
             token.lang,
-            token.escaped);
+            !!token.escaped);
           continue;
         }
         case 'table': {
@@ -103,7 +109,7 @@ export class Parser {
           l2 = token.header.length;
           for (j = 0; j < l2; j++) {
             cell += this.renderer.tablecell(
-              this.parseInline(token.header[j].tokens),
+              this.parseInline(token.header[j].tokens)!,
               { header: true, align: token.align[j] }
             );
           }
@@ -118,7 +124,7 @@ export class Parser {
             l3 = row.length;
             for (k = 0; k < l3; k++) {
               cell += this.renderer.tablecell(
-                this.parseInline(row[k].tokens),
+                this.parseInline(row[k].tokens)!,
                 { header: false, align: token.align[k] }
               );
             }
@@ -129,7 +135,7 @@ export class Parser {
           continue;
         }
         case 'blockquote': {
-          body = this.parse(token.tokens);
+          body = this.parse(token.tokens)!;
           out += this.renderer.blockquote(body);
           continue;
         }
@@ -147,7 +153,7 @@ export class Parser {
 
             itemBody = '';
             if (item.task) {
-              checkbox = this.renderer.checkbox(checked);
+              checkbox = this.renderer.checkbox(!!checked);
               if (loose) {
                 if (item.tokens.length > 0 && item.tokens[0].type === 'paragraph') {
                   item.tokens[0].text = checkbox + ' ' + item.tokens[0].text;
@@ -158,7 +164,7 @@ export class Parser {
                   item.tokens.unshift({
                     type: 'text',
                     text: checkbox
-                  });
+                  } as Tokens.Text);
                 }
               } else {
                 itemBody += checkbox;
@@ -166,7 +172,7 @@ export class Parser {
             }
 
             itemBody += this.parse(item.tokens, loose);
-            body += this.renderer.listitem(itemBody, task, checked);
+            body += this.renderer.listitem(itemBody, task, !!checked);
           }
 
           out += this.renderer.list(body, ordered, start);
@@ -177,7 +183,7 @@ export class Parser {
           continue;
         }
         case 'paragraph': {
-          out += this.renderer.paragraph(this.parseInline(token.tokens));
+          out += this.renderer.paragraph(this.parseInline(token.tokens)!);
           continue;
         }
         case 'text': {
@@ -186,7 +192,7 @@ export class Parser {
             token = tokens[++i];
             body += '\n' + (token.tokens ? this.parseInline(token.tokens) : token.text);
           }
-          out += top ? this.renderer.paragraph(body) : body;
+          out += top ? this.renderer.paragraph(body!) : body;
           continue;
         }
 
@@ -194,7 +200,7 @@ export class Parser {
           const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
             console.error(errMsg);
-            return;
+            return '';
           } else {
             throw new Error(errMsg);
           }
@@ -208,7 +214,7 @@ export class Parser {
   /**
    * Parse Inline Tokens
    */
-  parseInline(tokens, renderer) {
+  parseInline(tokens: Token[], renderer?: _Renderer | _TextRenderer): string {
     renderer = renderer || this.renderer;
     let out = '',
       i,
@@ -238,7 +244,7 @@ export class Parser {
           break;
         }
         case 'link': {
-          out += renderer.link(token.href, token.title, this.parseInline(token.tokens, renderer));
+          out += renderer.link(token.href, token.title, this.parseInline(token.tokens, renderer)!);
           break;
         }
         case 'image': {
@@ -246,11 +252,11 @@ export class Parser {
           break;
         }
         case 'strong': {
-          out += renderer.strong(this.parseInline(token.tokens, renderer));
+          out += renderer.strong(this.parseInline(token.tokens, renderer)!);
           break;
         }
         case 'em': {
-          out += renderer.em(this.parseInline(token.tokens, renderer));
+          out += renderer.em(this.parseInline(token.tokens, renderer)!);
           break;
         }
         case 'codespan': {
@@ -262,7 +268,7 @@ export class Parser {
           break;
         }
         case 'del': {
-          out += renderer.del(this.parseInline(token.tokens, renderer));
+          out += renderer.del(this.parseInline(token.tokens, renderer)!);
           break;
         }
         case 'text': {
@@ -273,7 +279,7 @@ export class Parser {
           const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
             console.error(errMsg);
-            return;
+            return '';
           } else {
             throw new Error(errMsg);
           }
