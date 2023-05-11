@@ -250,7 +250,7 @@ export function checkDeprecations(opt, callback) {
   }
 
   if (opt.mangle) {
-    console.warn('marked(): mangle parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-mangle.');
+    console.warn('marked(): mangle parameter is enabled by default, but is deprecated since version 5.0.0, and will be removed in the future. To clear this warning, install https://www.npmjs.com/package/marked-mangle, or disable by setting `{mangle: false}`.');
   }
 
   if (opt.baseUrl) {
@@ -266,7 +266,7 @@ export function checkDeprecations(opt, callback) {
   }
 
   if (opt.headerIds || opt.headerPrefix) {
-    console.warn('marked(): headerIds and headerPrefix parameters are deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-gfm-heading-id.');
+    console.warn('marked(): headerIds and headerPrefix parameters enabled by default, but are deprecated since version 5.0.0, and will be removed in the future. To clear this warning, install  https://www.npmjs.com/package/marked-gfm-heading-id, or disable by setting `{headerIds: false}`.');
   }
 }
 
