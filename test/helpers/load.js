@@ -111,9 +111,10 @@ export function loadFiles(dir) {
         return obj;
     }
 
-    for (const spec of specs) {
+    for (let i = 0; i < specs.length; i++) {
+      const spec = specs[i];
       if (!spec.section) {
-        spec.section = name;
+        spec.section = `${name}[${i}]`;
       }
       if (!obj[spec.section]) {
         obj[spec.section] = {
