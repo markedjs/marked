@@ -1,4 +1,5 @@
-import rules from '../src/rules.js';
+import { inline, block } from '../src/rules.js';
+const rules = { inline, block };
 
 const COLOR = {
   reset: '\x1b[0m',
@@ -70,5 +71,7 @@ rulesObj = propsToString(rulesObj);
 let output = JSON.stringify(rulesObj, null, 2);
 output = output.replace(/^(\s*)"(.*)": null,?$/gm, `$1${COLOR.fgGreen}$2${COLOR.reset}: undefined`);
 output = output.replace(/^(\s*)"(.*)": {$/gm, `$1${COLOR.fgGreen}$2${COLOR.reset}: {`);
-output = output.replace(/^(\s*)"(.*)": "(.*)",?$/gm, `$1${COLOR.fgGreen}$2${COLOR.reset}: ${COLOR.fgRed}$3${COLOR.reset}`);
+output = output.replace(/^(\s*)"(.*)": "(.*)",?$/gm, (...p) => {
+  return `${p[1]}${COLOR.fgGreen}${p[2]}${COLOR.reset}: ${COLOR.fgRed}${p[3].replace(/\\\\/g, '\\')}${COLOR.reset}`;
+});
 console.log(output, COLOR.reset);
