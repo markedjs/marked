@@ -1,7 +1,6 @@
 import { Tokenizer } from './Tokenizer.js';
 import { defaults } from './defaults.js';
 import { block, inline } from './rules.js';
-import { repeatString } from './helpers.js';
 
 /**
  * smartypants text replacement
@@ -338,14 +337,14 @@ export class Lexer {
       if (links.length > 0) {
         while ((match = this.tokenizer.rules.inline.reflinkSearch.exec(maskedSrc)) != null) {
           if (links.includes(match[0].slice(match[0].lastIndexOf('[') + 1, -1))) {
-            maskedSrc = maskedSrc.slice(0, match.index) + '[' + repeatString('a', match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
+            maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
           }
         }
       }
     }
     // Mask out other blocks
     while ((match = this.tokenizer.rules.inline.blockSkip.exec(maskedSrc)) != null) {
-      maskedSrc = maskedSrc.slice(0, match.index) + '[' + repeatString('a', match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
+      maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
     }
 
     // Mask out escaped em & strong delimiters
