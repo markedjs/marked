@@ -326,14 +326,6 @@ function isArray(arr) {
   return Object.prototype.toString.call(arr) === '[object Array]';
 }
 
-function stringRepeat(char, times) {
-  var s = '';
-  for (var i = 0; i < times; i++) {
-    s += char;
-  }
-  return s;
-}
-
 function jsonString(input, level) {
   level = level || 0;
   if (isArray(input)) {
@@ -344,7 +336,7 @@ function jsonString(input, level) {
         i;
     if (!isArray(input[0]) && typeof input[0] === 'object' && input[0] !== null) {
       for (i = 0; i < input.length; i++) {
-        items.push(stringRepeat(' ', 2 * level) + jsonString(input[i], level + 1));
+        items.push(' '.repeat(2 * level) + jsonString(input[i], level + 1));
       }
       return '[\n' + items.join('\n') + '\n]';
     }

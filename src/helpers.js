@@ -269,23 +269,3 @@ export function checkDeprecations(opt, callback) {
     console.warn('marked(): headerIds and headerPrefix parameters enabled by default, but are deprecated since version 5.0.0, and will be removed in the future. To clear this warning, install  https://www.npmjs.com/package/marked-gfm-heading-id, or disable by setting `{headerIds: false}`.');
   }
 }
-
-// copied from https://stackoverflow.com/a/5450113/806777
-/**
- * @param {string} pattern
- * @param {number} count
- */
-export function repeatString(pattern, count) {
-  if (count < 1) {
-    return '';
-  }
-  let result = '';
-  while (count > 1) {
-    if (count & 1) {
-      result += pattern;
-    }
-    count >>= 1;
-    pattern += pattern;
-  }
-  return result + pattern;
-}
