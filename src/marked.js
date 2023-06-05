@@ -8,7 +8,7 @@ import { Hooks } from './Hooks.js';
 import { Marked } from './Instance.js';
 import { changeDefaults, getDefaults, defaults } from './defaults.js';
 
-const markedInstance = new Marked();
+const markedInstance = new Marked(defaults);
 
 /**
  * Marked
