@@ -28,8 +28,8 @@ export class Marked {
   Slugger = Slugger;
   Hooks = Hooks;
 
-  constructor(options) {
-    this.defaults = { ...this.defaults, ...options };
+  constructor(...args) {
+    this.use(...args);
   }
 
   walkTokens(tokens, callback) {
