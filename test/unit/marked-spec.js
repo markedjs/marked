@@ -6,6 +6,10 @@ async function timeout(ms = 1) {
   });
 }
 
+beforeEach(() => {
+  setOptions(getDefaults());
+});
+
 describe('Test heading ID functionality', () => {
   it('should add id attribute by default', () => {
     const renderer = new Renderer();

@@ -1,16 +1,15 @@
-import { marked, setOptions, getDefaults } from '../../src/marked.js';
+import { Marked } from '../../src/marked.js';
 import { isEqual, firstDiff } from './html-differ.js';
 import { strictEqual } from 'assert';
 
 beforeEach(() => {
-  setOptions(getDefaults());
-
   jasmine.addAsyncMatchers({
     toRender: () => {
       return {
         compare: async(spec, expected) => {
+          const marked = new Marked();
           const result = {};
-          const actual = marked(spec.markdown, spec.options);
+          const actual = marked.parse(spec.markdown, spec.options);
           result.pass = await isEqual(expected, actual);
 
           if (result.pass) {
@@ -41,8 +40,9 @@ beforeEach(() => {
     },
     toRenderExact: () => ({
       compare: async(spec, expected) => {
+        const marked = new Marked();
         const result = {};
-        const actual = marked(spec.markdown, spec.options);
+        const actual = marked.parse(spec.markdown, spec.options);
 
         result.pass = strictEqual(expected, actual) === undefined;
 
