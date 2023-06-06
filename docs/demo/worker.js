@@ -9,8 +9,8 @@ if (!self.fetch) {
   self.fetch = unfetch;
 }
 
-var versionCache = {};
-var currentVersion;
+const versionCache = {};
+let currentVersion;
 
 onunhandledrejection = function(e) {
   throw e.reason;
@@ -27,12 +27,12 @@ onmessage = function(e) {
 };
 
 function getDefaults() {
-  var defaults = {};
+  let defaults = {};
   if (typeof marked.getDefaults === 'function') {
     defaults = marked.getDefaults();
     delete defaults.renderer;
   } else if ('defaults' in marked) {
-    for (var prop in marked.defaults) {
+    for (const prop in marked.defaults) {
       if (prop !== 'renderer') {
         defaults[prop] = marked.defaults[prop];
       }
@@ -42,9 +42,9 @@ function getDefaults() {
 }
 
 function mergeOptions(options) {
-  var defaults = getDefaults();
-  var opts = {};
-  var invalidOptions = [
+  const defaults = getDefaults();
+  const opts = {};
+  const invalidOptions = [
     'renderer',
     'tokenizer',
     'walkTokens',
@@ -52,7 +52,7 @@ function mergeOptions(options) {
     'highlight',
     'sanitizer'
   ];
-  for (var prop in defaults) {
+  for (const prop in defaults) {
     opts[prop] = invalidOptions.includes(prop) || !(prop in options)
       ? defaults[prop]
       : options[prop];
@@ -62,28 +62,30 @@ function mergeOptions(options) {
 
 function parse(e) {
   switch (e.data.task) {
-    case 'defaults':
+    case 'defaults': {
       postMessage({
         id: e.data.id,
         task: e.data.task,
         defaults: getDefaults()
       });
       break;
-    case 'parse':
-      var options = mergeOptions(e.data.options);
-      var startTime = new Date();
-      var lexed = marked.lexer(e.data.markdown, options);
-      var lexedList = jsonString(lexed);
-      var parsed = marked.parser(lexed, options);
-      var endTime = new Date();
+    }
+    case 'parse': {
+      const options = mergeOptions(e.data.options);
+      const startTime = new Date();
+      const lexed = marked.lexer(e.data.markdown, options);
+      const lexedList = jsonString(lexed);
+      const parsed = marked.parser(lexed, options);
+      const endTime = new Date();
       postMessage({
         id: e.data.id,
         task: e.data.task,
         lexed: lexedList,
-        parsed: parsed,
+        parsed,
         time: endTime - startTime
       });
       break;
+    }
   }
 }
 
@@ -93,8 +95,8 @@ function jsonString(input, level) {
     if (input.length === 0) {
       return '[]';
     }
-    var items = [],
-        i;
+    const items = [];
+    let i;
     if (!Array.isArray(input[0]) && typeof input[0] === 'object' && input[0] !== null) {
       for (i = 0; i < input.length; i++) {
         items.push(' '.repeat(2 * level) + jsonString(input[i], level + 1));
@@ -106,8 +108,8 @@ function jsonString(input, level) {
     }
     return '[' + items.join(', ') + ']';
   } else if (typeof input === 'object' && input !== null) {
-    var props = [];
-    for (var prop in input) {
+    const props = [];
+    for (const prop in input) {
       props.push(prop + ':' + jsonString(input[prop], level));
     }
     return '{' + props.join(', ') + '}';
@@ -117,7 +119,7 @@ function jsonString(input, level) {
 }
 
 function loadVersion(ver) {
-  var promise;
+  let promise;
   if (versionCache[ver]) {
     promise = Promise.resolve(versionCache[ver]);
   } else {

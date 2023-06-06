@@ -1,7 +1,7 @@
 {
   "extends": "standard",
   "parserOptions": {
-    "ecmaVersion": 5,
+    "ecmaVersion": 2015,
     "sourceType": "script"
   },
   "rules": {
@@ -19,8 +19,8 @@
     "no-control-regex": "off",
     "no-prototype-builtins": "off",
 
-    "prefer-const": "off",
-    "no-var": "off"
+    "prefer-const": "error",
+    "no-var": "error"
   },
   "env": {
     "node": true,

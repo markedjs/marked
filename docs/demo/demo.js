@@ -11,35 +11,35 @@ onunhandledrejection = function(e) {
   throw e.reason;
 };
 
-var $loadingElem = document.querySelector('#loading');
-var $mainElem = document.querySelector('#main');
-var $markdownElem = document.querySelector('#markdown');
-var $markedVerElem = document.querySelector('#markedVersion');
-var $commitVerElem = document.querySelector('#commitVersion');
-var $markedVer = document.querySelector('#markedCdn');
-var $optionsElem = document.querySelector('#options');
-var $outputTypeElem = document.querySelector('#outputType');
-var $inputTypeElem = document.querySelector('#inputType');
-var $responseTimeElem = document.querySelector('#responseTime');
-var $previewElem = document.querySelector('#preview');
-var $previewIframe = document.querySelector('#preview iframe');
-var $permalinkElem = document.querySelector('#permalink');
-var $clearElem = document.querySelector('#clear');
-var $htmlElem = document.querySelector('#html');
-var $lexerElem = document.querySelector('#lexer');
-var $panes = document.querySelectorAll('.pane');
-var $inputPanes = document.querySelectorAll('.inputPane');
-var lastInput = '';
-var inputDirty = true;
-var $activeOutputElem = null;
-var search = searchToObject();
-var markedVersions = {
+const $loadingElem = document.querySelector('#loading');
+const $mainElem = document.querySelector('#main');
+const $markdownElem = document.querySelector('#markdown');
+const $markedVerElem = document.querySelector('#markedVersion');
+const $commitVerElem = document.querySelector('#commitVersion');
+let $markedVer = document.querySelector('#markedCdn');
+const $optionsElem = document.querySelector('#options');
+const $outputTypeElem = document.querySelector('#outputType');
+const $inputTypeElem = document.querySelector('#inputType');
+const $responseTimeElem = document.querySelector('#responseTime');
+const $previewElem = document.querySelector('#preview');
+const $previewIframe = document.querySelector('#preview iframe');
+const $permalinkElem = document.querySelector('#permalink');
+const $clearElem = document.querySelector('#clear');
+const $htmlElem = document.querySelector('#html');
+const $lexerElem = document.querySelector('#lexer');
+const $panes = document.querySelectorAll('.pane');
+const $inputPanes = document.querySelectorAll('.inputPane');
+let lastInput = '';
+let inputDirty = true;
+let $activeOutputElem = null;
+const search = searchToObject();
+const markedVersions = {
   master: 'https://cdn.jsdelivr.net/gh/markedjs/marked/marked.min.js'
 };
-var markedVersionCache = {};
-var delayTime = 1;
-var checkChangeTimeout = null;
-var markedWorker;
+const markedVersionCache = {};
+let delayTime = 1;
+let checkChangeTimeout = null;
+let markedWorker;
 
 $previewIframe.addEventListener('load', handleIframeLoad);
 
@@ -107,10 +107,10 @@ function setInitialVersion() {
       return res.json();
     })
     .then(function(json) {
-      for (var i = 0; i < json.versions.length; i++) {
-        var ver = json.versions[i];
+      for (let i = 0; i < json.versions.length; i++) {
+        const ver = json.versions[i];
         markedVersions[ver] = 'https://cdn.jsdelivr.net/npm/marked@' + ver + '/marked.min.js';
-        var opt = document.createElement('option');
+        const opt = document.createElement('option');
         opt.textContent = ver;
         opt.value = ver;
         $markedVerElem.appendChild(opt);
@@ -134,7 +134,7 @@ function setInitialVersion() {
         if (markedVersions[search.version]) {
           return search.version;
         } else {
-          var match = search.version.match(/^(\w+):(.+)$/);
+          const match = search.version.match(/^(\w+):(.+)$/);
           if (match) {
             switch (match[1]) {
               case 'commit':
@@ -204,8 +204,8 @@ function handleClearClick() {
 function handleAddVersion(e) {
   if (e.which === 13) {
     switch ($markedVerElem.value) {
-      case 'commit':
-        var commit = $commitVerElem.value.toLowerCase();
+      case 'commit': {
+        const commit = $commitVerElem.value.toLowerCase();
         if (!commit.match(/^[0-9a-f]{40}$/)) {
           alert('That is not a valid commit');
           return;
@@ -216,9 +216,10 @@ function handleAddVersion(e) {
         $commitVerElem.value = '';
         updateVersion();
         break;
-      case 'pr':
+      }
+      case 'pr': {
         $commitVerElem.disabled = true;
-        var pr = $commitVerElem.value.replace(/\D/g, '');
+        const pr = $commitVerElem.value.replace(/\D/g, '');
         getPrCommit(pr)
           .then(function(commit) {
             $commitVerElem.disabled = false;
@@ -232,6 +233,8 @@ function handleAddVersion(e) {
             $commitVerElem.value = '';
             updateVersion();
           });
+        break;
+      }
     }
   }
 }
@@ -246,8 +249,8 @@ function handleOutputChange() {
 }
 
 function handleChange(panes, visiblePane) {
-  var active = null;
-  for (var i = 0; i < panes.length; i++) {
+  let active = null;
+  for (let i = 0; i < panes.length; i++) {
     if (panes[i].id === visiblePane) {
       panes[i].style.display = '';
       active = panes[i];
@@ -263,7 +266,7 @@ function addCommitVersion(value, text, commit) {
     return;
   }
   markedVersions[value] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + commit + '/marked.min.js';
-  var opt = document.createElement('option');
+  const opt = document.createElement('option');
   opt.textContent = text;
   opt.value = value;
   $markedVerElem.insertBefore(opt, $markedVerElem.firstChild);
@@ -288,7 +291,7 @@ function setDefaultOptions() {
       version: markedVersions[$markedVerElem.value]
     });
   } else {
-    var defaults = marked.getDefaults();
+    const defaults = marked.getDefaults();
     setOptions(defaults);
   }
 }
@@ -306,15 +309,15 @@ function setOptions(opts) {
 
 function searchToObject() {
   // modified from https://stackoverflow.com/a/7090123/806777
-  var pairs = location.search.slice(1).split('&');
-  var obj = {};
+  const pairs = location.search.slice(1).split('&');
+  const obj = {};
 
-  for (var i = 0; i < pairs.length; i++) {
+  for (let i = 0; i < pairs.length; i++) {
     if (pairs[i] === '') {
       continue;
     }
 
-    var pair = pairs[i].split('=');
+    const pair = pairs[i].split('=');
 
     obj[decodeURIComponent(pair.shift())] = decodeURIComponent(pair.join('='));
   }
@@ -332,8 +335,8 @@ function jsonString(input, level) {
     if (input.length === 0) {
       return '[]';
     }
-    var items = [],
-        i;
+    const items = [];
+    let i;
     if (!isArray(input[0]) && typeof input[0] === 'object' && input[0] !== null) {
       for (i = 0; i < input.length; i++) {
         items.push(' '.repeat(2 * level) + jsonString(input[i], level + 1));
@@ -345,8 +348,8 @@ function jsonString(input, level) {
     }
     return '[' + items.join(', ') + ']';
   } else if (typeof input === 'object' && input !== null) {
-    var props = [];
-    for (var prop in input) {
+    const props = [];
+    for (const prop in input) {
       props.push(prop + ':' + jsonString(input[prop], level));
     }
     return '{' + props.join(', ') + '}';
@@ -356,13 +359,13 @@ function jsonString(input, level) {
 }
 
 function getScrollSize() {
-  var e = $activeOutputElem;
+  const e = $activeOutputElem;
 
   return e.scrollHeight - e.clientHeight;
 }
 
 function getScrollPercent() {
-  var size = getScrollSize();
+  const size = getScrollSize();
 
   if (size <= 0) {
     return 1;
@@ -376,7 +379,7 @@ function setScrollPercent(percent) {
 }
 
 function updateLink() {
-  var outputType = '';
+  let outputType = '';
   if ($outputTypeElem.value !== 'preview') {
     outputType = 'outputType=' + $outputTypeElem.value + '&';
   }
@@ -392,7 +395,7 @@ function updateVersion() {
     handleInput();
     return Promise.resolve();
   }
-  var promise;
+  let promise;
   if (markedVersionCache[$markedVerElem.value]) {
     promise = Promise.resolve(markedVersionCache[$markedVerElem.value]);
   } else {
@@ -404,7 +407,7 @@ function updateVersion() {
       });
   }
   return promise.then(function(text) {
-    var script = document.createElement('script');
+    const script = document.createElement('script');
     script.textContent = text;
 
     $markedVer.parentNode.replaceChild(script, $markedVer);
@@ -418,40 +421,40 @@ function checkForChanges() {
 
     updateLink();
 
-    var options = {};
-    var optionsString = $optionsElem.value || '{}';
+    let options = {};
+    const optionsString = $optionsElem.value || '{}';
     try {
-      var newOptions = JSON.parse(optionsString);
+      const newOptions = JSON.parse(optionsString);
       options = newOptions;
       $optionsElem.classList.remove('error');
     } catch (err) {
       $optionsElem.classList.add('error');
     }
 
-    var version = markedVersions[$markedVerElem.value];
-    var markdown = $markdownElem.value;
-    var hash = version + markdown + optionsString;
+    const version = markedVersions[$markedVerElem.value];
+    const markdown = $markdownElem.value;
+    const hash = version + markdown + optionsString;
     if (lastInput !== hash) {
       lastInput = hash;
       if (window.Worker) {
         delayTime = 100;
         messageWorker({
           task: 'parse',
-          version: version,
-          markdown: markdown,
-          options: options
+          version,
+          markdown,
+          options
         });
       } else {
-        var startTime = new Date();
-        var lexed = marked.lexer(markdown, options);
-        var lexedList = jsonString(lexed);
-        var parsed = marked.parser(lexed, options);
-        var endTime = new Date();
+        const startTime = new Date();
+        const lexed = marked.lexer(markdown, options);
+        const lexedList = jsonString(lexed);
+        const parsed = marked.parser(lexed, options);
+        const endTime = new Date();
 
         $previewElem.classList.remove('error');
         $htmlElem.classList.remove('error');
         $lexerElem.classList.remove('error');
-        var scrollPercent = getScrollPercent();
+        const scrollPercent = getScrollPercent();
         setParsed(parsed, lexedList);
         setScrollPercent(scrollPercent);
         delayTime = endTime - startTime;
@@ -468,8 +471,8 @@ function checkForChanges() {
 }
 
 function setResponseTime(ms) {
-  var amount = ms;
-  var suffix = 'ms';
+  let amount = ms;
+  let suffix = 'ms';
   if (ms > 1000 * 60 * 60) {
     amount = 'Too Long';
     suffix = '';
@@ -491,7 +494,7 @@ function setParsed(parsed, lexed) {
   $lexerElem.value = lexed;
 }
 
-var workerPromises = {};
+const workerPromises = {};
 function messageWorker(message) {
   if (!markedWorker || markedWorker.working) {
     if (markedWorker) {
@@ -503,18 +506,20 @@ function messageWorker(message) {
       clearTimeout(markedWorker.timeout);
       markedWorker.working = false;
       switch (e.data.task) {
-        case 'defaults':
+        case 'defaults': {
           setOptions(e.data.defaults);
           break;
-        case 'parse':
+        }
+        case 'parse': {
           $previewElem.classList.remove('error');
           $htmlElem.classList.remove('error');
           $lexerElem.classList.remove('error');
-          var scrollPercent = getScrollPercent();
+          const scrollPercent = getScrollPercent();
           setParsed(e.data.parsed, e.data.lexed);
           setScrollPercent(scrollPercent);
           setResponseTime(e.data.time);
           break;
+        }
       }
       clearTimeout(checkChangeTimeout);
       delayTime = 10;
@@ -524,7 +529,7 @@ function messageWorker(message) {
     };
     markedWorker.onerror = markedWorker.onmessageerror = function(err) {
       clearTimeout(markedWorker.timeout);
-      var error = 'There was an error in the Worker';
+      let error = 'There was an error in the Worker';
       if (err) {
         if (err.message) {
           error = err.message;
@@ -552,7 +557,7 @@ function messageWorker(message) {
 }
 
 function uniqueWorkerMessageId() {
-  var id;
+  let id;
   do {
     id = Math.random().toString(36);
   } while (id in workerPromises);
