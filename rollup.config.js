@@ -44,7 +44,8 @@ export default defineConfig([
     }],
     plugins: [
       babel({
-        presets: [['@babel/preset-env', { loose: true }]]
+        presets: [['@babel/preset-env', { loose: true }]],
+        babelHelpers: 'bundled'
       })
     ]
   }

@@ -35,6 +35,8 @@ export async function runBench(options) {
 
   // Non-GFM, Non-pedantic
   cjsMarked.setOptions({
+    headerIds: false,
+    mangle: false,
     gfm: false,
     breaks: false,
     pedantic: false,
@@ -46,6 +48,8 @@ export async function runBench(options) {
   tests['cjs marked'] = cjsMarked.parse;
 
   esmMarked.setOptions({
+    headerIds: false,
+    mangle: false,
     gfm: false,
     breaks: false,
     pedantic: false,
