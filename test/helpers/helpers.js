@@ -1,8 +1,11 @@
-import { Marked } from '../../src/marked.js';
+import { Marked, setOptions, getDefaults } from '../../src/marked.js';
 import { isEqual, firstDiff } from './html-differ.js';
 import { strictEqual } from 'assert';
 
 beforeEach(() => {
+  setOptions(getDefaults());
+  setOptions({ silent: true });
+
   jasmine.addAsyncMatchers({
     toRender: () => {
       return {
