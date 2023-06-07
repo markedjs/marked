@@ -37,7 +37,7 @@ DOMPurify.sanitize(marked.parse(`<img src="x" onerror="alert('not happening')">`
 **⚠️ Input: special ZERO WIDTH unicode characters (for example `\uFEFF`) might interfere with parsing. Some text editors add them at the start of the file (see: [#2139](https://github.com/markedjs/marked/issues/2139)).**
 
 ```js
-// remove the most common zerowidth characters from the start of the file 
+// remove the most common zerowidth characters from the start of the file
 marked.parse(
   contents.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/,"")
 )
@@ -121,7 +121,7 @@ By supporting the above Markdown flavors, it's possible that Marked can help you
 
 <h2 id="tools">List of Tools Using Marked</h2>
 
-We actively support the usability of Marked in super-fast markdown transformation, some of Tools using `Marked` for single-page creations are 
+We actively support the usability of Marked in super-fast markdown transformation, some of Tools using `Marked` for single-page creations are
 
 | Tools                                                               |                  Description                                               |
 | :-----------------------------------------------------------------  | :------------------------------------------------------------------------  |
