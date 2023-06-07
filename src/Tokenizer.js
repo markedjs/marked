@@ -613,7 +613,7 @@ export class Tokenizer {
 
     const nextChar = match[1] || match[2] || '';
 
-    if (!nextChar || (nextChar && (prevChar === '' || this.rules.inline.punctuation.exec(prevChar)))) {
+    if (!nextChar || !prevChar || this.rules.inline.punctuation.exec(prevChar)) {
       const lLength = match[0].length - 1;
       let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
 
