@@ -6,19 +6,19 @@ If you don't want to mutate global scope, you can create a new instance of Marke
 
 ```js
 import { Marked } from 'marked';
-const marked = new Marked([...useArgs]);
+const marked = new Marked([options, extension, ...]);
 ```
 
 ```html
 <script src='path/to/marked.min.js'></script>
 <script>
-  const myMarked = new marked.Instance([...useArgs]);
+  const myMarked = new marked.Instance([options, extension, ...]);
 </script>
 ```
 
-|Argument                 |Type   |Notes                                                                  |
-|:------------------------|:------|:----------------------------------------------------------------------|
-|[useArgs](/using_pro#use)|`Array`|The same arguments that can be passed to [`marked.use`](/using_pro#use)|
+|Argument |Type    |Notes                                                                  |
+|:--------|:-------|:----------------------------------------------------------------------|
+| options |`object`|The same arguments that can be passed to [`marked.use`](/using_pro#use)|
 
 ## The `parse` function
 
