@@ -1,8 +1,8 @@
 ## Marked instance
 
-By default marked stores options and extensions in the global scope. In node js when you import marked into two scripts and change the options in one script the options will be changed in the other script.
+By default, Marked stores options and extensions in the global scope. That means changing the options in one script will also change the options in another script since they share the same instance.
 
-You can create an instance of marked to keep options and extensions locally scoped.
+If you don't want to mutate global scope, you can create a new instance of Marked to ensure options and extensions are locally scoped.
 
 ```js
 import { Marked } from 'marked';
