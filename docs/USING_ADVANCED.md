@@ -9,9 +9,11 @@ import { Marked } from 'marked';
 const marked = new Marked([...useArgs]);
 ```
 
-```js
-import { marked } from 'marked';
-const myMarked = new marked.Instance([...useArgs]);
+```html
+<script src='path/to/marked.min.js'></script>
+<script>
+  const myMarked = new marked.Instance([...useArgs]);
+</script>
 ```
 
 |Argument                 |Type   |Notes                                                                  |
