@@ -9,13 +9,6 @@ import { Marked } from 'marked';
 const marked = new Marked([options, extension, ...]);
 ```
 
-```html
-<script src='path/to/marked.min.js'></script>
-<script>
-  const myMarked = new marked.Instance([options, extension, ...]);
-</script>
-```
-
 |Argument |Type    |Notes                                                                  |
 |:--------|:-------|:----------------------------------------------------------------------|
 | options |`object`|The same arguments that can be passed to [`marked.use`](/using_pro#use)|

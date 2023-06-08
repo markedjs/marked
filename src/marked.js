@@ -71,7 +71,6 @@ marked.Tokenizer = Tokenizer;
 marked.Slugger = Slugger;
 marked.Hooks = Hooks;
 marked.parse = marked;
-marked.Instance = Marked;
 
 export const options = marked.options;
 export const setOptions = marked.setOptions;
