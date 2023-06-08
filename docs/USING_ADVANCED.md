@@ -184,6 +184,7 @@ markedWorker.onmessage = (e) => {
 
 markedWorker.postMessage(markdownString);
 ```
+
 <h2 id="cli-extensions">CLI Extensions</h2>
 
 You can use extensions in the CLI by creating a new CLI that imports marked and the marked binary.
