@@ -22,7 +22,7 @@ marked.use({
 
 You can also supply multiple `extension` objects at once.
 
-```
+```js
 marked.use(myExtension, extension2, extension3);
 
 \\ EQUIVALENT TO:
@@ -30,12 +30,11 @@ marked.use(myExtension, extension2, extension3);
 marked.use(myExtension);
 marked.use(extension2);
 marked.use(extension3);
-
 ```
 
-All options will overwrite those previously set, except for the following options which will be merged with the existing framework and can be used to change or extend the functionality of Marked: `renderer`, `tokenizer`, `walkTokens`, and `extensions`.
+All options will overwrite those previously set, except for the following options which will be merged with the existing framework and can be used to change or extend the functionality of Marked: `renderer`, `tokenizer`, `hooks`, `walkTokens`, and `extensions`.
 
-* The `renderer` and `tokenizer` options are objects with functions that will be merged into the built-in `renderer` and `tokenizer` respectively.
+* The `renderer`, `tokenizer`, and `hooks` options are objects with functions that will be merged into the built-in `renderer` and `tokenizer` respectively.
 
 * The `walkTokens` option is a function that will be called to post-process every token before rendering.
 

@@ -1,3 +1,18 @@
+## Marked instance
+
+By default, Marked stores options and extensions in the global scope. That means changing the options in one script will also change the options in another script since they share the same instance.
+
+If you don't want to mutate global scope, you can create a new instance of Marked to ensure options and extensions are locally scoped.
+
+```js
+import { Marked } from 'marked';
+const marked = new Marked([options, extension, ...]);
+```
+
+|Argument |Type    |Notes                                                                  |
+|:--------|:-------|:----------------------------------------------------------------------|
+| options |`object`|The same arguments that can be passed to [`marked.use`](/using_pro#use)|
+
 ## The `parse` function
 
 ```js
@@ -162,6 +177,7 @@ markedWorker.onmessage = (e) => {
 
 markedWorker.postMessage(markdownString);
 ```
+
 <h2 id="cli-extensions">CLI Extensions</h2>
 
 You can use extensions in the CLI by creating a new CLI that imports marked and the marked binary.

@@ -1,14 +1,9 @@
 import { marked, Renderer, Slugger, lexer, parseInline, use, getDefaults, walkTokens as _walkTokens, defaults, setOptions } from '../../src/marked.js';
-
-async function timeout(ms = 1) {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
-}
+import { timeout } from './utils.js';
 
 describe('Test heading ID functionality', () => {
-  it('should add id attribute by default', () => {
-    const renderer = new Renderer();
+  it('should add id attribute', () => {
+    const renderer = new Renderer({ ...defaults, headerIds: true });
     const slugger = new Slugger();
     const header = renderer.heading('test', 1, 'test', slugger);
     expect(header).toBe('<h1 id="test">test</h1>\n');
@@ -18,79 +13,6 @@ describe('Test heading ID functionality', () => {
     const renderer = new Renderer({ headerIds: false });
     const header = renderer.heading('test', 1, 'test');
     expect(header).toBe('<h1>test</h1>\n');
-  });
-});
-
-describe('Test slugger functionality', () => {
-  it('should use lowercase slug', () => {
-    const slugger = new Slugger();
-    expect(slugger.slug('Test')).toBe('test');
-  });
-
-  it('should be unique to avoid collisions 1280', () => {
-    const slugger = new Slugger();
-    expect(slugger.slug('test')).toBe('test');
-    expect(slugger.slug('test')).toBe('test-1');
-    expect(slugger.slug('test')).toBe('test-2');
-  });
-
-  it('should be unique when slug ends with number', () => {
-    const slugger = new Slugger();
-    expect(slugger.slug('test 1')).toBe('test-1');
-    expect(slugger.slug('test')).toBe('test');
-    expect(slugger.slug('test')).toBe('test-2');
-  });
-
-  it('should be unique when slug ends with hyphen number', () => {
-    const slugger = new Slugger();
-    expect(slugger.slug('foo')).toBe('foo');
-    expect(slugger.slug('foo')).toBe('foo-1');
-    expect(slugger.slug('foo 1')).toBe('foo-1-1');
-    expect(slugger.slug('foo-1')).toBe('foo-1-2');
-    expect(slugger.slug('foo')).toBe('foo-2');
-  });
-
-  it('should allow non-latin chars', () => {
-    const slugger = new Slugger();
-    expect(slugger.slug('привет')).toBe('привет');
-  });
-
-  it('should remove ampersands 857', () => {
-    const slugger = new Slugger();
-    expect(slugger.slug('This & That Section')).toBe('this--that-section');
-  });
-
-  it('should remove periods', () => {
-    const slugger = new Slugger();
-    expect(slugger.slug('file.txt')).toBe('filetxt');
-  });
-
-  it('should remove html tags', () => {
-    const slugger = new Slugger();
-    expect(slugger.slug('<em>html</em>')).toBe('html');
-  });
-
-  it('should not increment seen when using dryrun option', () => {
-    const slugger = new Slugger();
-    expect(slugger.slug('<h1>This Section</h1>', { dryrun: true })).toBe('this-section');
-    expect(slugger.slug('<h1>This Section</h1>')).toBe('this-section');
-  });
-
-  it('should still return the next unique id when using dryrun', () => {
-    const slugger = new Slugger();
-    expect(slugger.slug('<h1>This Section</h1>')).toBe('this-section');
-    expect(slugger.slug('<h1>This Section</h1>', { dryrun: true })).toBe('this-section-1');
-  });
-
-  it('should be repeatable in a sequence', () => {
-    const slugger = new Slugger();
-    expect(slugger.slug('foo')).toBe('foo');
-    expect(slugger.slug('foo')).toBe('foo-1');
-    expect(slugger.slug('foo')).toBe('foo-2');
-    expect(slugger.slug('foo', { dryrun: true })).toBe('foo-3');
-    expect(slugger.slug('foo', { dryrun: true })).toBe('foo-3');
-    expect(slugger.slug('foo')).toBe('foo-3');
-    expect(slugger.slug('foo')).toBe('foo-4');
   });
 });
 
@@ -707,7 +629,7 @@ used extension2 walked</p>
     const html = marked('This is a *paragraph* with blue text. {blue}\n'
                       + '# This is a *header* with red text {red}');
     expect(html).toBe('<p style="color:blue;">This is a <em>paragraph</em> with blue text.</p>\n'
-                     + '<h1 style="color:red;">This is a <em>header</em> with red text</h1>\n');
+                    + '<h1 style="color:red;">This is a <em>header</em> with red text</h1>\n');
   });
 
   it('should use renderer', () => {
@@ -1126,120 +1048,5 @@ br
     expect(promise).toBeInstanceOf(Promise);
     const html = await promise;
     expect(html.trim()).toBe('<p><em>text</em></p>');
-  });
-});
-
-describe('Hooks', () => {
-  it('should preprocess markdown', () => {
-    marked.use({
-      hooks: {
-        preprocess(markdown) {
-          return `# preprocess\n\n${markdown}`;
-        }
-      }
-    });
-    const html = marked('*text*');
-    expect(html.trim()).toBe('<h1 id="preprocess">preprocess</h1>\n<p><em>text</em></p>');
-  });
-
-  it('should preprocess async', async() => {
-    marked.use({
-      async: true,
-      hooks: {
-        async preprocess(markdown) {
-          await timeout();
-          return `# preprocess async\n\n${markdown}`;
-        }
-      }
-    });
-    const promise = marked('*text*');
-    expect(promise).toBeInstanceOf(Promise);
-    const html = await promise;
-    expect(html.trim()).toBe('<h1 id="preprocess-async">preprocess async</h1>\n<p><em>text</em></p>');
-  });
-
-  it('should preprocess options', () => {
-    marked.use({
-      hooks: {
-        preprocess(markdown) {
-          this.options.headerIds = false;
-          return markdown;
-        }
-      }
-    });
-    const html = marked('# test');
-    expect(html.trim()).toBe('<h1>test</h1>');
-  });
-
-  it('should preprocess options async', async() => {
-    marked.use({
-      async: true,
-      hooks: {
-        async preprocess(markdown) {
-          await timeout();
-          this.options.headerIds = false;
-          return markdown;
-        }
-      }
-    });
-    const html = await marked('# test');
-    expect(html.trim()).toBe('<h1>test</h1>');
-  });
-
-  it('should postprocess html', () => {
-    marked.use({
-      hooks: {
-        postprocess(html) {
-          return html + '<h1>postprocess</h1>';
-        }
-      }
-    });
-    const html = marked('*text*');
-    expect(html.trim()).toBe('<p><em>text</em></p>\n<h1>postprocess</h1>');
-  });
-
-  it('should postprocess async', async() => {
-    marked.use({
-      async: true,
-      hooks: {
-        async postprocess(html) {
-          await timeout();
-          return html + '<h1>postprocess async</h1>\n';
-        }
-      }
-    });
-    const promise = marked('*text*');
-    expect(promise).toBeInstanceOf(Promise);
-    const html = await promise;
-    expect(html.trim()).toBe('<p><em>text</em></p>\n<h1>postprocess async</h1>');
-  });
-
-  it('should process all hooks in reverse', async() => {
-    marked.use({
-      hooks: {
-        preprocess(markdown) {
-          return `# preprocess1\n\n${markdown}`;
-        },
-        postprocess(html) {
-          return html + '<h1>postprocess1</h1>\n';
-        }
-      }
-    });
-    marked.use({
-      async: true,
-      hooks: {
-        preprocess(markdown) {
-          return `# preprocess2\n\n${markdown}`;
-        },
-        async postprocess(html) {
-          await timeout();
-          return html + '<h1>postprocess2 async</h1>\n';
-        }
-      }
-    });
-    const promise = marked('*text*');
-    expect(promise).toBeInstanceOf(Promise);
-    const html = await promise;
-    expect(html.trim()).toBe('<h1 id="preprocess1">preprocess1</h1>\n<h1 id="preprocess2">preprocess2</h1>\n<p><em>text</em></p>\n<h1>postprocess2 async</h1>\n<h1>postprocess1</h1>');
   });
 });

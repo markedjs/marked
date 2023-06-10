@@ -55,4 +55,4 @@ runSpecs('CommonMark', './commonmark', true, { gfm: false, pedantic: false, head
 runSpecs('Original', './original', false, { gfm: false, pedantic: true });
 runSpecs('New', './new');
 runSpecs('ReDOS', './redos');
-runSpecs('Security', './security', false, { silent: true }); // silent - do not show deprecation warning
+runSpecs('Security', './security');
