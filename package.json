@@ -47,7 +47,7 @@
     "@babel/preset-env": "^7.22.4",
     "@markedjs/html-differ": "^4.0.2",
     "@rollup/plugin-babel": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^10.0.0",
+    "@semantic-release/commit-analyzer": "^10.0.1",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^9.0.3",
     "@semantic-release/npm": "^10.0.3",
