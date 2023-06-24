@@ -215,12 +215,12 @@ declare class _Slugger {
     constructor();
     serialize(value: string): string;
     /**
-       * Finds the next safe (unique) slug to use
-       */
+     * Finds the next safe (unique) slug to use
+     */
     getNextSafeSlug(originalSlug: string, isDryRun: boolean | undefined): string;
     /**
-       * Convert string to unique id
-       */
+     * Convert string to unique id
+     */
     slug(value: string, options?: SluggerOptions): string;
 }
 
@@ -521,8 +521,8 @@ declare class Marked {
     #private;
     defaults: MarkedOptions;
     options: (opt: any) => this;
-    parse: (src: string, opt?: MarkedOptions | ResultCallback$1 | undefined | null, callback?: ResultCallback$1 | undefined) => string | Promise<string | undefined> | undefined;
-    parseInline: (src: string, opt?: MarkedOptions | ResultCallback$1 | undefined | null, callback?: ResultCallback$1 | undefined) => string | Promise<string | undefined> | undefined;
+    parse: (src: string, optOrCallback?: MarkedOptions | ResultCallback$1 | undefined | null, callback?: ResultCallback$1 | undefined) => string | Promise<string | undefined> | undefined;
+    parseInline: (src: string, optOrCallback?: MarkedOptions | ResultCallback$1 | undefined | null, callback?: ResultCallback$1 | undefined) => string | Promise<string | undefined> | undefined;
     Parser: typeof _Parser;
     parser: typeof _Parser.parse;
     Renderer: typeof _Renderer;
@@ -532,7 +532,7 @@ declare class Marked {
     Tokenizer: typeof _Tokenizer;
     Slugger: typeof _Slugger;
     Hooks: typeof _Hooks;
-    constructor(...args: any[]);
+    constructor(...args: MarkedExtension[]);
     /**
      * Run callback for every token
      */
@@ -588,7 +588,7 @@ declare namespace marked {
     var defaults: MarkedOptions;
     var use: (...args: MarkedExtension[]) => typeof marked;
     var walkTokens: <T = void>(tokens: TokensList | Token[], callback: (token: Token) => T | T[]) => T[];
-    var parseInline: (src: string, opt?: MarkedOptions | ResultCallback$1 | null | undefined, callback?: ResultCallback$1 | undefined) => string | Promise<string | undefined> | undefined;
+    var parseInline: (src: string, optOrCallback?: MarkedOptions | ResultCallback$1 | null | undefined, callback?: ResultCallback$1 | undefined) => string | Promise<string | undefined> | undefined;
     var Parser: typeof _Parser;
     var parser: typeof _Parser.parse;
     var Renderer: typeof _Renderer;
@@ -604,7 +604,7 @@ declare const options: (options: MarkedOptions) => typeof marked;
 declare const setOptions: (options: MarkedOptions) => typeof marked;
 declare const use: (...args: MarkedExtension[]) => typeof marked;
 declare const walkTokens: <T = void>(tokens: Token[] | TokensList, callback: (token: Token) => T | T[]) => T[];
-declare const parseInline: (src: string, opt?: MarkedOptions | ResultCallback$1 | null | undefined, callback?: ResultCallback$1 | undefined) => string | Promise<string | undefined> | undefined;
+declare const parseInline: (src: string, optOrCallback?: MarkedOptions | ResultCallback$1 | null | undefined, callback?: ResultCallback$1 | undefined) => string | Promise<string | undefined> | undefined;
 declare const parse: typeof marked;
 declare const parser: typeof _Parser.parse;
 declare const lexer: typeof _Lexer.lex;

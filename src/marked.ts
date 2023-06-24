@@ -16,7 +16,7 @@ import type { Token, TokensList } from './Tokens.ts';
 
 export type ResultCallback = (error: Error | null, parseResult?: string) => undefined | void;
 
-const markedInstance = new Marked(_defaults);
+const markedInstance = new Marked();
 
 /**
  * Compiles markdown to HTML asynchronously.

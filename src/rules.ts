@@ -172,7 +172,7 @@ block.gfm.paragraph = edit(block._paragraph)
   .replace('hr', block.hr)
   .replace('heading', ' {0,3}#{1,6} ')
   .replace('|lheading', '') // setex headings don't interrupt commonmark paragraphs
-  .replace('table', block.gfm.table) // interrupt paragraphs with table
+  .replace('table', block.gfm.table as RegExp) // interrupt paragraphs with table
   .replace('blockquote', ' {0,3}>')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n')
   .replace('list', ' {0,3}(?:[*+-]|1[.)]) ') // only lists starting from 1 can interrupt
@@ -359,7 +359,7 @@ inline.gfm = {
 };
 
 inline.gfm.url = edit(inline.gfm.url as Rule, 'i')
-  .replace('email', inline.gfm._extended_email)
+  .replace('email', inline.gfm._extended_email as RegExp)
   .getRegex();
 /**
  * GFM + Line Breaks Inline Grammar

@@ -14,16 +14,16 @@ export class _Slugger {
     return value
       .toLowerCase()
       .trim()
-    // remove html tags
+      // remove html tags
       .replace(/<[!\/a-z].*?>/ig, '')
-    // remove unwanted chars
+      // remove unwanted chars
       .replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
       .replace(/\s/g, '-');
   }
 
   /**
-     * Finds the next safe (unique) slug to use
-     */
+   * Finds the next safe (unique) slug to use
+   */
   getNextSafeSlug(originalSlug: string, isDryRun: boolean | undefined) {
     let slug = originalSlug;
     let occurenceAccumulator = 0;
@@ -42,8 +42,8 @@ export class _Slugger {
   }
 
   /**
-     * Convert string to unique id
-     */
+   * Convert string to unique id
+   */
   slug(value: string, options: SluggerOptions = {}) {
     const slug = this.serialize(value);
     return this.getNextSafeSlug(slug, options.dryrun);

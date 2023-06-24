@@ -53,8 +53,8 @@ export function edit(regex: Rule, opt?: string) {
   regex = typeof regex === 'string' ? regex : regex.source;
   opt = opt || '';
   const obj = {
-    replace: (name: string | RegExp, val: any) => {
-      val = val.source || val;
+    replace: (name: string | RegExp, val: string | RegExp) => {
+      val = typeof val === 'object' && 'source' in val ? val.source : val;
       val = val.replace(caret, '$1');
       regex = (regex as string).replace(name, val);
       return obj;

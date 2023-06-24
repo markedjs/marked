@@ -32,7 +32,7 @@ export class Marked {
   Slugger = _Slugger;
   Hooks = _Hooks;
 
-  constructor(...args) {
+  constructor(...args: MarkedExtension[]) {
     this.use(...args);
   }
 
@@ -222,14 +222,14 @@ export class Marked {
   }
 
   #parseMarkdown(lexer: (src: string, options?: MarkedOptions) => TokensList | Token[], parser: (tokens: Token[], options?: MarkedOptions) => string | undefined) {
-    return (src: string, opt?: MarkedOptions | ResultCallback | undefined | null, callback?: ResultCallback | undefined): string | Promise<string | undefined> | undefined => {
-      if (typeof opt === 'function') {
-        callback = opt;
-        opt = null;
+    return (src: string, optOrCallback?: MarkedOptions | ResultCallback | undefined | null, callback?: ResultCallback | undefined): string | Promise<string | undefined> | undefined => {
+      if (typeof optOrCallback === 'function') {
+        callback = optOrCallback;
+        optOrCallback = null;
       }
 
-      const origOpt = { ...opt };
-      opt = { ...this.defaults, ...origOpt };
+      const origOpt = { ...optOrCallback };
+      const opt = { ...this.defaults, ...origOpt };
       const throwError = this.#onError(!!opt.silent, !!opt.async, callback);
 
       // throw error in case of non string input
@@ -265,19 +265,19 @@ export class Marked {
 
           if (!err) {
             try {
-              if ((opt as MarkedOptions).walkTokens) {
-                this.walkTokens(tokens, (opt as MarkedOptions).walkTokens!);
+              if (opt.walkTokens) {
+                this.walkTokens(tokens, opt.walkTokens);
               }
-              out = parser(tokens, opt as MarkedOptions)!;
-              if ((opt as MarkedOptions).hooks) {
-                out = (opt as MarkedOptions).hooks!.postprocess(out);
+              out = parser(tokens, opt)!;
+              if (opt.hooks) {
+                out = opt.hooks.postprocess(out);
               }
             } catch (e) {
               err = e as Error;
             }
           }
 
-          (opt as MarkedOptions).highlight = highlight;
+          opt.highlight = highlight;
 
           return err
             ? throwError(err)
@@ -324,10 +324,10 @@ export class Marked {
 
       if (opt.async) {
         return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
-          .then(src => lexer(src, opt as MarkedOptions))
-          .then(tokens => (opt as MarkedOptions).walkTokens ? Promise.all(this.walkTokens(tokens, (opt as MarkedOptions).walkTokens!)).then(() => tokens) : tokens)
-          .then(tokens => parser(tokens, opt as MarkedOptions))
-          .then(html => (opt as MarkedOptions).hooks ? (opt as MarkedOptions).hooks!.postprocess(html) : html)
+          .then(src => lexer(src, opt))
+          .then(tokens => opt.walkTokens ? Promise.all(this.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
+          .then(tokens => parser(tokens, opt))
+          .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
           .catch(throwError);
       }
 

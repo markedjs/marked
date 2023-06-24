@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2018",
-    "module": "esnext",
+    "target": "es2022",
+    "module": "NodeNext",
     "isolatedModules": true,
     "strict": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "nodenext",
     "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {

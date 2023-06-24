@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { marked } from 'marked';
-import { expectType } from "ts-expect";
+import { expectType } from 'ts-expect';
 
 // other exports
 
