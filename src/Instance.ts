@@ -1,17 +1,17 @@
 import { _getDefaults } from './defaults.js';
-import { _Lexer } from './Lexer.js';
-import { _Parser } from './Parser.js';
-import { _Hooks } from './Hooks.js';
-import { _Renderer } from './Renderer.js';
-import { _Tokenizer } from './Tokenizer.js';
-import { _TextRenderer } from './TextRenderer.js';
-import { _Slugger } from './Slugger.js';
+import { _Lexer } from './Lexer.ts';
+import { _Parser } from './Parser.ts';
+import { _Hooks } from './Hooks.ts';
+import { _Renderer } from './Renderer.ts';
+import { _Tokenizer } from './Tokenizer.ts';
+import { _TextRenderer } from './TextRenderer.ts';
+import { _Slugger } from './Slugger.ts';
 import {
   checkDeprecations,
   escape
-} from './helpers.js';
-import type { MarkedExtension, MarkedOptions } from './MarkedOptions.js';
-import type { Token, TokensList } from './Tokens.js';
+} from './helpers.ts';
+import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
+import type { Token, TokensList } from './Tokens.ts';
 
 export type ResultCallback = (error: Error | null, parseResult?: string) => undefined | void;
 

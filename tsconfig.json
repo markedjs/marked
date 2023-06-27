@@ -7,7 +7,7 @@
     "verbatimModuleSyntax": true,
     "noEmit": true,
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "nodenext",
+    "moduleResolution": "NodeNext",
     "noImplicitAny": false,
     "allowImportingTsExtensions": true
   },
