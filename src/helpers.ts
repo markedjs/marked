@@ -1,5 +1,6 @@
-import type { MarkedOptions, Rule } from './MarkedOptions.ts';
+import type { MarkedOptions } from './MarkedOptions.ts';
 import type { ResultCallback } from './marked.ts';
+import type { Rule } from './rules.ts';
 
 /**
  * Helpers

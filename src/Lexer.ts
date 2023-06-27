@@ -2,7 +2,8 @@ import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { block, inline } from './rules.ts';
 import type { Token, TokensList } from './Tokens.ts';
-import type { MarkedOptions, Rules, TokenizerExtension } from './MarkedOptions.ts';
+import type { MarkedOptions, TokenizerExtension } from './MarkedOptions.ts';
+import type { Rules } from './rules.ts';
 
 /**
  * smartypants text replacement

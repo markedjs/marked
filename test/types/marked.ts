@@ -5,7 +5,7 @@ import { expectType } from 'ts-expect';
 // other exports
 
 import { Lexer, Parser, Tokenizer, Renderer, TextRenderer, Slugger } from 'marked';
-import type { Tokens, MarkedExtension, TokenizerAndRendererExtension, Token ,TokenizerExtension, MarkedOptions, TokensList, Rule, Rules, RendererExtension } from 'marked';
+import type { Tokens, MarkedExtension, TokenizerAndRendererExtension, Token ,TokenizerExtension, MarkedOptions, TokensList, Rules, RendererExtension } from 'marked';
 
 const tokenizer = new marked.Tokenizer();
 

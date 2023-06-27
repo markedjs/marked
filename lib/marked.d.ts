@@ -289,10 +289,6 @@ interface SluggerOptions {
     /** Generates the next unique slug without updating the internal accumulator. */
     dryrun?: boolean;
 }
-type Rule = RegExp | string;
-interface Rules {
-    [ruleName: string]: Pick<RegExp, 'exec'> | Rule | Rules;
-}
 interface TokenizerThis {
     lexer: _Lexer;
 }
@@ -460,6 +456,23 @@ interface MarkedOptions extends Omit<MarkedExtension, 'extensions' | 'renderer' 
     }) | undefined | null;
 }
 
+type Rule = RegExp | string;
+interface Rules {
+    [ruleName: string]: Pick<RegExp, 'exec'> | Rule | Rules;
+}
+type BlockRuleNames = 'newline' | 'code' | 'fences' | 'hr' | 'heading' | 'blockquote' | 'list' | 'html' | 'def' | 'lheading' | '_paragraph' | 'text' | '_label' | '_title' | 'bullet' | 'listItemStart' | '_tag' | '_comment' | 'paragraph' | 'uote';
+type BlockSubRuleNames = 'normal' | 'gfm' | 'pedantic';
+type InlineRuleNames = 'escape' | 'autolink' | 'tag' | 'link' | 'reflink' | 'nolink' | 'reflinkSearch' | 'code' | 'br' | 'text' | '_punctuation' | 'punctuation' | 'blockSkip' | 'escapedEmSt' | '_comment' | '_escapes' | '_scheme' | '_email' | '_attribute' | '_label' | '_href' | '_title' | 'strong' | '_extended_email' | '_backpedal';
+type InlineSubRuleNames = 'gfm' | 'emStrong' | 'normal' | 'pedantic' | 'breaks';
+/**
+ * Block-Level Grammar
+ */
+declare const block: Record<BlockRuleNames, Rule> & Record<BlockSubRuleNames, Rules> & Rules;
+/**
+ * Inline-Level Grammar
+ */
+declare const inline: Record<InlineRuleNames, Rule> & Record<InlineSubRuleNames, Rules> & Rules;
+
 /**
  * Block Lexer
  */
@@ -609,4 +622,4 @@ declare const parse: typeof marked;
 declare const parser: typeof _Parser.parse;
 declare const lexer: typeof _Lexer.lex;
 
-export { _Hooks as Hooks, _Lexer as Lexer, Marked, MarkedExtension, MarkedOptions, _Parser as Parser, _Renderer as Renderer, RendererExtension, RendererThis, ResultCallback, Rule, Rules, _Slugger as Slugger, SluggerOptions, _TextRenderer as TextRenderer, Token, _Tokenizer as Tokenizer, TokenizerAndRendererExtension, TokenizerExtension, TokenizerThis, Tokens, TokensList, _defaults as defaults, _getDefaults as getDefaults, lexer, marked, options, parse, parseInline, parser, setOptions, use, walkTokens };
+export { _Hooks as Hooks, _Lexer as Lexer, Marked, MarkedExtension, MarkedOptions, _Parser as Parser, _Renderer as Renderer, RendererExtension, RendererThis, ResultCallback, Rule, Rules, _Slugger as Slugger, SluggerOptions, _TextRenderer as TextRenderer, Token, _Tokenizer as Tokenizer, TokenizerAndRendererExtension, TokenizerExtension, TokenizerThis, Tokens, TokensList, block, _defaults as defaults, _getDefaults as getDefaults, inline, lexer, marked, options, parse, parseInline, parser, setOptions, use, walkTokens };

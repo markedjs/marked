@@ -9,12 +9,6 @@ export interface SluggerOptions {
   dryrun?: boolean;
 }
 
-export type Rule = RegExp | string;
-
-export interface Rules {
-  [ruleName: string]: Pick<RegExp, 'exec'> | Rule | Rules;
-}
-
 export interface TokenizerThis {
   lexer: _Lexer;
 }

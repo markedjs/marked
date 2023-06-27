@@ -2,7 +2,12 @@ import {
   noopTest,
   edit
 } from './helpers.ts';
-import type { Rule, Rules } from './MarkedOptions.ts';
+
+export type Rule = RegExp | string;
+
+export interface Rules {
+  [ruleName: string]: Pick<RegExp, 'exec'> | Rule | Rules;
+}
 
 type BlockRuleNames =
     | 'newline'
