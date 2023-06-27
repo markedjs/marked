@@ -251,6 +251,8 @@ declare class _Parser {
     parseInline(tokens: Token[], renderer?: _Renderer | _TextRenderer): string;
 }
 
+type RefLinks = Record<string, Pick<Tokens.Link | Tokens.Image, 'href' | 'title'>>;
+
 /**
  * Tokenizer
  */
@@ -275,7 +277,7 @@ declare class _Tokenizer {
     escape(src: string): Tokens.Escape | undefined;
     tag(src: string): Tokens.Tag | undefined;
     link(src: string): Tokens.Link | Tokens.Image | undefined;
-    reflink(src: string, links: Record<string, Pick<Tokens.Link | Tokens.Image, 'href' | 'title'>>): Tokens.Link | Tokens.Image | Tokens.Text | undefined;
+    reflink(src: string, links: RefLinks): Tokens.Link | Tokens.Image | Tokens.Text | undefined;
     emStrong(src: string, maskedSrc: string, prevChar?: string): Tokens.Em | Tokens.Strong | undefined;
     codespan(src: string): Tokens.Codespan | undefined;
     br(src: string): Tokens.Br | undefined;
