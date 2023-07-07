@@ -345,7 +345,7 @@ export class Marked {
 
   #onError(silent, async, callback) {
     return (e) => {
-      e.message += '\nPlease report this to https://github.com/markedjs/this.';
+      e.message += '\nPlease report this to https://github.com/markedjs/marked.';
 
       if (silent) {
         const msg = '<p>An error occurred:</p><pre>'
