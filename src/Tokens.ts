@@ -192,8 +192,8 @@ export namespace Tokens {
     }
 }
 
+export type Links = Record<string, Pick<Tokens.Link | Tokens.Image, 'href' | 'title'>>;
+
 export type TokensList = Token[] & {
-    links: {
-        [key: string]: Pick<Tokens.Link, 'href' | 'title'>;
-    };
+    links: Links;
 };

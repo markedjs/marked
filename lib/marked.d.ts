@@ -149,10 +149,9 @@ declare namespace Tokens {
         tokens?: Token[] | undefined;
     }
 }
+type Links = Record<string, Pick<Tokens.Link | Tokens.Image, 'href' | 'title'>>;
 type TokensList = Token[] & {
-    links: {
-        [key: string]: Pick<Tokens.Link, 'href' | 'title'>;
-    };
+    links: Links;
 };
 
 /**
@@ -251,8 +250,6 @@ declare class _Parser {
     parseInline(tokens: Token[], renderer?: _Renderer | _TextRenderer): string;
 }
 
-type RefLinks = Record<string, Pick<Tokens.Link | Tokens.Image, 'href' | 'title'>>;
-
 /**
  * Tokenizer
  */
@@ -277,7 +274,7 @@ declare class _Tokenizer {
     escape(src: string): Tokens.Escape | undefined;
     tag(src: string): Tokens.Tag | undefined;
     link(src: string): Tokens.Link | Tokens.Image | undefined;
-    reflink(src: string, links: RefLinks): Tokens.Link | Tokens.Image | Tokens.Text | undefined;
+    reflink(src: string, links: Links): Tokens.Link | Tokens.Image | Tokens.Text | undefined;
     emStrong(src: string, maskedSrc: string, prevChar?: string): Tokens.Em | Tokens.Strong | undefined;
     codespan(src: string): Tokens.Codespan | undefined;
     br(src: string): Tokens.Br | undefined;
@@ -624,4 +621,4 @@ declare const parse: typeof marked;
 declare const parser: typeof _Parser.parse;
 declare const lexer: typeof _Lexer.lex;
 
-export { _Hooks as Hooks, _Lexer as Lexer, Marked, MarkedExtension, MarkedOptions, _Parser as Parser, _Renderer as Renderer, RendererExtension, RendererThis, ResultCallback, Rule, Rules, _Slugger as Slugger, SluggerOptions, _TextRenderer as TextRenderer, Token, _Tokenizer as Tokenizer, TokenizerAndRendererExtension, TokenizerExtension, TokenizerThis, Tokens, TokensList, block, _defaults as defaults, _getDefaults as getDefaults, inline, lexer, marked, options, parse, parseInline, parser, setOptions, use, walkTokens };
+export { _Hooks as Hooks, _Lexer as Lexer, Links, Marked, MarkedExtension, MarkedOptions, _Parser as Parser, _Renderer as Renderer, RendererExtension, RendererThis, ResultCallback, Rule, Rules, _Slugger as Slugger, SluggerOptions, _TextRenderer as TextRenderer, Token, _Tokenizer as Tokenizer, TokenizerAndRendererExtension, TokenizerExtension, TokenizerThis, Tokens, TokensList, block, _defaults as defaults, _getDefaults as getDefaults, inline, lexer, marked, options, parse, parseInline, parser, setOptions, use, walkTokens };

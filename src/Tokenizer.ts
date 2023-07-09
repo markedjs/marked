@@ -6,7 +6,7 @@ import {
   findClosingBracket
 } from './helpers.ts';
 import { _Lexer } from './Lexer.ts';
-import type { Tokens } from './Tokens.ts';
+import type { Links, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
 function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer): Tokens.Link | Tokens.Image {
@@ -600,7 +600,7 @@ export class _Tokenizer {
     }
   }
 
-  reflink(src: string, links: Record<string, Pick<Tokens.Link | Tokens.Image, 'href' | 'title'>>): Tokens.Link | Tokens.Image | Tokens.Text | undefined {
+  reflink(src: string, links: Links): Tokens.Link | Tokens.Image | Tokens.Text | undefined {
     let cap;
     if ((cap = this.rules.inline.reflink.exec(src))
       || (cap = this.rules.inline.nolink.exec(src))) {
