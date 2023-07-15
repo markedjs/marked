@@ -128,6 +128,7 @@ We actively support the usability of Marked in super-fast markdown transformatio
 | [zero-md](https://zerodevx.github.io/zero-md/)                      | A native markdown-to-html web component to load and display an external MD file.It uses Marked for super-fast markdown transformation. |
 | [texme](https://github.com/susam/texme)                             | TeXMe is a lightweight JavaScript utility to create self-rendering Markdown + LaTeX documents.             |
 | [StrapDown.js](https://naereen.github.io/StrapDown.js/)             | StrapDown.js is an awesome on-the-fly Markdown to HTML text processor.                |
+| [raito](https://raito.arnaud.at/)             | Mini Markdown Wiki/CMS in 8kb of JavaScript.                |
 | [Homebrewery](https://homebrewery.naturalcrit.com/)             | The Homebrewery is a tool for making authentic looking D&D content using Markdown. It is distributed under the terms of the MIT.             |
 
 <h2 id="security">Security</h2>
