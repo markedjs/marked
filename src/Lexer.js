@@ -348,8 +348,8 @@ export class Lexer {
     }
 
     // Mask out escaped characters
-    while ((match = this.tokenizer.rules.inline.anyPunctuation.exec(maskedSrc)) != null) {
-      maskedSrc = maskedSrc.slice(0, match.index) + '++' + maskedSrc.slice(this.tokenizer.rules.inline.anyPunctuation.lastIndex);
+    while ((match = this.tokenizer.rules.inline.escapedPunct.exec(maskedSrc)) != null) {
+      maskedSrc = maskedSrc.slice(0, match.index) + '++' + maskedSrc.slice(this.tokenizer.rules.inline.escapedPunct.lastIndex);
     }
 
     while (src) {
