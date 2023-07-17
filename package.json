@@ -44,7 +44,7 @@
   ],
   "devDependencies": {
     "@babel/core": "^7.22.9",
-    "@babel/preset-env": "^7.22.7",
+    "@babel/preset-env": "^7.22.9",
     "@markedjs/html-differ": "^4.0.2",
     "@rollup/plugin-babel": "^6.0.3",
     "@semantic-release/commit-analyzer": "^10.0.1",
