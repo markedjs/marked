@@ -407,8 +407,7 @@ export class _Tokenizer {
     if (cap) {
       const item: Tokens.Table = {
         type: 'table',
-        // splitCells expects a number as second argument
-        // @ts-expect-error
+        raw: cap[0],
         header: splitCells(cap[1]).map(c => {
           return { text: c };
         }),
@@ -417,8 +416,6 @@ export class _Tokenizer {
       };
 
       if (item.header.length === item.align.length) {
-        item.raw = cap[0];
-
         let l = item.align.length;
         let i, j, k, row;
         for (i = 0; i < l; i++) {

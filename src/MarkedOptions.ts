@@ -17,7 +17,7 @@ export interface TokenizerExtension {
   name: string;
   level: 'block' | 'inline';
   start?: ((this: TokenizerThis, src: string) => number | void) | undefined;
-  tokenizer: (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | void;
+  tokenizer: (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
   childTokens?: string[] | undefined;
 }
 

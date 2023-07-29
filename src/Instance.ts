@@ -62,6 +62,7 @@ export class Marked {
         default: {
           if (this.defaults.extensions && this.defaults.extensions.childTokens && this.defaults.extensions.childTokens[token.type]) { // Walk any extensions
             this.defaults.extensions.childTokens[token.type].forEach((childTokens) => {
+              // @ts-expect-error we assume token[childToken] is an array of tokens but we can't be sure
               values = values.concat(this.walkTokens(token[childTokens], callback));
             });
           } else if (token.tokens) {
@@ -140,10 +141,13 @@ export class Marked {
       if (pack.renderer) {
         const renderer = this.defaults.renderer || new _Renderer(this.defaults);
         for (const prop in pack.renderer) {
-          const prevRenderer = renderer[prop];
+          const rendererFunc = pack.renderer[prop as keyof MarkedExtension["renderer"]] as Function;
+          const rendererKey = prop as keyof _Renderer
+          const prevRenderer = renderer[rendererKey] as Function;
           // Replace renderer with func to run extension, but fall back if false
-          renderer[prop] = (...args: unknown[]) => {
-            let ret = pack.renderer![prop].apply(renderer, args);
+          renderer[rendererKey] = (...args: unknown[]) => {
+
+            let ret = rendererFunc.apply(renderer, args);
             if (ret === false) {
               ret = prevRenderer.apply(renderer, args);
             }
@@ -155,10 +159,12 @@ export class Marked {
       if (pack.tokenizer) {
         const tokenizer = this.defaults.tokenizer || new _Tokenizer(this.defaults);
         for (const prop in pack.tokenizer) {
-          const prevTokenizer = tokenizer[prop];
+          const tokenizerFunc = pack.tokenizer[prop as keyof MarkedExtension["tokenizer"]] as Function;
+          const tokenizerKey = prop as keyof _Tokenizer
+          const prevTokenizer = tokenizer[tokenizerKey] as Function;
           // Replace tokenizer with func to run extension, but fall back if false
-          tokenizer[prop] = (...args: unknown[]) => {
-            let ret = pack.tokenizer![prop].apply(tokenizer, args);
+          tokenizer[tokenizerKey] = (...args: unknown[]) => {
+            let ret = tokenizerFunc.apply(tokenizer, args);
             if (ret === false) {
               ret = prevTokenizer.apply(tokenizer, args);
             }
@@ -172,21 +178,23 @@ export class Marked {
       if (pack.hooks) {
         const hooks = this.defaults.hooks || new _Hooks();
         for (const prop in pack.hooks) {
-          const prevHook = hooks[prop];
+          const hooksFunc = pack.hooks[prop as keyof MarkedExtension["hooks"]] as Function;
+          const hooksKey = prop as keyof _Hooks
+          const prevHook = hooks[hooksKey] as Function;
           if (_Hooks.passThroughHooks.has(prop)) {
-            hooks[prop as 'preprocess' | 'postprocess'] = (arg: string | undefined) => {
+            hooks[hooksKey as 'preprocess' | 'postprocess'] = (arg: string | undefined) => {
               if (this.defaults.async) {
-                return Promise.resolve(pack.hooks![prop].call(hooks, arg)).then(ret => {
+                return Promise.resolve(hooksFunc.call(hooks, arg)).then(ret => {
                   return prevHook.call(hooks, ret);
                 });
               }
 
-              const ret = pack.hooks![prop].call(hooks, arg);
+              const ret = hooksFunc.call(hooks, arg);
               return prevHook.call(hooks, ret);
             };
           } else {
-            hooks[prop] = (...args) => {
-              let ret = pack.hooks![prop].apply(hooks, args);
+            hooks[hooksKey] = (...args: unknown[]) => {
+              let ret = hooksFunc.apply(hooks, args);
               if (ret === false) {
                 ret = prevHook.apply(hooks, args);
               }
@@ -216,7 +224,7 @@ export class Marked {
     return this;
   }
 
-  setOptions(opt) {
+  setOptions(opt: MarkedOptions) {
     this.defaults = { ...this.defaults, ...opt };
     return this;
   }

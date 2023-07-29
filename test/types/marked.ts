@@ -186,7 +186,7 @@ marked.use({
   }
 });
 
-interface NameToken {
+interface NameToken extends Tokens.Generic {
     type: 'name';
     raw: string;
     text: string;
@@ -198,7 +198,7 @@ const tokenizerExtension: TokenizerExtension = {
   name: 'name',
   level: 'block',
   start: (src: string) => src.match(/name/)?.index,
-  tokenizer(src: string): NameToken | void {
+  tokenizer(src: string): NameToken | undefined {
     if (src === 'name') {
       const token: NameToken = {
         type: 'name',

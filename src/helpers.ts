@@ -9,7 +9,7 @@ const escapeTest = /[&<>"']/;
 const escapeReplace = new RegExp(escapeTest.source, 'g');
 const escapeTestNoEncode = /[<>"']|&(?!(#\d{1,7}|#[Xx][a-fA-F0-9]{1,6}|\w+);)/;
 const escapeReplaceNoEncode = new RegExp(escapeTestNoEncode.source, 'g');
-const escapeReplacements = {
+const escapeReplacements: {[index: string]: string} = {
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
@@ -131,7 +131,7 @@ export function resolveUrl(base: string, href: string) {
 
 export const noopTest = { exec: () => null };
 
-export function splitCells(tableRow: string, count: number) {
+export function splitCells(tableRow: string, count?: number) {
   // ensure that every cell-delimiting pipe has a space
   // before it to distinguish it from an escaped pipe
   const row = tableRow.replace(/\|/g, (match, offset, str) => {
@@ -158,10 +158,12 @@ export function splitCells(tableRow: string, count: number) {
     cells.pop();
   }
 
-  if (cells.length > count) {
-    cells.splice(count);
-  } else {
-    while (cells.length < count) cells.push('');
+  if (count) {
+    if (cells.length > count) {
+      cells.splice(count);
+    } else {
+      while (cells.length < count) cells.push('');
+    }
   }
 
   for (; i < cells.length; i++) {

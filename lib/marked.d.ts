@@ -1,4 +1,4 @@
-type Token = (Tokens.Space | Tokens.Code | Tokens.Heading | Tokens.Table | Tokens.Hr | Tokens.Blockquote | Tokens.List | Tokens.ListItem | Tokens.Paragraph | Tokens.HTML | Tokens.Text | Tokens.Def | Tokens.Escape | Tokens.Tag | Tokens.Image | Tokens.Link | Tokens.Strong | Tokens.Em | Tokens.Codespan | Tokens.Br | Tokens.Del) & {
+type Token = (Tokens.Space | Tokens.Code | Tokens.Heading | Tokens.Table | Tokens.Hr | Tokens.Blockquote | Tokens.List | Tokens.ListItem | Tokens.Paragraph | Tokens.HTML | Tokens.Text | Tokens.Def | Tokens.Escape | Tokens.Tag | Tokens.Image | Tokens.Link | Tokens.Strong | Tokens.Em | Tokens.Codespan | Tokens.Br | Tokens.Del | Tokens.Generic) & {
     loose?: boolean;
     tokens?: Token[];
 };
@@ -24,7 +24,7 @@ declare namespace Tokens {
     }
     interface Table {
         type: 'table';
-        raw?: string;
+        raw: string;
         align: Array<'center' | 'left' | 'right' | null>;
         header: TableCell[];
         rows: TableCell[][];
@@ -295,7 +295,7 @@ interface TokenizerExtension {
     name: string;
     level: 'block' | 'inline';
     start?: ((this: TokenizerThis, src: string) => number | void) | undefined;
-    tokenizer: (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | void;
+    tokenizer: (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
     childTokens?: string[] | undefined;
 }
 interface RendererThis {
@@ -532,7 +532,7 @@ type ResultCallback$1 = (error: Error | null, parseResult?: string) => undefined
 declare class Marked {
     #private;
     defaults: MarkedOptions;
-    options: (opt: any) => this;
+    options: (opt: MarkedOptions) => this;
     parse: (src: string, optOrCallback?: MarkedOptions | ResultCallback$1 | undefined | null, callback?: ResultCallback$1 | undefined) => string | Promise<string | undefined> | undefined;
     parseInline: (src: string, optOrCallback?: MarkedOptions | ResultCallback$1 | undefined | null, callback?: ResultCallback$1 | undefined) => string | Promise<string | undefined> | undefined;
     Parser: typeof _Parser;
@@ -550,7 +550,7 @@ declare class Marked {
      */
     walkTokens<T = void>(tokens: Token[] | TokensList, callback: (token: Token) => T | T[]): T[];
     use(...args: MarkedExtension[]): this;
-    setOptions(opt: any): this;
+    setOptions(opt: MarkedOptions): this;
 }
 
 /**
