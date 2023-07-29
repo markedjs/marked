@@ -1,4 +1,4 @@
-import { _getDefaults } from './defaults.js';
+import { _getDefaults } from './defaults.ts';
 import { _Lexer } from './Lexer.ts';
 import { _Parser } from './Parser.ts';
 import { _Hooks } from './Hooks.ts';
