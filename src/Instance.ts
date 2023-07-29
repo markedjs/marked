@@ -15,6 +15,9 @@ import type { Token, TokensList } from './Tokens.ts';
 
 export type ResultCallback = (error: Error | null, parseResult?: string) => undefined | void;
 
+type unknownFunction = (...args: unknown[]) => unknown;
+type GenericRendererFunction = (...args: unknown[]) => string | false;
+
 export class Marked {
   defaults = _getDefaults();
   options = this.setOptions;
@@ -141,17 +144,16 @@ export class Marked {
       if (pack.renderer) {
         const renderer = this.defaults.renderer || new _Renderer(this.defaults);
         for (const prop in pack.renderer) {
-          const rendererFunc = pack.renderer[prop as keyof MarkedExtension["renderer"]] as Function;
-          const rendererKey = prop as keyof _Renderer
-          const prevRenderer = renderer[rendererKey] as Function;
+          const rendererFunc = pack.renderer[prop as keyof MarkedExtension['renderer']] as GenericRendererFunction;
+          const rendererKey = prop as keyof _Renderer;
+          const prevRenderer = renderer[rendererKey] as GenericRendererFunction;
           // Replace renderer with func to run extension, but fall back if false
           renderer[rendererKey] = (...args: unknown[]) => {
-
             let ret = rendererFunc.apply(renderer, args);
             if (ret === false) {
               ret = prevRenderer.apply(renderer, args);
             }
-            return ret;
+            return ret || '';
           };
         }
         opts.renderer = renderer;
@@ -159,9 +161,9 @@ export class Marked {
       if (pack.tokenizer) {
         const tokenizer = this.defaults.tokenizer || new _Tokenizer(this.defaults);
         for (const prop in pack.tokenizer) {
-          const tokenizerFunc = pack.tokenizer[prop as keyof MarkedExtension["tokenizer"]] as Function;
-          const tokenizerKey = prop as keyof _Tokenizer
-          const prevTokenizer = tokenizer[tokenizerKey] as Function;
+          const tokenizerFunc = pack.tokenizer[prop as keyof MarkedExtension['tokenizer']] as unknownFunction;
+          const tokenizerKey = prop as keyof _Tokenizer;
+          const prevTokenizer = tokenizer[tokenizerKey] as unknownFunction;
           // Replace tokenizer with func to run extension, but fall back if false
           tokenizer[tokenizerKey] = (...args: unknown[]) => {
             let ret = tokenizerFunc.apply(tokenizer, args);
@@ -178,19 +180,19 @@ export class Marked {
       if (pack.hooks) {
         const hooks = this.defaults.hooks || new _Hooks();
         for (const prop in pack.hooks) {
-          const hooksFunc = pack.hooks[prop as keyof MarkedExtension["hooks"]] as Function;
-          const hooksKey = prop as keyof _Hooks
-          const prevHook = hooks[hooksKey] as Function;
+          const hooksFunc = pack.hooks[prop as keyof MarkedExtension['hooks']] as unknownFunction;
+          const hooksKey = prop as keyof _Hooks;
+          const prevHook = hooks[hooksKey] as unknownFunction;
           if (_Hooks.passThroughHooks.has(prop)) {
             hooks[hooksKey as 'preprocess' | 'postprocess'] = (arg: string | undefined) => {
               if (this.defaults.async) {
                 return Promise.resolve(hooksFunc.call(hooks, arg)).then(ret => {
-                  return prevHook.call(hooks, ret);
+                  return prevHook.call(hooks, ret) as string;
                 });
               }
 
               const ret = hooksFunc.call(hooks, arg);
-              return prevHook.call(hooks, ret);
+              return prevHook.call(hooks, ret) as string;
             };
           } else {
             hooks[hooksKey] = (...args: unknown[]) => {
@@ -198,7 +200,7 @@ export class Marked {
               if (ret === false) {
                 ret = prevHook.apply(hooks, args);
               }
-              return ret;
+              return ret as string;
             };
           }
         }
@@ -229,7 +231,7 @@ export class Marked {
     return this;
   }
 
-  #parseMarkdown(lexer: (src: string, options?: MarkedOptions) => TokensList | Token[], parser: (tokens: Token[], options?: MarkedOptions) => string | undefined) {
+  #parseMarkdown(lexer: (src: string, options?: MarkedOptions) => TokensList | Token[], parser: (tokens: Token[], options?: MarkedOptions) => string) {
     return (src: string, optOrCallback?: MarkedOptions | ResultCallback | undefined | null, callback?: ResultCallback | undefined): string | Promise<string | undefined> | undefined => {
       if (typeof optOrCallback === 'function') {
         callback = optOrCallback;
@@ -261,7 +263,7 @@ export class Marked {
 
         try {
           if (opt.hooks) {
-            src = opt.hooks.preprocess(src);
+            src = opt.hooks.preprocess(src) as string;
           }
           tokens = lexer(src, opt);
         } catch (e) {
@@ -278,7 +280,7 @@ export class Marked {
               }
               out = parser(tokens, opt)!;
               if (opt.hooks) {
-                out = opt.hooks.postprocess(out);
+                out = opt.hooks.postprocess(out) as string;
               }
             } catch (e) {
               err = e as Error;
@@ -341,7 +343,7 @@ export class Marked {
 
       try {
         if (opt.hooks) {
-          src = opt.hooks.preprocess(src);
+          src = opt.hooks.preprocess(src) as string;
         }
         const tokens = lexer(src, opt);
         if (opt.walkTokens) {
@@ -349,7 +351,7 @@ export class Marked {
         }
         let html = parser(tokens, opt);
         if (opt.hooks) {
-          html = opt.hooks.postprocess(html);
+          html = opt.hooks.postprocess(html) as string;
         }
         return html;
       } catch (e) {

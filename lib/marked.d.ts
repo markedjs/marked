@@ -301,9 +301,10 @@ interface TokenizerExtension {
 interface RendererThis {
     parser: _Parser;
 }
+type RendererExtensionFunction = (this: RendererThis, token: Tokens.Generic) => string | false | undefined;
 interface RendererExtension {
     name: string;
-    renderer: (this: RendererThis, token: Tokens.Generic) => string | false | undefined;
+    renderer: RendererExtensionFunction;
 }
 type TokenizerAndRendererExtension = TokenizerExtension | RendererExtension | (TokenizerExtension & RendererExtension);
 type RendererApi = Omit<_Renderer, 'constructor' | 'options'>;
@@ -360,8 +361,8 @@ interface MarkedExtension {
      * postprocess is called to process html after marked has finished parsing.
      */
     hooks?: {
-        preprocess: (markdown: string) => string;
-        postprocess: (html: string | undefined) => string | undefined;
+        preprocess: (markdown: string) => string | Promise<string>;
+        postprocess: (html: string) => string | Promise<string>;
         options?: MarkedOptions;
     } | null;
     /**
@@ -446,7 +447,7 @@ interface MarkedOptions extends Omit<MarkedExtension, 'extensions' | 'renderer' 
      * Add tokenizers and renderers to marked
      */
     extensions?: (TokenizerAndRendererExtension[] & {
-        renderers: Record<string, (this: RendererThis, token: Tokens.Generic) => string | false | undefined>;
+        renderers: Record<string, RendererExtensionFunction>;
         childTokens: Record<string, string[]>;
         block: any[];
         inline: any[];
@@ -521,11 +522,11 @@ declare class _Hooks {
     /**
      * Process markdown before marked
      */
-    preprocess(markdown: string): string;
+    preprocess(markdown: string): string | Promise<string>;
     /**
      * Process HTML after marked is finished
      */
-    postprocess(html: string | undefined): string | undefined;
+    postprocess(html: string): string | Promise<string>;
 }
 
 type ResultCallback$1 = (error: Error | null, parseResult?: string) => undefined | void;
@@ -621,4 +622,4 @@ declare const parse: typeof marked;
 declare const parser: typeof _Parser.parse;
 declare const lexer: typeof _Lexer.lex;
 
-export { _Hooks as Hooks, _Lexer as Lexer, Links, Marked, MarkedExtension, MarkedOptions, _Parser as Parser, _Renderer as Renderer, RendererExtension, RendererThis, ResultCallback, Rule, Rules, _Slugger as Slugger, SluggerOptions, _TextRenderer as TextRenderer, Token, _Tokenizer as Tokenizer, TokenizerAndRendererExtension, TokenizerExtension, TokenizerThis, Tokens, TokensList, block, _defaults as defaults, _getDefaults as getDefaults, inline, lexer, marked, options, parse, parseInline, parser, setOptions, use, walkTokens };
+export { _Hooks as Hooks, _Lexer as Lexer, Links, Marked, MarkedExtension, MarkedOptions, _Parser as Parser, _Renderer as Renderer, RendererExtension, RendererExtensionFunction, RendererThis, ResultCallback, Rule, Rules, _Slugger as Slugger, SluggerOptions, _TextRenderer as TextRenderer, Token, _Tokenizer as Tokenizer, TokenizerAndRendererExtension, TokenizerExtension, TokenizerThis, Tokens, TokensList, block, _defaults as defaults, _getDefaults as getDefaults, inline, lexer, marked, options, parse, parseInline, parser, setOptions, use, walkTokens };
