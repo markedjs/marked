@@ -144,12 +144,11 @@ export class Marked {
       if (pack.renderer) {
         const renderer = this.defaults.renderer || new _Renderer(this.defaults);
         for (const prop in pack.renderer) {
-          const rendererFunc = pack.renderer[prop as keyof MarkedExtension["renderer"]] as GenericRendererFunction;
+          const rendererFunc = pack.renderer[prop as keyof MarkedExtension['renderer']] as GenericRendererFunction;
           const rendererKey = prop as keyof _Renderer
           const prevRenderer = renderer[rendererKey] as GenericRendererFunction;
           // Replace renderer with func to run extension, but fall back if false
           renderer[rendererKey] = (...args: unknown[]) => {
-
             let ret = rendererFunc.apply(renderer, args);
             if (ret === false) {
               ret = prevRenderer.apply(renderer, args);
@@ -162,7 +161,7 @@ export class Marked {
       if (pack.tokenizer) {
         const tokenizer = this.defaults.tokenizer || new _Tokenizer(this.defaults);
         for (const prop in pack.tokenizer) {
-          const tokenizerFunc = pack.tokenizer[prop as keyof MarkedExtension["tokenizer"]] as UnknownFunction;
+          const tokenizerFunc = pack.tokenizer[prop as keyof MarkedExtension['tokenizer']] as UnknownFunction;
           const tokenizerKey = prop as keyof _Tokenizer
           const prevTokenizer = tokenizer[tokenizerKey] as UnknownFunction;
           // Replace tokenizer with func to run extension, but fall back if false
@@ -181,7 +180,7 @@ export class Marked {
       if (pack.hooks) {
         const hooks = this.defaults.hooks || new _Hooks();
         for (const prop in pack.hooks) {
-          const hooksFunc = pack.hooks[prop as keyof MarkedExtension["hooks"]] as UnknownFunction;
+          const hooksFunc = pack.hooks[prop as keyof MarkedExtension['hooks']] as UnknownFunction;
           const hooksKey = prop as keyof _Hooks
           const prevHook = hooks[hooksKey] as UnknownFunction;
           if (_Hooks.passThroughHooks.has(prop)) {
