@@ -1,12 +1,14 @@
-import { Tokenizer } from './Tokenizer.js';
-import { defaults } from './defaults.js';
-import { block, inline } from './rules.js';
+import { _Tokenizer } from './Tokenizer.ts';
+import { _defaults } from './defaults.ts';
+import { block, inline } from './rules.ts';
+import type { Token, TokensList } from './Tokens.ts';
+import type { MarkedOptions, TokenizerExtension } from './MarkedOptions.ts';
+import type { Rules } from './rules.ts';
 
 /**
  * smartypants text replacement
- * @param {string} text
  */
-function smartypants(text) {
+function smartypants(text: string) {
   return text
     // em-dashes
     .replace(/---/g, '\u2014')
@@ -26,9 +28,8 @@ function smartypants(text) {
 
 /**
  * mangle email addresses
- * @param {string} text
  */
-function mangle(text) {
+function mangle(text: string) {
   let out = '',
     i,
     ch;
@@ -48,12 +49,25 @@ function mangle(text) {
 /**
  * Block Lexer
  */
-export class Lexer {
-  constructor(options) {
+export class _Lexer {
+  tokens: TokensList;
+  options: MarkedOptions;
+  state: {
+    inLink: boolean;
+    inRawBlock: boolean;
+    top: boolean;
+  };
+
+  private tokenizer: _Tokenizer;
+  private inlineQueue: {src: string, tokens: Token[]}[];
+
+  constructor(options?: MarkedOptions) {
+    // TokenList cannot be created in one go
+    // @ts-expect-error
     this.tokens = [];
     this.tokens.links = Object.create(null);
-    this.options = options || defaults;
-    this.options.tokenizer = this.options.tokenizer || new Tokenizer();
+    this.options = options || _defaults;
+    this.options.tokenizer = this.options.tokenizer || new _Tokenizer();
     this.tokenizer = this.options.tokenizer;
     this.tokenizer.options = this.options;
     this.tokenizer.lexer = this;
@@ -86,7 +100,7 @@ export class Lexer {
   /**
    * Expose Rules
    */
-  static get rules() {
+  static get rules(): Rules {
     return {
       block,
       inline
@@ -96,23 +110,23 @@ export class Lexer {
   /**
    * Static Lex Method
    */
-  static lex(src, options) {
-    const lexer = new Lexer(options);
+  static lex(src: string, options?: MarkedOptions) {
+    const lexer = new _Lexer(options);
     return lexer.lex(src);
   }
 
   /**
    * Static Lex Inline Method
    */
-  static lexInline(src, options) {
-    const lexer = new Lexer(options);
+  static lexInline(src: string, options?: MarkedOptions) {
+    const lexer = new _Lexer(options);
     return lexer.inlineTokens(src);
   }
 
   /**
    * Preprocessing
    */
-  lex(src) {
+  lex(src: string) {
     src = src
       .replace(/\r\n|\r/g, '\n');
 
@@ -129,7 +143,9 @@ export class Lexer {
   /**
    * Lexing
    */
-  blockTokens(src, tokens = []) {
+  blockTokens(src: string, tokens?: Token[]): Token[];
+  blockTokens(src: string, tokens?: TokensList): TokensList;
+  blockTokens(src: string, tokens: Token[] = []) {
     if (this.options.pedantic) {
       src = src.replace(/\t/g, '    ').replace(/^ +$/gm, '');
     } else {
@@ -143,7 +159,7 @@ export class Lexer {
     while (src) {
       if (this.options.extensions
         && this.options.extensions.block
-        && this.options.extensions.block.some((extTokenizer) => {
+        && this.options.extensions.block.some((extTokenizer: TokenizerExtension['tokenizer']) => {
           if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
             src = src.substring(token.raw.length);
             tokens.push(token);
@@ -262,7 +278,7 @@ export class Lexer {
         let startIndex = Infinity;
         const tempSrc = src.slice(1);
         let tempStart;
-        this.options.extensions.startBlock.forEach(function(getStartIndex) {
+        this.options.extensions.startBlock.forEach((getStartIndex) => {
           tempStart = getStartIndex.call({ lexer: this }, tempSrc);
           if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
         });
@@ -315,7 +331,7 @@ export class Lexer {
     return tokens;
   }
 
-  inline(src, tokens = []) {
+  inline(src: string, tokens: Token[] = []) {
     this.inlineQueue.push({ src, tokens });
     return tokens;
   }
@@ -323,7 +339,7 @@ export class Lexer {
   /**
    * Lexing/Compiling
    */
-  inlineTokens(src, tokens = []) {
+  inlineTokens(src: string, tokens: Token[] = []): Token[] {
     let token, lastToken, cutSrc;
 
     // String with links masked to avoid interference with em and strong
@@ -461,7 +477,7 @@ export class Lexer {
         let startIndex = Infinity;
         const tempSrc = src.slice(1);
         let tempStart;
-        this.options.extensions.startInline.forEach(function(getStartIndex) {
+        this.options.extensions.startInline.forEach((getStartIndex) => {
           tempStart = getStartIndex.call({ lexer: this }, tempSrc);
           if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
         });

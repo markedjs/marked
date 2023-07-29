@@ -1,15 +1,16 @@
+import type { SluggerOptions } from './MarkedOptions.ts';
+
 /**
  * Slugger generates header id
  */
-export class Slugger {
+export class _Slugger {
+  seen: { [slugValue: string]: number };
+
   constructor() {
     this.seen = {};
   }
 
-  /**
-   * @param {string} value
-   */
-  serialize(value) {
+  serialize(value: string) {
     return value
       .toLowerCase()
       .trim()
@@ -22,10 +23,8 @@ export class Slugger {
 
   /**
    * Finds the next safe (unique) slug to use
-   * @param {string} originalSlug
-   * @param {boolean} isDryRun
    */
-  getNextSafeSlug(originalSlug, isDryRun) {
+  getNextSafeSlug(originalSlug: string, isDryRun: boolean | undefined) {
     let slug = originalSlug;
     let occurenceAccumulator = 0;
     if (this.seen.hasOwnProperty(slug)) {
@@ -44,11 +43,8 @@ export class Slugger {
 
   /**
    * Convert string to unique id
-   * @param {object} [options]
-   * @param {boolean} [options.dryrun] Generates the next unique slug without
-   * updating the internal accumulator.
    */
-  slug(value, options = {}) {
+  slug(value: string, options: SluggerOptions = {}) {
     const slug = this.serialize(value);
     return this.getNextSafeSlug(slug, options.dryrun);
   }

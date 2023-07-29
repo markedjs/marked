@@ -1,49 +1,56 @@
-import { getDefaults } from './defaults.js';
-import { Lexer } from './Lexer.js';
-import { Parser } from './Parser.js';
-import { Hooks } from './Hooks.js';
-import { Renderer } from './Renderer.js';
-import { Tokenizer } from './Tokenizer.js';
-import { TextRenderer } from './TextRenderer.js';
-import { Slugger } from './Slugger.js';
+import { _getDefaults } from './defaults.js';
+import { _Lexer } from './Lexer.ts';
+import { _Parser } from './Parser.ts';
+import { _Hooks } from './Hooks.ts';
+import { _Renderer } from './Renderer.ts';
+import { _Tokenizer } from './Tokenizer.ts';
+import { _TextRenderer } from './TextRenderer.ts';
+import { _Slugger } from './Slugger.ts';
 import {
   checkDeprecations,
   escape
-} from './helpers.js';
+} from './helpers.ts';
+import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
+import type { Token, TokensList } from './Tokens.ts';
+
+export type ResultCallback = (error: Error | null, parseResult?: string) => undefined | void;
 
 export class Marked {
-  defaults = getDefaults();
+  defaults = _getDefaults();
   options = this.setOptions;
 
-  parse = this.#parseMarkdown(Lexer.lex, Parser.parse);
-  parseInline = this.#parseMarkdown(Lexer.lexInline, Parser.parseInline);
+  parse = this.#parseMarkdown(_Lexer.lex, _Parser.parse);
+  parseInline = this.#parseMarkdown(_Lexer.lexInline, _Parser.parseInline);
 
-  Parser = Parser;
-  parser = Parser.parse;
-  Renderer = Renderer;
-  TextRenderer = TextRenderer;
-  Lexer = Lexer;
-  lexer = Lexer.lex;
-  Tokenizer = Tokenizer;
-  Slugger = Slugger;
-  Hooks = Hooks;
+  Parser = _Parser;
+  parser = _Parser.parse;
+  Renderer = _Renderer;
+  TextRenderer = _TextRenderer;
+  Lexer = _Lexer;
+  lexer = _Lexer.lex;
+  Tokenizer = _Tokenizer;
+  Slugger = _Slugger;
+  Hooks = _Hooks;
 
-  constructor(...args) {
+  constructor(...args: MarkedExtension[]) {
     this.use(...args);
   }
 
-  walkTokens(tokens, callback) {
-    let values = [];
+  /**
+   * Run callback for every token
+   */
+  walkTokens <T = void>(tokens: Token[] | TokensList, callback: (token: Token) => T | T[]) {
+    let values: T[] = [];
     for (const token of tokens) {
       values = values.concat(callback.call(this, token));
       switch (token.type) {
         case 'table': {
           for (const cell of token.header) {
-            values = values.concat(this.walkTokens(cell.tokens, callback));
+            values = values.concat(this.walkTokens(cell.tokens!, callback));
           }
           for (const row of token.rows) {
             for (const cell of row) {
-              values = values.concat(this.walkTokens(cell.tokens, callback));
+              values = values.concat(this.walkTokens(cell.tokens!, callback));
             }
           }
           break;
@@ -66,12 +73,12 @@ export class Marked {
     return values;
   }
 
-  use(...args) {
-    const extensions = this.defaults.extensions || { renderers: {}, childTokens: {} };
+  use(...args: MarkedExtension[]) {
+    const extensions: NonNullable<MarkedOptions['extensions']> = this.defaults.extensions || { renderers: {}, childTokens: {} } as NonNullable<MarkedOptions['extensions']>;
 
     args.forEach((pack) => {
       // copy options to new object
-      const opts = { ...pack };
+      const opts = { ...pack } as MarkedOptions;
 
       // set async to true if it was set to true before
       opts.async = this.defaults.async || opts.async || false;
@@ -82,7 +89,7 @@ export class Marked {
           if (!ext.name) {
             throw new Error('extension name required');
           }
-          if (ext.renderer) { // Renderer extensions
+          if ('renderer' in ext) { // Renderer extensions
             const prevRenderer = extensions.renderers[ext.name];
             if (prevRenderer) {
               // Replace extension with func to run new extension but fall back if false
@@ -97,7 +104,7 @@ export class Marked {
               extensions.renderers[ext.name] = ext.renderer;
             }
           }
-          if (ext.tokenizer) { // Tokenizer Extensions
+          if ('tokenizer' in ext) { // Tokenizer Extensions
             if (!ext.level || (ext.level !== 'block' && ext.level !== 'inline')) {
               throw new Error("extension level must be 'block' or 'inline'");
             }
@@ -109,20 +116,20 @@ export class Marked {
             if (ext.start) { // Function to check for start of token
               if (ext.level === 'block') {
                 if (extensions.startBlock) {
-                  extensions.startBlock.push(ext.start);
+                  extensions.startBlock.push(ext.start!);
                 } else {
-                  extensions.startBlock = [ext.start];
+                  extensions.startBlock = [ext.start!];
                 }
               } else if (ext.level === 'inline') {
                 if (extensions.startInline) {
-                  extensions.startInline.push(ext.start);
+                  extensions.startInline.push(ext.start!);
                 } else {
-                  extensions.startInline = [ext.start];
+                  extensions.startInline = [ext.start!];
                 }
               }
             }
           }
-          if (ext.childTokens) { // Child tokens to be visited by walkTokens
+          if ('childTokens' in ext && ext.childTokens) { // Child tokens to be visited by walkTokens
             extensions.childTokens[ext.name] = ext.childTokens;
           }
         });
@@ -131,12 +138,12 @@ export class Marked {
 
       // ==-- Parse "overwrite" extensions --== //
       if (pack.renderer) {
-        const renderer = this.defaults.renderer || new Renderer(this.defaults);
+        const renderer = this.defaults.renderer || new _Renderer(this.defaults);
         for (const prop in pack.renderer) {
           const prevRenderer = renderer[prop];
           // Replace renderer with func to run extension, but fall back if false
-          renderer[prop] = (...args) => {
-            let ret = pack.renderer[prop].apply(renderer, args);
+          renderer[prop] = (...args: unknown[]) => {
+            let ret = pack.renderer![prop].apply(renderer, args);
             if (ret === false) {
               ret = prevRenderer.apply(renderer, args);
             }
@@ -146,12 +153,12 @@ export class Marked {
         opts.renderer = renderer;
       }
       if (pack.tokenizer) {
-        const tokenizer = this.defaults.tokenizer || new Tokenizer(this.defaults);
+        const tokenizer = this.defaults.tokenizer || new _Tokenizer(this.defaults);
         for (const prop in pack.tokenizer) {
           const prevTokenizer = tokenizer[prop];
           // Replace tokenizer with func to run extension, but fall back if false
-          tokenizer[prop] = (...args) => {
-            let ret = pack.tokenizer[prop].apply(tokenizer, args);
+          tokenizer[prop] = (...args: unknown[]) => {
+            let ret = pack.tokenizer![prop].apply(tokenizer, args);
             if (ret === false) {
               ret = prevTokenizer.apply(tokenizer, args);
             }
@@ -163,23 +170,23 @@ export class Marked {
 
       // ==-- Parse Hooks extensions --== //
       if (pack.hooks) {
-        const hooks = this.defaults.hooks || new Hooks();
+        const hooks = this.defaults.hooks || new _Hooks();
         for (const prop in pack.hooks) {
           const prevHook = hooks[prop];
-          if (Hooks.passThroughHooks.has(prop)) {
-            hooks[prop] = (arg) => {
+          if (_Hooks.passThroughHooks.has(prop)) {
+            hooks[prop as 'preprocess' | 'postprocess'] = (arg: string | undefined) => {
               if (this.defaults.async) {
-                return Promise.resolve(pack.hooks[prop].call(hooks, arg)).then(ret => {
+                return Promise.resolve(pack.hooks![prop].call(hooks, arg)).then(ret => {
                   return prevHook.call(hooks, ret);
                 });
               }
 
-              const ret = pack.hooks[prop].call(hooks, arg);
+              const ret = pack.hooks![prop].call(hooks, arg);
               return prevHook.call(hooks, ret);
             };
           } else {
             hooks[prop] = (...args) => {
-              let ret = pack.hooks[prop].apply(hooks, args);
+              let ret = pack.hooks![prop].apply(hooks, args);
               if (ret === false) {
                 ret = prevHook.apply(hooks, args);
               }
@@ -194,8 +201,8 @@ export class Marked {
       if (pack.walkTokens) {
         const walkTokens = this.defaults.walkTokens;
         opts.walkTokens = function(token) {
-          let values = [];
-          values.push(pack.walkTokens.call(this, token));
+          let values: Array<Promise<void> | void> = [];
+          values.push(pack.walkTokens!.call(this, token));
           if (walkTokens) {
             values = values.concat(walkTokens.call(this, token));
           }
@@ -214,16 +221,16 @@ export class Marked {
     return this;
   }
 
-  #parseMarkdown(lexer, parser) {
-    return (src, opt, callback) => {
-      if (typeof opt === 'function') {
-        callback = opt;
-        opt = null;
+  #parseMarkdown(lexer: (src: string, options?: MarkedOptions) => TokensList | Token[], parser: (tokens: Token[], options?: MarkedOptions) => string | undefined) {
+    return (src: string, optOrCallback?: MarkedOptions | ResultCallback | undefined | null, callback?: ResultCallback | undefined): string | Promise<string | undefined> | undefined => {
+      if (typeof optOrCallback === 'function') {
+        callback = optOrCallback;
+        optOrCallback = null;
       }
 
-      const origOpt = { ...opt };
-      opt = { ...this.defaults, ...origOpt };
-      const throwError = this.#onError(opt.silent, opt.async, callback);
+      const origOpt = { ...optOrCallback };
+      const opt = { ...this.defaults, ...origOpt };
+      const throwError = this.#onError(!!opt.silent, !!opt.async, callback);
 
       // throw error in case of non string input
       if (typeof src === 'undefined' || src === null) {
@@ -242,7 +249,7 @@ export class Marked {
 
       if (callback) {
         const highlight = opt.highlight;
-        let tokens;
+        let tokens: TokensList | Token[];
 
         try {
           if (opt.hooks) {
@@ -250,10 +257,10 @@ export class Marked {
           }
           tokens = lexer(src, opt);
         } catch (e) {
-          return throwError(e);
+          return throwError(e as Error);
         }
 
-        const done = (err) => {
+        const done = (err?: Error) => {
           let out;
 
           if (!err) {
@@ -261,12 +268,12 @@ export class Marked {
               if (opt.walkTokens) {
                 this.walkTokens(tokens, opt.walkTokens);
               }
-              out = parser(tokens, opt);
+              out = parser(tokens, opt)!;
               if (opt.hooks) {
                 out = opt.hooks.postprocess(out);
               }
             } catch (e) {
-              err = e;
+              err = e as Error;
             }
           }
 
@@ -274,7 +281,7 @@ export class Marked {
 
           return err
             ? throwError(err)
-            : callback(null, out);
+            : callback!(null, out) as undefined;
         };
 
         if (!highlight || highlight.length < 3) {
@@ -338,13 +345,13 @@ export class Marked {
         }
         return html;
       } catch (e) {
-        return throwError(e);
+        return throwError(e as Error);
       }
     };
   }
 
-  #onError(silent, async, callback) {
-    return (e) => {
+  #onError(silent: boolean, async: boolean, callback?: ResultCallback) {
+    return (e: Error): string | Promise<string> | undefined => {
       e.message += '\nPlease report this to https://github.com/markedjs/marked.';
 
       if (silent) {

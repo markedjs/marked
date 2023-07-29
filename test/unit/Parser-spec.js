@@ -1,7 +1,7 @@
-import { Parser } from '../../src/Parser.js';
+import { _Parser } from '../../src/Parser.js';
 
 async function expectHtml({ tokens, options, html, inline }) {
-  const parser = new Parser(options);
+  const parser = new _Parser(options);
   const actual = parser[inline ? 'parseInline' : 'parse'](tokens);
   await expectAsync(actual).toEqualHtml(html);
 }

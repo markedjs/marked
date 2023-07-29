@@ -1,3 +1,7 @@
+import type { MarkedOptions } from './MarkedOptions.ts';
+import type { ResultCallback } from './marked.ts';
+import type { Rule } from './rules.ts';
+
 /**
  * Helpers
  */
@@ -12,8 +16,9 @@ const escapeReplacements = {
   '"': '&quot;',
   "'": '&#39;'
 };
-const getEscapeReplacement = (ch) => escapeReplacements[ch];
-export function escape(html, encode) {
+const getEscapeReplacement = (ch: string) => escapeReplacements[ch];
+
+export function escape(html: string, encode?: boolean) {
   if (encode) {
     if (escapeTest.test(html)) {
       return html.replace(escapeReplace, getEscapeReplacement);
@@ -29,10 +34,7 @@ export function escape(html, encode) {
 
 const unescapeTest = /&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig;
 
-/**
- * @param {string} html
- */
-export function unescape(html) {
+export function unescape(html: string) {
   // explicitly match decimal, hex, and named HTML entities
   return html.replace(unescapeTest, (_, n) => {
     n = n.toLowerCase();
@@ -48,18 +50,14 @@ export function unescape(html) {
 
 const caret = /(^|[^\[])\^/g;
 
-/**
- * @param {string | RegExp} regex
- * @param {string} opt
- */
-export function edit(regex, opt) {
+export function edit(regex: Rule, opt?: string) {
   regex = typeof regex === 'string' ? regex : regex.source;
   opt = opt || '';
   const obj = {
-    replace: (name, val) => {
-      val = val.source || val;
+    replace: (name: string | RegExp, val: string | RegExp) => {
+      val = typeof val === 'object' && 'source' in val ? val.source : val;
       val = val.replace(caret, '$1');
-      regex = regex.replace(name, val);
+      regex = (regex as string).replace(name, val);
       return obj;
     },
     getRegex: () => {
@@ -72,12 +70,7 @@ export function edit(regex, opt) {
 const nonWordAndColonTest = /[^\w:]/g;
 const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 
-/**
- * @param {boolean} sanitize
- * @param {string} base
- * @param {string} href
- */
-export function cleanUrl(sanitize, base, href) {
+export function cleanUrl(sanitize: boolean | undefined, base: string | undefined | null, href: string) {
   if (sanitize) {
     let prot;
     try {
@@ -102,16 +95,12 @@ export function cleanUrl(sanitize, base, href) {
   return href;
 }
 
-const baseUrls = {};
+const baseUrls: Record<string, string> = {};
 const justDomain = /^[^:]+:\/*[^/]*$/;
 const protocol = /^([^:]+:)[\s\S]*$/;
 const domain = /^([^:]+:\/*[^/]*)[\s\S]*$/;
 
-/**
- * @param {string} base
- * @param {string} href
- */
-export function resolveUrl(base, href) {
+export function resolveUrl(base: string, href: string) {
   if (!baseUrls[' ' + base]) {
     // we can ignore everything in base after the last slash of its path component,
     // but we might need to add _that_
@@ -140,9 +129,9 @@ export function resolveUrl(base, href) {
   }
 }
 
-export const noopTest = { exec: function noopTest() {} };
+export const noopTest = { exec: () => null };
 
-export function splitCells(tableRow, count) {
+export function splitCells(tableRow: string, count: number) {
   // ensure that every cell-delimiting pipe has a space
   // before it to distinguish it from an escaped pipe
   const row = tableRow.replace(/\|/g, (match, offset, str) => {
@@ -162,8 +151,12 @@ export function splitCells(tableRow, count) {
   let i = 0;
 
   // First/last cell in a row cannot be empty if it has no leading/trailing pipe
-  if (!cells[0].trim()) { cells.shift(); }
-  if (cells.length > 0 && !cells[cells.length - 1].trim()) { cells.pop(); }
+  if (!cells[0].trim()) {
+    cells.shift();
+  }
+  if (cells.length > 0 && !cells[cells.length - 1].trim()) {
+    cells.pop();
+  }
 
   if (cells.length > count) {
     cells.splice(count);
@@ -182,11 +175,11 @@ export function splitCells(tableRow, count) {
  * Remove trailing 'c's. Equivalent to str.replace(/c*$/, '').
  * /c*$/ is vulnerable to REDOS.
  *
- * @param {string} str
- * @param {string} c
- * @param {boolean} invert Remove suffix of non-c chars instead. Default falsey.
+ * @param str
+ * @param c
+ * @param invert Remove suffix of non-c chars instead. Default falsey.
  */
-export function rtrim(str, c, invert) {
+export function rtrim(str: string, c: string, invert?: boolean) {
   const l = str.length;
   if (l === 0) {
     return '';
@@ -210,7 +203,7 @@ export function rtrim(str, c, invert) {
   return str.slice(0, l - suffLen);
 }
 
-export function findClosingBracket(str, b) {
+export function findClosingBracket(str: string, b: string) {
   if (str.indexOf(b[1]) === -1) {
     return -1;
   }
@@ -232,7 +225,7 @@ export function findClosingBracket(str, b) {
   return -1;
 }
 
-export function checkDeprecations(opt, callback) {
+export function checkDeprecations(opt: MarkedOptions, callback?: ResultCallback) {
   if (!opt || opt.silent) {
     return;
   }

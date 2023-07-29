@@ -1,12 +1,73 @@
 import {
   noopTest,
   edit
-} from './helpers.js';
+} from './helpers.ts';
+
+export type Rule = RegExp | string;
+
+export interface Rules {
+  [ruleName: string]: Pick<RegExp, 'exec'> | Rule | Rules;
+}
+
+type BlockRuleNames =
+    | 'newline'
+    | 'code'
+    | 'fences'
+    | 'hr'
+    | 'heading'
+    | 'blockquote'
+    | 'list'
+    | 'html'
+    | 'def'
+    | 'lheading'
+    | '_paragraph'
+    | 'text'
+    | '_label'
+    | '_title'
+    | 'bullet'
+    | 'listItemStart'
+    | '_tag'
+    | '_comment'
+    | 'paragraph'
+    | 'uote' ;
+
+type BlockSubRuleNames = 'normal' | 'gfm' | 'pedantic';
+
+type InlineRuleNames =
+    | 'escape'
+    | 'autolink'
+    | 'tag'
+    | 'link'
+    | 'reflink'
+    | 'nolink'
+    | 'reflinkSearch'
+    | 'code'
+    | 'br'
+    | 'text'
+    | '_punctuation'
+    | 'punctuation'
+    | 'blockSkip'
+    | 'escapedEmSt'
+    | '_comment'
+    | '_escapes'
+    | '_scheme'
+    | '_email'
+    | '_attribute'
+    | '_label'
+    | '_href'
+    | '_title'
+    | 'strong'
+    | '_extended_email'
+    | '_backpedal';
+
+type InlineSubRuleNames = 'gfm' | 'emStrong' | 'normal' | 'pedantic'| 'breaks';
 
 /**
  * Block-Level Grammar
  */
-export const block = {
+// Not all rules are defined in the object literal
+// @ts-expect-error
+export const block: Record<BlockRuleNames, Rule> & Record<BlockSubRuleNames, Rules> & Rules = {
   newline: /^(?: *(?:\n|$))+/,
   code: /^( {4}[^\n]+(?:\n(?: *(?:\n|$))*)?)+/,
   fences: /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}\1[~`]* *(?=\n|$)|$)/,
@@ -101,7 +162,7 @@ block.gfm = {
     + '(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)' // Cells
 };
 
-block.gfm.table = edit(block.gfm.table)
+block.gfm.table = edit(block.gfm.table as Rule)
   .replace('hr', block.hr)
   .replace('heading', ' {0,3}#{1,6} ')
   .replace('blockquote', ' {0,3}>')
@@ -116,7 +177,7 @@ block.gfm.paragraph = edit(block._paragraph)
   .replace('hr', block.hr)
   .replace('heading', ' {0,3}#{1,6} ')
   .replace('|lheading', '') // setex headings don't interrupt commonmark paragraphs
-  .replace('table', block.gfm.table) // interrupt paragraphs with table
+  .replace('table', block.gfm.table as RegExp) // interrupt paragraphs with table
   .replace('blockquote', ' {0,3}>')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n')
   .replace('list', ' {0,3}(?:[*+-]|1[.)]) ') // only lists starting from 1 can interrupt
@@ -143,7 +204,7 @@ block.pedantic = {
   heading: /^(#{1,6})(.*)(?:\n+|$)/,
   fences: noopTest, // fences not supported
   lheading: /^(.+?)\n {0,3}(=+|-+) *(?:\n+|$)/,
-  paragraph: edit(block.normal._paragraph)
+  paragraph: edit(block.normal._paragraph as Rule)
     .replace('hr', block.hr)
     .replace('heading', ' *#{1,6} *[^\n]')
     .replace('lheading', block.lheading)
@@ -157,7 +218,9 @@ block.pedantic = {
 /**
  * Inline-Level Grammar
  */
-export const inline = {
+// Not all rules are defined in the object literal
+// @ts-expect-error
+export const inline: Record<InlineRuleNames, Rule> & Record<InlineSubRuleNames, Rules> & Rules = {
   escape: /^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/,
   autolink: /^<(scheme:[^\s\x00-\x1f<>]*|email)>/,
   url: noopTest,
@@ -196,19 +259,19 @@ inline._escapes = /\\([punct])/g;
 
 inline._comment = edit(block._comment).replace('(?:-->|$)', '-->').getRegex();
 
-inline.emStrong.lDelim = edit(inline.emStrong.lDelim, 'u')
+inline.emStrong.lDelim = edit(inline.emStrong.lDelim as Rule, 'u')
   .replace(/punct/g, inline._punctuation)
   .getRegex();
 
-inline.emStrong.rDelimAst = edit(inline.emStrong.rDelimAst, 'gu')
+inline.emStrong.rDelimAst = edit(inline.emStrong.rDelimAst as Rule, 'gu')
   .replace(/punct/g, inline._punctuation)
   .getRegex();
 
-inline.emStrong.rDelimUnd = edit(inline.emStrong.rDelimUnd, 'gu')
+inline.emStrong.rDelimUnd = edit(inline.emStrong.rDelimUnd as Rule, 'gu')
   .replace(/punct/g, inline._punctuation)
   .getRegex();
 
-inline.anyPunctuation = edit(inline.anyPunctuation, 'gu')
+inline.anyPunctuation = edit(inline.anyPunctuation as Rule, 'gu')
   .replace(/punct/g, inline._punctuation)
   .getRegex();
 
@@ -300,8 +363,8 @@ inline.gfm = {
   text: /^([`~]+|[^`~])(?:(?= {2,}\n)|(?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|https?:\/\/|ftp:\/\/|www\.|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)))/
 };
 
-inline.gfm.url = edit(inline.gfm.url, 'i')
-  .replace('email', inline.gfm._extended_email)
+inline.gfm.url = edit(inline.gfm.url as Rule, 'i')
+  .replace('email', inline.gfm._extended_email as RegExp)
   .getRegex();
 /**
  * GFM + Line Breaks Inline Grammar
@@ -310,7 +373,7 @@ inline.gfm.url = edit(inline.gfm.url, 'i')
 inline.breaks = {
   ...inline.gfm,
   br: edit(inline.br).replace('{2,}', '*').getRegex(),
-  text: edit(inline.gfm.text)
+  text: edit(inline.gfm.text as Rule)
     .replace('\\b_', '\\b_| {2,}\\n')
     .replace(/\{2,\}/g, '*')
     .getRegex()

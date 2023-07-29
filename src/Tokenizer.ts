@@ -1,19 +1,22 @@
-import { defaults } from './defaults.js';
+import { _defaults } from './defaults.ts';
 import {
   rtrim,
   splitCells,
   escape,
   findClosingBracket
-} from './helpers.js';
+} from './helpers.ts';
+import { _Lexer } from './Lexer.ts';
+import type { Links, Tokens } from './Tokens.ts';
+import type { MarkedOptions } from './MarkedOptions.ts';
 
-function outputLink(cap, link, raw, lexer) {
+function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer): Tokens.Link | Tokens.Image {
   const href = link.href;
   const title = link.title ? escape(link.title) : null;
   const text = cap[1].replace(/\\([\[\]])/g, '$1');
 
   if (cap[0].charAt(0) !== '!') {
     lexer.state.inLink = true;
-    const token = {
+    const token: Tokens.Link = {
       type: 'link',
       raw,
       href,
@@ -33,7 +36,7 @@ function outputLink(cap, link, raw, lexer) {
   };
 }
 
-function indentCodeCompensation(raw, text) {
+function indentCodeCompensation(raw: string, text: string) {
   const matchIndentToCode = raw.match(/^(\s+)(?:```)/);
 
   if (matchIndentToCode === null) {
@@ -64,12 +67,16 @@ function indentCodeCompensation(raw, text) {
 /**
  * Tokenizer
  */
-export class Tokenizer {
-  constructor(options) {
-    this.options = options || defaults;
+export class _Tokenizer {
+  options: MarkedOptions;
+  rules: any;
+  lexer!: _Lexer;
+
+  constructor(options?: MarkedOptions) {
+    this.options = options || _defaults;
   }
 
-  space(src) {
+  space(src: string): Tokens.Space | undefined {
     const cap = this.rules.block.newline.exec(src);
     if (cap && cap[0].length > 0) {
       return {
@@ -79,7 +86,7 @@ export class Tokenizer {
     }
   }
 
-  code(src) {
+  code(src: string): Tokens.Code | undefined {
     const cap = this.rules.block.code.exec(src);
     if (cap) {
       const text = cap[0].replace(/^ {1,4}/gm, '');
@@ -94,7 +101,7 @@ export class Tokenizer {
     }
   }
 
-  fences(src) {
+  fences(src: string): Tokens.Code | undefined {
     const cap = this.rules.block.fences.exec(src);
     if (cap) {
       const raw = cap[0];
@@ -109,7 +116,7 @@ export class Tokenizer {
     }
   }
 
-  heading(src) {
+  heading(src: string): Tokens.Heading | undefined {
     const cap = this.rules.block.heading.exec(src);
     if (cap) {
       let text = cap[2].trim();
@@ -135,7 +142,7 @@ export class Tokenizer {
     }
   }
 
-  hr(src) {
+  hr(src: string): Tokens.Hr | undefined {
     const cap = this.rules.block.hr.exec(src);
     if (cap) {
       return {
@@ -145,7 +152,7 @@ export class Tokenizer {
     }
   }
 
-  blockquote(src) {
+  blockquote(src: string): Tokens.Blockquote | undefined {
     const cap = this.rules.block.blockquote.exec(src);
     if (cap) {
       const text = cap[0].replace(/^ *>[ \t]?/gm, '');
@@ -162,7 +169,7 @@ export class Tokenizer {
     }
   }
 
-  list(src) {
+  list(src: string): Tokens.List | undefined {
     let cap = this.rules.block.list.exec(src);
     if (cap) {
       let raw, istask, ischecked, indent, i, blankLine, endsWithBlankLine,
@@ -171,13 +178,13 @@ export class Tokenizer {
       let bull = cap[1].trim();
       const isordered = bull.length > 1;
 
-      const list = {
+      const list: Tokens.List = {
         type: 'list',
         raw: '',
         ordered: isordered,
         start: isordered ? +bull.slice(0, -1) : '',
         loose: false,
-        items: []
+        items: [] as Tokens.ListItem[]
       };
 
       bull = isordered ? `\\d{1,9}\\${bull.slice(-1)}` : `\\${bull}`;
@@ -203,7 +210,7 @@ export class Tokenizer {
         raw = cap[0];
         src = src.substring(raw.length);
 
-        line = cap[2].split('\n', 1)[0].replace(/^\t+/, (t) => ' '.repeat(3 * t.length));
+        line = cap[2].split('\n', 1)[0].replace(/^\t+/, (t: string) => ' '.repeat(3 * t.length));
         nextLine = src.split('\n', 1)[0];
 
         if (this.options.pedantic) {
@@ -327,7 +334,7 @@ export class Tokenizer {
 
       // Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
       list.items[list.items.length - 1].raw = raw.trimRight();
-      list.items[list.items.length - 1].text = itemContents.trimRight();
+      (list.items[list.items.length - 1] as Tokens.ListItem).text = itemContents.trimRight();
       list.raw = list.raw.trimRight();
 
       const l = list.items.length;
@@ -339,8 +346,8 @@ export class Tokenizer {
 
         if (!list.loose) {
           // Check if list should be loose
-          const spacers = list.items[i].tokens.filter(t => t.type === 'space');
-          const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => /\n.*\n/.test(t.raw));
+          const spacers = list.items[i].tokens!.filter(t => t.type === 'space');
+          const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => /\n.*\n/.test(t.raw!));
 
           list.loose = hasMultipleLineBreaks;
         }
@@ -357,10 +364,10 @@ export class Tokenizer {
     }
   }
 
-  html(src) {
+  html(src: string): Tokens.HTML | Tokens.Paragraph | undefined {
     const cap = this.rules.block.html.exec(src);
     if (cap) {
-      const token = {
+      const token: Tokens.HTML | Tokens.Paragraph = {
         type: 'html',
         block: true,
         raw: cap[0],
@@ -370,15 +377,16 @@ export class Tokenizer {
       };
       if (this.options.sanitize) {
         const text = this.options.sanitizer ? this.options.sanitizer(cap[0]) : escape(cap[0]);
-        token.type = 'paragraph';
-        token.text = text;
-        token.tokens = this.lexer.inline(text);
+        const paragraph = token as unknown as Tokens.Paragraph;
+        paragraph.type = 'paragraph';
+        paragraph.text = text;
+        paragraph.tokens = this.lexer.inline(text);
       }
       return token;
     }
   }
 
-  def(src) {
+  def(src: string): Tokens.Def | undefined {
     const cap = this.rules.block.def.exec(src);
     if (cap) {
       const tag = cap[1].toLowerCase().replace(/\s+/g, ' ');
@@ -394,12 +402,16 @@ export class Tokenizer {
     }
   }
 
-  table(src) {
+  table(src: string): Tokens.Table | undefined {
     const cap = this.rules.block.table.exec(src);
     if (cap) {
-      const item = {
+      const item: Tokens.Table = {
         type: 'table',
-        header: splitCells(cap[1]).map(c => { return { text: c }; }),
+        // splitCells expects a number as second argument
+        // @ts-expect-error
+        header: splitCells(cap[1]).map(c => {
+          return { text: c };
+        }),
         align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
         rows: cap[3] && cap[3].trim() ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : []
       };
@@ -410,11 +422,11 @@ export class Tokenizer {
         let l = item.align.length;
         let i, j, k, row;
         for (i = 0; i < l; i++) {
-          if (/^ *-+: *$/.test(item.align[i])) {
+          if (/^ *-+: *$/.test(item.align[i]!)) {
             item.align[i] = 'right';
-          } else if (/^ *:-+: *$/.test(item.align[i])) {
+          } else if (/^ *:-+: *$/.test(item.align[i]!)) {
             item.align[i] = 'center';
-          } else if (/^ *:-+ *$/.test(item.align[i])) {
+          } else if (/^ *:-+ *$/.test(item.align[i]!)) {
             item.align[i] = 'left';
           } else {
             item.align[i] = null;
@@ -423,7 +435,9 @@ export class Tokenizer {
 
         l = item.rows.length;
         for (i = 0; i < l; i++) {
-          item.rows[i] = splitCells(item.rows[i], item.header.length).map(c => { return { text: c }; });
+          item.rows[i] = splitCells(item.rows[i] as unknown as string, item.header.length).map(c => {
+            return { text: c };
+          });
         }
 
         // parse child tokens inside headers and cells
@@ -448,7 +462,7 @@ export class Tokenizer {
     }
   }
 
-  lheading(src) {
+  lheading(src: string): Tokens.Heading | undefined {
     const cap = this.rules.block.lheading.exec(src);
     if (cap) {
       return {
@@ -461,7 +475,7 @@ export class Tokenizer {
     }
   }
 
-  paragraph(src) {
+  paragraph(src: string): Tokens.Paragraph | undefined {
     const cap = this.rules.block.paragraph.exec(src);
     if (cap) {
       const text = cap[1].charAt(cap[1].length - 1) === '\n'
@@ -476,7 +490,7 @@ export class Tokenizer {
     }
   }
 
-  text(src) {
+  text(src: string): Tokens.Text | undefined {
     const cap = this.rules.block.text.exec(src);
     if (cap) {
       return {
@@ -488,7 +502,7 @@ export class Tokenizer {
     }
   }
 
-  escape(src) {
+  escape(src: string): Tokens.Escape | undefined {
     const cap = this.rules.inline.escape.exec(src);
     if (cap) {
       return {
@@ -499,7 +513,7 @@ export class Tokenizer {
     }
   }
 
-  tag(src) {
+  tag(src: string): Tokens.Tag | undefined {
     const cap = this.rules.inline.tag.exec(src);
     if (cap) {
       if (!this.lexer.state.inLink && /^<a /i.test(cap[0])) {
@@ -530,7 +544,7 @@ export class Tokenizer {
     }
   }
 
-  link(src) {
+  link(src: string): Tokens.Link | Tokens.Image | undefined {
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
       const trimmedUrl = cap[2].trim();
@@ -586,10 +600,10 @@ export class Tokenizer {
     }
   }
 
-  reflink(src, links) {
+  reflink(src: string, links: Links): Tokens.Link | Tokens.Image | Tokens.Text | undefined {
     let cap;
     if ((cap = this.rules.inline.reflink.exec(src))
-        || (cap = this.rules.inline.nolink.exec(src))) {
+      || (cap = this.rules.inline.nolink.exec(src))) {
       let link = (cap[2] || cap[1]).replace(/\s+/g, ' ');
       link = links[link.toLowerCase()];
       if (!link) {
@@ -604,7 +618,7 @@ export class Tokenizer {
     }
   }
 
-  emStrong(src, maskedSrc, prevChar = '') {
+  emStrong(src: string, maskedSrc: string, prevChar = ''): Tokens.Em | Tokens.Strong | undefined {
     let match = this.rules.inline.emStrong.lDelim.exec(src);
     if (!match) return;
 
@@ -672,7 +686,7 @@ export class Tokenizer {
     }
   }
 
-  codespan(src) {
+  codespan(src: string): Tokens.Codespan | undefined {
     const cap = this.rules.inline.code.exec(src);
     if (cap) {
       let text = cap[2].replace(/\n/g, ' ');
@@ -690,7 +704,7 @@ export class Tokenizer {
     }
   }
 
-  br(src) {
+  br(src: string): Tokens.Br | undefined {
     const cap = this.rules.inline.br.exec(src);
     if (cap) {
       return {
@@ -700,7 +714,7 @@ export class Tokenizer {
     }
   }
 
-  del(src) {
+  del(src: string): Tokens.Del | undefined {
     const cap = this.rules.inline.del.exec(src);
     if (cap) {
       return {
@@ -712,7 +726,7 @@ export class Tokenizer {
     }
   }
 
-  autolink(src, mangle) {
+  autolink(src: string, mangle: (cap: string) => string): Tokens.Link | undefined {
     const cap = this.rules.inline.autolink.exec(src);
     if (cap) {
       let text, href;
@@ -740,7 +754,7 @@ export class Tokenizer {
     }
   }
 
-  url(src, mangle) {
+  url(src: string, mangle: (cap: string) => string): Tokens.Link | undefined {
     let cap;
     if (cap = this.rules.inline.url.exec(src)) {
       let text, href;
@@ -777,7 +791,7 @@ export class Tokenizer {
     }
   }
 
-  inlineText(src, smartypants) {
+  inlineText(src: string, smartypants: (cap: string) => string): Tokens.Text | undefined {
     const cap = this.rules.inline.text.exec(src);
     if (cap) {
       let text;
