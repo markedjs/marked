@@ -755,7 +755,7 @@ paragraph
 
 # heading
 `);
-    expect(html).toBe('extension2 paragraph\nextension1 html\n<h1 id="heading">heading</h1>\n');
+    expect(html).toBe('extension2 paragraph\nextension1 html\n<h1>heading</h1>\n');
   });
 
   it('should use previous extension when returning false', () => {
