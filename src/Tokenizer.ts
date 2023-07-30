@@ -69,6 +69,7 @@ function indentCodeCompensation(raw: string, text: string) {
  */
 export class _Tokenizer {
   options: MarkedOptions;
+  // TOOD: Fix this rules type
   rules: any;
   lexer!: _Lexer;
 

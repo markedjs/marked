@@ -20,7 +20,7 @@ export type Token = (Tokens.Space
     | Tokens.Codespan
     | Tokens.Br
     | Tokens.Del
-    | Tokens.Generic) & { loose?: boolean, tokens?: Token[] };
+    | Tokens.Generic);
 
 export namespace Tokens {
     export interface Space {

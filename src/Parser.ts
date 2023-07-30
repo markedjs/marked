@@ -187,7 +187,7 @@ export class _Parser {
           continue;
         }
         case 'text': {
-          body = token.tokens ? this.parseInline(token.tokens) : token.text;
+          body = 'tokens' in token && token.tokens ? this.parseInline(token.tokens) : token.text;
           while (i + 1 < l && tokens[i + 1].type === 'text') {
             token = tokens[++i] as Tokens.Text;
             body += '\n' + (token.tokens ? this.parseInline(token.tokens) : token.text);

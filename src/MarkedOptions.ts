@@ -13,11 +13,15 @@ export interface TokenizerThis {
   lexer: _Lexer;
 }
 
+export type TokenizerExtensionFunction = (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
+
+export type TokenizerStartFunction = (this: TokenizerThis, src: string) => number | void;
+
 export interface TokenizerExtension {
   name: string;
   level: 'block' | 'inline';
-  start?: ((this: TokenizerThis, src: string) => number | void) | undefined;
-  tokenizer: (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
+  start?: (TokenizerStartFunction) | undefined;
+  tokenizer: TokenizerExtensionFunction;
   childTokens?: string[] | undefined;
 }
 
@@ -205,10 +209,10 @@ export interface MarkedOptions extends Omit<MarkedExtension, 'extensions' | 'ren
     | (TokenizerAndRendererExtension[] & {
     renderers: Record<string, RendererExtensionFunction>,
     childTokens: Record<string, string[]>,
-    block: any[],
-    inline: any[],
-    startBlock: Array<(this: TokenizerThis, src: string) => number | void>,
-    startInline: Array<(this: TokenizerThis, src: string) => number | void>
+    block: TokenizerExtensionFunction[],
+    inline: TokenizerExtensionFunction[],
+    startBlock: TokenizerStartFunction[],
+    startInline: TokenizerStartFunction[]
   })
     | undefined | null;
 }

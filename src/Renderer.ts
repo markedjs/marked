@@ -135,10 +135,11 @@ export class _Renderer {
   }
 
   link(href: string, title: string | null | undefined, text: string): string {
-    href = cleanUrl(this.options.sanitize, this.options.baseUrl, href) as any;
-    if (href === null) {
+    const cleanHref = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+    if (cleanHref === null) {
       return text;
     }
+    href = cleanHref;
     let out = '<a href="' + href + '"';
     if (title) {
       out += ' title="' + title + '"';
@@ -148,10 +149,11 @@ export class _Renderer {
   }
 
   image(href: string, title: string | null, text: string): string {
-    href = cleanUrl(this.options.sanitize, this.options.baseUrl, href) as any;
-    if (href === null) {
+    const cleanHref = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+    if (cleanHref === null) {
       return text;
     }
+    href = cleanHref;
 
     let out = `<img src="${href}" alt="${text}"`;
     if (title) {

@@ -1,8 +1,5 @@
 declare module "Tokens" {
-    export type Token = (Tokens.Space | Tokens.Code | Tokens.Heading | Tokens.Table | Tokens.Hr | Tokens.Blockquote | Tokens.List | Tokens.ListItem | Tokens.Paragraph | Tokens.HTML | Tokens.Text | Tokens.Def | Tokens.Escape | Tokens.Tag | Tokens.Image | Tokens.Link | Tokens.Strong | Tokens.Em | Tokens.Codespan | Tokens.Br | Tokens.Del | Tokens.Generic) & {
-        loose?: boolean;
-        tokens?: Token[];
-    };
+    export type Token = (Tokens.Space | Tokens.Code | Tokens.Heading | Tokens.Table | Tokens.Hr | Tokens.Blockquote | Tokens.List | Tokens.ListItem | Tokens.Paragraph | Tokens.HTML | Tokens.Text | Tokens.Def | Tokens.Escape | Tokens.Tag | Tokens.Image | Tokens.Link | Tokens.Strong | Tokens.Em | Tokens.Codespan | Tokens.Br | Tokens.Del | Tokens.Generic);
     export namespace Tokens {
         interface Space {
             type: 'space';
@@ -441,11 +438,13 @@ declare module "MarkedOptions" {
     export interface TokenizerThis {
         lexer: _Lexer;
     }
+    export type TokenizerExtensionFunction = (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
+    export type TokenizerStartFunction = (this: TokenizerThis, src: string) => number | void;
     export interface TokenizerExtension {
         name: string;
         level: 'block' | 'inline';
-        start?: ((this: TokenizerThis, src: string) => number | void) | undefined;
-        tokenizer: (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
+        start?: (TokenizerStartFunction) | undefined;
+        tokenizer: TokenizerExtensionFunction;
         childTokens?: string[] | undefined;
     }
     export interface RendererThis {
@@ -599,10 +598,10 @@ declare module "MarkedOptions" {
         extensions?: (TokenizerAndRendererExtension[] & {
             renderers: Record<string, RendererExtensionFunction>;
             childTokens: Record<string, string[]>;
-            block: any[];
-            inline: any[];
-            startBlock: Array<(this: TokenizerThis, src: string) => number | void>;
-            startInline: Array<(this: TokenizerThis, src: string) => number | void>;
+            block: TokenizerExtensionFunction[];
+            inline: TokenizerExtensionFunction[];
+            startBlock: TokenizerStartFunction[];
+            startInline: TokenizerStartFunction[];
         }) | undefined | null;
     }
 }

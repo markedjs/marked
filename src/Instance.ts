@@ -11,7 +11,7 @@ import {
   escape
 } from './helpers.ts';
 import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
-import type { Token, TokensList } from './Tokens.ts';
+import type { Token, Tokens, TokensList } from './Tokens.ts';
 
 export type ResultCallback = (error: Error | null, parseResult?: string) => undefined | void;
 
@@ -63,13 +63,13 @@ export class Marked {
           break;
         }
         default: {
-          if (this.defaults.extensions && this.defaults.extensions.childTokens && this.defaults.extensions.childTokens[token.type]) { // Walk any extensions
-            this.defaults.extensions.childTokens[token.type].forEach((childTokens) => {
-              // @ts-expect-error we assume token[childToken] is an array of tokens but we can't be sure
-              values = values.concat(this.walkTokens(token[childTokens], callback));
+          const genericToken = token as Tokens.Generic;
+          if (this.defaults.extensions && this.defaults.extensions.childTokens && this.defaults.extensions.childTokens[genericToken.type]) { // Walk any extensions
+            this.defaults.extensions.childTokens[genericToken.type].forEach((childTokens) => {
+              values = values.concat(this.walkTokens(genericToken[childTokens], callback));
             });
-          } else if (token.tokens) {
-            values = values.concat(this.walkTokens(token.tokens, callback));
+          } else if (genericToken.tokens) {
+            values = values.concat(this.walkTokens(genericToken.tokens, callback));
           }
         }
       }
