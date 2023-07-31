@@ -65,7 +65,7 @@
     "highlight.js": "^11.8.0",
     "jasmine": "^5.1.0",
     "markdown-it": "13.0.1",
-    "node-fetch": "^3.3.1",
+    "node-fetch": "^3.3.2",
     "recheck": "^4.4.5",
     "semantic-release": "^21.0.7",
     "titleize": "^3.0.0",
