@@ -20,7 +20,7 @@ export type TokenizerStartFunction = (this: TokenizerThis, src: string) => numbe
 export interface TokenizerExtension {
   name: string;
   level: 'block' | 'inline';
-  start?: (TokenizerStartFunction) | undefined;
+  start?: TokenizerStartFunction | undefined;
   tokenizer: TokenizerExtensionFunction;
   childTokens?: string[] | undefined;
 }
