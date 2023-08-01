@@ -16,14 +16,14 @@ export class _Hooks {
   /**
    * Process markdown before marked
    */
-  preprocess(markdown: string): string | Promise<string> {
+  preprocess(markdown: string) {
     return markdown;
   }
 
   /**
    * Process HTML after marked is finished
    */
-  postprocess(html: string): string | Promise<string> {
+  postprocess(html: string) {
     return html;
   }
 }

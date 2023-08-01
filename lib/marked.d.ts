@@ -522,11 +522,11 @@ declare class _Hooks {
     /**
      * Process markdown before marked
      */
-    preprocess(markdown: string): string | Promise<string>;
+    preprocess(markdown: string): string;
     /**
      * Process HTML after marked is finished
      */
-    postprocess(html: string): string | Promise<string>;
+    postprocess(html: string): string;
 }
 
 type ResultCallback$1 = (error: Error | null, parseResult?: string) => undefined | void;
