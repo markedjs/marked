@@ -173,7 +173,7 @@ export interface MarkedExtension {
    * Each token is passed by reference so updates are persisted when passed to the parser.
    * The return value of the function is ignored.
    */
-  walkTokens?: ((token: Token) => void | Promise<void>) | undefined | null;
+  walkTokens?: ((token: Token) => void | unknown | Promise<void>) | undefined | null;
   /**
    * Generate closing slash for self-closing tags (<br/> instead of <br>)
    * @deprecated Deprecated in v5.0.0 use marked-xhtml to emit self-closing HTML tags for void elements (<br/>, <img/>, etc.) with a "/" as required by XHTML.
@@ -181,38 +181,37 @@ export interface MarkedExtension {
   xhtml?: boolean | undefined;
 }
 
-export interface MarkedOptions extends Omit<MarkedExtension, 'extensions' | 'renderer' | 'tokenizer' | 'walkTokens'> {
+export interface MarkedOptions extends Omit<MarkedExtension, 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
   /**
    * Type: object Default: new Renderer()
    *
    * An object containing functions to render tokens to HTML.
    */
-  renderer?: Omit<_Renderer, 'constructor'> | undefined | null;
+  renderer?: _Renderer | undefined | null;
 
   /**
    * The tokenizer defines how to turn markdown text into tokens.
    */
-  tokenizer?: Omit<_Tokenizer, 'constructor'> | undefined | null;
+  tokenizer?: _Tokenizer | undefined | null;
 
   /**
-   * The walkTokens function gets called with every token.
-   * Child tokens are called before moving on to sibling tokens.
-   * Each token is passed by reference so updates are persisted when passed to the parser.
-   * The return value of the function is ignored.
+   * Custom extensions
    */
-  walkTokens?: ((token: Token) => void | Promise<void> | Array<void | Promise<void>>) | undefined | null;
+  extensions?: null | {
+    renderers: {
+      [name: string]: RendererExtensionFunction;
+    };
+    childTokens: {
+      [name: string]: string[];
+    };
+    inline?: TokenizerExtensionFunction[];
+    block?: TokenizerExtensionFunction[];
+    startInline?: TokenizerStartFunction[];
+    startBlock?: TokenizerStartFunction[];
+  };
 
   /**
-   * Add tokenizers and renderers to marked
+   * walkTokens function returns array of values for Promise.all
    */
-  extensions?:
-    | (TokenizerAndRendererExtension[] & {
-    renderers: Record<string, RendererExtensionFunction>,
-    childTokens: Record<string, string[]>,
-    block: TokenizerExtensionFunction[],
-    inline: TokenizerExtensionFunction[],
-    startBlock: TokenizerStartFunction[],
-    startInline: TokenizerStartFunction[]
-  })
-    | undefined | null;
+  walkTokens?: null | ((token: Token) => void | (unknown | Promise<void>)[]);
 }

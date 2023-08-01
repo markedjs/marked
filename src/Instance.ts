@@ -78,7 +78,7 @@ export class Marked {
   }
 
   use(...args: MarkedExtension[]) {
-    const extensions: NonNullable<MarkedOptions['extensions']> = this.defaults.extensions || { renderers: {}, childTokens: {} } as NonNullable<MarkedOptions['extensions']>;
+    const extensions: MarkedOptions['extensions'] = this.defaults.extensions || { renderers: {}, childTokens: {} };
 
     args.forEach((pack) => {
       // copy options to new object
@@ -113,7 +113,7 @@ export class Marked {
               throw new Error("extension level must be 'block' or 'inline'");
             }
             if (extensions[ext.level]) {
-              extensions[ext.level].unshift(ext.tokenizer);
+              extensions[ext.level]!.unshift(ext.tokenizer);
             } else {
               extensions[ext.level] = [ext.tokenizer];
             }
@@ -211,7 +211,7 @@ export class Marked {
       if (pack.walkTokens) {
         const walkTokens = this.defaults.walkTokens;
         opts.walkTokens = function(token) {
-          let values: Array<Promise<void> | void> = [];
+          let values: Array<Promise<void> | void | unknown> = [];
           values.push(pack.walkTokens!.call(this, token));
           if (walkTokens) {
             values = values.concat(walkTokens.call(this, token));
