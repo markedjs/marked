@@ -29,6 +29,10 @@ jobs:
         run: npm run test:unit
       - name: Run Spec Tests 👩🏽‍💻
         run: npm run test:specs
+      - name: Run UMD Tests 👩🏽‍💻
+        run: npm run test:umd
+      - name: Run Types Tests 👩🏽‍💻
+        run: npm run test:types
 
   Lint:
     runs-on: ubuntu-latest

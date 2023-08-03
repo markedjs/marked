@@ -77,8 +77,8 @@
     "uglify-js": "^3.17.4"
   },
   "scripts": {
-    "test": "cross-env NODE_OPTIONS=--loader=ts-node/esm jasmine --config=jasmine.json && npm run test:umd && npm run test:types",
-    "test:all": "npm test && npm run test:lint",
+    "test": "cross-env NODE_OPTIONS=--loader=ts-node/esm jasmine --config=jasmine.json",
+    "test:all": "npm test && npm run test:umd && npm run test:types && npm run test:lint",
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",
     "test:lint": "eslint .",
