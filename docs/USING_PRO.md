@@ -53,7 +53,7 @@ Before building your custom extensions, it is important to understand the compon
 4) The `parser` traverses the token tree and feeds each token into the appropriate `renderer`, and concatenates their outputs into the final HTML result.
 5) Each `renderer` receives a token and manipulates its contents to generate a segment of HTML.
 
-Marked provides methods for directly overriding the `renderer` and `tokenizer` for any existing token type, as well as inserting additional custom `renderer` and `tokenizer` functions to handle entirely custom syntax.
+Marked provides methods for directly overriding the `renderer` and `tokenizer` for any existing token type, as well as inserting additional custom `renderer` and `tokenizer` functions to handle entirely custom syntax. For example, using `marked.use({renderer})` would modify a render extension, whereas `marked.use({extenstions: [{renderer}]})` would add a new renderer extension. See the [custom extensions example](#custom-extensions-example) for insight on how to execute this.
 
 ***
 
@@ -441,7 +441,7 @@ The renderer function has access to the parser in the `this` object, which can b
 <dd>An array of strings that match the names of any token parameters that should be traversed by the <code>walkTokens</code> functions. For instance, if you want to use a second custom parameter to contain child tokens in addition to <code>tokens</code>, it could be listed here. If <code>childTokens</code> is provided, the <code>tokens</code> array will not be walked by default unless it is also included in the <code>childTokens</code> array.</dd>
 </dl>
 
-**Example:** Add a custom syntax to generate `<dl>` description lists.
+**Example:** <a name="custom-extensions-example"></a>Add a custom syntax to generate `<dl>` description lists.
 
 ``` js
 const descriptionList = {
