@@ -50,7 +50,7 @@ describe('Parser', () => {
             { type: 'text', text: 'heading' }
           ]
         }],
-        html: '<h1 id="heading">heading</h1>'
+        html: '<h1>heading</h1>'
       });
     });
 

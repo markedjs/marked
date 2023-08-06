@@ -11,7 +11,7 @@ describe('Hooks', () => {
       }
     });
     const html = marked('*text*');
-    expect(html.trim()).toBe('<h1 id="preprocess">preprocess</h1>\n<p><em>text</em></p>');
+    expect(html.trim()).toBe('<h1>preprocess</h1>\n<p><em>text</em></p>');
   });
 
   it('should preprocess async', async() => {
@@ -27,7 +27,7 @@ describe('Hooks', () => {
     const promise = marked('*text*');
     expect(promise).toBeInstanceOf(Promise);
     const html = await promise;
-    expect(html.trim()).toBe('<h1 id="preprocess-async">preprocess async</h1>\n<p><em>text</em></p>');
+    expect(html.trim()).toBe('<h1>preprocess async</h1>\n<p><em>text</em></p>');
   });
 
   it('should preprocess options', () => {
@@ -112,6 +112,6 @@ describe('Hooks', () => {
     const promise = marked('*text*');
     expect(promise).toBeInstanceOf(Promise);
     const html = await promise;
-    expect(html.trim()).toBe('<h1 id="preprocess1">preprocess1</h1>\n<h1 id="preprocess2">preprocess2</h1>\n<p><em>text</em></p>\n<h1>postprocess2 async</h1>\n<h1>postprocess1</h1>');
+    expect(html.trim()).toBe('<h1>preprocess1</h1>\n<h1>preprocess2</h1>\n<p><em>text</em></p>\n<h1>postprocess2 async</h1>\n<h1>postprocess1</h1>');
   });
 });
