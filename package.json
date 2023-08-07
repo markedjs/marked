@@ -58,7 +58,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.46.0",
     "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-import": "^2.28.0",
     "eslint-plugin-n": "^16.0.1",
     "eslint-plugin-promise": "^6.1.1",
     "front-matter": "^4.0.2",
