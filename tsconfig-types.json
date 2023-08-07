@@ -2,14 +2,14 @@
   "compilerOptions": {
     "target": "es2022",
     "module": "NodeNext",
-    "isolatedModules": true,
     "strict": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "NodeNext",
     "noImplicitAny": false,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "outFile": "lib/marked.d.ts"
   },
   "include": [
     "src/*.ts"
