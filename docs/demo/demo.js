@@ -24,7 +24,7 @@ let inputDirty = true;
 let $activeOutputElem = null;
 const search = searchToObject();
 const markedVersions = {
-  master: 'https://cdn.jsdelivr.net/gh/markedjs/marked/marked.min.js'
+  master: 'https://cdn.jsdelivr.net/gh/markedjs/marked'
 };
 let delayTime = 1;
 let checkChangeTimeout = null;
@@ -98,7 +98,7 @@ function setInitialVersion() {
     .then(function(json) {
       for (let i = 0; i < json.versions.length; i++) {
         const ver = json.versions[i];
-        markedVersions[ver] = 'https://cdn.jsdelivr.net/npm/marked@' + ver + '/marked.min.js';
+        markedVersions[ver] = 'https://cdn.jsdelivr.net/npm/marked@' + ver;
         const opt = document.createElement('option');
         opt.textContent = ver;
         opt.value = ver;
@@ -111,7 +111,7 @@ function setInitialVersion() {
           return res.json();
         })
         .then(function(json) {
-          markedVersions.master = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + json[0].sha + '/marked.min.js';
+          markedVersions.master = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + json[0].sha;
         })
         .catch(function() {
           // do nothing
@@ -254,7 +254,7 @@ function addCommitVersion(value, text, commit) {
   if (markedVersions[value]) {
     return;
   }
-  markedVersions[value] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + commit + '/marked.min.js';
+  markedVersions[value] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + commit;
   const opt = document.createElement('option');
   opt.textContent = text;
   opt.value = value;
