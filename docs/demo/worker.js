@@ -123,25 +123,29 @@ function loadVersion(ver) {
               // eslint-disable-next-line no-new-func
               Function(text)();
             } catch (err) {
-              throw new Error('Cannot load that version of marked');
+              throw new Error('No esm or min build');
             }
-            return globalThis.marked;
+            return (globalThis || global).marked;
           });
       })
       .then((marked) => {
-        if (marked.marked) {
+        if (!marked) {
+          throw Error('No marked');
+        } else if (marked.marked) {
           versionCache[ver] = marked.marked;
         } else if (marked.default) {
           versionCache[ver] = marked.default;
         } else if (marked.parse) {
           versionCache[ver] = marked;
-        }
-        if (!versionCache[ver]) {
-          throw new Error('Cannot load that version of marked');
+        } else {
+          throw new Error('Can not find marked');
         }
       });
   }
   return promise.then(() => {
     currentVersion = ver;
+  }).catch((err) => {
+    console.error(err);
+    throw new Error('Cannot load that version of marked');
   });
 }

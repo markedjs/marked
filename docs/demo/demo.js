@@ -393,6 +393,10 @@ function setResponseTime(ms) {
     suffix = 's';
   }
   $responseTimeElem.textContent = amount + suffix;
+  $responseTimeElem.animate([
+    { transform: 'scale(1.2)' },
+    { transform: 'scale(1)' }
+  ], 200);
 }
 
 function setParsed(parsed, lexed) {
