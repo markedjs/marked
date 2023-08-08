@@ -1,12 +1,3 @@
-/* globals marked, unfetch, ES6Promise, Promise */ // eslint-disable-line no-redeclare
-
-if (!window.Promise) {
-  window.Promise = ES6Promise;
-}
-if (!window.fetch) {
-  window.fetch = unfetch;
-}
-
 onunhandledrejection = function(e) {
   throw e.reason;
 };
@@ -16,7 +7,6 @@ const $mainElem = document.querySelector('#main');
 const $markdownElem = document.querySelector('#markdown');
 const $markedVerElem = document.querySelector('#markedVersion');
 const $commitVerElem = document.querySelector('#commitVersion');
-let $markedVer = document.querySelector('#markedCdn');
 const $optionsElem = document.querySelector('#options');
 const $outputTypeElem = document.querySelector('#outputType');
 const $inputTypeElem = document.querySelector('#inputType');
@@ -36,7 +26,6 @@ const search = searchToObject();
 const markedVersions = {
   master: 'https://cdn.jsdelivr.net/gh/markedjs/marked/marked.min.js'
 };
-const markedVersionCache = {};
 let delayTime = 1;
 let checkChangeTimeout = null;
 let markedWorker;
@@ -285,15 +274,10 @@ function getPrCommit(pr) {
 }
 
 function setDefaultOptions() {
-  if (window.Worker) {
-    return messageWorker({
-      task: 'defaults',
-      version: markedVersions[$markedVerElem.value]
-    });
-  } else {
-    const defaults = marked.getDefaults();
-    setOptions(defaults);
-  }
+  return messageWorker({
+    task: 'defaults',
+    version: markedVersions[$markedVerElem.value]
+  });
 }
 
 function setOptions(opts) {
@@ -323,39 +307,6 @@ function searchToObject() {
   }
 
   return obj;
-}
-
-function isArray(arr) {
-  return Object.prototype.toString.call(arr) === '[object Array]';
-}
-
-function jsonString(input, level) {
-  level = level || 0;
-  if (isArray(input)) {
-    if (input.length === 0) {
-      return '[]';
-    }
-    const items = [];
-    let i;
-    if (!isArray(input[0]) && typeof input[0] === 'object' && input[0] !== null) {
-      for (i = 0; i < input.length; i++) {
-        items.push(' '.repeat(2 * level) + jsonString(input[i], level + 1));
-      }
-      return '[\n' + items.join('\n') + '\n]';
-    }
-    for (i = 0; i < input.length; i++) {
-      items.push(jsonString(input[i], level));
-    }
-    return '[' + items.join(', ') + ']';
-  } else if (typeof input === 'object' && input !== null) {
-    const props = [];
-    for (const prop in input) {
-      props.push(prop + ':' + jsonString(input[prop], level));
-    }
-    return '{' + props.join(', ') + '}';
-  } else {
-    return JSON.stringify(input);
-  }
 }
 
 function getScrollSize() {
@@ -391,32 +342,12 @@ function updateLink() {
 }
 
 function updateVersion() {
-  if (window.Worker) {
-    handleInput();
-    return Promise.resolve();
-  }
-  let promise;
-  if (markedVersionCache[$markedVerElem.value]) {
-    promise = Promise.resolve(markedVersionCache[$markedVerElem.value]);
-  } else {
-    promise = fetch(markedVersions[$markedVerElem.value])
-      .then(function(res) { return res.text(); })
-      .then(function(text) {
-        markedVersionCache[$markedVerElem.value] = text;
-        return text;
-      });
-  }
-  return promise.then(function(text) {
-    const script = document.createElement('script');
-    script.textContent = text;
-
-    $markedVer.parentNode.replaceChild(script, $markedVer);
-    $markedVer = script;
-  }).then(handleInput);
+  handleInput();
+  return Promise.resolve();
 }
 
 function checkForChanges() {
-  if (inputDirty && $markedVerElem.value !== 'commit' && $markedVerElem.value !== 'pr' && (typeof marked !== 'undefined' || window.Worker)) {
+  if (inputDirty && $markedVerElem.value !== 'commit' && $markedVerElem.value !== 'pr') {
     inputDirty = false;
 
     updateLink();
@@ -436,35 +367,13 @@ function checkForChanges() {
     const hash = version + markdown + optionsString;
     if (lastInput !== hash) {
       lastInput = hash;
-      if (window.Worker) {
-        delayTime = 100;
-        messageWorker({
-          task: 'parse',
-          version,
-          markdown,
-          options
-        });
-      } else {
-        const startTime = new Date();
-        const lexed = marked.lexer(markdown, options);
-        const lexedList = jsonString(lexed);
-        const parsed = marked.parser(lexed, options);
-        const endTime = new Date();
-
-        $previewElem.classList.remove('error');
-        $htmlElem.classList.remove('error');
-        $lexerElem.classList.remove('error');
-        const scrollPercent = getScrollPercent();
-        setParsed(parsed, lexedList);
-        setScrollPercent(scrollPercent);
-        delayTime = endTime - startTime;
-        setResponseTime(delayTime);
-        if (delayTime < 50) {
-          delayTime = 50;
-        } else if (delayTime > 500) {
-          delayTime = 1000;
-        }
-      }
+      delayTime = 100;
+      messageWorker({
+        task: 'parse',
+        version,
+        markdown,
+        options
+      });
     }
   }
   checkChangeTimeout = window.setTimeout(checkForChanges, delayTime);

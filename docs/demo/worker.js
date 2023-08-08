@@ -1,13 +1,4 @@
-/* globals marked, unfetch, ES6Promise, Promise */ // eslint-disable-line no-redeclare
-
-if (!self.Promise) {
-  self.importScripts('https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.js');
-  self.Promise = ES6Promise;
-}
-if (!self.fetch) {
-  self.importScripts('https://cdn.jsdelivr.net/npm/unfetch/dist/unfetch.umd.js');
-  self.fetch = unfetch;
-}
+/* globals marked */
 
 const versionCache = {};
 let currentVersion;
@@ -132,8 +123,13 @@ function loadVersion(ver) {
   }
   return promise.then(function(text) {
     try {
+      // eslint-disable-next-line no-global-assign
+      marked = null;
       // eslint-disable-next-line no-new-func
       Function(text)();
+      if (!marked) {
+        throw new Error();
+      }
     } catch (err) {
       throw new Error('Cannot load that version of marked');
     }
