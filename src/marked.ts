@@ -13,8 +13,7 @@ import {
 } from './defaults.ts';
 import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
 import type { Token, TokensList } from './Tokens.ts';
-
-export type ResultCallback = (error: Error | null, parseResult?: string) => undefined | void;
+import type { ResultCallback } from './Instance.ts';
 
 const markedInstance = new Marked();
 

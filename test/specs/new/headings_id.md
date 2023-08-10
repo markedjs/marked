@@ -1,3 +1,6 @@
+---
+headerIds: true
+---
 ### Heading with <em>html</em>
 
 ### Heading with a [link](http://github.com/)

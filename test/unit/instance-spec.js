@@ -22,7 +22,7 @@ describe('Marked', () => {
 
     expect(marked1.parse('# header')).toBe('im marked1');
     expect(marked2.parse('# header')).toBe('im marked2');
-    expect(marked.parse('# header')).toBe('<h1 id="header">header</h1>\n');
+    expect(marked.parse('# header')).toBe('<h1>header</h1>\n');
   });
 
   it('should work with use', () => {
@@ -48,7 +48,7 @@ describe('Marked', () => {
 
     expect(marked1.parse('# header')).toBe('im marked1');
     expect(marked2.parse('# header')).toBe('im marked2');
-    expect(marked.parse('# header')).toBe('<h1 id="header">header</h1>\n');
+    expect(marked.parse('# header')).toBe('<h1>header</h1>\n');
   });
 
   it('should work with setOptions', () => {
@@ -70,6 +70,6 @@ describe('Marked', () => {
 
     expect(marked1.parse('# header')).toBe('im marked1');
     expect(marked2.parse('# header')).toBe('im marked2');
-    expect(marked.parse('# header')).toBe('<h1 id="header">header</h1>\n');
+    expect(marked.parse('# header')).toBe('<h1>header</h1>\n');
   });
 });
