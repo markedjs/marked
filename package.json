@@ -89,7 +89,7 @@
     "bench": "npm run build && node test/bench.js",
     "lint": "eslint --fix .",
     "build:reset": "git checkout upstream/master lib/marked.cjs lib/marked.umd.js lib/marked.esm.js marked.min.js",
-    "build": "npm run rollup && npm run minify",
+    "build": "npm run rollup && npm run minify && npm run build:types",
     "build:docs": "node build-docs.js",
     "build:types": "tsc --project tsconfig-types.json",
     "rollup": "rollup -c rollup.config.js",

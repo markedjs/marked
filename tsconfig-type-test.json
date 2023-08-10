@@ -8,7 +8,6 @@
     "noEmit": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "NodeNext",
-    "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
       "marked": [
