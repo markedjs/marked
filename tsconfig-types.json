@@ -7,7 +7,6 @@
     "emitDeclarationOnly": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "NodeNext",
-    "noImplicitAny": false,
     "allowImportingTsExtensions": true,
     "outFile": "lib/marked.d.ts"
   },

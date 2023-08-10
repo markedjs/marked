@@ -19,7 +19,8 @@ export type Token = (Tokens.Space
     | Tokens.Em
     | Tokens.Codespan
     | Tokens.Br
-    | Tokens.Del) & { loose?: boolean, tokens?: Token[] };
+    | Tokens.Del
+    | Tokens.Generic) & { loose?: boolean, tokens?: Token[] };
 
 export namespace Tokens {
     export interface Space {
@@ -46,7 +47,7 @@ export namespace Tokens {
 
     export interface Table {
         type: 'table';
-        raw?: string;
+        raw: string;
         align: Array<'center' | 'left' | 'right' | null>;
         header: TableCell[];
         rows: TableCell[][];

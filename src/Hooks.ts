@@ -23,7 +23,7 @@ export class _Hooks {
   /**
    * Process HTML after marked is finished
    */
-  postprocess(html: string | undefined) {
+  postprocess(html: string) {
     return html;
   }
 }

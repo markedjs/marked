@@ -89,9 +89,9 @@ export class _Parser {
         }
         case 'heading': {
           out += this.renderer.heading(
-            this.parseInline(token.tokens) as string,
+            this.parseInline(token.tokens!),
             token.depth,
-            unescape(this.parseInline(token.tokens, this.textRenderer) as string),
+            unescape(this.parseInline(token.tokens!, this.textRenderer)),
             this.slugger);
           continue;
         }
@@ -135,7 +135,7 @@ export class _Parser {
           continue;
         }
         case 'blockquote': {
-          body = this.parse(token.tokens)!;
+          body = this.parse(token.tokens!);
           out += this.renderer.blockquote(body);
           continue;
         }
@@ -183,13 +183,13 @@ export class _Parser {
           continue;
         }
         case 'paragraph': {
-          out += this.renderer.paragraph(this.parseInline(token.tokens)!);
+          out += this.renderer.paragraph(this.parseInline(token.tokens!)!);
           continue;
         }
         case 'text': {
           body = token.tokens ? this.parseInline(token.tokens) : token.text;
           while (i + 1 < l && tokens[i + 1].type === 'text') {
-            token = tokens[++i];
+            token = tokens[++i] as Tokens.Text;
             body += '\n' + (token.tokens ? this.parseInline(token.tokens) : token.text);
           }
           out += top ? this.renderer.paragraph(body!) : body;
@@ -244,7 +244,7 @@ export class _Parser {
           break;
         }
         case 'link': {
-          out += renderer.link(token.href, token.title, this.parseInline(token.tokens, renderer)!);
+          out += renderer.link(token.href, token.title, this.parseInline(token.tokens!, renderer)!);
           break;
         }
         case 'image': {
@@ -252,11 +252,11 @@ export class _Parser {
           break;
         }
         case 'strong': {
-          out += renderer.strong(this.parseInline(token.tokens, renderer)!);
+          out += renderer.strong(this.parseInline(token.tokens!, renderer)!);
           break;
         }
         case 'em': {
-          out += renderer.em(this.parseInline(token.tokens, renderer)!);
+          out += renderer.em(this.parseInline(token.tokens!, renderer)!);
           break;
         }
         case 'codespan': {
@@ -268,7 +268,7 @@ export class _Parser {
           break;
         }
         case 'del': {
-          out += renderer.del(this.parseInline(token.tokens, renderer)!);
+          out += renderer.del(this.parseInline(token.tokens!, renderer)!);
           break;
         }
         case 'text': {

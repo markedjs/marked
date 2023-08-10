@@ -17,7 +17,7 @@ export interface TokenizerExtension {
   name: string;
   level: 'block' | 'inline';
   start?: ((this: TokenizerThis, src: string) => number | void) | undefined;
-  tokenizer: (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | void;
+  tokenizer: (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
   childTokens?: string[] | undefined;
 }
 
@@ -25,9 +25,11 @@ export interface RendererThis {
   parser: _Parser;
 }
 
+export type RendererExtensionFunction = (this: RendererThis, token: Tokens.Generic) => string | false | undefined;
+
 export interface RendererExtension {
   name: string;
-  renderer: (this: RendererThis, token: Tokens.Generic) => string | false | undefined;
+  renderer: RendererExtensionFunction;
 }
 
 export type TokenizerAndRendererExtension = TokenizerExtension | RendererExtension | (TokenizerExtension & RendererExtension);
@@ -98,8 +100,8 @@ export interface MarkedExtension {
    * postprocess is called to process html after marked has finished parsing.
    */
   hooks?: {
-    preprocess: (markdown: string) => string,
-    postprocess: (html: string | undefined) => string | undefined,
+    preprocess: (markdown: string) => string | Promise<string>,
+    postprocess: (html: string) => string | Promise<string>,
     // eslint-disable-next-line no-use-before-define
     options?: MarkedOptions
   } | null;
@@ -201,7 +203,7 @@ export interface MarkedOptions extends Omit<MarkedExtension, 'extensions' | 'ren
    */
   extensions?:
     | (TokenizerAndRendererExtension[] & {
-    renderers: Record<string, (this: RendererThis, token: Tokens.Generic) => string | false | undefined>,
+    renderers: Record<string, RendererExtensionFunction>,
     childTokens: Record<string, string[]>,
     block: any[],
     inline: any[],
