@@ -4,7 +4,7 @@ import {
   escape
 } from './helpers.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
-import { Slugger } from './marked.ts';
+import type { _Slugger } from './Slugger.ts';
 
 /**
  * Renderer
@@ -49,7 +49,7 @@ export class _Renderer {
     return html;
   }
 
-  heading(text: string, level: number, raw: string, slugger: Slugger): string {
+  heading(text: string, level: number, raw: string, slugger: _Slugger): string {
     if (this.options.headerIds) {
       const id = this.options.headerPrefix + slugger.slug(raw);
       return `<h${level} id="${id}">${text}</h${level}>\n`;

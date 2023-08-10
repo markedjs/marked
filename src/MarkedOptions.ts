@@ -1,8 +1,8 @@
 import type { Token, Tokens, TokensList } from './Tokens.ts';
-import { _Parser } from './Parser.ts';
-import { _Lexer } from './Lexer.ts';
-import { _Renderer } from './Renderer.ts';
-import { _Tokenizer } from './Tokenizer.ts';
+import type { _Parser } from './Parser.ts';
+import type { _Lexer } from './Lexer.ts';
+import type { _Renderer } from './Renderer.ts';
+import type { _Tokenizer } from './Tokenizer.ts';
 
 export interface SluggerOptions {
   /** Generates the next unique slug without updating the internal accumulator. */

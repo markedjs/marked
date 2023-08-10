@@ -5,7 +5,7 @@ import {
   escape,
   findClosingBracket
 } from './helpers.ts';
-import { _Lexer } from './Lexer.ts';
+import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
