@@ -121,7 +121,7 @@ function fetchMarked(file) {
           // eslint-disable-next-line no-new-func
           Function(text)();
         } catch (err) {
-          throw new Error('Cannot find marked.js file');
+          throw new Error(`Cannot find ${file}`);
         }
         const marked = g.marked || g.module.exports;
         return marked;
