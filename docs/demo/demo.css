@@ -75,6 +75,14 @@ header h1 {
 	background-color: #FEE
 }
 
+.loadingError {
+	background-color: #fee;
+	font-weight: bold;
+	color: #f00;
+	text-align: center;
+	padding: 10px;
+}
+
 #responseTime {
     display: inline-block;
 }

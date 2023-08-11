@@ -66,6 +66,9 @@ Promise.all([
   setScrollPercent(0);
   $loadingElem.style.display = 'none';
   $mainElem.style.display = 'block';
+}).catch(() => {
+  $loadingElem.classList.add('loadingError');
+  $loadingElem.textContent = 'Failed to load marked. Refresh the page to try again.';
 });
 
 function setInitialText() {
@@ -114,6 +117,7 @@ function setInitialVersion() {
           markedVersions.master = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + json[0].sha;
         })
         .catch(function() {
+          console.warn('Cannot find commits');
           // do nothing
           // uses url without commit
         });
