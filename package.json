@@ -65,6 +65,7 @@
     "highlight.js": "^11.8.0",
     "jasmine": "^5.1.0",
     "markdown-it": "13.0.1",
+    "marked-highlight": "^2.0.4",
     "node-fetch": "^3.3.2",
     "recheck": "^4.4.5",
     "rollup": "^3.27.0",

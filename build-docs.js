@@ -1,6 +1,7 @@
 import { promises } from 'fs';
 import { join, dirname, parse, format } from 'path';
-import { parse as marked } from './lib/marked.esm.js';
+import { Marked } from './lib/marked.esm.js';
+import { markedHighlight } from 'marked-highlight';
 import { HighlightJS } from 'highlight.js';
 import titleize from 'titleize';
 
@@ -12,6 +13,12 @@ const outputDir = join(cwd, 'public');
 const templateFile = join(inputDir, '_document.html');
 const isUppercase = str => /[A-Z_]+/.test(str);
 const getTitle = str => str === 'INDEX' ? '' : titleize(str.replace(/_/g, ' ')) + ' - ';
+const marked = new Marked(markedHighlight((code, language) => {
+  if (!language) {
+    return highlightAuto(code).value;
+  }
+  return highlight(code, { language }).value;
+}));
 
 async function init() {
   console.log('Cleaning up output directory ' + outputDir);
@@ -38,14 +45,7 @@ async function build(currentDir, tmpl) {
       let buffer = await readFile(filename);
       const parsed = parse(filename);
       if (parsed.ext === '.md' && isUppercase(parsed.name)) {
-        const html = marked(buffer.toString('utf8'), {
-          highlight: (code, language) => {
-            if (!language) {
-              return highlightAuto(code).value;
-            }
-            return highlight(code, { language }).value;
-          }
-        });
+        const html = marked.parse(buffer.toString('utf8'));
         buffer = Buffer.from(tmpl
           .replace('<!--{{title}}-->', getTitle(parsed.name))
           .replace('<!--{{content}}-->', html),

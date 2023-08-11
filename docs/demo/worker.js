@@ -1,18 +1,7 @@
-/* globals marked, unfetch, ES6Promise, Promise */ // eslint-disable-line no-redeclare
-
-if (!self.Promise) {
-  self.importScripts('https://cdn.jsdelivr.net/npm/es6-promise/dist/es6-promise.js');
-  self.Promise = ES6Promise;
-}
-if (!self.fetch) {
-  self.importScripts('https://cdn.jsdelivr.net/npm/unfetch/dist/unfetch.umd.js');
-  self.fetch = unfetch;
-}
-
 const versionCache = {};
 let currentVersion;
 
-onunhandledrejection = function(e) {
+onunhandledrejection = (e) => {
   throw e.reason;
 };
 
@@ -20,13 +9,14 @@ onmessage = function(e) {
   if (e.data.version === currentVersion) {
     parse(e);
   } else {
-    loadVersion(e.data.version).then(function() {
+    loadVersion(e.data.version).then(() => {
       parse(e);
     });
   }
 };
 
 function getDefaults() {
+  const marked = versionCache[currentVersion];
   let defaults = {};
   if (typeof marked.getDefaults === 'function') {
     defaults = marked.getDefaults();
@@ -71,6 +61,7 @@ function parse(e) {
       break;
     }
     case 'parse': {
+      const marked = versionCache[currentVersion];
       const options = mergeOptions(e.data.options);
       const startTime = new Date();
       const lexed = marked.lexer(e.data.markdown, options);
@@ -121,22 +112,40 @@ function jsonString(input, level) {
 function loadVersion(ver) {
   let promise;
   if (versionCache[ver]) {
-    promise = Promise.resolve(versionCache[ver]);
+    promise = Promise.resolve();
   } else {
-    promise = fetch(ver)
-      .then(function(res) { return res.text(); })
-      .then(function(text) {
-        versionCache[ver] = text;
-        return text;
+    promise = import(ver + '/lib/marked.esm.js')
+      .catch(() => {
+        return fetch(ver + '/marked.min.js')
+          .then(function(res) { return res.text(); })
+          .then(function(text) {
+            try {
+              // eslint-disable-next-line no-new-func
+              Function(text)();
+            } catch (err) {
+              throw new Error('No esm or min build');
+            }
+            return (globalThis || global).marked;
+          });
+      })
+      .then((marked) => {
+        if (!marked) {
+          throw Error('No marked');
+        } else if (marked.marked) {
+          versionCache[ver] = marked.marked;
+        } else if (marked.default) {
+          versionCache[ver] = marked.default;
+        } else if (marked.parse) {
+          versionCache[ver] = marked;
+        } else {
+          throw new Error('Cannot find marked');
+        }
       });
   }
-  return promise.then(function(text) {
-    try {
-      // eslint-disable-next-line no-new-func
-      Function(text)();
-    } catch (err) {
-      throw new Error('Cannot load that version of marked');
-    }
+  return promise.then(() => {
     currentVersion = ver;
+  }).catch((err) => {
+    console.error(err);
+    throw new Error('Cannot load that version of marked');
   });
 }

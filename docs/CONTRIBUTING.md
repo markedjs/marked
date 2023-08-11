@@ -10,14 +10,14 @@
 - [ ] Run `npm run build:reset` to remove changes to compiled files.
 - [ ] Submit a Pull Request.
 
-## Design principles
+<h2 id="design-principles">Design principles</h2>
 
 Marked tends to favor following the SOLID set of software design and development principles; mainly the [single responsibility](https://en.wikipedia.org/wiki/Single_responsibility_principle) and [open/closed principles](https://en.wikipedia.org/wiki/Open/closed_principle):
 
 - **Single responsibility:** Marked, and the components of Marked, have the single responsibility of converting Markdown strings into HTML.
 - **Open/closed:** Marked favors giving developers the means to easily extend the library and its components over changing Marked's behavior through configuration options.
 
-## Priorities
+<h2 id="priorities">Priorities</h2>
 
 We think we have our priorities sorted to build quality in.
 
@@ -33,7 +33,7 @@ The following table lists the ticket type labels we use when there is work to be
 |NFU - new feature (user requested) |A capability Marked does not currently provide but has been requested by users of Marked.                                                                                           |
 |NFE - new feature (should be an extension) |A capability Marked does not currently provide and is not part of a spec.                                                                                           |
 
-## Test early, often, and everything
+<h2 id="test-early-often-and-everything">Test early, often, and everything</h2>
 
 We try to write test cases to validate output (writing tests based on the [supported specifications](/#specifications)) and minimize regression (writing tests for issues fixed). Therefore, if you would like to contribute, some things you should know regarding the test harness.
 

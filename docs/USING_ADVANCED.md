@@ -1,4 +1,4 @@
-## Marked instance
+<h2 id="instance">Marked instance</h2>
 
 By default, Marked stores options and extensions in the global scope. That means changing the options in one script will also change the options in another script since they share the same instance.
 
