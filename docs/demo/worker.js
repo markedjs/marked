@@ -62,10 +62,10 @@ function parse(e) {
     }
     case 'parse': {
       const marked = versionCache[currentVersion];
-      const options = mergeOptions(e.data.options);
+      // marked 0.0.1 had tokens array as the second parameter of lexer and no options
+      const options = currentVersion.endsWith('@0.0.1') ? [] : mergeOptions(e.data.options);
       const startTime = new Date();
-      // marked 0.0.1 had tokens array as the second parameter and no options
-      const lexed = marked.lexer(e.data.markdown, currentVersion.endsWith('@0.0.1') ? [] : options);
+      const lexed = marked.lexer(e.data.markdown, options);
       const lexedList = jsonString(lexed);
       const parsed = marked.parser(lexed, options);
       const endTime = new Date();
