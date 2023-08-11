@@ -138,7 +138,7 @@ function loadVersion(ver) {
         } else if (marked.parse) {
           versionCache[ver] = marked;
         } else {
-          throw new Error('Can not find marked');
+          throw new Error('Cannot find marked');
         }
       });
   }
