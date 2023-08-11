@@ -64,7 +64,8 @@ function parse(e) {
       const marked = versionCache[currentVersion];
       const options = mergeOptions(e.data.options);
       const startTime = new Date();
-      const lexed = marked.lexer(e.data.markdown, options);
+      // marked 0.0.1 had tokens array as the second parameter and no options
+      const lexed = marked.lexer(e.data.markdown, currentVersion.endsWith('@0.0.1') ? [] : options);
       const lexedList = jsonString(lexed);
       const parsed = marked.parser(lexed, options);
       const endTime = new Date();
@@ -116,17 +117,28 @@ function loadVersion(ver) {
   } else {
     promise = import(ver + '/lib/marked.esm.js')
       .catch(() => {
+        const tryReturnMarked = (onError) => (text) => {
+          const g = globalThis || global;
+          g.module = { };
+          try {
+            // eslint-disable-next-line no-new-func
+            Function(text)();
+          } catch (err) {
+            delete g.module;
+            return onError();
+          }
+          const marked = g.marked || g.module.exports;
+          return marked;
+        };
         return fetch(ver + '/marked.min.js')
-          .then(function(res) { return res.text(); })
-          .then(function(text) {
-            try {
-              // eslint-disable-next-line no-new-func
-              Function(text)();
-            } catch (err) {
-              throw new Error('No esm or min build');
-            }
-            return (globalThis || global).marked;
-          });
+          .then((res) => res.text())
+          .then(tryReturnMarked(() => {
+            return fetch(ver + '/lib/marked.js')
+              .then((res) => res.text())
+              .then(tryReturnMarked(() => {
+                throw new Error('No esm or min build');
+              }));
+          }));
       })
       .then((marked) => {
         if (!marked) {
@@ -135,7 +147,7 @@ function loadVersion(ver) {
           versionCache[ver] = marked.marked;
         } else if (marked.default) {
           versionCache[ver] = marked.default;
-        } else if (marked.parse) {
+        } else if (marked.lexer && marked.parser) {
           versionCache[ver] = marked;
         } else {
           throw new Error('Cannot find marked');
