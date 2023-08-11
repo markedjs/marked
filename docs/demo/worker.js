@@ -110,36 +110,32 @@ function jsonString(input, level) {
   }
 }
 
+function fetchMarked(file) {
+  return () =>
+    fetch(file)
+      .then((res) => res.text())
+      .then((text) => {
+        const g = globalThis || global;
+        g.module = { };
+        try {
+          // eslint-disable-next-line no-new-func
+          Function(text)();
+        } catch (err) {
+          throw new Error('Cannot find marked.js file');
+        }
+        const marked = g.marked || g.module.exports;
+        return marked;
+      });
+}
+
 function loadVersion(ver) {
   let promise;
   if (versionCache[ver]) {
     promise = Promise.resolve();
   } else {
     promise = import(ver + '/lib/marked.esm.js')
-      .catch(() => {
-        const tryReturnMarked = (onError) => (text) => {
-          const g = globalThis || global;
-          g.module = { };
-          try {
-            // eslint-disable-next-line no-new-func
-            Function(text)();
-          } catch (err) {
-            delete g.module;
-            return onError();
-          }
-          const marked = g.marked || g.module.exports;
-          return marked;
-        };
-        return fetch(ver + '/marked.min.js')
-          .then((res) => res.text())
-          .then(tryReturnMarked(() => {
-            return fetch(ver + '/lib/marked.js')
-              .then((res) => res.text())
-              .then(tryReturnMarked(() => {
-                throw new Error('No esm or min build');
-              }));
-          }));
-      })
+      .catch(fetchMarked(ver + '/marked.min.js'))
+      .catch(fetchMarked(ver + '/lib/marked.js'))
       .then((marked) => {
         if (!marked) {
           throw Error('No marked');
