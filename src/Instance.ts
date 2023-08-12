@@ -64,9 +64,8 @@ export class Marked {
         }
         default: {
           const genericToken = token as Tokens.Generic;
-          const array = this.defaults.extensions?.childTokens?.[genericToken.type] ?? []
-          // Walk any extensions
-          array.forEach((childTokens) => {
+          if (this.defaults.extensions?.childTokens?.[genericToken.type]) {
+            this.defaults.extensions.childTokens[genericToken.type].forEach((childTokens) => {
               values = values.concat(this.walkTokens(genericToken[childTokens], callback));
             });
           } else if (genericToken.tokens) {
