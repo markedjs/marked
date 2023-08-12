@@ -30,16 +30,12 @@ function smartypants(text: string) {
  * mangle email addresses
  */
 function mangle(text: string) {
-  let out = '',
-    i,
-    ch;
+  let out = '';
 
-  const l = text.length;
-  for (i = 0; i < l; i++) {
-    ch = text.charCodeAt(i);
-    if (Math.random() > 0.5) {
-      ch = 'x' + ch.toString(16);
-    }
+  for (let i = 0; i < text.length; i++) {
+    const ch = Math.random() > 0.5
+      ? 'x' + text.charCodeAt(i).toString(16)
+      : text.charCodeAt(i).toString();
     out += '&#' + ch + ';';
   }
 

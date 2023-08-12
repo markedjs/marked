@@ -64,8 +64,8 @@ export class _Renderer {
   }
 
   list(body: string, ordered: boolean, start: number | ''): string {
-    const type = ordered ? 'ol' : 'ul',
-      startatt = (ordered && start !== 1) ? (' start="' + start + '"') : '';
+    const type = ordered ? 'ol' : 'ul';
+    const startatt = (ordered && start !== 1) ? (' start="' + start + '"') : '';
     return '<' + type + startatt + '>\n' + body + '</' + type + '>\n';
   }
 

@@ -201,18 +201,14 @@ export class _Parser {
    */
   parseInline(tokens: Token[], renderer?: _Renderer | _TextRenderer): string {
     renderer = renderer || this.renderer;
-    let out = '',
-      i,
-      token,
-      ret;
+    let out = '';
 
-    const l = tokens.length;
-    for (i = 0; i < l; i++) {
-      token = tokens[i];
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
 
       // Run any renderer extensions
       if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[token.type]) {
-        ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
+        const ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
         if (ret !== false || !['escape', 'html', 'link', 'image', 'strong', 'em', 'codespan', 'br', 'del', 'text'].includes(token.type)) {
           out += ret || '';
           continue;

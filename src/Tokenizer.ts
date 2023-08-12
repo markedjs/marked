@@ -173,9 +173,6 @@ export class _Tokenizer {
   list(src: string): Tokens.List | undefined {
     let cap = this.rules.block.list.exec(src);
     if (cap) {
-      let raw, istask, ischecked, indent, i, blankLine, endsWithBlankLine,
-        line, nextLine, rawLine, itemContents, endEarly;
-
       let bull = cap[1].trim();
       const isordered = bull.length > 1;
 
@@ -196,10 +193,12 @@ export class _Tokenizer {
 
       // Get next list item
       const itemRegex = new RegExp(`^( {0,3}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`);
-
+      let raw = '';
+      let itemContents = '';
+      let endsWithBlankLine = false;
       // Check if current bullet point can start a new List Item
       while (src) {
-        endEarly = false;
+        let endEarly = false;
         if (!(cap = itemRegex.exec(src))) {
           break;
         }
@@ -208,12 +207,13 @@ export class _Tokenizer {
           break;
         }
 
-        raw = cap[0];
+        raw = cap[0] as string;
         src = src.substring(raw.length);
 
-        line = cap[2].split('\n', 1)[0].replace(/^\t+/, (t: string) => ' '.repeat(3 * t.length));
-        nextLine = src.split('\n', 1)[0];
+        let line = cap[2].split('\n', 1)[0].replace(/^\t+/, (t: string) => ' '.repeat(3 * t.length)) as string;
+        let nextLine = src.split('\n', 1)[0];
 
+        let indent = 0;
         if (this.options.pedantic) {
           indent = 2;
           itemContents = line.trimLeft();
@@ -224,7 +224,7 @@ export class _Tokenizer {
           indent += cap[1].length;
         }
 
-        blankLine = false;
+        let blankLine = false;
 
         if (!line && /^ *$/.test(nextLine)) { // Items begin with at most one blank line
           raw += nextLine + '\n';
@@ -240,7 +240,7 @@ export class _Tokenizer {
 
           // Check if following lines should be included in List Item
           while (src) {
-            rawLine = src.split('\n', 1)[0];
+            const rawLine = src.split('\n', 1)[0];
             nextLine = rawLine;
 
             // Re-align to follow commonmark nesting rules
@@ -312,6 +312,8 @@ export class _Tokenizer {
           }
         }
 
+        let istask: RegExpExecArray | null = null;
+        let ischecked: boolean | undefined;
         // Check for task list items
         if (this.options.gfm) {
           istask = /^\[[ xX]\] /.exec(itemContents);
@@ -339,10 +341,8 @@ export class _Tokenizer {
       (list.items[list.items.length - 1] as Tokens.ListItem).text = itemContents.trimRight();
       list.raw = list.raw.trimRight();
 
-      const l = list.items.length;
-
       // Item child tokens handled here at end because we needed to have the final item to trim it first
-      for (i = 0; i < l; i++) {
+      for (let i = 0; i < list.items.length; i++) {
         this.lexer.state.top = false;
         list.items[i].tokens = this.lexer.blockTokens(list.items[i].text, []);
 
@@ -357,7 +357,7 @@ export class _Tokenizer {
 
       // Set all items to loose if list is loose
       if (list.loose) {
-        for (i = 0; i < l; i++) {
+        for (let i = 0; i < list.items.length; i++) {
           list.items[i].loose = true;
         }
       }

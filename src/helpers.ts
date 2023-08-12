@@ -135,8 +135,8 @@ export function splitCells(tableRow: string, count?: number) {
   // ensure that every cell-delimiting pipe has a space
   // before it to distinguish it from an escaped pipe
   const row = tableRow.replace(/\|/g, (match, offset, str) => {
-      let escaped = false,
-        curr = offset;
+      let escaped = false;
+      let curr = offset;
       while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
       if (escaped) {
         // odd number of slashes means | is escaped
@@ -209,10 +209,9 @@ export function findClosingBracket(str: string, b: string) {
   if (str.indexOf(b[1]) === -1) {
     return -1;
   }
-  const l = str.length;
-  let level = 0,
-    i = 0;
-  for (; i < l; i++) {
+
+  let level = 0;
+  for (let i = 0; i < str.length; i++) {
     if (str[i] === '\\') {
       i++;
     } else if (str[i] === b[0]) {
