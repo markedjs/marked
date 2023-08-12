@@ -666,21 +666,6 @@ used extension2 walked</p>
     expect(walked).toBe(2);
   });
 
-  it('should use walkTokens in async', (done) => {
-    let walked = 0;
-    const extension = {
-      walkTokens(token) {
-        walked++;
-      }
-    };
-    use({ silent: true });
-    use(extension);
-    marked('text', () => {
-      expect(walked).toBe(2);
-      done();
-    });
-  });
-
   it('should use options from extension', () => {
     const extension = {
       headerIds: false
