@@ -51,12 +51,6 @@ export interface MarkedExtension {
   async?: boolean;
 
   /**
-   * A prefix URL for any relative link.
-   * @deprecated Deprecated in v5.0.0 use marked-base-url to prefix url for any relative link.
-   */
-  baseUrl?: string | undefined | null;
-
-  /**
    * Enable GFM line breaks. This option requires the gfm option to be true.
    */
   breaks?: boolean | undefined;
@@ -74,27 +68,6 @@ export interface MarkedExtension {
   gfm?: boolean | undefined;
 
   /**
-   * Include an id attribute when emitting headings.
-   * @deprecated Deprecated in v5.0.0 use marked-gfm-heading-id to include an id attribute when emitting headings (h1, h2, h3, etc).
-   */
-  headerIds?: boolean | undefined;
-
-  /**
-   * Set the prefix for header tag ids.
-   * @deprecated Deprecated in v5.0.0 use marked-gfm-heading-id to add a string to prefix the id attribute when emitting headings (h1, h2, h3, etc).
-   */
-  headerPrefix?: string | undefined;
-
-  /**
-   * A function to highlight code blocks. The function can either be
-   * synchronous (returning a string) or asynchronous (callback invoked
-   * with an error if any occurred during highlighting and a string
-   * if highlighting was successful)
-   * @deprecated Deprecated in v5.0.0 use marked-highlight to add highlighting to code blocks.
-   */
-  highlight?: ((code: string, lang: string | undefined, callback?: (error: Error, code?: string) => void) => string | void) | null;
-
-  /**
    * Hooks are methods that hook into some part of marked.
    * preprocess is called to process markdown before sending it to marked.
    * postprocess is called to process html after marked has finished parsing.
@@ -105,18 +78,6 @@ export interface MarkedExtension {
     // eslint-disable-next-line no-use-before-define
     options?: MarkedOptions
   } | null;
-
-  /**
-   * Set the prefix for code block classes.
-   * @deprecated Deprecated in v5.0.0 use marked-highlight to prefix the className in a <code> block. Useful for syntax highlighting.
-   */
-  langPrefix?: string | undefined;
-
-  /**
-   * Mangle autolinks (<email@domain.com>).
-   * @deprecated Deprecated in v5.0.0 use marked-mangle to mangle email addresses.
-   */
-  mangle?: boolean | undefined;
 
   /**
    * Conform to obscure parts of markdown.pl as much as possible. Don't fix any of the original markdown bugs or poor behavior.
@@ -136,17 +97,6 @@ export interface MarkedExtension {
   silent?: boolean | undefined;
 
   /**
-   * Use smarter list behavior than the original markdown. May eventually be default with the old behavior moved into pedantic.
-   */
-  smartLists?: boolean | undefined;
-
-  /**
-   * Use "smart" typograhic punctuation for things like quotes and dashes.
-   * @deprecated Deprecated in v5.0.0 use marked-smartypants to use "smart" typographic punctuation for things like quotes and dashes.
-   */
-  smartypants?: boolean | undefined;
-
-  /**
    * The tokenizer defines how to turn markdown text into tokens.
    */
   tokenizer?: TokenizerObject | undefined | null;
@@ -158,11 +108,6 @@ export interface MarkedExtension {
    * The return value of the function is ignored.
    */
   walkTokens?: ((token: Token) => void | Promise<void>) | undefined | null;
-  /**
-   * Generate closing slash for self-closing tags (<br/> instead of <br>)
-   * @deprecated Deprecated in v5.0.0 use marked-xhtml to emit self-closing HTML tags for void elements (<br/>, <img/>, etc.) with a "/" as required by XHTML.
-   */
-  xhtml?: boolean | undefined;
 }
 
 export interface MarkedOptions extends Omit<MarkedExtension, 'extensions' | 'renderer' | 'tokenizer' | 'walkTokens'> {

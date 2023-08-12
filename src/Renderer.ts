@@ -4,7 +4,6 @@ import {
   escape
 } from './helpers.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
-import type { _Slugger } from './Slugger.ts';
 
 /**
  * Renderer
@@ -17,13 +16,6 @@ export class _Renderer {
 
   code(code: string, infostring: string | undefined, escaped: boolean): string {
     const lang = (infostring || '').match(/\S*/)![0];
-    if (this.options.highlight) {
-      const out = this.options.highlight(code, lang);
-      if (out != null && out !== code) {
-        escaped = true;
-        code = out;
-      }
-    }
 
     code = code.replace(/\n$/, '') + '\n';
 
@@ -33,8 +25,7 @@ export class _Renderer {
         + '</code></pre>\n';
     }
 
-    return '<pre><code class="'
-      + this.options.langPrefix
+    return '<pre><code class="language-'
       + escape(lang)
       + '">'
       + (escaped ? code : escape(code, true))
@@ -49,18 +40,13 @@ export class _Renderer {
     return html;
   }
 
-  heading(text: string, level: number, raw: string, slugger: _Slugger): string {
-    if (this.options.headerIds) {
-      const id = this.options.headerPrefix + slugger.slug(raw);
-      return `<h${level} id="${id}">${text}</h${level}>\n`;
-    }
-
+  heading(text: string, level: number, raw: string): string {
     // ignore IDs
     return `<h${level}>${text}</h${level}>\n`;
   }
 
   hr(): string {
-    return this.options.xhtml ? '<hr/>\n' : '<hr>\n';
+    return '<hr>\n';
   }
 
   list(body: string, ordered: boolean, start: number | ''): string {
@@ -76,9 +62,7 @@ export class _Renderer {
   checkbox(checked: boolean): string {
     return '<input '
       + (checked ? 'checked="" ' : '')
-      + 'disabled="" type="checkbox"'
-      + (this.options.xhtml ? ' /' : '')
-      + '> ';
+      + 'disabled="" type="checkbox">';
   }
 
   paragraph(text: string): string {
@@ -127,7 +111,7 @@ export class _Renderer {
   }
 
   br(): string {
-    return this.options.xhtml ? '<br/>' : '<br>';
+    return '<br>';
   }
 
   del(text: string): string {
@@ -135,7 +119,7 @@ export class _Renderer {
   }
 
   link(href: string, title: string | null | undefined, text: string): string {
-    href = cleanUrl(this.options.baseUrl, href) as any;
+    href = cleanUrl(href) as any;
     if (href === null) {
       return text;
     }
@@ -148,7 +132,7 @@ export class _Renderer {
   }
 
   image(href: string, title: string | null, text: string): string {
-    href = cleanUrl(this.options.baseUrl, href) as any;
+    href = cleanUrl(href) as any;
     if (href === null) {
       return text;
     }
@@ -157,7 +141,7 @@ export class _Renderer {
     if (title) {
       out += ` title="${title}"`;
     }
-    out += this.options.xhtml ? '/>' : '>';
+    out += '>';
     return out;
   }
 

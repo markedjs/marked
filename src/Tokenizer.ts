@@ -709,12 +709,12 @@ export class _Tokenizer {
     }
   }
 
-  autolink(src: string, mangle: (cap: string) => string): Tokens.Link | undefined {
+  autolink(src: string): Tokens.Link | undefined {
     const cap = this.rules.inline.autolink.exec(src);
     if (cap) {
       let text, href;
       if (cap[2] === '@') {
-        text = escape(this.options.mangle ? mangle(cap[1]) : cap[1]);
+        text = escape(cap[1]);
         href = 'mailto:' + text;
       } else {
         text = escape(cap[1]);
@@ -737,12 +737,12 @@ export class _Tokenizer {
     }
   }
 
-  url(src: string, mangle: (cap: string) => string): Tokens.Link | undefined {
+  url(src: string): Tokens.Link | undefined {
     let cap;
     if (cap = this.rules.inline.url.exec(src)) {
       let text, href;
       if (cap[2] === '@') {
-        text = escape(this.options.mangle ? mangle(cap[0]) : cap[0]);
+        text = escape(cap[0]);
         href = 'mailto:' + text;
       } else {
         // do extended autolink path validation
@@ -774,14 +774,14 @@ export class _Tokenizer {
     }
   }
 
-  inlineText(src: string, smartypants: (cap: string) => string): Tokens.Text | undefined {
+  inlineText(src: string): Tokens.Text | undefined {
     const cap = this.rules.inline.text.exec(src);
     if (cap) {
       let text;
       if (this.lexer.state.inRawBlock) {
         text = cap[0];
       } else {
-        text = escape(this.options.smartypants ? smartypants(cap[0]) : cap[0]);
+        text = escape(cap[0]);
       }
       return {
         type: 'text',

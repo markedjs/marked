@@ -1,6 +1,5 @@
 import { _Renderer } from './Renderer.ts';
 import { _TextRenderer } from './TextRenderer.ts';
-import { _Slugger } from './Slugger.ts';
 import { _defaults } from './defaults.ts';
 import {
   unescape
@@ -15,14 +14,12 @@ export class _Parser {
   options: MarkedOptions;
   renderer: _Renderer;
   textRenderer: _TextRenderer;
-  slugger: _Slugger;
   constructor(options?: MarkedOptions) {
     this.options = options || _defaults;
     this.options.renderer = this.options.renderer || new _Renderer();
     this.renderer = this.options.renderer;
     this.renderer.options = this.options;
     this.textRenderer = new _TextRenderer();
-    this.slugger = new _Slugger();
   }
 
   /**
@@ -91,8 +88,7 @@ export class _Parser {
           out += this.renderer.heading(
             this.parseInline(token.tokens!),
             token.depth,
-            unescape(this.parseInline(token.tokens!, this.textRenderer)),
-            this.slugger);
+            unescape(this.parseInline(token.tokens!, this.textRenderer)));
           continue;
         }
         case 'code': {
