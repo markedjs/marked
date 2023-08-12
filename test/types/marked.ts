@@ -4,7 +4,7 @@ import { expectType } from 'ts-expect';
 
 // other exports
 
-import { Lexer, Parser, Tokenizer, Renderer, TextRenderer, Slugger } from 'marked';
+import { Lexer, Parser, Tokenizer, Renderer, TextRenderer } from 'marked';
 import type { Tokens, MarkedExtension, TokenizerAndRendererExtension, Token ,TokenizerExtension, MarkedOptions, TokensList, Rules, RendererExtension } from 'marked';
 
 const tokenizer = new marked.Tokenizer();
@@ -31,17 +31,10 @@ tokenizer.inlineText = function inlineText(...args: Parameters<Tokenizer['inline
 };
 
 let options: MarkedOptions = {
-  baseUrl: '',
   gfm: true,
   breaks: false,
   pedantic: false,
-  smartLists: true,
   silent: false,
-  highlight(code: string, lang: string | undefined) {
-    return '';
-  },
-  langPrefix: 'lang-',
-  smartypants: false,
   tokenizer,
   renderer: new marked.Renderer(),
   walkTokens: token => {
@@ -49,11 +42,6 @@ let options: MarkedOptions = {
       token.depth += 1;
     }
   }
-};
-
-options.highlight = (code: string, lang: string | undefined, callback?: (error: any, code?: string) => string | void) => {
-  callback?.(new Error());
-  callback?.(null, '');
 };
 
 options = marked.getDefaults();
@@ -69,13 +57,9 @@ myOldMarked = marked.setOptions(options);
 
 console.log(marked('1) I am using __markdown__.'));
 console.log(marked('2) I am using __markdown__.', options));
-marked('3) I am using __markdown__.', callback);
-marked('4) I am using __markdown__.', options, callback);
 
 console.log(marked.parse('5) I am using __markdown__.'));
 console.log(marked.parse('6) I am using __markdown__.', options));
-marked.parse('7) I am using __markdown__.', callback);
-marked.parse('8) I am using __markdown__.', options, callback);
 
 console.log(marked.parseInline('9) I am using __markdown__.'));
 console.log(marked.parseInline('10) I am using __markdown__.', options));
@@ -96,11 +80,11 @@ const re: Rules = marked.Lexer.rules;
 const lexerOptions: MarkedOptions = lexer.options;
 
 const renderer = new marked.Renderer();
-renderer.heading = (text, level, raw, slugger) => {
-  return text + level.toString() + slugger.slug(raw);
+renderer.heading = (text, level, raw) => {
+  return text + level.toString();
 };
 renderer.hr = () => {
-  return `<hr${renderer.options.xhtml ? '/' : ''}>\n`;
+  return `<hr>\n`;
 };
 renderer.checkbox = checked => {
   return checked ? 'CHECKED' : 'UNCHECKED';
@@ -110,7 +94,7 @@ class ExtendedRenderer extends marked.Renderer {
   code = (code: string, language: string | undefined, isEscaped: boolean): string => super.code(code, language, isEscaped);
   blockquote = (quote: string): string => super.blockquote(quote);
   html = (html: string): string => super.html(html);
-  heading = (text: string, level: 1 | 2 | 3 | 4 | 5 | 6, raw: string, slugger: Slugger): string => super.heading(text, level, raw, slugger);
+  heading = (text: string, level: 1 | 2 | 3 | 4 | 5 | 6, raw: string): string => super.heading(text, level, raw);
   hr = (): string => super.hr();
   list = (body: string, ordered: boolean, start: number): string => super.list(body, ordered, start);
   listitem = (text: string, task: boolean, checked: boolean): string => super.listitem(text, task, checked);
@@ -147,10 +131,6 @@ const parser = new marked.Parser();
 console.log(parser.parse(parseTestTokens));
 console.log(marked.Parser.parse(parseTestTokens));
 const parserOptions: MarkedOptions = parser.options;
-
-const slugger = new marked.Slugger();
-console.log(slugger.slug('Test Slug'));
-console.log(slugger.slug('Test Slug', { dryrun: true }));
 
 marked.use({ renderer }, { tokenizer });
 
@@ -269,17 +249,11 @@ const asyncMarked: string = await marked(md, { async: true });
 const promiseMarked: Promise<string> = marked(md, { async: true });
 const notAsyncMarked: string = marked(md, { async: false });
 const defaultMarked: string = marked(md);
-expectType<void>(marked(md, (_: any, res: string | undefined) => { res; }));
-expectType<void>(marked(md, { async: true }, (_: any, res: string | undefined) => { res; }));
-expectType<void>(marked(md, { async: false }, (_: any, res: string | undefined) => { res; }));
 
 const asyncMarkedParse: string = await marked.parse(md, { async: true });
-const promiseMarkedParse: Promise<string> = marked.parse(md, { async: true, headerIds: false });
+const promiseMarkedParse: Promise<string> = marked.parse(md, { async: true });
 const notAsyncMarkedParse: string = marked.parse(md, { async: false });
 const defaultMarkedParse: string = marked.parse(md);
-expectType<void>(marked.parse(md, (_: any, res: string | undefined) => { res; }));
-expectType<void>(marked(md, { async: true }, (_: any, res: string | undefined) => { res; }));
-expectType<void>(marked(md, { async: false }, (_: any, res: string | undefined) => { res; }));
 })();
 
 // Tests for List and ListItem
@@ -328,9 +302,6 @@ const lexer2 = new Lexer();
 const tokens4 = lexer2.lex('# test');
 const parser2 = new Parser();
 console.log(parser2.parse(tokens4));
-
-const slugger2 = new Slugger();
-console.log(slugger2.slug('Test Slug'));
 
 marked.use({ renderer: new Renderer() });
 marked.use({ renderer: new TextRenderer() });
