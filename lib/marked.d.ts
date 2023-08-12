@@ -174,7 +174,7 @@ declare module "Tokenizer" {
         hr(src: string): Tokens.Hr | undefined;
         blockquote(src: string): Tokens.Blockquote | undefined;
         list(src: string): Tokens.List | undefined;
-        html(src: string): Tokens.HTML | Tokens.Paragraph | undefined;
+        html(src: string): Tokens.HTML | undefined;
         def(src: string): Tokens.Def | undefined;
         table(src: string): Tokens.Table | undefined;
         lheading(src: string): Tokens.Heading | undefined;
@@ -340,7 +340,7 @@ declare module "helpers" {
         replace: (name: string | RegExp, val: string | RegExp) => any;
         getRegex: () => RegExp;
     };
-    export function cleanUrl(sanitize: boolean | undefined, base: string | undefined | null, href: string): string | null;
+    export function cleanUrl(base: string | undefined | null, href: string): string | null;
     export function resolveUrl(base: string, href: string): string;
     export const noopTest: {
         exec: () => null;
@@ -535,16 +535,6 @@ declare module "MarkedOptions" {
          * An object containing functions to render tokens to HTML.
          */
         renderer?: RendererObject | undefined | null;
-        /**
-         * Sanitize the output. Ignore any HTML that has been input. If true, sanitize the HTML passed into markdownString with the sanitizer function.
-         * @deprecated Warning: This feature is deprecated and it should NOT be used as it cannot be considered secure. Instead use a sanitize library, like DOMPurify (recommended), sanitize-html or insane on the output HTML!
-         */
-        sanitize?: boolean | undefined;
-        /**
-         * Optionally sanitize found HTML with a sanitizer function.
-         * @deprecated A function to sanitize the HTML passed into markdownString.
-         */
-        sanitizer?: ((html: string) => string) | null;
         /**
          * Shows an HTML error message when rendering fails.
          */

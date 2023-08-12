@@ -135,7 +135,7 @@ export class _Renderer {
   }
 
   link(href: string, title: string | null | undefined, text: string): string {
-    href = cleanUrl(this.options.sanitize, this.options.baseUrl, href) as any;
+    href = cleanUrl(this.options.baseUrl, href) as any;
     if (href === null) {
       return text;
     }
@@ -148,7 +148,7 @@ export class _Renderer {
   }
 
   image(href: string, title: string | null, text: string): string {
-    href = cleanUrl(this.options.sanitize, this.options.baseUrl, href) as any;
+    href = cleanUrl(this.options.baseUrl, href) as any;
     if (href === null) {
       return text;
     }

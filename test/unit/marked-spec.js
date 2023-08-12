@@ -227,9 +227,9 @@ describe('use extension', () => {
         return `<u>${token.text}</u>\n`;
       }
     };
-    use({ sanitize: true, silent: true, extensions: [extension] });
+    use({ silent: true, extensions: [extension] });
     const html = marked(':test:\ntest\n<div></div>');
-    expect(html).toBe('<u>test</u>\n<p>test</p>\n<p>&lt;div&gt;&lt;/div&gt;</p>\n');
+    expect(html).toBe('<u>test</u>\n<p>test</p>\n<div></div>');
   });
 
   it('should handle renderers that return false', () => {

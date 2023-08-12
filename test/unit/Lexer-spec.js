@@ -794,27 +794,6 @@ paragraph
         ]
       });
     });
-
-    it('sanitize', () => {
-      expectTokens({
-        md: '<div>html</div>',
-        options: { sanitize: true },
-        tokens: [
-          {
-            type: 'paragraph',
-            raw: '<div>html</div>',
-            pre: false,
-            block: true,
-            text: '&lt;div&gt;html&lt;/div&gt;',
-            tokens: [{
-              type: 'text',
-              raw: '&lt;div&gt;html&lt;/div&gt;',
-              text: '&lt;div&gt;html&lt;/div&gt;'
-            }]
-          }
-        ]
-      });
-    });
   });
 
   describe('def', () => {
@@ -890,23 +869,6 @@ paragraph
             { type: 'html', raw: '<div>', inLink: false, inRawBlock: false, block: false, text: '<div>' },
             { type: 'text', raw: 'html', text: 'html' },
             { type: 'html', raw: '</div>', inLink: false, inRawBlock: false, block: false, text: '</div>' }
-          ]
-        });
-      });
-
-      it('html sanitize', () => {
-        expectInlineTokens({
-          md: '<div>html</div>',
-          options: { sanitize: true },
-          tokens: [
-            {
-              type: 'text',
-              raw: '<div>html</div>',
-              inLink: false,
-              inRawBlock: false,
-              block: false,
-              text: '&lt;div&gt;html&lt;/div&gt;'
-            }
           ]
         });
       });

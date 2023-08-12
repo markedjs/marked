@@ -18,8 +18,6 @@ export function _getDefaults(): MarkedOptions {
     mangle: false,
     pedantic: false,
     renderer: null,
-    sanitize: false,
-    sanitizer: null,
     silent: false,
     smartypants: false,
     tokenizer: null,

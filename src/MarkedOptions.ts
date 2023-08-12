@@ -131,18 +131,6 @@ export interface MarkedExtension {
   renderer?: RendererObject | undefined | null;
 
   /**
-   * Sanitize the output. Ignore any HTML that has been input. If true, sanitize the HTML passed into markdownString with the sanitizer function.
-   * @deprecated Warning: This feature is deprecated and it should NOT be used as it cannot be considered secure. Instead use a sanitize library, like DOMPurify (recommended), sanitize-html or insane on the output HTML!
-   */
-  sanitize?: boolean | undefined;
-
-  /**
-   * Optionally sanitize found HTML with a sanitizer function.
-   * @deprecated A function to sanitize the HTML passed into markdownString.
-   */
-  sanitizer?: ((html: string) => string) | null;
-
-  /**
    * Shows an HTML error message when rendering fails.
    */
   silent?: boolean | undefined;

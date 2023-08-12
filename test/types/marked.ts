@@ -35,7 +35,6 @@ let options: MarkedOptions = {
   gfm: true,
   breaks: false,
   pedantic: false,
-  sanitize: true,
   smartLists: true,
   silent: false,
   highlight(code: string, lang: string | undefined) {

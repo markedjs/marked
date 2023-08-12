@@ -67,23 +67,9 @@ export function edit(regex: Rule, opt?: string) {
   return obj;
 }
 
-const nonWordAndColonTest = /[^\w:]/g;
 const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
 
-export function cleanUrl(sanitize: boolean | undefined, base: string | undefined | null, href: string) {
-  if (sanitize) {
-    let prot;
-    try {
-      prot = decodeURIComponent(unescape(href))
-        .replace(nonWordAndColonTest, '')
-        .toLowerCase();
-    } catch (e) {
-      return null;
-    }
-    if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
-      return null;
-    }
-  }
+export function cleanUrl(base: string | undefined | null, href: string) {
   if (base && !originIndependentUrl.test(href)) {
     href = resolveUrl(base, href);
   }
@@ -234,10 +220,6 @@ export function checkDeprecations(opt: MarkedOptions, callback?: ResultCallback)
 
   if (callback) {
     console.warn('marked(): callback is deprecated since version 5.0.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/using_pro#async');
-  }
-
-  if (opt.sanitize || opt.sanitizer) {
-    console.warn('marked(): sanitize and sanitizer parameters are deprecated since version 0.7.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/#/USING_ADVANCED.md#options');
   }
 
   if (opt.highlight || opt.langPrefix !== 'language-') {
