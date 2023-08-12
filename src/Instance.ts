@@ -48,18 +48,20 @@ export class Marked {
       values = values.concat(callback.call(this, token));
       switch (token.type) {
         case 'table': {
-          for (const cell of token.header) {
-            values = values.concat(this.walkTokens(cell.tokens!, callback));
+          const tableToken = token as Tokens.Table;
+          for (const cell of tableToken.header) {
+            values = values.concat(this.walkTokens(cell.tokens, callback));
           }
-          for (const row of token.rows) {
+          for (const row of tableToken.rows) {
             for (const cell of row) {
-              values = values.concat(this.walkTokens(cell.tokens!, callback));
+              values = values.concat(this.walkTokens(cell.tokens, callback));
             }
           }
           break;
         }
         case 'list': {
-          values = values.concat(this.walkTokens(token.items, callback));
+          const listToken = token as Tokens.List;
+          values = values.concat(this.walkTokens(listToken.items, callback));
           break;
         }
         default: {
@@ -121,15 +123,15 @@ export class Marked {
             if (ext.start) { // Function to check for start of token
               if (ext.level === 'block') {
                 if (extensions.startBlock) {
-                  extensions.startBlock.push(ext.start!);
+                  extensions.startBlock.push(ext.start);
                 } else {
-                  extensions.startBlock = [ext.start!];
+                  extensions.startBlock = [ext.start];
                 }
               } else if (ext.level === 'inline') {
                 if (extensions.startInline) {
-                  extensions.startInline.push(ext.start!);
+                  extensions.startInline.push(ext.start);
                 } else {
-                  extensions.startInline = [ext.start!];
+                  extensions.startInline = [ext.start];
                 }
               }
             }
@@ -211,9 +213,10 @@ export class Marked {
       // ==-- Parse WalkTokens extensions --== //
       if (pack.walkTokens) {
         const walkTokens = this.defaults.walkTokens;
+        const packWalktokens = pack.walkTokens;
         opts.walkTokens = function(token) {
           let values: Array<Promise<void> | void | unknown> = [];
-          values.push(pack.walkTokens!.call(this, token));
+          values.push(packWalktokens.call(this, token));
           if (walkTokens) {
             values = values.concat(walkTokens.call(this, token));
           }
@@ -259,6 +262,7 @@ export class Marked {
       }
 
       if (callback) {
+        const resultCallback = callback;
         const highlight = opt.highlight;
         let tokens: TokensList | Token[];
 
@@ -279,7 +283,7 @@ export class Marked {
               if (opt.walkTokens) {
                 this.walkTokens(tokens, opt.walkTokens);
               }
-              out = parser(tokens, opt)!;
+              out = parser(tokens, opt);
               if (opt.hooks) {
                 out = opt.hooks.postprocess(out) as string;
               }
@@ -292,7 +296,7 @@ export class Marked {
 
           return err
             ? throwError(err)
-            : callback!(null, out) as undefined;
+            : resultCallback(null, out) as undefined;
         };
 
         if (!highlight || highlight.length < 3) {

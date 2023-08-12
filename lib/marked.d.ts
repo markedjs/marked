@@ -29,7 +29,7 @@ declare module "Tokens" {
         }
         interface TableCell {
             text: string;
-            tokens?: Token[];
+            tokens: Token[];
         }
         interface Hr {
             type: 'hr';
@@ -56,7 +56,7 @@ declare module "Tokens" {
             checked?: boolean | undefined;
             loose: boolean;
             text: string;
-            tokens?: Token[];
+            tokens: Token[];
         }
         interface Paragraph {
             type: 'paragraph';

@@ -327,7 +327,8 @@ export class _Tokenizer {
           task: !!istask,
           checked: ischecked,
           loose: false,
-          text: itemContents
+          text: itemContents,
+          tokens: []
         });
 
         list.raw += raw;
@@ -347,8 +348,8 @@ export class _Tokenizer {
 
         if (!list.loose) {
           // Check if list should be loose
-          const spacers = list.items[i].tokens!.filter(t => t.type === 'space');
-          const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => /\n.*\n/.test(t.raw!));
+          const spacers = list.items[i].tokens.filter(t => t.type === 'space');
+          const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => /\n.*\n/.test(t.raw));
 
           list.loose = hasMultipleLineBreaks;
         }
@@ -410,7 +411,7 @@ export class _Tokenizer {
         type: 'table',
         raw: cap[0],
         header: splitCells(cap[1]).map(c => {
-          return { text: c };
+          return { text: c, tokens: [] };
         }),
         align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
         rows: cap[3] && cap[3].trim() ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : []
@@ -420,21 +421,24 @@ export class _Tokenizer {
         let l = item.align.length;
         let i, j, k, row;
         for (i = 0; i < l; i++) {
-          if (/^ *-+: *$/.test(item.align[i]!)) {
-            item.align[i] = 'right';
-          } else if (/^ *:-+: *$/.test(item.align[i]!)) {
-            item.align[i] = 'center';
-          } else if (/^ *:-+ *$/.test(item.align[i]!)) {
-            item.align[i] = 'left';
-          } else {
-            item.align[i] = null;
+          const align = item.align[i];
+          if (align) {
+            if (/^ *-+: *$/.test(align)) {
+              item.align[i] = 'right';
+            } else if (/^ *:-+: *$/.test(align)) {
+              item.align[i] = 'center';
+            } else if (/^ *:-+ *$/.test(align)) {
+              item.align[i] = 'left';
+            } else {
+              item.align[i] = null;
+            }
           }
         }
 
         l = item.rows.length;
         for (i = 0; i < l; i++) {
           item.rows[i] = splitCells(item.rows[i] as unknown as string, item.header.length).map(c => {
-            return { text: c };
+            return { text: c, tokens: [] };
           });
         }
 

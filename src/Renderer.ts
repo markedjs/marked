@@ -16,7 +16,7 @@ export class _Renderer {
   }
 
   code(code: string, infostring: string | undefined, escaped: boolean): string {
-    const lang = (infostring || '').match(/\S*/)![0];
+    const lang = (infostring || '').match(/^\S*/)?.[0];
     if (this.options.highlight) {
       const out = this.options.highlight(code, lang);
       if (out != null && out !== code) {
