@@ -1,13 +1,6 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "es2021",
-    "module": "NodeNext",
-    "isolatedModules": true,
-    "strict": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "NodeNext",
     "baseUrl": ".",
     "paths": {
       "marked": [
