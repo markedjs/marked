@@ -112,8 +112,9 @@ export class Marked {
             if (!ext.level || (ext.level !== 'block' && ext.level !== 'inline')) {
               throw new Error("extension level must be 'block' or 'inline'");
             }
-            if (extensions[ext.level]) {
-              extensions[ext.level]!.unshift(ext.tokenizer);
+            const extLevel = extensions[ext.level];
+            if (extLevel) {
+              extLevel.unshift(ext.tokenizer);
             } else {
               extensions[ext.level] = [ext.tokenizer];
             }
