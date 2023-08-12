@@ -1182,28 +1182,6 @@ paragraph
           });
         });
 
-        it('autolink mangle email', () => {
-          expectInlineTokens({
-            md: '<test@example.com>',
-            options: { mangle: true },
-            tokens: [
-              {
-                type: 'link',
-                raw: '<test@example.com>',
-                text: jasmine.stringMatching(/^(&#x?[0-9a-f]+;)+$/),
-                href: jasmine.stringMatching(/^mailto:(&#x?[0-9a-f]+;)+$/),
-                tokens: [
-                  {
-                    type: 'text',
-                    raw: jasmine.stringMatching(/^(&#x?[0-9a-f]+;)+$/),
-                    text: jasmine.stringMatching(/^(&#x?[0-9a-f]+;)+$/)
-                  }
-                ]
-              }
-            ]
-          });
-        });
-
         it('url', () => {
           expectInlineTokens({
             md: 'https://example.com',
@@ -1238,28 +1216,6 @@ paragraph
             ]
           });
         });
-
-        it('url mangle email', () => {
-          expectInlineTokens({
-            md: 'test@example.com',
-            options: { gfm: true, mangle: true },
-            tokens: [
-              {
-                type: 'link',
-                raw: 'test@example.com',
-                text: jasmine.stringMatching(/^(&#x?[0-9a-f]+;)+$/),
-                href: jasmine.stringMatching(/^mailto:(&#x?[0-9a-f]+;)+$/),
-                tokens: [
-                  {
-                    type: 'text',
-                    raw: jasmine.stringMatching(/^(&#x?[0-9a-f]+;)+$/),
-                    text: jasmine.stringMatching(/^(&#x?[0-9a-f]+;)+$/)
-                  }
-                ]
-              }
-            ]
-          });
-        });
       });
 
       it('text', () => {
@@ -1272,78 +1228,6 @@ paragraph
               text: 'text'
             }
           ]
-        });
-      });
-
-      describe('smartypants', () => {
-        it('single quotes', () => {
-          expectInlineTokens({
-            md: "'single quotes'",
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: "'single quotes'",
-                text: '‘single quotes’'
-              }
-            ]
-          });
-        });
-
-        it('double quotes', () => {
-          expectInlineTokens({
-            md: '"double quotes"',
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: '"double quotes"',
-                text: '“double quotes”'
-              }
-            ]
-          });
-        });
-
-        it('ellipses', () => {
-          expectInlineTokens({
-            md: 'ellipses...',
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: 'ellipses...',
-                text: 'ellipses…'
-              }
-            ]
-          });
-        });
-
-        it('en-dash', () => {
-          expectInlineTokens({
-            md: 'en--dash',
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: 'en--dash',
-                text: 'en–dash'
-              }
-            ]
-          });
-        });
-
-        it('em-dash', () => {
-          expectInlineTokens({
-            md: 'em---dash',
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: 'em---dash',
-                text: 'em—dash'
-              }
-            ]
-          });
         });
       });
     });

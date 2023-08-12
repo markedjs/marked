@@ -1,20 +1,5 @@
-import { marked, Renderer, Slugger, lexer, parseInline, use, getDefaults, walkTokens, defaults, setOptions } from '../../src/marked.js';
+import { marked, Renderer, lexer, parseInline, use, getDefaults, walkTokens, defaults, setOptions } from '../../src/marked.js';
 import { timeout } from './utils.js';
-
-describe('Test heading ID functionality', () => {
-  it('should add id attribute', () => {
-    const renderer = new Renderer({ ...defaults, headerIds: true });
-    const slugger = new Slugger();
-    const header = renderer.heading('test', 1, 'test', slugger);
-    expect(header).toBe('<h1 id="test">test</h1>\n');
-  });
-
-  it('should NOT add id attribute when options set false', () => {
-    const renderer = new Renderer({ headerIds: false });
-    const header = renderer.heading('test', 1, 'test');
-    expect(header).toBe('<h1>test</h1>\n');
-  });
-});
 
 describe('Test paragraph token type', () => {
   it('should use the "paragraph" type on top level', () => {
@@ -814,100 +799,6 @@ original
 paragraph
 `);
     expect(html).toBe('arrow no options\nfunction options\nshorthand options\n');
-  });
-});
-
-describe('async highlight', () => {
-  let highlight, markdown;
-  beforeEach(() => {
-    marked.use({ silent: true });
-    highlight = jasmine.createSpy('highlight', (text, lang, callback) => {
-      setImmediate(() => {
-        callback(null, `async ${text || ''}`);
-      });
-    });
-    markdown = `
-\`\`\`lang1
-text 1
-\`\`\`
-
-> \`\`\`lang2
-> text 2
-> \`\`\`
-
-- \`\`\`lang3
-  text 3
-  \`\`\`
-`;
-  });
-
-  it('should highlight codeblocks async', (done) => {
-    highlight.and.callThrough();
-
-    marked(markdown, { highlight }, (err, html) => {
-      if (err) {
-        fail(err);
-      }
-
-      expect(html).toBe(`<pre><code class="language-lang1">async text 1
-</code></pre>
-<blockquote>
-<pre><code class="language-lang2">async text 2
-</code></pre>
-</blockquote>
-<ul>
-<li><pre><code class="language-lang3">async text 3
-</code></pre>
-</li>
-</ul>
-`);
-      done();
-    });
-  });
-
-  it('should call callback for each error in highlight', (done) => {
-    highlight.and.callFake((text, lang, callback) => {
-      callback(new Error('highlight error'));
-    });
-
-    let numErrors = 0;
-    marked(markdown, { highlight }, (err, html) => {
-      expect(html).toContain('An error occurred:');
-
-      if (err || html.includes('An error occurred:')) {
-        numErrors++;
-      }
-
-      if (numErrors === 3) {
-        done();
-      }
-    });
-  });
-
-  it('should highlight codeblocks when not async', (done) => {
-    highlight.and.callFake((text, lang, callback) => {
-      callback(null, `async ${text || ''}`);
-    });
-
-    marked(markdown, { highlight }, (err, html) => {
-      if (err) {
-        fail(err);
-      }
-
-      expect(html).toBe(`<pre><code class="language-lang1">async text 1
-</code></pre>
-<blockquote>
-<pre><code class="language-lang2">async text 2
-</code></pre>
-</blockquote>
-<ul>
-<li><pre><code class="language-lang3">async text 3
-</code></pre>
-</li>
-</ul>
-`);
-      done();
-    });
   });
 });
 
