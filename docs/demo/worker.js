@@ -62,7 +62,8 @@ function parse(e) {
     }
     case 'parse': {
       const marked = versionCache[currentVersion];
-      const options = mergeOptions(e.data.options);
+      // marked 0.0.1 had tokens array as the second parameter of lexer and no options
+      const options = currentVersion.endsWith('@0.0.1') ? [] : mergeOptions(e.data.options);
       const startTime = new Date();
       const lexed = marked.lexer(e.data.markdown, options);
       const lexedList = jsonString(lexed);
@@ -109,25 +110,32 @@ function jsonString(input, level) {
   }
 }
 
+function fetchMarked(file) {
+  return () =>
+    fetch(file)
+      .then((res) => res.text())
+      .then((text) => {
+        const g = globalThis || global;
+        g.module = { };
+        try {
+          // eslint-disable-next-line no-new-func
+          Function(text)();
+        } catch (err) {
+          throw new Error(`Cannot find ${file}`);
+        }
+        const marked = g.marked || g.module.exports;
+        return marked;
+      });
+}
+
 function loadVersion(ver) {
   let promise;
   if (versionCache[ver]) {
     promise = Promise.resolve();
   } else {
     promise = import(ver + '/lib/marked.esm.js')
-      .catch(() => {
-        return fetch(ver + '/marked.min.js')
-          .then(function(res) { return res.text(); })
-          .then(function(text) {
-            try {
-              // eslint-disable-next-line no-new-func
-              Function(text)();
-            } catch (err) {
-              throw new Error('No esm or min build');
-            }
-            return (globalThis || global).marked;
-          });
-      })
+      .catch(fetchMarked(ver + '/marked.min.js'))
+      .catch(fetchMarked(ver + '/lib/marked.js'))
       .then((marked) => {
         if (!marked) {
           throw Error('No marked');
@@ -135,7 +143,7 @@ function loadVersion(ver) {
           versionCache[ver] = marked.marked;
         } else if (marked.default) {
           versionCache[ver] = marked.default;
-        } else if (marked.parse) {
+        } else if (marked.lexer && marked.parser) {
           versionCache[ver] = marked;
         } else {
           throw new Error('Cannot find marked');
