@@ -5,10 +5,14 @@
  * Copyright (c) 2011-2013, Christopher Jeffrey (MIT License)
  */
 
-import { promises } from 'fs';
+import { promises } from 'node:fs';
+import { resolve } from 'node:path';
+import { homedir } from 'node:os';
+import { createRequire } from 'node:module';
 import { marked } from '../lib/marked.esm.js';
 
-const { readFile, writeFile } = promises;
+const { access, readFile, writeFile } = promises;
+const require = createRequire(import.meta.url);
 
 /**
  * Man Page
@@ -58,6 +62,7 @@ async function main(argv) {
   let string;
   let arg;
   let tokens;
+  let config;
   let opt;
 
   function getarg() {
@@ -107,6 +112,10 @@ async function main(argv) {
       case '--tokens':
         tokens = true;
         break;
+      case '-c':
+      case '--config':
+        config = argv.shift();
+        break;
       case '-h':
       case '--help':
         return await help();
@@ -148,11 +157,65 @@ async function main(argv) {
     return await readFile(input, 'utf8');
   }
 
+  function resolveFile(file) {
+    return resolve(file.replace(/^~/, homedir));
+  }
+
+  function fileExists(file) {
+    return access(resolveFile(file)).then(() => true, () => false);
+  }
+
+  async function runConfig(file) {
+    const configFile = resolveFile(file);
+    let markedConfig;
+    try {
+      // try require for json
+      markedConfig = require(configFile);
+    } catch (err) {
+      if (err.code !== 'ERR_REQUIRE_ESM') {
+        throw err;
+      }
+      // must import esm
+      markedConfig = await import('file:///' + configFile);
+    }
+
+    if (markedConfig.default) {
+      markedConfig = markedConfig.default;
+    }
+
+    if (typeof markedConfig === 'function') {
+      markedConfig(marked);
+    } else {
+      marked.use(markedConfig);
+    }
+  }
+
   const data = await getData();
+
+  if (config) {
+    if (!await fileExists(config)) {
+      throw Error(`Cannot load config file '${config}'`);
+    }
+
+    await runConfig(config);
+  } else {
+    const defaultConfig = [
+      '~/.marked.json',
+      '~/.marked.js',
+      '~/.marked/index.js'
+    ];
+
+    for (const configFile of defaultConfig) {
+      if (await fileExists(configFile)) {
+        await runConfig(configFile);
+        break;
+      }
+    }
+  }
 
   const html = tokens
     ? JSON.stringify(marked.lexer(data, options), null, 2)
-    : marked(data, options);
+    : await marked.parse(data, options);
 
   if (output) {
     return await writeFile(output, html);
@@ -212,6 +275,4 @@ function handleError(err) {
 process.title = 'marked';
 main(process.argv.slice()).then(code => {
   process.exit(code || 0);
-}).catch(err => {
-  handleError(err);
-});
+}).catch(handleError);
