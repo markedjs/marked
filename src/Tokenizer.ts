@@ -625,7 +625,8 @@ export class _Tokenizer {
     const nextChar = match[1] || match[2] || '';
 
     if (!nextChar || !prevChar || this.rules.inline.punctuation.exec(prevChar)) {
-      const lLength = match[0].length - 1;
+      // unicode Regex counts emoji as 1 char; spread into array for proper count (used multiple times below)
+      const lLength = [...match[0]].length - 1;
       let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
 
       const endReg = match[0][0] === '*' ? this.rules.inline.emStrong.rDelimAst : this.rules.inline.emStrong.rDelimUnd;
@@ -639,7 +640,7 @@ export class _Tokenizer {
 
         if (!rDelim) continue; // skip single * in __abc*abc__
 
-        rLength = rDelim.length;
+        rLength = [...rDelim].length;
 
         if (match[3] || match[4]) { // found another Left Delim
           delimTotal += rLength;
@@ -658,7 +659,7 @@ export class _Tokenizer {
         // Remove extra characters. *a*** -> *a*
         rLength = Math.min(rLength, rLength + delimTotal + midDelimTotal);
 
-        const raw = src.slice(0, lLength + match.index + rLength + 1);
+        const raw = [...src].slice(0, lLength + match.index + rLength + 1).join('');
 
         // Create `em` if smallest delimiter has odd char count. *a***
         if (Math.min(lLength, rLength) % 2) {
