@@ -330,7 +330,7 @@ function preprocess(markdown) {
     }
   }
   return body;
-};
+}
 
 marked.use({ hooks: { preprocess } });
 
@@ -359,7 +359,7 @@ import DOMPurify from 'isomorphic-dompurify';
 // Override function
 function postprocess(html) {
   return DOMPurify.sanitize(html);
-};
+}
 
 marked.use({ hooks: { postprocess } });
 
