@@ -322,19 +322,17 @@ import { marked } from 'marked';
 import fm from 'front-matter';
 
 // Override function
-const hooks = {
-  preprocess(markdown) {
-    const { attributes, body } = fm(markdown);
-    for (const prop in attributes) {
-      if (prop in this.options) {
-        this.options[prop] = attributes[prop];
-      }
+function preprocess(markdown) {
+  const { attributes, body } = fm(markdown);
+  for (const prop in attributes) {
+    if (prop in this.options) {
+    this.options[prop] = attributes[prop];
     }
-    return body;
   }
+  return body;
 };
 
-marked.use({ hooks });
+marked.use({ hooks: { preprocess } });
 
 // Run marked
 console.log(marked.parse(`
@@ -359,13 +357,11 @@ import { marked } from 'marked';
 import DOMPurify from 'isomorphic-dompurify';
 
 // Override function
-const hooks = {
-  postprocess(html) {
-    return DOMPurify.sanitize(html);
-  }
+function postprocess(html) {
+  return DOMPurify.sanitize(html);
 };
 
-marked.use({ hooks });
+marked.use({ hooks: { postprocess } });
 
 // Run marked
 console.log(marked.parse(`
@@ -615,7 +611,7 @@ The parser takes tokens as input and calls the renderer functions.
 
 <h2 id="extend">Access to Lexer and Parser</h2>
 
-You also have direct access to the lexer and parser if you so desire.
+You also have direct access to the lexer and parser if you so desire. The `options` parameter is the same options that `marked.use` takes, documented [here](/using_advanced#options).
 
 ``` js
 const tokens = marked.lexer(markdown, options);
