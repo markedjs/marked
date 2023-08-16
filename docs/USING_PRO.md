@@ -611,7 +611,9 @@ The parser takes tokens as input and calls the renderer functions.
 
 <h2 id="extend">Access to Lexer and Parser</h2>
 
-You also have direct access to the lexer and parser if you so desire. The `options` parameter is the same options that `marked.use` takes, documented [here](/using_advanced#options).
+You also have direct access to the lexer and parser if you so desire. The lexer and parser options are the same as passed to `marked.setOptions()` except they have to be full options objects, they don't get merged with the current or default options.
+
+
 
 ``` js
 const tokens = marked.lexer(markdown, options);
