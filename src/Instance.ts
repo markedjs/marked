@@ -244,6 +244,16 @@ export class Marked {
 
       const origOpt = { ...optOrCallback };
       const opt = { ...this.defaults, ...origOpt };
+
+      // Show warning if an extension set async to true but the parse was called with async: false
+      if (this.defaults.async === true && origOpt.async === false) {
+        if (!opt.silent) {
+          console.warn('marked(): The async option was set to true by an extension. The async: false option sent to parse will be ignored.');
+        }
+
+        opt.async = true;
+      }
+
       const throwError = this.#onError(!!opt.silent, !!opt.async, callback);
 
       // throw error in case of non string input
