@@ -45,35 +45,16 @@ export class _Parser {
    * Parse Loop
    */
   parse(tokens: Token[], top = true): string {
-    let out = '',
-      i,
-      j,
-      k,
-      l2,
-      l3,
-      row,
-      cell,
-      header,
-      body,
-      token,
-      ordered,
-      start,
-      loose,
-      itemBody,
-      item,
-      checked,
-      task,
-      checkbox,
-      ret;
+    let out = '';
 
-    const l = tokens.length;
-    for (i = 0; i < l; i++) {
-      token = tokens[i];
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
 
       // Run any renderer extensions
       if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[token.type]) {
-        ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
-        if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'html', 'paragraph', 'text'].includes(token.type)) {
+        const genericToken = token as Tokens.Generic;
+        const ret = this.options.extensions.renderers[genericToken.type].call({ parser: this }, genericToken);
+        if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'html', 'paragraph', 'text'].includes(genericToken.type)) {
           out += ret || '';
           continue;
         }
@@ -88,44 +69,44 @@ export class _Parser {
           continue;
         }
         case 'heading': {
+          const headingToken = token as Tokens.Heading;
           out += this.renderer.heading(
-            this.parseInline(token.tokens!),
-            token.depth,
-            unescape(this.parseInline(token.tokens!, this.textRenderer)),
+            this.parseInline(headingToken.tokens),
+            headingToken.depth,
+            unescape(this.parseInline(headingToken.tokens, this.textRenderer)),
             this.slugger);
           continue;
         }
         case 'code': {
-          out += this.renderer.code(token.text,
-            token.lang,
-            !!token.escaped);
+          const codeToken = token as Tokens.Code;
+          out += this.renderer.code(codeToken.text,
+            codeToken.lang,
+            !!codeToken.escaped);
           continue;
         }
         case 'table': {
-          header = '';
+          const tableToken = token as Tokens.Table;
+          let header = '';
 
           // header
-          cell = '';
-          l2 = token.header.length;
-          for (j = 0; j < l2; j++) {
+          let cell = '';
+          for (let j = 0; j < tableToken.header.length; j++) {
             cell += this.renderer.tablecell(
-              this.parseInline(token.header[j].tokens)!,
-              { header: true, align: token.align[j] }
+              this.parseInline(tableToken.header[j].tokens),
+              { header: true, align: tableToken.align[j] }
             );
           }
           header += this.renderer.tablerow(cell);
 
-          body = '';
-          l2 = token.rows.length;
-          for (j = 0; j < l2; j++) {
-            row = token.rows[j];
+          let body = '';
+          for (let j = 0; j < tableToken.rows.length; j++) {
+            const row = tableToken.rows[j];
 
             cell = '';
-            l3 = row.length;
-            for (k = 0; k < l3; k++) {
+            for (let k = 0; k < row.length; k++) {
               cell += this.renderer.tablecell(
-                this.parseInline(row[k].tokens)!,
-                { header: false, align: token.align[k] }
+                this.parseInline(row[k].tokens),
+                { header: false, align: tableToken.align[k] }
               );
             }
 
@@ -135,25 +116,26 @@ export class _Parser {
           continue;
         }
         case 'blockquote': {
-          body = this.parse(token.tokens!);
+          const blockquoteToken = token as Tokens.Blockquote;
+          const body = this.parse(blockquoteToken.tokens);
           out += this.renderer.blockquote(body);
           continue;
         }
         case 'list': {
-          ordered = token.ordered;
-          start = token.start;
-          loose = token.loose;
-          l2 = token.items.length;
+          const listToken = token as Tokens.List;
+          const ordered = listToken.ordered;
+          const start = listToken.start;
+          const loose = listToken.loose;
 
-          body = '';
-          for (j = 0; j < l2; j++) {
-            item = token.items[j];
-            checked = item.checked;
-            task = item.task;
+          let body = '';
+          for (let j = 0; j < listToken.items.length; j++) {
+            const item = listToken.items[j];
+            const checked = item.checked;
+            const task = item.task;
 
-            itemBody = '';
+            let itemBody = '';
             if (item.task) {
-              checkbox = this.renderer.checkbox(!!checked);
+              const checkbox = this.renderer.checkbox(!!checked);
               if (loose) {
                 if (item.tokens.length > 0 && item.tokens[0].type === 'paragraph') {
                   item.tokens[0].text = checkbox + ' ' + item.tokens[0].text;
@@ -179,20 +161,23 @@ export class _Parser {
           continue;
         }
         case 'html': {
-          out += this.renderer.html(token.text, token.block);
+          const htmlToken = token as Tokens.HTML;
+          out += this.renderer.html(htmlToken.text, htmlToken.block);
           continue;
         }
         case 'paragraph': {
-          out += this.renderer.paragraph(this.parseInline(token.tokens!)!);
+          const paragraphToken = token as Tokens.Paragraph;
+          out += this.renderer.paragraph(this.parseInline(paragraphToken.tokens));
           continue;
         }
         case 'text': {
-          body = token.tokens ? this.parseInline(token.tokens) : token.text;
-          while (i + 1 < l && tokens[i + 1].type === 'text') {
-            token = tokens[++i] as Tokens.Text;
-            body += '\n' + (token.tokens ? this.parseInline(token.tokens) : token.text);
+          let textToken = token as Tokens.Text;
+          let body = textToken.tokens ? this.parseInline(textToken.tokens) : textToken.text;
+          while (i + 1 < tokens.length && tokens[i + 1].type === 'text') {
+            textToken = tokens[++i] as Tokens.Text;
+            body += '\n' + (textToken.tokens ? this.parseInline(textToken.tokens) : textToken.text);
           }
-          out += top ? this.renderer.paragraph(body!) : body;
+          out += top ? this.renderer.paragraph(body) : body;
           continue;
         }
 
@@ -216,18 +201,14 @@ export class _Parser {
    */
   parseInline(tokens: Token[], renderer?: _Renderer | _TextRenderer): string {
     renderer = renderer || this.renderer;
-    let out = '',
-      i,
-      token,
-      ret;
+    let out = '';
 
-    const l = tokens.length;
-    for (i = 0; i < l; i++) {
-      token = tokens[i];
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
 
       // Run any renderer extensions
       if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[token.type]) {
-        ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
+        const ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
         if (ret !== false || !['escape', 'html', 'link', 'image', 'strong', 'em', 'codespan', 'br', 'del', 'text'].includes(token.type)) {
           out += ret || '';
           continue;
@@ -236,31 +217,38 @@ export class _Parser {
 
       switch (token.type) {
         case 'escape': {
-          out += renderer.text(token.text);
+          const escapeToken = token as Tokens.Escape;
+          out += renderer.text(escapeToken.text);
           break;
         }
         case 'html': {
-          out += renderer.html(token.text);
+          const tagToken = token as Tokens.Tag;
+          out += renderer.html(tagToken.text);
           break;
         }
         case 'link': {
-          out += renderer.link(token.href, token.title, this.parseInline(token.tokens!, renderer)!);
+          const linkToken = token as Tokens.Link;
+          out += renderer.link(linkToken.href, linkToken.title, this.parseInline(linkToken.tokens, renderer));
           break;
         }
         case 'image': {
-          out += renderer.image(token.href, token.title, token.text);
+          const imageToken = token as Tokens.Image;
+          out += renderer.image(imageToken.href, imageToken.title, imageToken.text);
           break;
         }
         case 'strong': {
-          out += renderer.strong(this.parseInline(token.tokens!, renderer)!);
+          const strongToken = token as Tokens.Strong;
+          out += renderer.strong(this.parseInline(strongToken.tokens, renderer));
           break;
         }
         case 'em': {
-          out += renderer.em(this.parseInline(token.tokens!, renderer)!);
+          const emToken = token as Tokens.Em;
+          out += renderer.em(this.parseInline(emToken.tokens, renderer));
           break;
         }
         case 'codespan': {
-          out += renderer.codespan(token.text);
+          const codespanToken = token as Tokens.Codespan;
+          out += renderer.codespan(codespanToken.text);
           break;
         }
         case 'br': {
@@ -268,11 +256,13 @@ export class _Parser {
           break;
         }
         case 'del': {
-          out += renderer.del(this.parseInline(token.tokens!, renderer)!);
+          const delToken = token as Tokens.Del;
+          out += renderer.del(this.parseInline(delToken.tokens, renderer));
           break;
         }
         case 'text': {
-          out += renderer.text(token.text);
+          const textToken = token as Tokens.Text;
+          out += renderer.text(textToken.text);
           break;
         }
         default: {

@@ -16,7 +16,7 @@ export class _Renderer {
   }
 
   code(code: string, infostring: string | undefined, escaped: boolean): string {
-    const lang = (infostring || '').match(/\S*/)![0];
+    const lang = (infostring || '').match(/^\S*/)?.[0];
     if (this.options.highlight) {
       const out = this.options.highlight(code, lang);
       if (out != null && out !== code) {
@@ -64,8 +64,8 @@ export class _Renderer {
   }
 
   list(body: string, ordered: boolean, start: number | ''): string {
-    const type = ordered ? 'ol' : 'ul',
-      startatt = (ordered && start !== 1) ? (' start="' + start + '"') : '';
+    const type = ordered ? 'ol' : 'ul';
+    const startatt = (ordered && start !== 1) ? (' start="' + start + '"') : '';
     return '<' + type + startatt + '>\n' + body + '</' + type + '>\n';
   }
 
@@ -135,10 +135,11 @@ export class _Renderer {
   }
 
   link(href: string, title: string | null | undefined, text: string): string {
-    href = cleanUrl(this.options.sanitize, this.options.baseUrl, href) as any;
-    if (href === null) {
+    const cleanHref = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+    if (cleanHref === null) {
       return text;
     }
+    href = cleanHref;
     let out = '<a href="' + href + '"';
     if (title) {
       out += ' title="' + title + '"';
@@ -148,10 +149,11 @@ export class _Renderer {
   }
 
   image(href: string, title: string | null, text: string): string {
-    href = cleanUrl(this.options.sanitize, this.options.baseUrl, href) as any;
-    if (href === null) {
+    const cleanHref = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+    if (cleanHref === null) {
       return text;
     }
+    href = cleanHref;
 
     let out = `<img src="${href}" alt="${text}"`;
     if (title) {
