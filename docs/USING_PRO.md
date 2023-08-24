@@ -320,17 +320,18 @@ marked.use({ hooks });
 // Run marked
 console.log(marked.parse(`
 ---
-headerIds: false
+breaks: true
 ---
 
-## test
+line1
+line2
 `.trim()));
 ```
 
 **Output:**
 
 ```html
-<h2>test</h2>
+<p>line1<br>line2</p>
 ```
 
 **Example:** Sanitize HTML with [isomorphic-dompurify](https://www.npmjs.com/package/isomorphic-dompurify)

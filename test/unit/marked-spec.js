@@ -441,8 +441,7 @@ describe('use extension', () => {
           if (token.text === `used ${name}`) {
             token.text += ' walked';
           }
-        },
-        headerIds: false
+        }
       };
     }
 
@@ -468,8 +467,7 @@ describe('use extension', () => {
           renderer(token) {
             return false;
           }
-        }],
-        headerIds: false
+        }]
       };
     }
 
@@ -607,8 +605,7 @@ used extension2 walked</p>
             token.tokens.pop();
           }
         }
-      },
-      headerIds: false
+      }
     };
     use(styleTags);
     const html = marked('This is a *paragraph* with blue text. {blue}\n'
@@ -668,11 +665,11 @@ used extension2 walked</p>
 
   it('should use options from extension', () => {
     const extension = {
-      headerIds: false
+      breaks: true
     };
     use(extension);
-    const html = marked('# heading');
-    expect(html).toBe('<h1>heading</h1>\n');
+    const html = marked('line1\nline2');
+    expect(html).toBe('<p>line1<br>line2</p>\n');
   });
 
   it('should call all walkTokens in reverse order', () => {

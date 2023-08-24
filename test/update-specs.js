@@ -73,6 +73,6 @@ const commonmarkDir = resolve(__dirname, './specs/commonmark');
 const gfmDir = resolve(__dirname, './specs/gfm');
 removeFiles(commonmarkDir);
 removeFiles(gfmDir);
-updateCommonmark(commonmarkDir, { gfm: false, pedantic: false, headerIds: false });
-updateCommonmark(gfmDir, { gfm: true, pedantic: false, headerIds: false });
+updateCommonmark(commonmarkDir, { gfm: false, pedantic: false });
+updateCommonmark(gfmDir, { gfm: true, pedantic: false });
 updateGfm(gfmDir);
