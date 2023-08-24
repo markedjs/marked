@@ -182,7 +182,6 @@ declare module "helpers" {
         getRegex: () => RegExp;
     };
     export function cleanUrl(href: string): string | null;
-    export function resolveUrl(base: string, href: string): string;
     export const noopTest: {
         exec: () => null;
     };
