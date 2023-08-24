@@ -1,16 +1,11 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "target": "es2022",
-    "module": "NodeNext",
-    "strict": true,
+    "noEmit": false,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "NodeNext",
-    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": false,
+    "isolatedModules": false,
     "outFile": "lib/marked.d.ts"
-  },
-  "include": [
-    "src/*.ts"
-  ]
+  }
 }

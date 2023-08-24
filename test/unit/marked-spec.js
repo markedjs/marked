@@ -560,6 +560,20 @@ used extension2 walked</p>
     expect(defaults.async).toBeFalse();
   });
 
+  it('should return Promise if async', () => {
+    expect(marked('test', { async: true })).toBeInstanceOf(Promise);
+  });
+
+  it('should return string if not async', () => {
+    expect(typeof marked('test', { async: false })).toBe('string');
+  });
+
+  it('should return Promise if async is set by extension', () => {
+    use({ async: true });
+
+    expect(marked('test', { async: false })).toBeInstanceOf(Promise);
+  });
+
   it('should allow deleting/editing tokens', () => {
     const styleTags = {
       extensions: [{

@@ -1,8 +1,5 @@
 declare module "Tokens" {
-    export type Token = (Tokens.Space | Tokens.Code | Tokens.Heading | Tokens.Table | Tokens.Hr | Tokens.Blockquote | Tokens.List | Tokens.ListItem | Tokens.Paragraph | Tokens.HTML | Tokens.Text | Tokens.Def | Tokens.Escape | Tokens.Tag | Tokens.Image | Tokens.Link | Tokens.Strong | Tokens.Em | Tokens.Codespan | Tokens.Br | Tokens.Del | Tokens.Generic) & {
-        loose?: boolean;
-        tokens?: Token[];
-    };
+    export type Token = (Tokens.Space | Tokens.Code | Tokens.Heading | Tokens.Table | Tokens.Hr | Tokens.Blockquote | Tokens.List | Tokens.ListItem | Tokens.Paragraph | Tokens.HTML | Tokens.Text | Tokens.Def | Tokens.Escape | Tokens.Tag | Tokens.Image | Tokens.Link | Tokens.Strong | Tokens.Em | Tokens.Codespan | Tokens.Br | Tokens.Del | Tokens.Generic);
     export namespace Tokens {
         interface Space {
             type: 'space';
@@ -32,7 +29,7 @@ declare module "Tokens" {
         }
         interface TableCell {
             text: string;
-            tokens?: Token[];
+            tokens: Token[];
         }
         interface Hr {
             type: 'hr';
@@ -59,7 +56,7 @@ declare module "Tokens" {
             checked?: boolean | undefined;
             loose: boolean;
             text: string;
-            tokens?: Token[];
+            tokens: Token[];
         }
         interface Paragraph {
             type: 'paragraph';
@@ -378,11 +375,13 @@ declare module "MarkedOptions" {
     export interface TokenizerThis {
         lexer: _Lexer;
     }
+    export type TokenizerExtensionFunction = (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
+    export type TokenizerStartFunction = (this: TokenizerThis, src: string) => number | void;
     export interface TokenizerExtension {
         name: string;
         level: 'block' | 'inline';
-        start?: ((this: TokenizerThis, src: string) => number | void) | undefined;
-        tokenizer: (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
+        start?: TokenizerStartFunction | undefined;
+        tokenizer: TokenizerExtensionFunction;
         childTokens?: string[] | undefined;
     }
     export interface RendererThis {
@@ -453,37 +452,38 @@ declare module "MarkedOptions" {
          * Each token is passed by reference so updates are persisted when passed to the parser.
          * The return value of the function is ignored.
          */
-        walkTokens?: ((token: Token) => void | Promise<void>) | undefined | null;
+        walkTokens?: ((token: Token) => void | unknown | Promise<void>) | undefined | null;
     }
-    export interface MarkedOptions extends Omit<MarkedExtension, 'extensions' | 'renderer' | 'tokenizer' | 'walkTokens'> {
+    export interface MarkedOptions extends Omit<MarkedExtension, 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
         /**
          * Type: object Default: new Renderer()
          *
          * An object containing functions to render tokens to HTML.
          */
-        renderer?: Omit<_Renderer, 'constructor'> | undefined | null;
+        renderer?: _Renderer | undefined | null;
         /**
          * The tokenizer defines how to turn markdown text into tokens.
          */
-        tokenizer?: Omit<_Tokenizer, 'constructor'> | undefined | null;
+        tokenizer?: _Tokenizer | undefined | null;
         /**
-         * The walkTokens function gets called with every token.
-         * Child tokens are called before moving on to sibling tokens.
-         * Each token is passed by reference so updates are persisted when passed to the parser.
-         * The return value of the function is ignored.
+         * Custom extensions
          */
-        walkTokens?: ((token: Token) => void | Promise<void> | Array<void | Promise<void>>) | undefined | null;
+        extensions?: null | {
+            renderers: {
+                [name: string]: RendererExtensionFunction;
+            };
+            childTokens: {
+                [name: string]: string[];
+            };
+            inline?: TokenizerExtensionFunction[];
+            block?: TokenizerExtensionFunction[];
+            startInline?: TokenizerStartFunction[];
+            startBlock?: TokenizerStartFunction[];
+        };
         /**
-         * Add tokenizers and renderers to marked
+         * walkTokens function returns array of values for Promise.all
          */
-        extensions?: (TokenizerAndRendererExtension[] & {
-            renderers: Record<string, RendererExtensionFunction>;
-            childTokens: Record<string, string[]>;
-            block: any[];
-            inline: any[];
-            startBlock: Array<(this: TokenizerThis, src: string) => number | void>;
-            startInline: Array<(this: TokenizerThis, src: string) => number | void>;
-        }) | undefined | null;
+        walkTokens?: null | ((token: Token) => void | (unknown | Promise<void>)[]);
     }
 }
 declare module "defaults" {

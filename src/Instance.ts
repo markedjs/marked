@@ -9,7 +9,7 @@ import {
   escape
 } from './helpers.ts';
 import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
-import type { Token, TokensList } from './Tokens.ts';
+import type { Token, Tokens, TokensList } from './Tokens.ts';
 
 type UnknownFunction = (...args: unknown[]) => unknown;
 type GenericRendererFunction = (...args: unknown[]) => string | false;
@@ -43,28 +43,30 @@ export class Marked {
       values = values.concat(callback.call(this, token));
       switch (token.type) {
         case 'table': {
-          for (const cell of token.header) {
-            values = values.concat(this.walkTokens(cell.tokens!, callback));
+          const tableToken = token as Tokens.Table;
+          for (const cell of tableToken.header) {
+            values = values.concat(this.walkTokens(cell.tokens, callback));
           }
-          for (const row of token.rows) {
+          for (const row of tableToken.rows) {
             for (const cell of row) {
-              values = values.concat(this.walkTokens(cell.tokens!, callback));
+              values = values.concat(this.walkTokens(cell.tokens, callback));
             }
           }
           break;
         }
         case 'list': {
-          values = values.concat(this.walkTokens(token.items, callback));
+          const listToken = token as Tokens.List;
+          values = values.concat(this.walkTokens(listToken.items, callback));
           break;
         }
         default: {
-          if (this.defaults.extensions && this.defaults.extensions.childTokens && this.defaults.extensions.childTokens[token.type]) { // Walk any extensions
-            this.defaults.extensions.childTokens[token.type].forEach((childTokens) => {
-              // @ts-expect-error we assume token[childToken] is an array of tokens but we can't be sure
-              values = values.concat(this.walkTokens(token[childTokens], callback));
+          const genericToken = token as Tokens.Generic;
+          if (this.defaults.extensions?.childTokens?.[genericToken.type]) {
+            this.defaults.extensions.childTokens[genericToken.type].forEach((childTokens) => {
+              values = values.concat(this.walkTokens(genericToken[childTokens], callback));
             });
-          } else if (token.tokens) {
-            values = values.concat(this.walkTokens(token.tokens, callback));
+          } else if (genericToken.tokens) {
+            values = values.concat(this.walkTokens(genericToken.tokens, callback));
           }
         }
       }
@@ -73,7 +75,7 @@ export class Marked {
   }
 
   use(...args: MarkedExtension[]) {
-    const extensions: NonNullable<MarkedOptions['extensions']> = this.defaults.extensions || { renderers: {}, childTokens: {} } as NonNullable<MarkedOptions['extensions']>;
+    const extensions: MarkedOptions['extensions'] = this.defaults.extensions || { renderers: {}, childTokens: {} };
 
     args.forEach((pack) => {
       // copy options to new object
@@ -107,23 +109,24 @@ export class Marked {
             if (!ext.level || (ext.level !== 'block' && ext.level !== 'inline')) {
               throw new Error("extension level must be 'block' or 'inline'");
             }
-            if (extensions[ext.level]) {
-              extensions[ext.level].unshift(ext.tokenizer);
+            const extLevel = extensions[ext.level];
+            if (extLevel) {
+              extLevel.unshift(ext.tokenizer);
             } else {
               extensions[ext.level] = [ext.tokenizer];
             }
             if (ext.start) { // Function to check for start of token
               if (ext.level === 'block') {
                 if (extensions.startBlock) {
-                  extensions.startBlock.push(ext.start!);
+                  extensions.startBlock.push(ext.start);
                 } else {
-                  extensions.startBlock = [ext.start!];
+                  extensions.startBlock = [ext.start];
                 }
               } else if (ext.level === 'inline') {
                 if (extensions.startInline) {
-                  extensions.startInline.push(ext.start!);
+                  extensions.startInline.push(ext.start);
                 } else {
-                  extensions.startInline = [ext.start!];
+                  extensions.startInline = [ext.start];
                 }
               }
             }
@@ -205,9 +208,10 @@ export class Marked {
       // ==-- Parse WalkTokens extensions --== //
       if (pack.walkTokens) {
         const walkTokens = this.defaults.walkTokens;
+        const packWalktokens = pack.walkTokens;
         opts.walkTokens = function(token) {
-          let values: Array<Promise<void> | void> = [];
-          values.push(pack.walkTokens!.call(this, token));
+          let values: Array<Promise<void> | void | unknown> = [];
+          values.push(packWalktokens.call(this, token));
           if (walkTokens) {
             values = values.concat(walkTokens.call(this, token));
           }
@@ -230,6 +234,16 @@ export class Marked {
     return (src: string, options?: MarkedOptions | undefined | null): string | Promise<string> => {
       const origOpt = { ...options };
       const opt = { ...this.defaults, ...origOpt };
+
+      // Show warning if an extension set async to true but the parse was called with async: false
+      if (this.defaults.async === true && origOpt.async === false) {
+        if (!opt.silent) {
+          console.warn('marked(): The async option was set to true by an extension. The async: false option sent to parse will be ignored.');
+        }
+
+        opt.async = true;
+      }
+
       const throwError = this.#onError(!!opt.silent, !!opt.async);
 
       // throw error in case of non string input

@@ -69,6 +69,7 @@ function indentCodeCompensation(raw: string, text: string) {
  */
 export class _Tokenizer {
   options: MarkedOptions;
+  // TODO: Fix this rules type
   rules: any;
   lexer!: _Lexer;
 
@@ -172,9 +173,6 @@ export class _Tokenizer {
   list(src: string): Tokens.List | undefined {
     let cap = this.rules.block.list.exec(src);
     if (cap) {
-      let raw, istask, ischecked, indent, i, blankLine, endsWithBlankLine,
-        line, nextLine, rawLine, itemContents, endEarly;
-
       let bull = cap[1].trim();
       const isordered = bull.length > 1;
 
@@ -195,10 +193,12 @@ export class _Tokenizer {
 
       // Get next list item
       const itemRegex = new RegExp(`^( {0,3}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`);
-
+      let raw = '';
+      let itemContents = '';
+      let endsWithBlankLine = false;
       // Check if current bullet point can start a new List Item
       while (src) {
-        endEarly = false;
+        let endEarly = false;
         if (!(cap = itemRegex.exec(src))) {
           break;
         }
@@ -207,12 +207,13 @@ export class _Tokenizer {
           break;
         }
 
-        raw = cap[0];
+        raw = cap[0] as string;
         src = src.substring(raw.length);
 
-        line = cap[2].split('\n', 1)[0].replace(/^\t+/, (t: string) => ' '.repeat(3 * t.length));
-        nextLine = src.split('\n', 1)[0];
+        let line = cap[2].split('\n', 1)[0].replace(/^\t+/, (t: string) => ' '.repeat(3 * t.length)) as string;
+        let nextLine = src.split('\n', 1)[0];
 
+        let indent = 0;
         if (this.options.pedantic) {
           indent = 2;
           itemContents = line.trimLeft();
@@ -223,7 +224,7 @@ export class _Tokenizer {
           indent += cap[1].length;
         }
 
-        blankLine = false;
+        let blankLine = false;
 
         if (!line && /^ *$/.test(nextLine)) { // Items begin with at most one blank line
           raw += nextLine + '\n';
@@ -239,7 +240,7 @@ export class _Tokenizer {
 
           // Check if following lines should be included in List Item
           while (src) {
-            rawLine = src.split('\n', 1)[0];
+            const rawLine = src.split('\n', 1)[0];
             nextLine = rawLine;
 
             // Re-align to follow commonmark nesting rules
@@ -311,6 +312,8 @@ export class _Tokenizer {
           }
         }
 
+        let istask: RegExpExecArray | null = null;
+        let ischecked: boolean | undefined;
         // Check for task list items
         if (this.options.gfm) {
           istask = /^\[[ xX]\] /.exec(itemContents);
@@ -326,7 +329,8 @@ export class _Tokenizer {
           task: !!istask,
           checked: ischecked,
           loose: false,
-          text: itemContents
+          text: itemContents,
+          tokens: []
         });
 
         list.raw += raw;
@@ -337,17 +341,15 @@ export class _Tokenizer {
       (list.items[list.items.length - 1] as Tokens.ListItem).text = itemContents.trimRight();
       list.raw = list.raw.trimRight();
 
-      const l = list.items.length;
-
       // Item child tokens handled here at end because we needed to have the final item to trim it first
-      for (i = 0; i < l; i++) {
+      for (let i = 0; i < list.items.length; i++) {
         this.lexer.state.top = false;
         list.items[i].tokens = this.lexer.blockTokens(list.items[i].text, []);
 
         if (!list.loose) {
           // Check if list should be loose
-          const spacers = list.items[i].tokens!.filter(t => t.type === 'space');
-          const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => /\n.*\n/.test(t.raw!));
+          const spacers = list.items[i].tokens.filter(t => t.type === 'space');
+          const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => /\n.*\n/.test(t.raw));
 
           list.loose = hasMultipleLineBreaks;
         }
@@ -355,7 +357,7 @@ export class _Tokenizer {
 
       // Set all items to loose if list is loose
       if (list.loose) {
-        for (i = 0; i < l; i++) {
+        for (let i = 0; i < list.items.length; i++) {
           list.items[i].loose = true;
         }
       }
@@ -401,7 +403,7 @@ export class _Tokenizer {
         type: 'table',
         raw: cap[0],
         header: splitCells(cap[1]).map(c => {
-          return { text: c };
+          return { text: c, tokens: [] };
         }),
         align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
         rows: cap[3] && cap[3].trim() ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : []
@@ -411,21 +413,24 @@ export class _Tokenizer {
         let l = item.align.length;
         let i, j, k, row;
         for (i = 0; i < l; i++) {
-          if (/^ *-+: *$/.test(item.align[i]!)) {
-            item.align[i] = 'right';
-          } else if (/^ *:-+: *$/.test(item.align[i]!)) {
-            item.align[i] = 'center';
-          } else if (/^ *:-+ *$/.test(item.align[i]!)) {
-            item.align[i] = 'left';
-          } else {
-            item.align[i] = null;
+          const align = item.align[i];
+          if (align) {
+            if (/^ *-+: *$/.test(align)) {
+              item.align[i] = 'right';
+            } else if (/^ *:-+: *$/.test(align)) {
+              item.align[i] = 'center';
+            } else if (/^ *:-+ *$/.test(align)) {
+              item.align[i] = 'left';
+            } else {
+              item.align[i] = null;
+            }
           }
         }
 
         l = item.rows.length;
         for (i = 0; i < l; i++) {
           item.rows[i] = splitCells(item.rows[i] as unknown as string, item.header.length).map(c => {
-            return { text: c };
+            return { text: c, tokens: [] };
           });
         }
 
@@ -611,7 +616,8 @@ export class _Tokenizer {
     const nextChar = match[1] || match[2] || '';
 
     if (!nextChar || !prevChar || this.rules.inline.punctuation.exec(prevChar)) {
-      const lLength = match[0].length - 1;
+      // unicode Regex counts emoji as 1 char; spread into array for proper count (used multiple times below)
+      const lLength = [...match[0]].length - 1;
       let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
 
       const endReg = match[0][0] === '*' ? this.rules.inline.emStrong.rDelimAst : this.rules.inline.emStrong.rDelimUnd;
@@ -625,7 +631,7 @@ export class _Tokenizer {
 
         if (!rDelim) continue; // skip single * in __abc*abc__
 
-        rLength = rDelim.length;
+        rLength = [...rDelim].length;
 
         if (match[3] || match[4]) { // found another Left Delim
           delimTotal += rLength;
@@ -644,7 +650,7 @@ export class _Tokenizer {
         // Remove extra characters. *a*** -> *a*
         rLength = Math.min(rLength, rLength + delimTotal + midDelimTotal);
 
-        const raw = src.slice(0, lLength + match.index + rLength + 1);
+        const raw = [...src].slice(0, lLength + match.index + rLength + 1).join('');
 
         // Create `em` if smallest delimiter has odd char count. *a***
         if (Math.min(lLength, rLength) % 2) {

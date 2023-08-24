@@ -1,26 +1,27 @@
 /* eslint-disable no-use-before-define */
-export type Token = (Tokens.Space
-    | Tokens.Code
-    | Tokens.Heading
-    | Tokens.Table
-    | Tokens.Hr
-    | Tokens.Blockquote
-    | Tokens.List
-    | Tokens.ListItem
-    | Tokens.Paragraph
-    | Tokens.HTML
-    | Tokens.Text
-    | Tokens.Def
-    | Tokens.Escape
-    | Tokens.Tag
-    | Tokens.Image
-    | Tokens.Link
-    | Tokens.Strong
-    | Tokens.Em
-    | Tokens.Codespan
-    | Tokens.Br
-    | Tokens.Del
-    | Tokens.Generic) & { loose?: boolean, tokens?: Token[] };
+export type Token = (
+    Tokens.Space
+  | Tokens.Code
+  | Tokens.Heading
+  | Tokens.Table
+  | Tokens.Hr
+  | Tokens.Blockquote
+  | Tokens.List
+  | Tokens.ListItem
+  | Tokens.Paragraph
+  | Tokens.HTML
+  | Tokens.Text
+  | Tokens.Def
+  | Tokens.Escape
+  | Tokens.Tag
+  | Tokens.Image
+  | Tokens.Link
+  | Tokens.Strong
+  | Tokens.Em
+  | Tokens.Codespan
+  | Tokens.Br
+  | Tokens.Del
+  | Tokens.Generic);
 
 export namespace Tokens {
     export interface Space {
@@ -55,7 +56,7 @@ export namespace Tokens {
 
     export interface TableCell {
         text: string;
-        tokens?: Token[];
+        tokens: Token[];
     }
 
     export interface Hr {
@@ -86,7 +87,7 @@ export namespace Tokens {
         checked?: boolean | undefined;
         loose: boolean;
         text: string;
-        tokens?: Token[];
+        tokens: Token[];
     }
 
     export interface Paragraph {
