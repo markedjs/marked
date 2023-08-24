@@ -1167,7 +1167,7 @@ paragraph
         it('autolink email', () => {
           expectInlineTokens({
             md: '<test@example.com>',
-            options: { mangle: false },
+            options: {},
             tokens: [
               {
                 type: 'link',
@@ -1202,7 +1202,7 @@ paragraph
         it('url email', () => {
           expectInlineTokens({
             md: 'test@example.com',
-            options: { gfm: true, mangle: false },
+            options: { gfm: true },
             tokens: [
               {
                 type: 'link',

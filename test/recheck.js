@@ -28,11 +28,6 @@ function checkRegexp(obj, name) {
 console.log(`
 import { marked } from './src/marked.js';
 
-marked.use({
-  mangle: false,
-  headerIds: false
-});
-
 const start = Date.now();
 `);
 

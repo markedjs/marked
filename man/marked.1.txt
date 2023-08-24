@@ -5,8 +5,7 @@ NAME
 
 SYNOPSIS
        marked  [-o  <output>]  [-i  <input>] [-s <string>] [--help] [--tokens]
-       [--pedantic]   [--gfm]	 [--breaks]    [--sanitize]    [--smart-lists]
-       [--lang-prefix <prefix>] [--no-etc...] [--silent] [filename]
+       [--pedantic] [--gfm] [--breaks] [--no-etc...] [--silent] [filename]
 
 
 DESCRIPTION
@@ -45,19 +44,7 @@ OPTIONS
        --breaks
 	      Enable GFM line breaks. Only works with the gfm option.
 
-       --sanitize
-	      Sanitize output. Ignore any HTML input.
-
-       --smart-lists
-	      Use smarter list behavior than the original markdown.
-
-       --lang-prefix [prefix]
-	      Set the prefix for code block classes.
-
-       --mangle
-	      Mangle email addresses.
-
-       --no-sanitize, -no-etc...
+       --no-breaks, -no-etc...
 	      The inverse of any of the marked options above.
 
        --silent

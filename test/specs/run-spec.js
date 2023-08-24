@@ -24,11 +24,6 @@ function runSpecs(title, dir, showCompletionTable, options) {
             spec.options.silent = true;
           }
 
-          if (spec.options.sanitizer) {
-            // eslint-disable-next-line no-eval
-            spec.options.sanitizer = eval(spec.options.sanitizer);
-          }
-
           (spec.only ? fit : (spec.skip ? xit : it))('should ' + passFail + example, async() => {
             const before = process.hrtime();
             if (spec.shouldFail) {

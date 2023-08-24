@@ -54,16 +54,6 @@ console.log(marked.parse(markdownString));
 |silent      |`boolean` |`false`  |v0.2.7   |If true, the parser does not throw any exception or log any warning. Any error will be returned as a string.|
 |tokenizer    |`object`  |`new Tokenizer()`|v1.0.0|An object containing functions to create tokens from markdown. See [extensibility](/using_pro) for more details.|
 |walkTokens   |`function`  |`null`|v1.1.0|A function which is called for every token. See [extensibility](/using_pro) for more details.|
-|baseUrl (**deprecated**)|`string`  |`null`   |v0.3.9    |Deprecated in v5.0.0 use [`marked-base-url`](https://www.npmjs.com/package/marked-base-url) to prefix url for any relative link. |
-|headerIds (**deprecated**)|`boolean` |`true`   |v0.4.0   |Deprecated in v5.0.0 use [`marked-gfm-heading-id`](https://www.npmjs.com/package/marked-gfm-heading-id) to include an `id` attribute when emitting headings (h1, h2, h3, etc).|
-|headerPrefix (**deprecated**)|`string`  |`''`     |v0.3.0   |Deprecated in v5.0.0 use [`marked-gfm-heading-id`](https://www.npmjs.com/package/marked-gfm-heading-id) to add a string to prefix the `id` attribute when emitting headings (h1, h2, h3, etc).|
-|highlight (**deprecated**)|`function`|`null`   |v0.3.0   |Deprecated in v5.0.0 use [`marked-highlight`](https://www.npmjs.com/package/marked-highlight) to add highlighting to code blocks. |
-|langPrefix  (**deprecated**)|`string`  |`'language-'`|v0.3.0|Deprecated in v5.0.0 use [`marked-highlight`](https://www.npmjs.com/package/marked-highlight) to prefix the className in a `<code>` block. Useful for syntax highlighting.|
-|mangle (**deprecated**)|`boolean` |`true`   |v0.3.4   |Deprecated in v5.0.0 use [`marked-mangle`](https://www.npmjs.com/package/marked-mangle) to mangle email addresses.|
-|sanitize (**deprecated**)|`boolean` |`false`  |v0.2.1   |If true, sanitize the HTML passed into `markdownString` with the `sanitizer` function.<br>**Warning**: This feature is deprecated and it should NOT be used as it cannot be considered secure.<br>Instead use a sanitize library, like [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [sanitize-html](https://github.com/apostrophecms/sanitize-html) or [insane](https://github.com/bevacqua/insane) on the output HTML! |
-|sanitizer  (**deprecated**)|`function`|`null`   |v0.3.4   |A function to sanitize the HTML passed into `markdownString`.|
-|smartypants (**deprecated**)|`boolean` |`false`  |v0.2.9   |Deprecated in v5.0.0 use [`marked-smartypants`](https://www.npmjs.com/package/marked-smartypants) to use "smart" typographic punctuation for things like quotes and dashes.|
-|xhtml (**deprecated**)|`boolean` |`false`  |v0.3.2   |Deprecated in v5.0.0 use [`marked-xhtml`](https://www.npmjs.com/package/marked-xhtml) to emit self-closing HTML tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.|
 
 <h2 id="extensions">Known Extensions</h2>
 
