@@ -303,6 +303,7 @@ declare module "Instance" {
     import type { MarkedExtension, MarkedOptions } from "MarkedOptions";
     import type { Token, TokensList } from "Tokens";
     export type ResultCallback = (error: Error | null, parseResult?: string) => undefined | void;
+    export type MaybePromise = void | Promise<void>;
     export class Marked {
         #private;
         defaults: MarkedOptions;
@@ -322,7 +323,7 @@ declare module "Instance" {
         /**
          * Run callback for every token
          */
-        walkTokens<T = void>(tokens: Token[] | TokensList, callback: (token: Token) => T | T[]): T[];
+        walkTokens(tokens: Token[] | TokensList, callback: (token: Token) => MaybePromise | MaybePromise[]): MaybePromise[];
         use(...args: MarkedExtension[]): this;
         setOptions(opt: MarkedOptions): this;
     }
@@ -567,7 +568,7 @@ declare module "MarkedOptions" {
          * Each token is passed by reference so updates are persisted when passed to the parser.
          * The return value of the function is ignored.
          */
-        walkTokens?: ((token: Token) => void | unknown | Promise<void>) | undefined | null;
+        walkTokens?: ((token: Token) => void | Promise<void>) | undefined | null;
         /**
          * Generate closing slash for self-closing tags (<br/> instead of <br>)
          * @deprecated Deprecated in v5.0.0 use marked-xhtml to emit self-closing HTML tags for void elements (<br/>, <img/>, etc.) with a "/" as required by XHTML.
@@ -603,7 +604,7 @@ declare module "MarkedOptions" {
         /**
          * walkTokens function returns array of values for Promise.all
          */
-        walkTokens?: null | ((token: Token) => void | (unknown | Promise<void>)[]);
+        walkTokens?: null | ((token: Token) => void | Promise<void> | (void | Promise<void>)[]);
     }
 }
 declare module "defaults" {
@@ -642,7 +643,7 @@ declare module "marked" {
     import { _getDefaults } from "defaults";
     import type { MarkedExtension, MarkedOptions } from "MarkedOptions";
     import type { Token, TokensList } from "Tokens";
-    import type { ResultCallback } from "Instance";
+    import type { ResultCallback, MaybePromise } from "Instance";
     /**
      * Compiles markdown to HTML asynchronously.
      *
@@ -689,7 +690,7 @@ declare module "marked" {
         var getDefaults: typeof _getDefaults;
         var defaults: MarkedOptions;
         var use: (...args: MarkedExtension[]) => typeof marked;
-        var walkTokens: <T = void>(tokens: Token[] | TokensList, callback: (token: Token) => T | T[]) => T[];
+        var walkTokens: (tokens: Token[] | TokensList, callback: (token: Token) => MaybePromise | MaybePromise[]) => MaybePromise[];
         var parseInline: (src: string, optOrCallback?: MarkedOptions | ResultCallback | null | undefined, callback?: ResultCallback | undefined) => string | Promise<string | undefined> | undefined;
         var Parser: typeof _Parser;
         var parser: typeof _Parser.parse;
@@ -705,7 +706,7 @@ declare module "marked" {
     export const options: (options: MarkedOptions) => typeof marked;
     export const setOptions: (options: MarkedOptions) => typeof marked;
     export const use: (...args: MarkedExtension[]) => typeof marked;
-    export const walkTokens: <T = void>(tokens: Token[] | TokensList, callback: (token: Token) => T | T[]) => T[];
+    export const walkTokens: (tokens: Token[] | TokensList, callback: (token: Token) => MaybePromise | MaybePromise[]) => MaybePromise[];
     export const parseInline: (src: string, optOrCallback?: MarkedOptions | ResultCallback | null | undefined, callback?: ResultCallback | undefined) => string | Promise<string | undefined> | undefined;
     export const parse: typeof marked;
     export const parser: typeof _Parser.parse;
