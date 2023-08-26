@@ -49,6 +49,7 @@ jobs:
         run: npm run test:lint
 
   Build:
+    name: Build and Test Types
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -61,6 +62,8 @@ jobs:
         run: npm ci
       - name: Build 🗜️
         run: npm run build
+      - name: Run Types Tests 👩🏽‍💻
+        run: npm run test:types
 
   Release:
     permissions:

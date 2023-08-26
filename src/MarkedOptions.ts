@@ -173,7 +173,7 @@ export interface MarkedExtension {
    * Each token is passed by reference so updates are persisted when passed to the parser.
    * The return value of the function is ignored.
    */
-  walkTokens?: ((token: Token) => void | unknown | Promise<void>) | undefined | null;
+  walkTokens?: ((token: Token) => void | Promise<void>) | undefined | null;
   /**
    * Generate closing slash for self-closing tags (<br/> instead of <br>)
    * @deprecated Deprecated in v5.0.0 use marked-xhtml to emit self-closing HTML tags for void elements (<br/>, <img/>, etc.) with a "/" as required by XHTML.
@@ -213,5 +213,5 @@ export interface MarkedOptions extends Omit<MarkedExtension, 'renderer' | 'token
   /**
    * walkTokens function returns array of values for Promise.all
    */
-  walkTokens?: null | ((token: Token) => void | (unknown | Promise<void>)[]);
+  walkTokens?: null | ((token: Token) => void | Promise<void> | (void | Promise<void>)[]);
 }
