@@ -13,7 +13,7 @@ import {
 } from './defaults.ts';
 import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
 import type { Token, TokensList } from './Tokens.ts';
-import type { ResultCallback } from './Instance.ts';
+import type { ResultCallback, MaybePromise } from './Instance.ts';
 
 const markedInstance = new Marked();
 
@@ -94,7 +94,7 @@ marked.use = function(...args: MarkedExtension[]) {
  * Run callback for every token
  */
 
-marked.walkTokens = function <T = void>(tokens: Token[] | TokensList, callback: (token: Token) => T | T[]) {
+marked.walkTokens = function(tokens: Token[] | TokensList, callback: (token: Token) => MaybePromise | MaybePromise[]) {
   return markedInstance.walkTokens(tokens, callback);
 };
 

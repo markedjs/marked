@@ -14,6 +14,7 @@ import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
 import type { Token, Tokens, TokensList } from './Tokens.ts';
 
 export type ResultCallback = (error: Error | null, parseResult?: string) => undefined | void;
+export type MaybePromise = void | Promise<void>;
 
 type UnknownFunction = (...args: unknown[]) => unknown;
 type GenericRendererFunction = (...args: unknown[]) => string | false;
@@ -42,8 +43,8 @@ export class Marked {
   /**
    * Run callback for every token
    */
-  walkTokens <T = void>(tokens: Token[] | TokensList, callback: (token: Token) => T | T[]) {
-    let values: T[] = [];
+  walkTokens(tokens: Token[] | TokensList, callback: (token: Token) => MaybePromise | MaybePromise[]) {
+    let values: MaybePromise[] = [];
     for (const token of tokens) {
       values = values.concat(callback.call(this, token));
       switch (token.type) {
@@ -215,7 +216,7 @@ export class Marked {
         const walkTokens = this.defaults.walkTokens;
         const packWalktokens = pack.walkTokens;
         opts.walkTokens = function(token) {
-          let values: Array<Promise<void> | void | unknown> = [];
+          let values: MaybePromise[] = [];
           values.push(packWalktokens.call(this, token));
           if (walkTokens) {
             values = values.concat(walkTokens.call(this, token));
