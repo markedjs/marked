@@ -63,7 +63,7 @@ function fixturePath(filePath) {
   return resolve(__dirname, './fixtures', filePath);
 }
 
-fdescribe('bin/marked', () => {
+describe('bin/marked', () => {
   describe('string', () => {
     it('-s', testInput({
       args: ['-s', '# test'],
