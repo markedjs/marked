@@ -794,27 +794,6 @@ paragraph
         ]
       });
     });
-
-    it('sanitize', () => {
-      expectTokens({
-        md: '<div>html</div>',
-        options: { sanitize: true },
-        tokens: [
-          {
-            type: 'paragraph',
-            raw: '<div>html</div>',
-            pre: false,
-            block: true,
-            text: '&lt;div&gt;html&lt;/div&gt;',
-            tokens: [{
-              type: 'text',
-              raw: '&lt;div&gt;html&lt;/div&gt;',
-              text: '&lt;div&gt;html&lt;/div&gt;'
-            }]
-          }
-        ]
-      });
-    });
   });
 
   describe('def', () => {
@@ -890,23 +869,6 @@ paragraph
             { type: 'html', raw: '<div>', inLink: false, inRawBlock: false, block: false, text: '<div>' },
             { type: 'text', raw: 'html', text: 'html' },
             { type: 'html', raw: '</div>', inLink: false, inRawBlock: false, block: false, text: '</div>' }
-          ]
-        });
-      });
-
-      it('html sanitize', () => {
-        expectInlineTokens({
-          md: '<div>html</div>',
-          options: { sanitize: true },
-          tokens: [
-            {
-              type: 'text',
-              raw: '<div>html</div>',
-              inLink: false,
-              inRawBlock: false,
-              block: false,
-              text: '&lt;div&gt;html&lt;/div&gt;'
-            }
           ]
         });
       });
@@ -1205,7 +1167,7 @@ paragraph
         it('autolink email', () => {
           expectInlineTokens({
             md: '<test@example.com>',
-            options: { mangle: false },
+            options: {},
             tokens: [
               {
                 type: 'link',
@@ -1214,28 +1176,6 @@ paragraph
                 href: 'mailto:test@example.com',
                 tokens: [
                   { type: 'text', raw: 'test@example.com', text: 'test@example.com' }
-                ]
-              }
-            ]
-          });
-        });
-
-        it('autolink mangle email', () => {
-          expectInlineTokens({
-            md: '<test@example.com>',
-            options: { mangle: true },
-            tokens: [
-              {
-                type: 'link',
-                raw: '<test@example.com>',
-                text: jasmine.stringMatching(/^(&#x?[0-9a-f]+;)+$/),
-                href: jasmine.stringMatching(/^mailto:(&#x?[0-9a-f]+;)+$/),
-                tokens: [
-                  {
-                    type: 'text',
-                    raw: jasmine.stringMatching(/^(&#x?[0-9a-f]+;)+$/),
-                    text: jasmine.stringMatching(/^(&#x?[0-9a-f]+;)+$/)
-                  }
                 ]
               }
             ]
@@ -1262,7 +1202,7 @@ paragraph
         it('url email', () => {
           expectInlineTokens({
             md: 'test@example.com',
-            options: { gfm: true, mangle: false },
+            options: { gfm: true },
             tokens: [
               {
                 type: 'link',
@@ -1271,28 +1211,6 @@ paragraph
                 href: 'mailto:test@example.com',
                 tokens: [
                   { type: 'text', raw: 'test@example.com', text: 'test@example.com' }
-                ]
-              }
-            ]
-          });
-        });
-
-        it('url mangle email', () => {
-          expectInlineTokens({
-            md: 'test@example.com',
-            options: { gfm: true, mangle: true },
-            tokens: [
-              {
-                type: 'link',
-                raw: 'test@example.com',
-                text: jasmine.stringMatching(/^(&#x?[0-9a-f]+;)+$/),
-                href: jasmine.stringMatching(/^mailto:(&#x?[0-9a-f]+;)+$/),
-                tokens: [
-                  {
-                    type: 'text',
-                    raw: jasmine.stringMatching(/^(&#x?[0-9a-f]+;)+$/),
-                    text: jasmine.stringMatching(/^(&#x?[0-9a-f]+;)+$/)
-                  }
                 ]
               }
             ]
@@ -1310,78 +1228,6 @@ paragraph
               text: 'text'
             }
           ]
-        });
-      });
-
-      describe('smartypants', () => {
-        it('single quotes', () => {
-          expectInlineTokens({
-            md: "'single quotes'",
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: "'single quotes'",
-                text: '‘single quotes’'
-              }
-            ]
-          });
-        });
-
-        it('double quotes', () => {
-          expectInlineTokens({
-            md: '"double quotes"',
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: '"double quotes"',
-                text: '“double quotes”'
-              }
-            ]
-          });
-        });
-
-        it('ellipses', () => {
-          expectInlineTokens({
-            md: 'ellipses...',
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: 'ellipses...',
-                text: 'ellipses…'
-              }
-            ]
-          });
-        });
-
-        it('en-dash', () => {
-          expectInlineTokens({
-            md: 'en--dash',
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: 'en--dash',
-                text: 'en–dash'
-              }
-            ]
-          });
-        });
-
-        it('em-dash', () => {
-          expectInlineTokens({
-            md: 'em---dash',
-            options: { smartypants: true },
-            tokens: [
-              {
-                type: 'text',
-                raw: 'em---dash',
-                text: 'em—dash'
-              }
-            ]
-          });
         });
       });
     });

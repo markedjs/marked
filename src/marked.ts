@@ -3,7 +3,6 @@ import { _Parser } from './Parser.ts';
 import { _Tokenizer } from './Tokenizer.ts';
 import { _Renderer } from './Renderer.ts';
 import { _TextRenderer } from './TextRenderer.ts';
-import { _Slugger } from './Slugger.ts';
 import { _Hooks } from './Hooks.ts';
 import { Marked } from './Instance.ts';
 import {
@@ -13,7 +12,7 @@ import {
 } from './defaults.ts';
 import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
 import type { Token, TokensList } from './Tokens.ts';
-import type { ResultCallback, MaybePromise } from './Instance.ts';
+import type { MaybePromise } from './Instance.ts';
 
 const markedInstance = new Marked();
 
@@ -34,29 +33,8 @@ export function marked(src: string, options: MarkedOptions & { async: true }): P
  * @return String of compiled HTML
  */
 export function marked(src: string, options?: MarkedOptions): string;
-
-/**
- * Compiles markdown to HTML asynchronously with a callback.
- *
- * @param src String of markdown source to be compiled
- * @param callback Function called when the markdownString has been fully parsed when using async highlighting
- */
-export function marked(src: string, callback: ResultCallback): void;
-
-/**
- * Compiles markdown to HTML asynchronously with a callback.
- *
- * @param src String of markdown source to be compiled
- * @param options Hash of options
- * @param callback Function called when the markdownString has been fully parsed when using async highlighting
- */
-export function marked(
-    src: string,
-    options: MarkedOptions,
-    callback: ResultCallback,
-): void;
-export function marked(src: string, opt?: MarkedOptions | ResultCallback, callback?: ResultCallback): string | Promise<string | undefined> | undefined {
-  return markedInstance.parse(src, opt, callback);
+export function marked(src: string, opt?: MarkedOptions): string | Promise<string> {
+  return markedInstance.parse(src, opt);
 }
 
 /**
@@ -117,7 +95,6 @@ marked.TextRenderer = _TextRenderer;
 marked.Lexer = _Lexer;
 marked.lexer = _Lexer.lex;
 marked.Tokenizer = _Tokenizer;
-marked.Slugger = _Slugger;
 marked.Hooks = _Hooks;
 marked.parse = marked;
 
@@ -135,7 +112,6 @@ export { _Parser as Parser } from './Parser.ts';
 export { _Tokenizer as Tokenizer } from './Tokenizer.ts';
 export { _Renderer as Renderer } from './Renderer.ts';
 export { _TextRenderer as TextRenderer } from './TextRenderer.ts';
-export { _Slugger as Slugger } from './Slugger.ts';
 export { _Hooks as Hooks } from './Hooks.ts';
 export { Marked } from './Instance.ts';
 export type * from './MarkedOptions.ts';

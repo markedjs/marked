@@ -35,12 +35,9 @@ export async function runBench(options) {
 
   // Non-GFM, Non-pedantic
   cjsMarked.setOptions({
-    headerIds: false,
-    mangle: false,
     gfm: false,
     breaks: false,
-    pedantic: false,
-    sanitize: false
+    pedantic: false
   });
   if (options.marked) {
     cjsMarked.setOptions(options.marked);
@@ -48,28 +45,14 @@ export async function runBench(options) {
   tests['cjs marked'] = cjsMarked.parse;
 
   esmMarked.setOptions({
-    headerIds: false,
-    mangle: false,
     gfm: false,
     breaks: false,
-    pedantic: false,
-    sanitize: false
+    pedantic: false
   });
   if (options.marked) {
     esmMarked.setOptions(options.marked);
   }
   tests['esm marked'] = esmMarked.parse;
-
-  // esmMarked.setOptions({
-  //   gfm: true,
-  //   breaks: false,
-  //   pedantic: false,
-  //   sanitize: false
-  // });
-  // if (options.marked) {
-  //   esmMarked.setOptions(options.marked);
-  // }
-  // tests['esm marked (gfm)'] = esmMarked.parse;
 
   try {
     tests.commonmark = (await (async() => {

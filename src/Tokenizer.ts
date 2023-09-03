@@ -366,24 +366,16 @@ export class _Tokenizer {
     }
   }
 
-  html(src: string): Tokens.HTML | Tokens.Paragraph | undefined {
+  html(src: string): Tokens.HTML | undefined {
     const cap = this.rules.block.html.exec(src);
     if (cap) {
-      const token: Tokens.HTML | Tokens.Paragraph = {
+      const token: Tokens.HTML = {
         type: 'html',
         block: true,
         raw: cap[0],
-        pre: !this.options.sanitizer
-          && (cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style'),
+        pre: cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style',
         text: cap[0]
       };
-      if (this.options.sanitize) {
-        const text = this.options.sanitizer ? this.options.sanitizer(cap[0]) : escape(cap[0]);
-        const paragraph = token as unknown as Tokens.Paragraph;
-        paragraph.type = 'paragraph';
-        paragraph.text = text;
-        paragraph.tokens = this.lexer.inline(text);
-      }
       return token;
     }
   }
@@ -530,18 +522,12 @@ export class _Tokenizer {
       }
 
       return {
-        type: this.options.sanitize
-          ? 'text'
-          : 'html',
+        type: 'html',
         raw: cap[0],
         inLink: this.lexer.state.inLink,
         inRawBlock: this.lexer.state.inRawBlock,
         block: false,
-        text: this.options.sanitize
-          ? (this.options.sanitizer
-            ? this.options.sanitizer(cap[0])
-            : escape(cap[0]))
-          : cap[0]
+        text: cap[0]
       };
     }
   }
@@ -729,12 +715,12 @@ export class _Tokenizer {
     }
   }
 
-  autolink(src: string, mangle: (cap: string) => string): Tokens.Link | undefined {
+  autolink(src: string): Tokens.Link | undefined {
     const cap = this.rules.inline.autolink.exec(src);
     if (cap) {
       let text, href;
       if (cap[2] === '@') {
-        text = escape(this.options.mangle ? mangle(cap[1]) : cap[1]);
+        text = escape(cap[1]);
         href = 'mailto:' + text;
       } else {
         text = escape(cap[1]);
@@ -757,12 +743,12 @@ export class _Tokenizer {
     }
   }
 
-  url(src: string, mangle: (cap: string) => string): Tokens.Link | undefined {
+  url(src: string): Tokens.Link | undefined {
     let cap;
     if (cap = this.rules.inline.url.exec(src)) {
       let text, href;
       if (cap[2] === '@') {
-        text = escape(this.options.mangle ? mangle(cap[0]) : cap[0]);
+        text = escape(cap[0]);
         href = 'mailto:' + text;
       } else {
         // do extended autolink path validation
@@ -794,14 +780,14 @@ export class _Tokenizer {
     }
   }
 
-  inlineText(src: string, smartypants: (cap: string) => string): Tokens.Text | undefined {
+  inlineText(src: string): Tokens.Text | undefined {
     const cap = this.rules.inline.text.exec(src);
     if (cap) {
       let text;
       if (this.lexer.state.inRawBlock) {
-        text = this.options.sanitize ? (this.options.sanitizer ? this.options.sanitizer(cap[0]) : escape(cap[0])) : cap[0];
+        text = cap[0];
       } else {
-        text = escape(this.options.smartypants ? smartypants(cap[0]) : cap[0]);
+        text = escape(cap[0]);
       }
       return {
         type: 'text',

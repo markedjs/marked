@@ -5,15 +5,12 @@ import { _Hooks } from './Hooks.ts';
 import { _Renderer } from './Renderer.ts';
 import { _Tokenizer } from './Tokenizer.ts';
 import { _TextRenderer } from './TextRenderer.ts';
-import { _Slugger } from './Slugger.ts';
 import {
-  checkDeprecations,
   escape
 } from './helpers.ts';
 import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
 import type { Token, Tokens, TokensList } from './Tokens.ts';
 
-export type ResultCallback = (error: Error | null, parseResult?: string) => undefined | void;
 export type MaybePromise = void | Promise<void>;
 
 type UnknownFunction = (...args: unknown[]) => unknown;
@@ -33,7 +30,6 @@ export class Marked {
   Lexer = _Lexer;
   lexer = _Lexer.lex;
   Tokenizer = _Tokenizer;
-  Slugger = _Slugger;
   Hooks = _Hooks;
 
   constructor(...args: MarkedExtension[]) {
@@ -237,13 +233,8 @@ export class Marked {
   }
 
   #parseMarkdown(lexer: (src: string, options?: MarkedOptions) => TokensList | Token[], parser: (tokens: Token[], options?: MarkedOptions) => string) {
-    return (src: string, optOrCallback?: MarkedOptions | ResultCallback | undefined | null, callback?: ResultCallback | undefined): string | Promise<string | undefined> | undefined => {
-      if (typeof optOrCallback === 'function') {
-        callback = optOrCallback;
-        optOrCallback = null;
-      }
-
-      const origOpt = { ...optOrCallback };
+    return (src: string, options?: MarkedOptions | undefined | null): string | Promise<string> => {
+      const origOpt = { ...options };
       const opt = { ...this.defaults, ...origOpt };
 
       // Show warning if an extension set async to true but the parse was called with async: false
@@ -255,7 +246,7 @@ export class Marked {
         opt.async = true;
       }
 
-      const throwError = this.#onError(!!opt.silent, !!opt.async, callback);
+      const throwError = this.#onError(!!opt.silent, !!opt.async);
 
       // throw error in case of non string input
       if (typeof src === 'undefined' || src === null) {
@@ -266,86 +257,8 @@ export class Marked {
           + Object.prototype.toString.call(src) + ', string expected'));
       }
 
-      checkDeprecations(opt, callback);
-
       if (opt.hooks) {
         opt.hooks.options = opt;
-      }
-
-      if (callback) {
-        const resultCallback = callback;
-        const highlight = opt.highlight;
-        let tokens: TokensList | Token[];
-
-        try {
-          if (opt.hooks) {
-            src = opt.hooks.preprocess(src) as string;
-          }
-          tokens = lexer(src, opt);
-        } catch (e) {
-          return throwError(e as Error);
-        }
-
-        const done = (err?: Error) => {
-          let out;
-
-          if (!err) {
-            try {
-              if (opt.walkTokens) {
-                this.walkTokens(tokens, opt.walkTokens);
-              }
-              out = parser(tokens, opt);
-              if (opt.hooks) {
-                out = opt.hooks.postprocess(out) as string;
-              }
-            } catch (e) {
-              err = e as Error;
-            }
-          }
-
-          opt.highlight = highlight;
-
-          return err
-            ? throwError(err)
-            : resultCallback(null, out) as undefined;
-        };
-
-        if (!highlight || highlight.length < 3) {
-          return done();
-        }
-
-        delete opt.highlight;
-
-        if (!tokens.length) return done();
-
-        let pending = 0;
-        this.walkTokens(tokens, (token) => {
-          if (token.type === 'code') {
-            pending++;
-            setTimeout(() => {
-              highlight(token.text, token.lang, (err, code) => {
-                if (err) {
-                  return done(err);
-                }
-                if (code != null && code !== token.text) {
-                  token.text = code;
-                  token.escaped = true;
-                }
-
-                pending--;
-                if (pending === 0) {
-                  done();
-                }
-              });
-            }, 0);
-          }
-        });
-
-        if (pending === 0) {
-          done();
-        }
-
-        return;
       }
 
       if (opt.async) {
@@ -376,8 +289,8 @@ export class Marked {
     };
   }
 
-  #onError(silent: boolean, async: boolean, callback?: ResultCallback) {
-    return (e: Error): string | Promise<string> | undefined => {
+  #onError(silent: boolean, async: boolean) {
+    return (e: Error): string | Promise<string> => {
       e.message += '\nPlease report this to https://github.com/markedjs/marked.';
 
       if (silent) {
@@ -387,19 +300,11 @@ export class Marked {
         if (async) {
           return Promise.resolve(msg);
         }
-        if (callback) {
-          callback(null, msg);
-          return;
-        }
         return msg;
       }
 
       if (async) {
         return Promise.reject(e);
-      }
-      if (callback) {
-        callback(e);
-        return;
       }
       throw e;
     };

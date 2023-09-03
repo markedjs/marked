@@ -6,25 +6,15 @@ import type { MarkedOptions } from './MarkedOptions.ts';
 export function _getDefaults(): MarkedOptions {
   return {
     async: false,
-    baseUrl: null,
     breaks: false,
     extensions: null,
     gfm: true,
-    headerIds: false,
-    headerPrefix: '',
-    highlight: null,
     hooks: null,
-    langPrefix: 'language-',
-    mangle: false,
     pedantic: false,
     renderer: null,
-    sanitize: false,
-    sanitizer: null,
     silent: false,
-    smartypants: false,
     tokenizer: null,
-    walkTokens: null,
-    xhtml: false
+    walkTokens: null
   };
 }
 

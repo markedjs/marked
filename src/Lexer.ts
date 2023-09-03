@@ -6,43 +6,6 @@ import type { MarkedOptions, TokenizerExtension } from './MarkedOptions.ts';
 import type { Rules } from './rules.ts';
 
 /**
- * smartypants text replacement
- */
-function smartypants(text: string) {
-  return text
-    // em-dashes
-    .replace(/---/g, '\u2014')
-    // en-dashes
-    .replace(/--/g, '\u2013')
-    // opening singles
-    .replace(/(^|[-\u2014/(\[{"\s])'/g, '$1\u2018')
-    // closing singles & apostrophes
-    .replace(/'/g, '\u2019')
-    // opening doubles
-    .replace(/(^|[-\u2014/(\[{\u2018\s])"/g, '$1\u201c')
-    // closing doubles
-    .replace(/"/g, '\u201d')
-    // ellipses
-    .replace(/\.{3}/g, '\u2026');
-}
-
-/**
- * mangle email addresses
- */
-function mangle(text: string) {
-  let out = '';
-
-  for (let i = 0; i < text.length; i++) {
-    const ch = Math.random() > 0.5
-      ? 'x' + text.charCodeAt(i).toString(16)
-      : text.charCodeAt(i).toString();
-    out += '&#' + ch + ';';
-  }
-
-  return out;
-}
-
-/**
  * Block Lexer
  */
 export class _Lexer {
@@ -456,14 +419,14 @@ export class _Lexer {
       }
 
       // autolink
-      if (token = this.tokenizer.autolink(src, mangle)) {
+      if (token = this.tokenizer.autolink(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
 
       // url (gfm)
-      if (!this.state.inLink && (token = this.tokenizer.url(src, mangle))) {
+      if (!this.state.inLink && (token = this.tokenizer.url(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -484,7 +447,7 @@ export class _Lexer {
           cutSrc = src.substring(0, startIndex + 1);
         }
       }
-      if (token = this.tokenizer.inlineText(cutSrc, smartypants)) {
+      if (token = this.tokenizer.inlineText(cutSrc)) {
         src = src.substring(token.raw.length);
         if (token.raw.slice(-1) !== '_') { // Track prevChar before string of ____ started
           prevChar = token.raw.slice(-1);

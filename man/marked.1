@@ -7,9 +7,7 @@ marked \- a javascript markdown parser
 .SH SYNOPSIS
 .B marked
 [\-o \fI<output>\fP] [\-i \fI<input>\fP] [\-s \fI<string>\fP] [\-\-help]
- [\-c \fI<config>\fP] [\-\-tokens] [\-\-pedantic] [\-\-gfm]
-[\-\-breaks] [\-\-sanitize]
-[\-\-smart\-lists] [\-\-lang\-prefix \fI<prefix>\fP]
+ [\-c \fI<config>\fP] [\-\-tokens] [\-\-pedantic] [\-\-gfm] [\-\-breaks]
 [\-\-no\-etc...] [\-\-silent] [\fIfilename\fP]
 
 .SH DESCRIPTION
@@ -55,21 +53,6 @@ Enable github flavored markdown.
 .TP
 .BI \-\-breaks
 Enable GFM line breaks. Only works with the gfm option.
-.TP
-.BI \-\-sanitize
-Sanitize output. Ignore any HTML input.
-.TP
-.BI \-\-smart\-lists
-Use smarter list behavior than the original markdown.
-.TP
-.BI \-\-lang\-prefix\ [\fIprefix\fP]
-Set the prefix for code block classes.
-.TP
-.BI \-\-mangle
-Mangle email addresses.
-.TP
-.BI \-\-no\-sanitize,\ \-no-etc...
-The inverse of any of the marked options above.
 .TP
 .BI \-\-silent
 Silence error output.

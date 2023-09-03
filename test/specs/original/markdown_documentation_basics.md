@@ -1,6 +1,5 @@
 ---
 pedantic: true
-headerIds: true
 ---
 
 Markdown: Basics

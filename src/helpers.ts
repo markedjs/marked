@@ -1,5 +1,3 @@
-import type { MarkedOptions } from './MarkedOptions.ts';
-import type { ResultCallback } from './Instance.ts';
 import type { Rule } from './rules.ts';
 
 /**
@@ -67,66 +65,13 @@ export function edit(regex: Rule, opt?: string) {
   return obj;
 }
 
-const nonWordAndColonTest = /[^\w:]/g;
-const originIndependentUrl = /^$|^[a-z][a-z0-9+.-]*:|^[?#]/i;
-
-export function cleanUrl(sanitize: boolean | undefined, base: string | undefined | null, href: string) {
-  if (sanitize) {
-    let prot;
-    try {
-      prot = decodeURIComponent(unescape(href))
-        .replace(nonWordAndColonTest, '')
-        .toLowerCase();
-    } catch (e) {
-      return null;
-    }
-    if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
-      return null;
-    }
-  }
-  if (base && !originIndependentUrl.test(href)) {
-    href = resolveUrl(base, href);
-  }
+export function cleanUrl(href: string) {
   try {
     href = encodeURI(href).replace(/%25/g, '%');
   } catch (e) {
     return null;
   }
   return href;
-}
-
-const baseUrls: Record<string, string> = {};
-const justDomain = /^[^:]+:\/*[^/]*$/;
-const protocol = /^([^:]+:)[\s\S]*$/;
-const domain = /^([^:]+:\/*[^/]*)[\s\S]*$/;
-
-export function resolveUrl(base: string, href: string) {
-  if (!baseUrls[' ' + base]) {
-    // we can ignore everything in base after the last slash of its path component,
-    // but we might need to add _that_
-    // https://tools.ietf.org/html/rfc3986#section-3
-    if (justDomain.test(base)) {
-      baseUrls[' ' + base] = base + '/';
-    } else {
-      baseUrls[' ' + base] = rtrim(base, '/', true);
-    }
-  }
-  base = baseUrls[' ' + base];
-  const relativeBase = base.indexOf(':') === -1;
-
-  if (href.substring(0, 2) === '//') {
-    if (relativeBase) {
-      return href;
-    }
-    return base.replace(protocol, '$1') + href;
-  } else if (href.charAt(0) === '/') {
-    if (relativeBase) {
-      return href;
-    }
-    return base.replace(domain, '$1') + href;
-  } else {
-    return base + href;
-  }
 }
 
 export const noopTest = { exec: () => null };
@@ -224,42 +169,4 @@ export function findClosingBracket(str: string, b: string) {
     }
   }
   return -1;
-}
-
-export function checkDeprecations(opt: MarkedOptions, callback?: ResultCallback) {
-  if (!opt || opt.silent) {
-    return;
-  }
-
-  if (callback) {
-    console.warn('marked(): callback is deprecated since version 5.0.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/using_pro#async');
-  }
-
-  if (opt.sanitize || opt.sanitizer) {
-    console.warn('marked(): sanitize and sanitizer parameters are deprecated since version 0.7.0, should not be used and will be removed in the future. Read more here: https://marked.js.org/#/USING_ADVANCED.md#options');
-  }
-
-  if (opt.highlight || opt.langPrefix !== 'language-') {
-    console.warn('marked(): highlight and langPrefix parameters are deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-highlight.');
-  }
-
-  if (opt.mangle) {
-    console.warn('marked(): mangle parameter is enabled by default, but is deprecated since version 5.0.0, and will be removed in the future. To clear this warning, install https://www.npmjs.com/package/marked-mangle, or disable by setting `{mangle: false}`.');
-  }
-
-  if (opt.baseUrl) {
-    console.warn('marked(): baseUrl parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-base-url.');
-  }
-
-  if (opt.smartypants) {
-    console.warn('marked(): smartypants parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-smartypants.');
-  }
-
-  if (opt.xhtml) {
-    console.warn('marked(): xhtml parameter is deprecated since version 5.0.0, should not be used and will be removed in the future. Instead use https://www.npmjs.com/package/marked-xhtml.');
-  }
-
-  if (opt.headerIds || opt.headerPrefix) {
-    console.warn('marked(): headerIds and headerPrefix parameters enabled by default, but are deprecated since version 5.0.0, and will be removed in the future. To clear this warning, install  https://www.npmjs.com/package/marked-gfm-heading-id, or disable by setting `{headerIds: false}`.');
-  }
 }

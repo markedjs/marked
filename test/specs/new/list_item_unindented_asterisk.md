@@ -1,6 +1,3 @@
----
-headerIds: false
----
 ## *list
 
 * list1
@@ -19,7 +16,7 @@ headerIds: false
 -Not list(without space)
 - list2
 
-## number(1.)list 
+## number(1.)list
 1. list
 1.Notlist(without space)
 1. list

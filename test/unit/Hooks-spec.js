@@ -34,13 +34,13 @@ describe('Hooks', () => {
     marked.use({
       hooks: {
         preprocess(markdown) {
-          this.options.headerIds = false;
+          this.options.breaks = true;
           return markdown;
         }
       }
     });
-    const html = marked('# test');
-    expect(html.trim()).toBe('<h1>test</h1>');
+    const html = marked('line1\nline2');
+    expect(html.trim()).toBe('<p>line1<br>line2</p>');
   });
 
   it('should preprocess options async', async() => {
@@ -49,13 +49,13 @@ describe('Hooks', () => {
       hooks: {
         async preprocess(markdown) {
           await timeout();
-          this.options.headerIds = false;
+          this.options.breaks = true;
           return markdown;
         }
       }
     });
-    const html = await marked('# test');
-    expect(html.trim()).toBe('<h1>test</h1>');
+    const html = await marked('line1\nline2');
+    expect(html.trim()).toBe('<p>line1<br>line2</p>');
   });
 
   it('should postprocess html', () => {
