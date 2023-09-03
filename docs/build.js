@@ -25,7 +25,8 @@ async function init() {
   console.log('Cleaning up output directory ' + outputDir);
   await rm(outputDir, { force: true, recursive: true });
   await mkdir(outputDir);
-  console.log(`Copying file ${join(inputDir, 'LICENSE.md')}`);
+  console.log(`Copying file ${join(cwd, 'LICENSE.md')}`);
+  console.log(`          to ${join(inputDir, 'LICENSE.md')}`);
   await copyFile(join(cwd, 'LICENSE.md'), join(inputDir, 'LICENSE.md'));
   const tmpl = await readFile(templateFile, 'utf8');
   console.log('Building markdown...');
