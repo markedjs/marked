@@ -4,11 +4,6 @@ import type { _Lexer } from './Lexer.ts';
 import type { _Renderer } from './Renderer.ts';
 import type { _Tokenizer } from './Tokenizer.ts';
 
-export interface SluggerOptions {
-  /** Generates the next unique slug without updating the internal accumulator. */
-  dryrun?: boolean;
-}
-
 export interface TokenizerThis {
   lexer: _Lexer;
 }
@@ -111,7 +106,7 @@ export interface MarkedExtension {
    * Each token is passed by reference so updates are persisted when passed to the parser.
    * The return value of the function is ignored.
    */
-  walkTokens?: ((token: Token) => void | unknown | Promise<void>) | undefined | null;
+  walkTokens?: ((token: Token) => void | Promise<void>) | undefined | null;
 }
 
 export interface MarkedOptions extends Omit<MarkedExtension, 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
@@ -146,5 +141,5 @@ export interface MarkedOptions extends Omit<MarkedExtension, 'renderer' | 'token
   /**
    * walkTokens function returns array of values for Promise.all
    */
-  walkTokens?: null | ((token: Token) => void | (unknown | Promise<void>)[]);
+  walkTokens?: null | ((token: Token) => void | Promise<void> | (void | Promise<void>)[]);
 }

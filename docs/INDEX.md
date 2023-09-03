@@ -75,6 +75,30 @@ $ cat readme.html
 $ marked --help
 ```
 
+*CLI Config*
+
+A config file can be used to configure the marked cli.
+
+If it is a `.json` file it should be a JSON object that will be passed to marked as options.
+
+If `.js` is used it should have a default export of a marked options object or a function that takes `marked` as a parameter.
+It can use the `marked` parameter to install extensions using `marked.use`.
+
+By default the marked cli will look for a config file in your home directory in the following order.
+
+- `~/.marked.json`
+- `~/.marked.js`
+- `~/.marked/index.js`
+
+```bash
+# Example with custom config
+
+echo '{ "breaks": true }' > config.json
+
+$ marked -s 'line1\nline2' -c config.json
+<p>line1<br>line2</p>
+```
+
 **Browser**
 
 ```html

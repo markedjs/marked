@@ -368,10 +368,6 @@ declare module "MarkedOptions" {
     import type { _Lexer } from "Lexer";
     import type { _Renderer } from "Renderer";
     import type { _Tokenizer } from "Tokenizer";
-    export interface SluggerOptions {
-        /** Generates the next unique slug without updating the internal accumulator. */
-        dryrun?: boolean;
-    }
     export interface TokenizerThis {
         lexer: _Lexer;
     }
@@ -452,7 +448,7 @@ declare module "MarkedOptions" {
          * Each token is passed by reference so updates are persisted when passed to the parser.
          * The return value of the function is ignored.
          */
-        walkTokens?: ((token: Token) => void | unknown | Promise<void>) | undefined | null;
+        walkTokens?: ((token: Token) => void | Promise<void>) | undefined | null;
     }
     export interface MarkedOptions extends Omit<MarkedExtension, 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
         /**
@@ -483,7 +479,7 @@ declare module "MarkedOptions" {
         /**
          * walkTokens function returns array of values for Promise.all
          */
-        walkTokens?: null | ((token: Token) => void | (unknown | Promise<void>)[]);
+        walkTokens?: null | ((token: Token) => void | Promise<void> | (void | Promise<void>)[]);
     }
 }
 declare module "defaults" {
@@ -520,6 +516,7 @@ declare module "Instance" {
     import { _TextRenderer } from "TextRenderer";
     import type { MarkedExtension, MarkedOptions } from "MarkedOptions";
     import type { Token, TokensList } from "Tokens";
+    export type MaybePromise = void | Promise<void>;
     export class Marked {
         #private;
         defaults: MarkedOptions;
@@ -538,7 +535,7 @@ declare module "Instance" {
         /**
          * Run callback for every token
          */
-        walkTokens<T = void>(tokens: Token[] | TokensList, callback: (token: Token) => T | T[]): T[];
+        walkTokens(tokens: Token[] | TokensList, callback: (token: Token) => MaybePromise | MaybePromise[]): MaybePromise[];
         use(...args: MarkedExtension[]): this;
         setOptions(opt: MarkedOptions): this;
     }
@@ -553,6 +550,7 @@ declare module "marked" {
     import { _getDefaults } from "defaults";
     import type { MarkedExtension, MarkedOptions } from "MarkedOptions";
     import type { Token, TokensList } from "Tokens";
+    import type { MaybePromise } from "Instance";
     /**
      * Compiles markdown to HTML asynchronously.
      *
@@ -584,7 +582,7 @@ declare module "marked" {
         var getDefaults: typeof _getDefaults;
         var defaults: MarkedOptions;
         var use: (...args: MarkedExtension[]) => typeof marked;
-        var walkTokens: <T = void>(tokens: Token[] | TokensList, callback: (token: Token) => T | T[]) => T[];
+        var walkTokens: (tokens: Token[] | TokensList, callback: (token: Token) => MaybePromise | MaybePromise[]) => MaybePromise[];
         var parseInline: (src: string, options?: MarkedOptions | null | undefined) => string | Promise<string>;
         var Parser: typeof _Parser;
         var parser: typeof _Parser.parse;
@@ -599,7 +597,7 @@ declare module "marked" {
     export const options: (options: MarkedOptions) => typeof marked;
     export const setOptions: (options: MarkedOptions) => typeof marked;
     export const use: (...args: MarkedExtension[]) => typeof marked;
-    export const walkTokens: <T = void>(tokens: Token[] | TokensList, callback: (token: Token) => T | T[]) => T[];
+    export const walkTokens: (tokens: Token[] | TokensList, callback: (token: Token) => MaybePromise | MaybePromise[]) => MaybePromise[];
     export const parseInline: (src: string, options?: MarkedOptions | null | undefined) => string | Promise<string>;
     export const parse: typeof marked;
     export const parser: typeof _Parser.parse;

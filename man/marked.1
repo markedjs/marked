@@ -7,7 +7,7 @@ marked \- a javascript markdown parser
 .SH SYNOPSIS
 .B marked
 [\-o \fI<output>\fP] [\-i \fI<input>\fP] [\-s \fI<string>\fP] [\-\-help]
-[\-\-tokens] [\-\-pedantic] [\-\-gfm] [\-\-breaks]
+ [\-c \fI<config>\fP] [\-\-tokens] [\-\-pedantic] [\-\-gfm] [\-\-breaks]
 [\-\-no\-etc...] [\-\-silent] [\fIfilename\fP]
 
 .SH DESCRIPTION
@@ -36,6 +36,10 @@ If no input file is specified, read from stdin.
 .TP
 .BI \-s,\ \-\-string\ [\fIstring\fP]
 Specify string input instead of a file.
+.TP
+.BI \-c,\ \-\-config\ [\fIconfig\fP]
+Specify a javascript file to be used as the config file
+instead of the default file in your home directory.
 .TP
 .BI \-t,\ \-\-tokens
 Output a token stream instead of html.
