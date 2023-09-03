@@ -78,7 +78,7 @@
     "typescript": "5.2.2"
   },
   "scripts": {
-    "test": "cross-env NODE_OPTIONS=--loader=ts-node/esm jasmine --config=jasmine.json",
+    "test": "npm run build && cross-env NODE_OPTIONS=--loader=ts-node/esm jasmine --config=jasmine.json",
     "test:all": "npm test && npm run test:umd && npm run test:types && npm run test:lint",
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",
