@@ -71,8 +71,9 @@ For configuring and running programmatically.
 Example
 
 ```js
-import { marked } from 'marked';
-marked('*foo*', { gfm: true });
+import { Marked } from 'marked';
+const marked = new Marked({ gfm: true });
+marked.parse('*foo*');
 ```
 
 ## BUGS
