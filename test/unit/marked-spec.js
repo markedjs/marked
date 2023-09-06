@@ -33,6 +33,20 @@ describe('inlineLexer', () => {
   });
 });
 
+describe('task', () => {
+  it('space after checkbox', () => {
+    const html = marked('- [ ] item');
+
+    expect(html).toBe('<ul>\n<li><input disabled="" type="checkbox"> item</li>\n</ul>\n');
+  });
+
+  it('space after loose checkbox', () => {
+    const html = marked('- [ ] item 1\n\n- [ ] item 2');
+
+    expect(html).toBe('<ul>\n<li><p><input disabled="" type="checkbox"> \nitem 1</p>\n</li>\n<li><p><input disabled="" type="checkbox"> \nitem 2</p>\n</li>\n</ul>\n');
+  });
+});
+
 describe('parseInline', () => {
   it('should parse inline tokens', () => {
     const md = '**strong** _em_';

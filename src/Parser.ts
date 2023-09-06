@@ -141,11 +141,11 @@ export class _Parser {
                 } else {
                   item.tokens.unshift({
                     type: 'text',
-                    text: checkbox
+                    text: checkbox + ' '
                   } as Tokens.Text);
                 }
               } else {
-                itemBody += checkbox;
+                itemBody += checkbox + ' ';
               }
             }
 
