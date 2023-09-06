@@ -216,7 +216,7 @@ export class _Tokenizer {
         let indent = 0;
         if (this.options.pedantic) {
           indent = 2;
-          itemContents = line.trimLeft();
+          itemContents = line.trimStart();
         } else {
           indent = cap[2].search(/[^ ]/); // Find first non-space char
           indent = indent > 4 ? 1 : indent; // Treat indented code blocks (> 4 spaces) as having only 1 indent
@@ -337,9 +337,9 @@ export class _Tokenizer {
       }
 
       // Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
-      list.items[list.items.length - 1].raw = raw.trimRight();
-      (list.items[list.items.length - 1] as Tokens.ListItem).text = itemContents.trimRight();
-      list.raw = list.raw.trimRight();
+      list.items[list.items.length - 1].raw = raw.trimEnd();
+      (list.items[list.items.length - 1] as Tokens.ListItem).text = itemContents.trimEnd();
+      list.raw = list.raw.trimEnd();
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first
       for (let i = 0; i < list.items.length; i++) {
