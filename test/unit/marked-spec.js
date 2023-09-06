@@ -39,6 +39,12 @@ describe('task', () => {
 
     expect(html).toBe('<ul>\n<li><input disabled="" type="checkbox"> item</li>\n</ul>\n');
   });
+
+  it('space after loose checkbox', () => {
+    const html = marked('- [ ] item 1\n\n- [ ] item 2');
+
+    expect(html).toBe('<ul>\n<li><p><input disabled="" type="checkbox"> \nitem 1</p>\n</li>\n<li><p><input disabled="" type="checkbox"> \nitem 2</p>\n</li>\n</ul>\n');
+  });
 });
 
 describe('parseInline', () => {
