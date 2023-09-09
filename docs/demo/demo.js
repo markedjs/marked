@@ -6,7 +6,6 @@ const $loadingElem = document.querySelector('#loading');
 const $mainElem = document.querySelector('#main');
 const $markdownElem = document.querySelector('#markdown');
 const $markedVerElem = document.querySelector('#markedVersion');
-const $linkVerElem = document.querySelector('#linkVersion');
 const $optionsElem = document.querySelector('#options');
 const $outputTypeElem = document.querySelector('#outputType');
 const $inputTypeElem = document.querySelector('#inputType');
@@ -48,9 +47,6 @@ $optionsElem.addEventListener('change', handleInput, false);
 $optionsElem.addEventListener('keyup', handleInput, false);
 $optionsElem.addEventListener('keypress', handleInput, false);
 $optionsElem.addEventListener('keydown', handleInput, false);
-
-$linkVerElem.style.display = 'none';
-$linkVerElem.addEventListener('keypress', handleAddVersion, false);
 
 $clearElem.addEventListener('click', handleClearClick, false);
 
@@ -98,7 +94,6 @@ function setInitialVersion() {
   return fetch('https://data.jsdelivr.com/v1/package/npm/marked')
     .then(res => res.json())
     .then(json => {
-      latestVersion = json.tags.latest;
       for (const ver of json.versions) {
         markedVersions[ver] = 'https://cdn.jsdelivr.net/npm/marked@' + ver;
         const opt = document.createElement('option');
@@ -106,31 +101,19 @@ function setInitialVersion() {
         opt.value = ver;
         $markedVerElem.appendChild(opt);
       }
-    })
-    .then(() => {
-      if (search.version) {
-        if (markedVersions[search.version]) {
-          return search.version;
-        } else {
-          const match = search.version.match(/^(\w+):(.+)$/);
-          if (match) {
-            switch (match[1]) {
-              case 'pr':
-                return getPrLink(match[2])
-                  .then(link => {
-                    if (!link) {
-                      return;
-                    }
-                    addLinkVersion(search.version, 'PR #' + match[2], link);
-                    return search.version;
-                  });
-            }
-          }
-        }
+
+      if (location.host === 'marked.js.org') {
+        latestVersion = json.tags.latest;
+      } else {
+        $markedVerElem.querySelector('option[value="master"]').textContent = 'This Build';
       }
-    })
-    .then(version => {
-      $markedVerElem.value = version || latestVersion;
+
+      if (search.version && markedVersions[search.version]) {
+        $markedVerElem.value = search.version;
+        return;
+      }
+
+      $markedVerElem.value = latestVersion;
     })
     .then(updateVersion);
 }
@@ -159,45 +142,14 @@ function handleInput() {
 }
 
 function handleVersionChange() {
-  if ($markedVerElem.value === 'pr') {
-    $linkVerElem.style.display = '';
-  } else {
-    $linkVerElem.style.display = 'none';
-    updateVersion();
-  }
+  updateVersion();
 }
 
 function handleClearClick() {
   $markdownElem.value = '';
   $markedVerElem.value = latestVersion;
-  $linkVerElem.style.display = 'none';
   updateVersion();
   setDefaultOptions();
-}
-
-function handleAddVersion(e) {
-  if (e.which === 13) {
-    switch ($markedVerElem.value) {
-      case 'pr': {
-        $linkVerElem.disabled = true;
-        const pr = $linkVerElem.value.replace(/\D/g, '');
-        getPrLink(pr)
-          .then(link => {
-            $linkVerElem.disabled = false;
-            if (!link) {
-              alert('That is not a valid PR');
-              return;
-            }
-            addLinkVersion('pr:' + pr, 'PR #' + pr, link);
-            $markedVerElem.value = 'pr:' + pr;
-            $linkVerElem.style.display = 'none';
-            $linkVerElem.value = '';
-            updateVersion();
-          });
-        break;
-      }
-    }
-  }
 }
 
 function handleInputChange() {
@@ -220,38 +172,6 @@ function handleChange(panes, visiblePane) {
     }
   }
   return active;
-}
-
-function addLinkVersion(value, text, link) {
-  if (markedVersions[value]) {
-    return;
-  }
-  markedVersions[value] = link;
-  const opt = document.createElement('option');
-  opt.textContent = text;
-  opt.value = value;
-  $markedVerElem.insertBefore(opt, $markedVerElem.firstChild);
-}
-
-function getPrLink(pr) {
-  return fetch('https://api.github.com/repos/markedjs/marked/issues/' + pr + '/comments')
-    .then(res => res.json())
-    .then(json => {
-      for (const comment of json) {
-        if (comment?.user?.login === 'vercel[bot]') {
-          console.log('found vercel[bot]');
-          const match = comment.body.match(/\[Visit Preview\]\(https:\/\/vercel.live\/open-feedback\/([\w-.]+)\?via=pr-comment-visit-preview-link&passThrough=1\)/);
-          if (match) {
-            const link = `https://${match[1]}`;
-            console.log(link);
-            return link;
-          }
-        }
-      }
-    })
-    .catch(() => {
-      // return undefined
-    });
 }
 
 function setDefaultOptions() {
