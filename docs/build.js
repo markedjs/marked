@@ -25,9 +25,10 @@ async function init() {
   console.log('Cleaning up output directory ' + outputDir);
   await rm(outputDir, { force: true, recursive: true });
   await mkdir(outputDir);
-  console.log(`Copying file ${join(cwd, 'LICENSE.md')}`);
-  console.log(`          to ${join(inputDir, 'LICENSE.md')}`);
+  console.log(`Copying file ${join(inputDir, 'LICENSE.md')}`);
   await copyFile(join(cwd, 'LICENSE.md'), join(inputDir, 'LICENSE.md'));
+  console.log(`Copying file ${join(outputDir, 'marked.min.js')}`);
+  await copyFile(join(cwd, 'marked.min.js'), join(outputDir, 'marked.min.js'));
   const tmpl = await readFile(templateFile, 'utf8');
   console.log('Building markdown...');
   await build(inputDir, tmpl);
@@ -41,10 +42,8 @@ async function build(currentDir, tmpl) {
     const stats = await stat(filename);
     const { mode } = stats;
     if (stats.isDirectory()) {
-      // console.log('Found directory ' + filename);
       await build(filename, tmpl);
     } else {
-      // console.log('Reading file ' + filename);
       let html = await readFile(filename, 'utf8');
       const parsed = parse(filename);
       if (parsed.ext === '.md' && isUppercase(parsed.name)) {

@@ -6,7 +6,7 @@ const $loadingElem = document.querySelector('#loading');
 const $mainElem = document.querySelector('#main');
 const $markdownElem = document.querySelector('#markdown');
 const $markedVerElem = document.querySelector('#markedVersion');
-const $commitVerElem = document.querySelector('#commitVersion');
+const $linkVerElem = document.querySelector('#linkVersion');
 const $optionsElem = document.querySelector('#options');
 const $outputTypeElem = document.querySelector('#outputType');
 const $inputTypeElem = document.querySelector('#inputType');
@@ -22,10 +22,10 @@ const $inputPanes = document.querySelectorAll('.inputPane');
 let lastInput = '';
 let inputDirty = true;
 let $activeOutputElem = null;
-let latestVersion = 'latest';
+let latestVersion = 'master';
 const search = searchToObject();
 const markedVersions = {
-  latest: 'https://cdn.jsdelivr.net/npm/marked'
+  master: '../'
 };
 let delayTime = 1;
 let checkChangeTimeout = null;
@@ -49,8 +49,8 @@ $optionsElem.addEventListener('keyup', handleInput, false);
 $optionsElem.addEventListener('keypress', handleInput, false);
 $optionsElem.addEventListener('keydown', handleInput, false);
 
-$commitVerElem.style.display = 'none';
-$commitVerElem.addEventListener('keypress', handleAddVersion, false);
+$linkVerElem.style.display = 'none';
+$linkVerElem.addEventListener('keypress', handleAddVersion, false);
 
 $clearElem.addEventListener('click', handleClearClick, false);
 
@@ -99,8 +99,6 @@ function setInitialVersion() {
     .then(res => res.json())
     .then(json => {
       latestVersion = json.tags.latest;
-      markedVersions.latest = 'https://cdn.jsdelivr.net/npm/marked@' + latestVersion;
-      $markedVerElem.querySelector('option[value="latest"]').textContent = `latest: ${latestVersion}`;
       for (const ver of json.versions) {
         markedVersions[ver] = 'https://cdn.jsdelivr.net/npm/marked@' + ver;
         const opt = document.createElement('option');
@@ -111,24 +109,19 @@ function setInitialVersion() {
     })
     .then(() => {
       if (search.version) {
-        if (search.version === 'master') {
-          return 'latest';
-        } else if (markedVersions[search.version]) {
+        if (markedVersions[search.version]) {
           return search.version;
         } else {
           const match = search.version.match(/^(\w+):(.+)$/);
           if (match) {
             switch (match[1]) {
-              case 'commit':
-                addCommitVersion(search.version, match[2].substring(0, 7), match[2]);
-                return search.version;
               case 'pr':
-                return getPrCommit(match[2])
-                  .then(commit => {
-                    if (!commit) {
+                return getPrLink(match[2])
+                  .then(link => {
+                    if (!link) {
                       return;
                     }
-                    addCommitVersion(search.version, 'PR #' + match[2], commit);
+                    addLinkVersion(search.version, 'PR #' + match[2], link);
                     return search.version;
                   });
             }
@@ -166,10 +159,10 @@ function handleInput() {
 }
 
 function handleVersionChange() {
-  if ($markedVerElem.value === 'commit' || $markedVerElem.value === 'pr') {
-    $commitVerElem.style.display = '';
+  if ($markedVerElem.value === 'pr') {
+    $linkVerElem.style.display = '';
   } else {
-    $commitVerElem.style.display = 'none';
+    $linkVerElem.style.display = 'none';
     updateVersion();
   }
 }
@@ -177,7 +170,7 @@ function handleVersionChange() {
 function handleClearClick() {
   $markdownElem.value = '';
   $markedVerElem.value = latestVersion;
-  $commitVerElem.style.display = 'none';
+  $linkVerElem.style.display = 'none';
   updateVersion();
   setDefaultOptions();
 }
@@ -185,33 +178,20 @@ function handleClearClick() {
 function handleAddVersion(e) {
   if (e.which === 13) {
     switch ($markedVerElem.value) {
-      case 'commit': {
-        const commit = $commitVerElem.value.toLowerCase();
-        if (!commit.match(/^[0-9a-f]{40}$/)) {
-          alert('That is not a valid commit');
-          return;
-        }
-        addCommitVersion('commit:' + commit, commit.substring(0, 7), commit);
-        $markedVerElem.value = 'commit:' + commit;
-        $commitVerElem.style.display = 'none';
-        $commitVerElem.value = '';
-        updateVersion();
-        break;
-      }
       case 'pr': {
-        $commitVerElem.disabled = true;
-        const pr = $commitVerElem.value.replace(/\D/g, '');
-        getPrCommit(pr)
-          .then(commit => {
-            $commitVerElem.disabled = false;
-            if (!commit) {
+        $linkVerElem.disabled = true;
+        const pr = $linkVerElem.value.replace(/\D/g, '');
+        getPrLink(pr)
+          .then(link => {
+            $linkVerElem.disabled = false;
+            if (!link) {
               alert('That is not a valid PR');
               return;
             }
-            addCommitVersion('pr:' + pr, 'PR #' + pr, commit);
+            addLinkVersion('pr:' + pr, 'PR #' + pr, link);
             $markedVerElem.value = 'pr:' + pr;
-            $commitVerElem.style.display = 'none';
-            $commitVerElem.value = '';
+            $linkVerElem.style.display = 'none';
+            $linkVerElem.value = '';
             updateVersion();
           });
         break;
@@ -242,21 +222,33 @@ function handleChange(panes, visiblePane) {
   return active;
 }
 
-function addCommitVersion(value, text, commit) {
+function addLinkVersion(value, text, link) {
   if (markedVersions[value]) {
     return;
   }
-  markedVersions[value] = 'https://cdn.jsdelivr.net/gh/markedjs/marked@' + commit;
+  markedVersions[value] = link;
   const opt = document.createElement('option');
   opt.textContent = text;
   opt.value = value;
   $markedVerElem.insertBefore(opt, $markedVerElem.firstChild);
 }
 
-function getPrCommit(pr) {
-  return fetch('https://api.github.com/repos/markedjs/marked/pulls/' + pr + '/commits')
+function getPrLink(pr) {
+  return fetch('https://api.github.com/repos/markedjs/marked/issues/' + pr + '/comments')
     .then(res => res.json())
-    .then(json => json[json.length - 1].sha)
+    .then(json => {
+      for (const comment of json) {
+        if (comment?.user?.login === 'vercel[bot]') {
+          console.log('found vercel[bot]');
+          const match = comment.body.match(/\[Visit Preview\]\(https:\/\/vercel.live\/open-feedback\/([\w-.]+)\?via=pr-comment-visit-preview-link&passThrough=1\)/);
+          if (match) {
+            const link = `https://${match[1]}`;
+            console.log(link);
+            return link;
+          }
+        }
+      }
+    })
     .catch(() => {
       // return undefined
     });
@@ -345,7 +337,7 @@ function updateVersion() {
 }
 
 function checkForChanges() {
-  if (inputDirty && $markedVerElem.value !== 'commit' && $markedVerElem.value !== 'pr') {
+  if (inputDirty && $markedVerElem.value !== 'pr') {
     inputDirty = false;
 
     updateLink();
