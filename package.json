@@ -45,6 +45,7 @@
   ],
   "devDependencies": {
     "@markedjs/html-differ": "^4.0.2",
+    "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.3",
     "@semantic-release/commit-analyzer": "^10.0.4",
     "@semantic-release/git": "^10.0.1",
@@ -66,6 +67,7 @@
     "jasmine": "^5.1.0",
     "markdown-it": "13.0.1",
     "marked-highlight": "^2.0.5",
+    "marked-man": "^1.3.4",
     "node-fetch": "^3.3.2",
     "recheck": "^4.4.5",
     "rollup": "^3.28.1",
@@ -73,11 +75,10 @@
     "titleize": "^4.0.0",
     "ts-expect": "^1.3.0",
     "ts-node": "^10.9.1",
-    "typescript": "5.2.2",
-    "uglify-js": "^3.17.4"
+    "typescript": "5.2.2"
   },
   "scripts": {
-    "test": "cross-env NODE_OPTIONS=--loader=ts-node/esm jasmine --config=jasmine.json",
+    "test": "npm run build && cross-env NODE_OPTIONS=--loader=ts-node/esm jasmine --config=jasmine.json",
     "test:all": "npm test && npm run test:umd && npm run test:types && npm run test:lint",
     "test:unit": "npm test -- test/unit/**/*-spec.js",
     "test:specs": "npm test -- test/specs/**/*-spec.js",
@@ -90,11 +91,11 @@
     "bench": "npm run build && node test/bench.js",
     "lint": "eslint --fix .",
     "build:reset": "git checkout upstream/master lib/marked.cjs lib/marked.umd.js lib/marked.esm.js marked.min.js",
-    "build": "npm run rollup && npm run minify && npm run build:types",
-    "build:docs": "node build-docs.js",
+    "build": "npm run rollup && npm run build:types && npm run build:man",
+    "build:docs": "npm run build && node docs/build.js",
     "build:types": "tsc --project tsconfig-types.json",
-    "rollup": "rollup -c rollup.config.js",
-    "minify": "uglifyjs lib/marked.umd.js -cm  --comments /Copyright/ -o marked.min.js"
+    "build:man": "marked-man man/marked.1.md > man/marked.1",
+    "rollup": "rollup -c rollup.config.js"
   },
   "engines": {
     "node": ">= 16"

@@ -1,9 +1,9 @@
 import typescript from '@rollup/plugin-typescript';
+import terser from '@rollup/plugin-terser';
 import { defineConfig } from 'rollup';
 import fs from 'fs';
 
-const pkg = JSON.parse(fs.readFileSync('./package.json'));
-const version = process.env.SEMANTIC_RELEASE_NEXT_VERSION || pkg.version;
+const version = process.env.SEMANTIC_RELEASE_NEXT_VERSION || JSON.parse(fs.readFileSync('./package.json')).version;
 
 console.log('building version:', version);
 
@@ -34,6 +34,14 @@ export default defineConfig([
       name: 'marked',
       sourcemap: true,
       banner
+    },
+    {
+      file: 'marked.min.js',
+      format: 'umd',
+      name: 'marked',
+      sourcemap: false,
+      banner,
+      plugins: [terser()]
     },
     {
       file: 'lib/marked.cjs',

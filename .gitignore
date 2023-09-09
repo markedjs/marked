@@ -3,5 +3,8 @@
 node_modules/
 test/compiled_tests
 public
+lib
 docs/LICENSE.md
 vuln.js
+man/marked.1
+marked.min.js
