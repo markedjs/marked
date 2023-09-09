@@ -35,10 +35,19 @@ async function init() {
   console.log('Build complete!');
 }
 
+const ignoredFiles = [
+  join(cwd, 'docs', 'build.js'),
+  join(cwd, 'docs', '.eslintrc.json'),
+  join(cwd, 'docs', '_document.html')
+];
+
 async function build(currentDir, tmpl) {
   const files = await readdir(currentDir);
   for (const file of files) {
     const filename = join(currentDir, file);
+    if (ignoredFiles.includes(filename)) {
+      continue;
+    }
     const stats = await stat(filename);
     const { mode } = stats;
     if (stats.isDirectory()) {
