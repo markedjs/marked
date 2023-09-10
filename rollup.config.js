@@ -41,7 +41,15 @@ export default defineConfig([
       name: 'marked',
       sourcemap: false,
       banner,
-      plugins: [terser()]
+      plugins: [terser({
+        format: {
+          comments: (node, comment) => {
+            if (comment.type === 'comment2') {
+              return comment.value.includes('Copyright (c)');
+            }
+          }
+        }
+      })]
     },
     {
       file: 'lib/marked.cjs',
