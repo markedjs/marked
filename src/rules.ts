@@ -157,8 +157,8 @@ block.normal = { ...block };
 
 block.gfm = {
   ...block.normal,
-  table: '^ *([^\\n ].*\\|.*)\\n' // Header
-    + ' {0,3}(?:\\| *)?(:?-+:? *(?:\\| *:?-+:? *)*)(?:\\| *)?' // Align
+  table: '^ *([^\\n ].*)\\n' // Header
+    + ' {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)' // Align
     + '(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)' // Cells
 };
 
