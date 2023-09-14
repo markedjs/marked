@@ -115,7 +115,7 @@ marked.use({
 - <code>**code**(*string* code, *string* infostring, *boolean* escaped)</code>
 - <code>**blockquote**(*string* quote)</code>
 - <code>**html**(*string* html, *boolean* block)</code>
-- <code>**heading**(*string* text, *number* level, *string* raw, *Slugger* slugger)</code>
+- <code>**heading**(*string* text, *number* level, *string* raw)</code>
 - <code>**hr**()</code>
 - <code>**list**(*string* body, *boolean* ordered, *number* start)</code>
 - <code>**listitem**(*string* text, *boolean* task, *boolean* checked)</code>
@@ -135,36 +135,6 @@ marked.use({
 - <code>**link**(*string* href, *string* title, *string* text)</code>
 - <code>**image**(*string* href, *string* title, *string* text)</code>
 - <code>**text**(*string* text)</code>
-
-`Slugger` is exposed from marked as `marked.Slugger`:
-
-```js
-import { marked } from 'marked'
-const slugger = new marked.Slugger()
-```
-
-`slugger` has the `slug` method to create a unique id from value:
-
-```js
-slugger.slug('foo')   // foo
-slugger.slug('foo')   // foo-1
-slugger.slug('foo')   // foo-2
-slugger.slug('foo 1') // foo-1-1
-slugger.slug('foo-1') // foo-1-2
-...
-```
-
-`slugger.slug` can also be called with the `dryrun` option for stateless operation:
-```js
-slugger.slug('foo')                    // foo
-slugger.slug('foo')                    // foo-1
-slugger.slug('foo')                    // foo-2
-slugger.slug('foo', { dryrun: true })  // foo-3
-slugger.slug('foo', { dryrun: true })  // foo-3
-slugger.slug('foo')                    // foo-3
-slugger.slug('foo')                    // foo-4
-...
-```
 
 `flags` has the following properties:
 

@@ -444,7 +444,7 @@ describe('use extension', () => {
           }
         },
         renderer: {
-          heading(text, depth, raw, slugger) {
+          heading(text, depth, raw) {
             if (text === name) {
               return `<h${depth}>${text}</h${depth}>\n`;
             }
