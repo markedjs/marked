@@ -399,13 +399,18 @@ export class _Tokenizer {
   table(src: string): Tokens.Table | undefined {
     const cap = this.rules.block.table.exec(src);
     if (cap) {
+      if (!/[:|]/.test(cap[2])) {
+        // delimiter row must have a pipe (|) or colon (:) otherwise it is a setext heading
+        return;
+      }
+
       const item: Tokens.Table = {
         type: 'table',
         raw: cap[0],
         header: splitCells(cap[1]).map(c => {
           return { text: c, tokens: [] };
         }),
-        align: cap[2].replace(/^ *|\| *$/g, '').split(/ *\| */),
+        align: cap[2].replace(/^\||\| *$/g, '').split('|'),
         rows: cap[3] && cap[3].trim() ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : []
       };
 
