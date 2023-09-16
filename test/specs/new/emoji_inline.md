@@ -10,6 +10,24 @@ Situations where it fails:
 
 **🏖️🤓💁 test**
 
+**💁 test** test
+
+test **💁 test**
+
+test **💁 test** test
+
+***test 💁***
+
+***💁 test***
+
+***💁 test*** test
+
+test ***💁 test***
+
+test ***💁 test*** test
+
+****💁 test****
+
 Situations where it works:
 
 **💁 **
