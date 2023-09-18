@@ -32,7 +32,7 @@ export async function main(nodeProcess) {
     };
 
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const helpText = await readFile(resolve(__dirname, '../man/marked.1.txt'), 'utf8');
+    const helpText = await readFile(resolve(__dirname, '../man/marked.1.md'), 'utf8');
 
     // eslint-disable-next-line promise/param-names
     await new Promise(res => {
