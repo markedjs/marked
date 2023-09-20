@@ -24,7 +24,6 @@ These documentation pages are also rendered using marked 💯
 **In-browser:**
 ```
 npm install marked
-npm install @types/marked # For TypeScript projects
 ```
 <h2 id="usage">Usage</h2>
 
