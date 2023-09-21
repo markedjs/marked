@@ -50,7 +50,7 @@ Before building your custom extensions, it is important to understand the compon
 4) The `parser` traverses the token tree and feeds each token into the appropriate `renderer`, and concatenates their outputs into the final HTML result.
 5) Each `renderer` receives a token and manipulates its contents to generate a segment of HTML.
 
-Marked provides methods for directly overriding the `renderer` and `tokenizer` for any existing token type, as well as inserting additional custom `renderer` and `tokenizer` functions to handle entirely custom syntax. For example, using `marked.use({renderer})` would modify a render, whereas `marked.use({extenstions: [{renderer}]})` would add a new renderer. See the [custom extensions example](#custom-extensions-example) for insight on how to execute this.
+Marked provides methods for directly overriding the `renderer` and `tokenizer` for any existing token type, as well as inserting additional custom `renderer` and `tokenizer` functions to handle entirely custom syntax. For example, using `marked.use({renderer})` would modify a renderer, whereas `marked.use({extensions: [{renderer}]})` would add a new renderer. See the [custom extensions example](#custom-extensions-example) for insight on how to execute this.
 
 ***
 
