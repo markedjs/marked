@@ -91,6 +91,7 @@ Marked can be extended using [custom extensions](/using_pro#extensions). This is
 |[Mangle](https://github.com/markedjs/marked-mangle)|[`marked-mangle`](https://www.npmjs.com/package/marked-mangle)|Mangle mailto links with HTML character references|
 |[Misskey-flavored Markdown](https://akkoma.dev/sfr/marked-mfm)|[`marked-mfm`](https://www.npmjs.com/package/marked-mfm)|Custom extension for [Misskey-flavored Markdown](https://github.com/misskey-dev/mfm.js/blob/develop/docs/syntax.md).|
 |[Smartypants](https://github.com/markedjs/marked-smartypants)|[`marked-smartypants`](https://www.npmjs.com/package/marked-smartypants)|Use [smartypants](https://www.npmjs.com/package/smartypants) to use "smart" typographic punctuation for things like quotes and dashes.|
+|[Smartypants lite](https://github.com/calculuschild/marked-smartypants-lite)|[`marked-smartypants-lite`](https://www.npmjs.com/package/marked-smartypants-lite)|A faster lighter version of marked-smartypants that doesn't use any external dependencies to create "smart" typographic punctuation for things like quotes and dashes.|
 |[XHTML](https://github.com/markedjs/marked-xhtml)|[`marked-xhtml`](https://www.npmjs.com/package/marked-xhtml)|Emit self-closing HTML tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.|
 
 <h2 id="inline">Inline Markdown</h2>
