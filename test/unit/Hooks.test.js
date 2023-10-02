@@ -1,7 +1,14 @@
-import { marked } from '../../src/marked.js';
+import { Marked } from '../../lib/marked.esm.js';
 import { timeout } from './utils.js';
+import { describe, it, beforeEach } from 'node:test';
+import assert from 'node:assert';
 
 describe('Hooks', () => {
+  let marked;
+  beforeEach(() => {
+    marked = new Marked();
+  });
+
   it('should preprocess markdown', () => {
     marked.use({
       hooks: {
@@ -10,8 +17,8 @@ describe('Hooks', () => {
         }
       }
     });
-    const html = marked('*text*');
-    expect(html.trim()).toBe('<h1>preprocess</h1>\n<p><em>text</em></p>');
+    const html = marked.parse('*text*');
+    assert.strictEqual(html.trim(), '<h1>preprocess</h1>\n<p><em>text</em></p>');
   });
 
   it('should preprocess async', async() => {
@@ -24,10 +31,10 @@ describe('Hooks', () => {
         }
       }
     });
-    const promise = marked('*text*');
-    expect(promise).toBeInstanceOf(Promise);
+    const promise = marked.parse('*text*');
+    assert.ok(promise instanceof Promise);
     const html = await promise;
-    expect(html.trim()).toBe('<h1>preprocess async</h1>\n<p><em>text</em></p>');
+    assert.strictEqual(html.trim(), '<h1>preprocess async</h1>\n<p><em>text</em></p>');
   });
 
   it('should preprocess options', () => {
@@ -39,8 +46,8 @@ describe('Hooks', () => {
         }
       }
     });
-    const html = marked('line1\nline2');
-    expect(html.trim()).toBe('<p>line1<br>line2</p>');
+    const html = marked.parse('line1\nline2');
+    assert.strictEqual(html.trim(), '<p>line1<br>line2</p>');
   });
 
   it('should preprocess options async', async() => {
@@ -54,8 +61,8 @@ describe('Hooks', () => {
         }
       }
     });
-    const html = await marked('line1\nline2');
-    expect(html.trim()).toBe('<p>line1<br>line2</p>');
+    const html = await marked.parse('line1\nline2');
+    assert.strictEqual(html.trim(), '<p>line1<br>line2</p>');
   });
 
   it('should postprocess html', () => {
@@ -66,8 +73,8 @@ describe('Hooks', () => {
         }
       }
     });
-    const html = marked('*text*');
-    expect(html.trim()).toBe('<p><em>text</em></p>\n<h1>postprocess</h1>');
+    const html = marked.parse('*text*');
+    assert.strictEqual(html.trim(), '<p><em>text</em></p>\n<h1>postprocess</h1>');
   });
 
   it('should postprocess async', async() => {
@@ -80,10 +87,10 @@ describe('Hooks', () => {
         }
       }
     });
-    const promise = marked('*text*');
-    expect(promise).toBeInstanceOf(Promise);
+    const promise = marked.parse('*text*');
+    assert.ok(promise instanceof Promise);
     const html = await promise;
-    expect(html.trim()).toBe('<p><em>text</em></p>\n<h1>postprocess async</h1>');
+    assert.strictEqual(html.trim(), '<p><em>text</em></p>\n<h1>postprocess async</h1>');
   });
 
   it('should process all hooks in reverse', async() => {
@@ -109,9 +116,9 @@ describe('Hooks', () => {
         }
       }
     });
-    const promise = marked('*text*');
-    expect(promise).toBeInstanceOf(Promise);
+    const promise = marked.parse('*text*');
+    assert.ok(promise instanceof Promise);
     const html = await promise;
-    expect(html.trim()).toBe('<h1>preprocess1</h1>\n<h1>preprocess2</h1>\n<p><em>text</em></p>\n<h1>postprocess2 async</h1>\n<h1>postprocess1</h1>');
+    assert.strictEqual(html.trim(), '<h1>preprocess1</h1>\n<h1>preprocess2</h1>\n<p><em>text</em></p>\n<h1>postprocess2 async</h1>\n<h1>postprocess1</h1>');
   });
 });

@@ -79,10 +79,10 @@
     "typescript": "5.2.2"
   },
   "scripts": {
-    "test": "npm run build && cross-env NODE_OPTIONS=--loader=ts-node/esm jasmine --config=jasmine.json && npm run test:specs",
+    "test": "npm run build && npm run test:specs",
     "test:all": "npm test && npm run test:umd && npm run test:types && npm run test:lint",
-    "test:unit": "npm test -- test/unit/**/*-spec.js",
-    "test:specs": "node --test --test-reporter=dot test/run-spec-tests.js",
+    "test:unit": "node --test --test-reporter=spec test/unit",
+    "test:specs": "node --test --test-reporter=spec test/run-spec-tests.js",
     "test:lint": "eslint .",
     "test:redos": "node test/recheck.js > vuln.js",
     "test:types": "tsc --project tsconfig-type-test.json",

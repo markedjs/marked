@@ -1,20 +1,28 @@
-import { _Lexer } from '../../src/Lexer.js';
+import { Lexer } from '../../lib/marked.esm.js';
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
 
-function expectTokens({ md, options, tokens = [], links = {} }) {
-  const lexer = new _Lexer(options);
+function expectTokens({ md, options, tokens = [], links = {}, log = false }) {
+  const lexer = new Lexer(options);
   const actual = lexer.lex(md);
   const expected = tokens;
   expected.links = links;
-  // console.log(JSON.stringify(actual, null, 2));
-  expect(actual).toEqual(expected);
+  if (log) {
+    console.log(JSON.stringify(
+      actual,
+      (k, v) => v === undefined ? null : v,
+      2
+    ));
+  }
+  assert.deepEqual(actual, expected);
 }
 
 function expectInlineTokens({ md, options, tokens = jasmine.any(Array), links = {} }) {
-  const lexer = new _Lexer(options);
+  const lexer = new Lexer(options);
   lexer.tokens.links = links;
   const outTokens = [];
   lexer.inlineTokens(md, outTokens);
-  expect(outTokens).toEqual(tokens);
+  assert.deepEqual(outTokens, tokens);
 }
 
 describe('Lexer', () => {
@@ -428,6 +436,7 @@ a | b
   describe('list', () => {
     it('unordered', () => {
       expectTokens({
+        log: true,
         md: `
 - item 1
 - item 2
@@ -483,26 +492,65 @@ a | b
 1. item 1
 2. item 2
 `,
-        tokens: jasmine.arrayContaining([
-          jasmine.objectContaining({
+        tokens: [
+          {
             type: 'space',
             raw: '\n'
-          }),
-          jasmine.objectContaining({
+          },
+          {
             type: 'list',
             raw: '1. item 1\n2. item 2\n',
             ordered: true,
             start: 1,
+            loose: false,
             items: [
-              jasmine.objectContaining({
-                raw: '1. item 1\n'
-              }),
-              jasmine.objectContaining({
-                raw: '2. item 2'
-              })
+              {
+                type: 'list_item',
+                raw: '1. item 1\n',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'item 1',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 1',
+                    text: 'item 1',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 1',
+                        text: 'item 1'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                type: 'list_item',
+                raw: '2. item 2',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'item 2',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 2',
+                    text: 'item 2',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 2',
+                        text: 'item 2'
+                      }
+                    ]
+                  }
+                ]
+              }
             ]
-          })
-        ])
+          }
+        ]
       });
     });
 
@@ -512,26 +560,65 @@ a | b
 1) item 1
 2) item 2
 `,
-        tokens: jasmine.arrayContaining([
-          jasmine.objectContaining({
+        tokens: [
+          {
             type: 'space',
             raw: '\n'
-          }),
-          jasmine.objectContaining({
+          },
+          {
             type: 'list',
             raw: '1) item 1\n2) item 2\n',
             ordered: true,
             start: 1,
+            loose: false,
             items: [
-              jasmine.objectContaining({
-                raw: '1) item 1\n'
-              }),
-              jasmine.objectContaining({
-                raw: '2) item 2'
-              })
+              {
+                type: 'list_item',
+                raw: '1) item 1\n',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'item 1',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 1',
+                    text: 'item 1',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 1',
+                        text: 'item 1'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                type: 'list_item',
+                raw: '2) item 2',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'item 2',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 2',
+                    text: 'item 2',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 2',
+                        text: 'item 2'
+                      }
+                    ]
+                  }
+                ]
+              }
             ]
-          })
-        ])
+          }
+        ]
       });
     });
 
@@ -562,12 +649,20 @@ paragraph
                 checked: undefined,
                 loose: false,
                 text: 'item 1',
-                tokens: [{
-                  type: 'text',
-                  raw: 'item 1',
-                  text: 'item 1',
-                  tokens: [{ type: 'text', raw: 'item 1', text: 'item 1' }]
-                }]
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 1',
+                    text: 'item 1',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 1',
+                        text: 'item 1'
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 type: 'list_item',
@@ -576,25 +671,38 @@ paragraph
                 checked: undefined,
                 loose: false,
                 text: 'item 2',
-                tokens: [{
-                  type: 'text',
-                  raw: 'item 2',
-                  text: 'item 2',
-                  tokens: [{ type: 'text', raw: 'item 2', text: 'item 2' }]
-                }]
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 2',
+                    text: 'item 2',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 2',
+                        text: 'item 2'
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
-          { type: 'space', raw: '\n\n' },
+          {
+            type: 'space',
+            raw: '\n\n'
+          },
           {
             type: 'paragraph',
             raw: 'paragraph\n',
             text: 'paragraph',
-            tokens: [{
-              type: 'text',
-              raw: 'paragraph',
-              text: 'paragraph'
-            }]
+            tokens: [
+              {
+                type: 'text',
+                raw: 'paragraph',
+                text: 'paragraph'
+              }
+            ]
           }
         ]
       });
@@ -606,26 +714,65 @@ paragraph
 2. item 1
 3. item 2
 `,
-        tokens: jasmine.arrayContaining([
-          jasmine.objectContaining({
+        tokens: [
+          {
             type: 'space',
             raw: '\n'
-          }),
-          jasmine.objectContaining({
+          },
+          {
             type: 'list',
             raw: '2. item 1\n3. item 2\n',
             ordered: true,
             start: 2,
+            loose: false,
             items: [
-              jasmine.objectContaining({
-                raw: '2. item 1\n'
-              }),
-              jasmine.objectContaining({
-                raw: '3. item 2'
-              })
+              {
+                type: 'list_item',
+                raw: '2. item 1\n',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'item 1',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 1',
+                    text: 'item 1',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 1',
+                        text: 'item 1'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                type: 'list_item',
+                raw: '3. item 2',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'item 2',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 2',
+                    text: 'item 2',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 2',
+                        text: 'item 2'
+                      }
+                    ]
+                  }
+                ]
+              }
             ]
-          })
-        ])
+          }
+        ]
       });
     });
 
@@ -636,27 +783,65 @@ paragraph
 
 - item 2
 `,
-        tokens: jasmine.arrayContaining([
-          jasmine.objectContaining({
+        tokens: [
+          {
             type: 'space',
             raw: '\n'
-          }),
-          jasmine.objectContaining({
+          },
+          {
             type: 'list',
             raw: '- item 1\n\n- item 2\n',
+            ordered: false,
+            start: '',
             loose: true,
             items: [
-              jasmine.objectContaining({
+              {
+                type: 'list_item',
                 raw: '- item 1\n\n',
-                loose: true
-              }),
-              jasmine.objectContaining({
+                task: false,
+                checked: undefined,
+                loose: true,
+                text: 'item 1\n',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 1\n',
+                    text: 'item 1',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 1',
+                        text: 'item 1'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                type: 'list_item',
                 raw: '- item 2',
-                loose: true
-              })
+                task: false,
+                checked: undefined,
+                loose: true,
+                text: 'item 2',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 2',
+                    text: 'item 2',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 2',
+                        text: 'item 2'
+                      }
+                    ]
+                  }
+                ]
+              }
             ]
-          })
-        ])
+          }
+        ]
       });
     });
 
@@ -669,31 +854,103 @@ paragraph
   item 2a
 - item 3
 `,
-        tokens: jasmine.arrayContaining([
-          jasmine.objectContaining({
+        tokens: [
+          {
             type: 'space',
             raw: '\n'
-          }),
-          jasmine.objectContaining({
+          },
+          {
             type: 'list',
             raw: '- item 1\n- item 2\n\n  item 2a\n- item 3\n',
+            ordered: false,
+            start: '',
             loose: true,
             items: [
-              jasmine.objectContaining({
+              {
+                type: 'list_item',
                 raw: '- item 1\n',
-                loose: true
-              }),
-              jasmine.objectContaining({
+                task: false,
+                checked: undefined,
+                loose: true,
+                text: 'item 1',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 1',
+                    text: 'item 1',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 1',
+                        text: 'item 1'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                type: 'list_item',
                 raw: '- item 2\n\n  item 2a\n',
-                loose: true
-              }),
-              jasmine.objectContaining({
+                task: false,
+                checked: undefined,
+                loose: true,
+                text: 'item 2\n\nitem 2a',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 2',
+                    text: 'item 2',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 2',
+                        text: 'item 2'
+                      }
+                    ]
+                  },
+                  {
+                    type: 'space',
+                    raw: '\n\n'
+                  },
+                  {
+                    type: 'text',
+                    raw: 'item 2a',
+                    text: 'item 2a',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 2a',
+                        text: 'item 2a'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                type: 'list_item',
                 raw: '- item 3',
-                loose: true
-              })
+                task: false,
+                checked: undefined,
+                loose: true,
+                text: 'item 3',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 3',
+                    text: 'item 3',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 3',
+                        text: 'item 3'
+                      }
+                    ]
+                  }
+                ]
+              }
             ]
-          })
-        ])
+          }
+        ]
       });
     });
 
@@ -703,32 +960,74 @@ paragraph
 - item 1
   - item 2
 `,
-        tokens: jasmine.arrayContaining([
-          jasmine.objectContaining({
+        tokens: [
+          {
             type: 'space',
             raw: '\n'
-          }),
-          jasmine.objectContaining({
+          },
+          {
             type: 'list',
             raw: '- item 1\n  - item 2\n',
+            ordered: false,
+            start: '',
             loose: false,
             items: [
-              jasmine.objectContaining({
+              {
+                type: 'list_item',
                 raw: '- item 1\n  - item 2',
+                task: false,
+                checked: undefined,
                 loose: false,
-                tokens: jasmine.arrayContaining([
-                  jasmine.objectContaining({
-                    raw: 'item 1\n'
-                  }),
-                  jasmine.objectContaining({
+                text: 'item 1\n- item 2',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 1\n',
+                    text: 'item 1',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 1',
+                        text: 'item 1'
+                      }
+                    ]
+                  },
+                  {
                     type: 'list',
-                    raw: '- item 2'
-                  })
-                ])
-              })
+                    raw: '- item 2',
+                    ordered: false,
+                    start: '',
+                    loose: false,
+                    items: [
+                      {
+                        type: 'list_item',
+                        raw: '- item 2',
+                        task: false,
+                        checked: undefined,
+                        loose: false,
+                        text: 'item 2',
+                        tokens: [
+                          {
+                            type: 'text',
+                            raw: 'item 2',
+                            text: 'item 2',
+                            tokens: [
+                              {
+                                type: 'text',
+                                raw: 'item 2',
+                                text: 'item 2'
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
             ]
-          })
-        ])
+          }
+        ]
       });
     });
 
@@ -738,28 +1037,65 @@ paragraph
 - [ ] item 1
 - [x] item 2
 `,
-        tokens: jasmine.arrayContaining([
-          jasmine.objectContaining({
+        tokens: [
+          {
             type: 'space',
             raw: '\n'
-          }),
-          jasmine.objectContaining({
+          },
+          {
             type: 'list',
             raw: '- [ ] item 1\n- [x] item 2\n',
+            ordered: false,
+            start: '',
+            loose: false,
             items: [
-              jasmine.objectContaining({
+              {
+                type: 'list_item',
                 raw: '- [ ] item 1\n',
                 task: true,
-                checked: false
-              }),
-              jasmine.objectContaining({
+                checked: false,
+                loose: false,
+                text: 'item 1',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 1',
+                    text: 'item 1',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 1',
+                        text: 'item 1'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                type: 'list_item',
                 raw: '- [x] item 2',
                 task: true,
-                checked: true
-              })
+                checked: true,
+                loose: false,
+                text: 'item 2',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'item 2',
+                    text: 'item 2',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'item 2',
+                        text: 'item 2'
+                      }
+                    ]
+                  }
+                ]
+              }
             ]
-          })
-        ])
+          }
+        ]
       });
     });
   });
@@ -1124,9 +1460,22 @@ paragraph
         expectInlineTokens({
           md: 'a\nb',
           options: { gfm: true, breaks: true },
-          tokens: jasmine.arrayContaining([
-            { type: 'br', raw: '\n' }
-          ])
+          tokens: [
+            {
+              raw: 'a',
+              text: 'a',
+              type: 'text'
+            },
+            {
+              raw: '\n',
+              type: 'br'
+            },
+            {
+              raw: 'b',
+              text: 'b',
+              type: 'text'
+            }
+          ]
         });
       });
 

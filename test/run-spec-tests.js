@@ -1,6 +1,12 @@
+import { Marked } from '../lib/marked.esm.js';
 import { getTests, runTests, outputCompletionTable } from '@markedjs/testutils';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+function parse(markdown, options) {
+  const marked = new Marked(options);
+  return marked.parse(markdown);
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -15,24 +21,29 @@ const tests = await getTests({
 outputCompletionTable('CommonMark', tests.CommonMark);
 runTests({
   tests: tests.CommonMark,
+  parse,
   defaultMarkedOptions: { gfm: false, pedantic: false }
 });
 
 outputCompletionTable('GFM', tests.GFM);
 runTests({
   tests: tests.GFM,
+  parse,
   defaultMarkedOptions: { gfm: true, pedantic: false }
 });
 
 runTests({
   tests: tests.Original,
+  parse,
   defaultMarkedOptions: { gfm: false, pedantic: true }
 });
 
 runTests({
-  tests: tests.New
+  tests: tests.New,
+  parse
 });
 
 runTests({
-  tests: tests.RedDOS
+  tests: tests.RedDOS,
+  parse
 });
