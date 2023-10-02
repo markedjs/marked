@@ -78,7 +78,7 @@
     "typescript": "5.2.2"
   },
   "scripts": {
-    "test": "npm run build && npm run test:specs",
+    "test": "npm run build && npm run test:specs && npm run test:unit",
     "test:all": "npm test && npm run test:umd && npm run test:types && npm run test:lint",
     "test:unit": "node --test --test-reporter=spec test/unit",
     "test:specs": "node --test --test-reporter=spec test/run-spec-tests.js",
