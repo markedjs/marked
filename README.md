@@ -43,6 +43,12 @@ Also read about:
 npm install -g marked
 ```
 
+**CDN:**
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js" type="module"></script>
+```
+
 **In-browser:** 
 
 ```sh
