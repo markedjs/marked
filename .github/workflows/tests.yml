@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         # lowest verison here should also be in `engines` field
-        node_version: [16, 18, 'lts/*', '*']
+        node_version: [18, "lts/*", "*"]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -42,7 +42,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v3
         with:
-          node-version: 'lts/*'
+          node-version: "lts/*"
       - name: Install Dependencies
         run: npm ci
       - name: Lint ✨
@@ -57,7 +57,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v3
         with:
-          node-version: 'lts/*'
+          node-version: "lts/*"
       - name: Install Dependencies
         run: npm ci
       - name: Build 🗜️
@@ -79,7 +79,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v3
         with:
-          node-version: 'lts/*'
+          node-version: "lts/*"
       - name: Install Dependencies
         run: npm ci
       - name: Build 🗜️

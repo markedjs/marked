@@ -98,6 +98,6 @@
     "rollup": "rollup -c rollup.config.js"
   },
   "engines": {
-    "node": ">= 16"
+    "node": ">= 18"
   }
 }
