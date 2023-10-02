@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  UnitTest:
+  UnitTests:
     strategy:
       matrix:
         # lowest verison here should also be in `engines` field
@@ -32,7 +32,7 @@ jobs:
       - name: Run Spec Tests 👩🏽‍💻
         run: npm run test:specs
 
-  OtherTest:
+  OtherTests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -55,7 +55,7 @@ jobs:
   Release:
     permissions:
       contents: write
-    needs: [UnitTest, OtherTest]
+    needs: [UnitTests, OtherTests]
     if: |
       github.ref == 'refs/heads/master' &&
       github.event.repository.fork == false
