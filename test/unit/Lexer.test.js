@@ -17,7 +17,7 @@ function expectTokens({ md, options, tokens = [], links = {}, log = false }) {
   assert.deepEqual(actual, expected);
 }
 
-function expectInlineTokens({ md, options, tokens = jasmine.any(Array), links = {} }) {
+function expectInlineTokens({ md, options, tokens, links = {} }) {
   const lexer = new Lexer(options);
   lexer.tokens.links = links;
   const outTokens = [];
