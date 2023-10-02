@@ -1,7 +1,6 @@
-import { dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
-import { htmlIsEqual } from '@markedjs/testutils';
-import { loadFiles } from './helpers/load.js';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { htmlIsEqual, getTests } from '@markedjs/testutils';
 
 import { marked as cjsMarked } from '../lib/marked.cjs';
 import { marked as esmMarked } from '../lib/marked.esm.js';
@@ -13,9 +12,9 @@ let marked;
 /**
  * Load specs
  */
-export function load() {
+export async function load() {
   const dir = resolve(__dirname, './specs/commonmark');
-  const sections = loadFiles(dir);
+  const sections = await getTests(dir);
   let specs = [];
 
   for (const section in sections) {
@@ -30,7 +29,7 @@ export function load() {
  */
 export async function runBench(options) {
   options = options || {};
-  const specs = load();
+  const specs = await load();
   const tests = {};
 
   // Non-GFM, Non-pedantic

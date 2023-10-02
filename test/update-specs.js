@@ -1,9 +1,9 @@
 import fetch from 'node-fetch';
 import { load } from 'cheerio';
 import marked from '../';
-import { isEqual } from './helpers/html-differ.js';
-import { readdirSync, unlinkSync, writeFileSync } from 'fs';
-import { join, resolve } from 'path';
+import { htmlIsEqual } from '@markedjs/testutils';
+import { readdirSync, unlinkSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 
 function removeFiles(dir) {
   readdirSync(dir).forEach(file => {
@@ -17,13 +17,14 @@ async function updateCommonmark(dir, options) {
     const pkg = await res.json();
     const version = pkg.version.replace(/^(\d+\.\d+).*$/, '$1');
     const res2 = await fetch(`https://spec.commonmark.org/${version}/spec.json`);
-    const specs = await res2.json();
-    specs.forEach(spec => {
+    const json = await res2.json();
+    const specs = await Promise.all(json.map(async(spec) => {
       const html = marked(spec.markdown, options);
-      if (!isEqual(html, spec.html)) {
+      const isEqual = await htmlIsEqual(html, spec.html);
+      if (!isEqual) {
         spec.shouldFail = true;
       }
-    });
+    }));
     writeFileSync(resolve(dir, `./commonmark.${version}.json`), JSON.stringify(specs, null, 2) + '\n');
     console.log(`Saved CommonMark v${version} specs`);
   } catch (ex) {
@@ -40,7 +41,7 @@ async function updateGfm(dir) {
     if (!version) {
       throw new Error('No version found');
     }
-    const specs = [];
+    let specs = [];
     $('.extension').each((i, ext) => {
       const section = $('.definition', ext).text().trim().replace(/^\d+\.\d+(.*?) \(extension\)[\s\S]*$/, '$1');
       $('.example', ext).each((j, exa) => {
@@ -56,12 +57,13 @@ async function updateGfm(dir) {
       });
     });
 
-    specs.forEach(spec => {
+    specs = await Promise.all(specs.map(async(spec) => {
       const html = marked(spec.markdown, { gfm: true, pedantic: false });
-      if (!isEqual(html, spec.html)) {
+      const isEqual = await htmlIsEqual(html, spec.html);
+      if (!isEqual) {
         spec.shouldFail = true;
       }
-    });
+    }));
     writeFileSync(resolve(dir, `./gfm.${version}.json`), JSON.stringify(specs, null, 2) + '\n');
     console.log(`Saved GFM v${version} specs.`);
   } catch (ex) {
