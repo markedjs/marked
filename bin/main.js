@@ -62,6 +62,7 @@ export async function main(nodeProcess) {
     let tokens;
     let config;
     let opt;
+    let noclobber;
 
     function getArg() {
       let arg = argv.shift();
@@ -113,6 +114,10 @@ export async function main(nodeProcess) {
         case '-c':
         case '--config':
           config = argv.shift();
+          break;
+        case '-n':
+        case '--noclobber':
+          noclobber = true;
           break;
         case '-h':
         case '--help':
@@ -216,6 +221,10 @@ export async function main(nodeProcess) {
       : await marked.parse(data, options);
 
     if (output) {
+      if (noclobber && await fileExists(output)) {
+        nodeProcess.stderr.write('marked: output file \'' + output + '\' already exists, disable the \'-n\' / \'--noclobber\' flag to overwrite\n');
+        nodeProcess.exit(1);
+      }
       return await writeFile(output, html);
     }
 
