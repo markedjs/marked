@@ -116,7 +116,7 @@ export async function main(nodeProcess) {
           config = argv.shift();
           break;
         case '-n':
-        case '--noclobber':
+        case '--no-clobber':
           noclobber = true;
           break;
         case '-h':

@@ -2,7 +2,7 @@
 
 ## SYNOPSIS
 
-`marked` [`-o` <output file>] [`-i` <input file>] [`-s` <markdown string>] [`-c` <config file>] [`--help`] [`--version`] [`--tokens`] [`--noclobber`] [`--pedantic`] [`--gfm`] [`--breaks`] [`--no-etc...`] [`--silent`] [filename]
+`marked` [`-o` <output file>] [`-i` <input file>] [`-s` <markdown string>] [`-c` <config file>] [`--help`] [`--version`] [`--tokens`] [`--no-clobber`] [`--pedantic`] [`--gfm`] [`--breaks`] [`--no-etc...`] [`--silent`] [filename]
 
 ## DESCRIPTION
 
@@ -45,7 +45,7 @@ Specify config file to use instead of the default `~/.marked.json` or `~/.marked
 * -t, --tokens
 Output a token list instead of html.
 
-* -n, --noclobber
+* -n, --no-clobber
 Do not overwrite `output` if it exists.
 
 * --pedantic
