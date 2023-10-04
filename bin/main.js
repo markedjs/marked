@@ -222,7 +222,7 @@ export async function main(nodeProcess) {
 
     if (output) {
       if (noclobber && await fileExists(output)) {
-        nodeProcess.stderr.write('marked: output file \'' + output + '\' already exists, disable the \'-n\' / \'--noclobber\' flag to overwrite\n');
+        nodeProcess.stderr.write('marked: output file \'' + output + '\' already exists, disable the \'-n\' / \'--no-clobber\' flag to overwrite\n');
         nodeProcess.exit(1);
       }
       return await writeFile(output, html);
