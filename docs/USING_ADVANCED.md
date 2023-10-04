@@ -81,7 +81,7 @@ Marked can be extended using [custom extensions](/using_pro#extensions). This is
 |[Admonition](https://www.npmjs.com/package/marked-admonition-extension)|[`marked-admonition-extension`](https://www.npmjs.com/package/marked-admonition-extension)| Admonition extension |
 |[Base URL](https://github.com/markedjs/marked-base-url)|[`marked-base-url`](https://www.npmjs.com/package/marked-base-url)|Prefix relative urls with a base URL.|
 |[Bidi](https://github.com/markedjs/marked-bidi)|[`marked-bidi`](https://www.npmjs.com/package/marked-bidi)|Add Bidirectional text support to the HTML|
-|[Code Formaat](https://github.com/bent10/marked-extensions/tree/main/packages/code-format)|[marked-code-format](https://www.npmjs.com/package/marked-code-format)|Formatting code blocks using Prettier|
+|[Code Format](https://github.com/bent10/marked-extensions/tree/main/packages/code-format)|[marked-code-format](https://www.npmjs.com/package/marked-code-format)|Formatting code blocks using Prettier|
 |[Code JSX Renderer](https://github.com/bent10/marked-extensions/tree/main/packages/code-jsx-renderer)|[marked-code-jsx-renderer](https://www.npmjs.com/package/marked-code-jsx-renderer)|Render JSX code blocks using a custom renderer and components|
 |[Code Preview](https://github.com/bent10/marked-extensions/tree/main/packages/code-preview)|[marked-code-preview](https://www.npmjs.com/package/marked-code-preview)|Transform code blocks into code previews|
 |[Custom Heading ID](https://github.com/markedjs/marked-custom-heading-id)|[`marked-custom-heading-id`](https://www.npmjs.com/package/marked-custom-heading-id)|Specify a custom heading id in headings with the [Markdown Extended Syntax](https://www.markdownguide.org/extended-syntax/#heading-ids) `# heading {#custom-id}`|
