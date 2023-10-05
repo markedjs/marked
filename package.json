@@ -44,7 +44,7 @@
     "html"
   ],
   "devDependencies": {
-    "@markedjs/testutils": "^9.0.3",
+    "@markedjs/testutils": "9.1.0-2",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.3",
     "@semantic-release/commit-analyzer": "^11.0.0",

@@ -10,40 +10,41 @@ function parse(markdown, options) {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const tests = await getTests({
-  CommonMark: resolve(__dirname, './specs/commonmark'),
-  GFM: resolve(__dirname, './specs/gfm'),
-  New: resolve(__dirname, './specs/new'),
-  Original: resolve(__dirname, './specs/original'),
-  ReDOS: resolve(__dirname, './specs/redos')
-});
+const [commonMarkTests, gfmTests, newTests, originalTests, redosTests] =
+  await getTests([
+    resolve(__dirname, './specs/commonmark'),
+    resolve(__dirname, './specs/gfm'),
+    resolve(__dirname, './specs/new'),
+    resolve(__dirname, './specs/original'),
+    resolve(__dirname, './specs/redos')
+  ]);
 
-outputCompletionTable('CommonMark', tests.CommonMark);
+outputCompletionTable('CommonMark', commonMarkTests);
 runTests({
-  tests: tests.CommonMark,
+  tests: commonMarkTests,
   parse,
   defaultMarkedOptions: { gfm: false, pedantic: false }
 });
 
-outputCompletionTable('GFM', tests.GFM);
+outputCompletionTable('GFM', gfmTests);
 runTests({
-  tests: tests.GFM,
+  tests: gfmTests,
   parse,
   defaultMarkedOptions: { gfm: true, pedantic: false }
 });
 
 runTests({
-  tests: tests.Original,
+  tests: newTests,
+  parse
+});
+
+runTests({
+  tests: originalTests,
   parse,
   defaultMarkedOptions: { gfm: false, pedantic: true }
 });
 
 runTests({
-  tests: tests.New,
-  parse
-});
-
-runTests({
-  tests: tests.RedDOS,
+  tests: redosTests,
   parse
 });
