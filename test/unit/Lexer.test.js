@@ -436,7 +436,6 @@ a | b
   describe('list', () => {
     it('unordered', () => {
       expectTokens({
-        log: true,
         md: `
 - item 1
 - item 2

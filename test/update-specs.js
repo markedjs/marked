@@ -1,9 +1,12 @@
 import fetch from 'node-fetch';
 import { load } from 'cheerio';
-import marked from '../';
+import { Marked } from '../lib/marked.esm.js';
 import { htmlIsEqual } from '@markedjs/testutils';
 import { readdirSync, unlinkSync, writeFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join, resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function removeFiles(dir) {
   readdirSync(dir).forEach(file => {
@@ -19,11 +22,13 @@ async function updateCommonmark(dir, options) {
     const res2 = await fetch(`https://spec.commonmark.org/${version}/spec.json`);
     const json = await res2.json();
     const specs = await Promise.all(json.map(async(spec) => {
-      const html = marked(spec.markdown, options);
+      const marked = new Marked();
+      const html = marked.parse(spec.markdown, options);
       const isEqual = await htmlIsEqual(html, spec.html);
       if (!isEqual) {
         spec.shouldFail = true;
       }
+      return spec;
     }));
     writeFileSync(resolve(dir, `./commonmark.${version}.json`), JSON.stringify(specs, null, 2) + '\n');
     console.log(`Saved CommonMark v${version} specs`);
@@ -58,11 +63,13 @@ async function updateGfm(dir) {
     });
 
     specs = await Promise.all(specs.map(async(spec) => {
-      const html = marked(spec.markdown, { gfm: true, pedantic: false });
+      const marked = new Marked();
+      const html = marked.parse(spec.markdown, { gfm: true, pedantic: false });
       const isEqual = await htmlIsEqual(html, spec.html);
       if (!isEqual) {
         spec.shouldFail = true;
       }
+      return spec;
     }));
     writeFileSync(resolve(dir, `./gfm.${version}.json`), JSON.stringify(specs, null, 2) + '\n');
     console.log(`Saved GFM v${version} specs.`);
