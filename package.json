@@ -64,6 +64,7 @@
     "eslint-plugin-promise": "^6.1.1",
     "front-matter": "^4.0.2",
     "highlight.js": "^11.8.0",
+    "husky": "^8.0.3",
     "jasmine": "^5.1.0",
     "markdown-it": "13.0.2",
     "marked-highlight": "^2.0.6",
@@ -98,7 +99,8 @@
     "build:docs": "npm run build && node docs/build.js",
     "build:types": "tsc --project tsconfig-types.json",
     "build:man": "marked-man man/marked.1.md > man/marked.1",
-    "rollup": "rollup -c rollup.config.js"
+    "rollup": "rollup -c rollup.config.js",
+    "prepare": "husky install"
   },
   "engines": {
     "node": ">= 16"
