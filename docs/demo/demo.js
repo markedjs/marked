@@ -312,6 +312,7 @@ function setResponseTime(ms) {
 function setParsed(parsed, lexed) {
   try {
     $previewIframe.contentDocument.body.innerHTML = parsed;
+    // eslint-disable-next-line no-empty
   } catch (ex) {}
   $htmlElem.value = parsed;
   $lexerElem.value = lexed;

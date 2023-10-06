@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "no-prototype-builtins": "off"
+  },
+  "env": {
+    "node": true
+  }
+}

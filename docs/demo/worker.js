@@ -115,6 +115,7 @@ function fetchMarked(file) {
     fetch(file)
       .then((res) => res.text())
       .then((text) => {
+        // eslint-disable-next-line no-undef
         const g = globalThis || global;
         g.module = { };
         try {
