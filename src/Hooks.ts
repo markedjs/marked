@@ -8,10 +8,7 @@ export class _Hooks {
     this.options = options || _defaults;
   }
 
-  static passThroughHooks = new Set([
-    'preprocess',
-    'postprocess'
-  ]);
+  static passThroughHooks = new Set(['preprocess', 'postprocess']);
 
   /**
    * Process markdown before marked

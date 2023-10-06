@@ -32,9 +32,12 @@ export async function main(nodeProcess) {
     };
 
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const helpText = await readFile(resolve(__dirname, '../man/marked.1.md'), 'utf8');
+    const helpText = await readFile(
+      resolve(__dirname, '../man/marked.1.md'),
+      'utf8'
+    );
 
-    await new Promise(res => {
+    await new Promise((res) => {
       spawn('man', [resolve(__dirname, '../man/marked.1')], options)
         .on('error', () => {
           console.log(helpText);
@@ -77,9 +80,13 @@ export async function main(nodeProcess) {
       } else if (arg[0] === '-') {
         if (arg.length > 2) {
           // e.g. -abc
-          argv = arg.substring(1).split('').map(function(ch) {
-            return '-' + ch;
-          }).concat(argv);
+          argv = arg
+            .substring(1)
+            .split('')
+            .map(function (ch) {
+              return '-' + ch;
+            })
+            .concat(argv);
           arg = argv.shift();
         } else {
           // e.g. -a
@@ -131,13 +138,11 @@ export async function main(nodeProcess) {
               continue;
             }
             if (arg.indexOf('--no-') === 0) {
-              options[opt] = typeof marked.defaults[opt] !== 'boolean'
-                ? null
-                : false;
+              options[opt] =
+                typeof marked.defaults[opt] !== 'boolean' ? null : false;
             } else {
-              options[opt] = typeof marked.defaults[opt] !== 'boolean'
-                ? argv.shift()
-                : true;
+              options[opt] =
+                typeof marked.defaults[opt] !== 'boolean' ? argv.shift() : true;
             }
           } else {
             files.push(arg);
@@ -164,7 +169,10 @@ export async function main(nodeProcess) {
     }
 
     function fileExists(file) {
-      return access(resolveFile(file)).then(() => true, () => false);
+      return access(resolveFile(file)).then(
+        () => true,
+        () => false
+      );
     }
 
     async function runConfig(file) {
@@ -195,7 +203,7 @@ export async function main(nodeProcess) {
     const data = await getData();
 
     if (config) {
-      if (!await fileExists(config)) {
+      if (!(await fileExists(config))) {
         throw Error(`Cannot load config file '${config}'`);
       }
 
@@ -220,8 +228,12 @@ export async function main(nodeProcess) {
       : await marked.parse(data, options);
 
     if (output) {
-      if (noclobber && await fileExists(output)) {
-        nodeProcess.stderr.write('marked: output file \'' + output + '\' already exists, disable the \'-n\' / \'--no-clobber\' flag to overwrite\n');
+      if (noclobber && (await fileExists(output))) {
+        nodeProcess.stderr.write(
+          "marked: output file '" +
+            output +
+            "' already exists, disable the '-n' / '--no-clobber' flag to overwrite\n"
+        );
         nodeProcess.exit(1);
       }
       return await writeFile(output, html);
@@ -240,15 +252,15 @@ export async function main(nodeProcess) {
 
       stdin.setEncoding('utf8');
 
-      stdin.on('data', function(data) {
+      stdin.on('data', function (data) {
         buff += data;
       });
 
-      stdin.on('error', function(err) {
+      stdin.on('error', function (err) {
         reject(err);
       });
 
-      stdin.on('end', function() {
+      stdin.on('end', function () {
         resolve(buff);
       });
 
@@ -260,7 +272,7 @@ export async function main(nodeProcess) {
    * @param {string} text
    */
   function camelize(text) {
-    return text.replace(/(\w)-(\w)/g, function(_, a, b) {
+    return text.replace(/(\w)-(\w)/g, function (_, a, b) {
       return a + b.toUpperCase();
     });
   }
@@ -270,7 +282,9 @@ export async function main(nodeProcess) {
     nodeProcess.exit(0);
   } catch (err) {
     if (err.code === 'ENOENT') {
-      nodeProcess.stderr.write('marked: output to ' + err.path + ': No such directory');
+      nodeProcess.stderr.write(
+        'marked: output to ' + err.path + ': No such directory'
+      );
     }
     nodeProcess.stderr.write(err);
     return nodeProcess.exit(1);

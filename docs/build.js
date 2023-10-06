@@ -12,14 +12,17 @@ const cwd = process.cwd();
 const inputDir = join(cwd, 'docs');
 const outputDir = join(cwd, 'public');
 const templateFile = join(inputDir, '_document.html');
-const isUppercase = str => /[A-Z_]+/.test(str);
-const getTitle = str => str === 'INDEX' ? '' : titleize(str.replace(/_/g, ' ')) + ' - ';
-const markedInstance = new marked.Marked(markedHighlight((code, language) => {
-  if (!language) {
-    return highlightAuto(code).value;
-  }
-  return highlight(code, { language }).value;
-}));
+const isUppercase = (str) => /[A-Z_]+/.test(str);
+const getTitle = (str) =>
+  str === 'INDEX' ? '' : titleize(str.replace(/_/g, ' ')) + ' - ';
+const markedInstance = new marked.Marked(
+  markedHighlight((code, language) => {
+    if (!language) {
+      return highlightAuto(code).value;
+    }
+    return highlight(code, { language }).value;
+  })
+);
 
 async function init() {
   console.log('Cleaning up output directory ' + outputDir);

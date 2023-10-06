@@ -1,8 +1,5 @@
 import { _defaults } from './defaults.ts';
-import {
-  cleanUrl,
-  escape
-} from './helpers.ts';
+import { cleanUrl, escape } from './helpers.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
 /**
@@ -20,23 +17,27 @@ export class _Renderer {
     code = code.replace(/\n$/, '') + '\n';
 
     if (!lang) {
-      return '<pre><code>'
-        + (escaped ? code : escape(code, true))
-        + '</code></pre>\n';
+      return (
+        '<pre><code>' +
+        (escaped ? code : escape(code, true)) +
+        '</code></pre>\n'
+      );
     }
 
-    return '<pre><code class="language-'
-      + escape(lang)
-      + '">'
-      + (escaped ? code : escape(code, true))
-      + '</code></pre>\n';
+    return (
+      '<pre><code class="language-' +
+      escape(lang) +
+      '">' +
+      (escaped ? code : escape(code, true)) +
+      '</code></pre>\n'
+    );
   }
 
   blockquote(quote: string): string {
     return `<blockquote>\n${quote}</blockquote>\n`;
   }
 
-  html(html: string, block?: boolean) : string {
+  html(html: string, block?: boolean): string {
     return html;
   }
 
@@ -51,7 +52,7 @@ export class _Renderer {
 
   list(body: string, ordered: boolean, start: number | ''): string {
     const type = ordered ? 'ol' : 'ul';
-    const startatt = (ordered && start !== 1) ? (' start="' + start + '"') : '';
+    const startatt = ordered && start !== 1 ? ' start="' + start + '"' : '';
     return '<' + type + startatt + '>\n' + body + '</' + type + '>\n';
   }
 
@@ -60,9 +61,11 @@ export class _Renderer {
   }
 
   checkbox(checked: boolean): string {
-    return '<input '
-      + (checked ? 'checked="" ' : '')
-      + 'disabled="" type="checkbox">';
+    return (
+      '<input ' +
+      (checked ? 'checked="" ' : '') +
+      'disabled="" type="checkbox">'
+    );
   }
 
   paragraph(text: string): string {
@@ -72,26 +75,24 @@ export class _Renderer {
   table(header: string, body: string): string {
     if (body) body = `<tbody>${body}</tbody>`;
 
-    return '<table>\n'
-      + '<thead>\n'
-      + header
-      + '</thead>\n'
-      + body
-      + '</table>\n';
+    return (
+      '<table>\n' + '<thead>\n' + header + '</thead>\n' + body + '</table>\n'
+    );
   }
 
   tablerow(content: string): string {
     return `<tr>\n${content}</tr>\n`;
   }
 
-  tablecell(content: string, flags: {
-    header: boolean;
-    align: 'center' | 'left' | 'right' | null;
-  }): string {
+  tablecell(
+    content: string,
+    flags: {
+      header: boolean;
+      align: 'center' | 'left' | 'right' | null;
+    }
+  ): string {
     const type = flags.header ? 'th' : 'td';
-    const tag = flags.align
-      ? `<${type} align="${flags.align}">`
-      : `<${type}>`;
+    const tag = flags.align ? `<${type} align="${flags.align}">` : `<${type}>`;
     return tag + content + `</${type}>\n`;
   }
 
@@ -147,7 +148,7 @@ export class _Renderer {
     return out;
   }
 
-  text(text: string) : string {
+  text(text: string): string {
     return text;
   }
 }

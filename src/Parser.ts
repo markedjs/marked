@@ -1,9 +1,7 @@
 import { _Renderer } from './Renderer.ts';
 import { _TextRenderer } from './TextRenderer.ts';
 import { _defaults } from './defaults.ts';
-import {
-  unescape
-} from './helpers.ts';
+import { unescape } from './helpers.ts';
 import type { Token, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
@@ -48,10 +46,31 @@ export class _Parser {
       const token = tokens[i];
 
       // Run any renderer extensions
-      if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[token.type]) {
+      if (
+        this.options.extensions &&
+        this.options.extensions.renderers &&
+        this.options.extensions.renderers[token.type]
+      ) {
         const genericToken = token as Tokens.Generic;
-        const ret = this.options.extensions.renderers[genericToken.type].call({ parser: this }, genericToken);
-        if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'html', 'paragraph', 'text'].includes(genericToken.type)) {
+        const ret = this.options.extensions.renderers[genericToken.type].call(
+          { parser: this },
+          genericToken
+        );
+        if (
+          ret !== false ||
+          ![
+            'space',
+            'hr',
+            'heading',
+            'code',
+            'table',
+            'blockquote',
+            'list',
+            'html',
+            'paragraph',
+            'text'
+          ].includes(genericToken.type)
+        ) {
           out += ret || '';
           continue;
         }
@@ -70,14 +89,17 @@ export class _Parser {
           out += this.renderer.heading(
             this.parseInline(headingToken.tokens),
             headingToken.depth,
-            unescape(this.parseInline(headingToken.tokens, this.textRenderer)));
+            unescape(this.parseInline(headingToken.tokens, this.textRenderer))
+          );
           continue;
         }
         case 'code': {
           const codeToken = token as Tokens.Code;
-          out += this.renderer.code(codeToken.text,
+          out += this.renderer.code(
+            codeToken.text,
             codeToken.lang,
-            !!codeToken.escaped);
+            !!codeToken.escaped
+          );
           continue;
         }
         case 'table': {
@@ -100,10 +122,10 @@ export class _Parser {
 
             cell = '';
             for (let k = 0; k < row.length; k++) {
-              cell += this.renderer.tablecell(
-                this.parseInline(row[k].tokens),
-                { header: false, align: tableToken.align[k] }
-              );
+              cell += this.renderer.tablecell(this.parseInline(row[k].tokens), {
+                header: false,
+                align: tableToken.align[k]
+              });
             }
 
             body += this.renderer.tablerow(cell);
@@ -133,10 +155,18 @@ export class _Parser {
             if (item.task) {
               const checkbox = this.renderer.checkbox(!!checked);
               if (loose) {
-                if (item.tokens.length > 0 && item.tokens[0].type === 'paragraph') {
+                if (
+                  item.tokens.length > 0 &&
+                  item.tokens[0].type === 'paragraph'
+                ) {
                   item.tokens[0].text = checkbox + ' ' + item.tokens[0].text;
-                  if (item.tokens[0].tokens && item.tokens[0].tokens.length > 0 && item.tokens[0].tokens[0].type === 'text') {
-                    item.tokens[0].tokens[0].text = checkbox + ' ' + item.tokens[0].tokens[0].text;
+                  if (
+                    item.tokens[0].tokens &&
+                    item.tokens[0].tokens.length > 0 &&
+                    item.tokens[0].tokens[0].type === 'text'
+                  ) {
+                    item.tokens[0].tokens[0].text =
+                      checkbox + ' ' + item.tokens[0].tokens[0].text;
                   }
                 } else {
                   item.tokens.unshift({
@@ -163,15 +193,23 @@ export class _Parser {
         }
         case 'paragraph': {
           const paragraphToken = token as Tokens.Paragraph;
-          out += this.renderer.paragraph(this.parseInline(paragraphToken.tokens));
+          out += this.renderer.paragraph(
+            this.parseInline(paragraphToken.tokens)
+          );
           continue;
         }
         case 'text': {
           let textToken = token as Tokens.Text;
-          let body = textToken.tokens ? this.parseInline(textToken.tokens) : textToken.text;
+          let body = textToken.tokens
+            ? this.parseInline(textToken.tokens)
+            : textToken.text;
           while (i + 1 < tokens.length && tokens[i + 1].type === 'text') {
             textToken = tokens[++i] as Tokens.Text;
-            body += '\n' + (textToken.tokens ? this.parseInline(textToken.tokens) : textToken.text);
+            body +=
+              '\n' +
+              (textToken.tokens
+                ? this.parseInline(textToken.tokens)
+                : textToken.text);
           }
           out += top ? this.renderer.paragraph(body) : body;
           continue;
@@ -203,9 +241,30 @@ export class _Parser {
       const token = tokens[i];
 
       // Run any renderer extensions
-      if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[token.type]) {
-        const ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
-        if (ret !== false || !['escape', 'html', 'link', 'image', 'strong', 'em', 'codespan', 'br', 'del', 'text'].includes(token.type)) {
+      if (
+        this.options.extensions &&
+        this.options.extensions.renderers &&
+        this.options.extensions.renderers[token.type]
+      ) {
+        const ret = this.options.extensions.renderers[token.type].call(
+          { parser: this },
+          token
+        );
+        if (
+          ret !== false ||
+          ![
+            'escape',
+            'html',
+            'link',
+            'image',
+            'strong',
+            'em',
+            'codespan',
+            'br',
+            'del',
+            'text'
+          ].includes(token.type)
+        ) {
           out += ret || '';
           continue;
         }
@@ -224,17 +283,27 @@ export class _Parser {
         }
         case 'link': {
           const linkToken = token as Tokens.Link;
-          out += renderer.link(linkToken.href, linkToken.title, this.parseInline(linkToken.tokens, renderer));
+          out += renderer.link(
+            linkToken.href,
+            linkToken.title,
+            this.parseInline(linkToken.tokens, renderer)
+          );
           break;
         }
         case 'image': {
           const imageToken = token as Tokens.Image;
-          out += renderer.image(imageToken.href, imageToken.title, imageToken.text);
+          out += renderer.image(
+            imageToken.href,
+            imageToken.title,
+            imageToken.text
+          );
           break;
         }
         case 'strong': {
           const strongToken = token as Tokens.Strong;
-          out += renderer.strong(this.parseInline(strongToken.tokens, renderer));
+          out += renderer.strong(
+            this.parseInline(strongToken.tokens, renderer)
+          );
           break;
         }
         case 'em': {

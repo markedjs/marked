@@ -8,9 +8,16 @@ export interface TokenizerThis {
   lexer: _Lexer;
 }
 
-export type TokenizerExtensionFunction = (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
+export type TokenizerExtensionFunction = (
+  this: TokenizerThis,
+  src: string,
+  tokens: Token[] | TokensList
+) => Tokens.Generic | undefined;
 
-export type TokenizerStartFunction = (this: TokenizerThis, src: string) => number | void;
+export type TokenizerStartFunction = (
+  this: TokenizerThis,
+  src: string
+) => number | void;
 
 export interface TokenizerExtension {
   name: string;
@@ -24,23 +31,36 @@ export interface RendererThis {
   parser: _Parser;
 }
 
-export type RendererExtensionFunction = (this: RendererThis, token: Tokens.Generic) => string | false | undefined;
+export type RendererExtensionFunction = (
+  this: RendererThis,
+  token: Tokens.Generic
+) => string | false | undefined;
 
 export interface RendererExtension {
   name: string;
   renderer: RendererExtensionFunction;
 }
 
-export type TokenizerAndRendererExtension = TokenizerExtension | RendererExtension | (TokenizerExtension & RendererExtension);
+export type TokenizerAndRendererExtension =
+  | TokenizerExtension
+  | RendererExtension
+  | (TokenizerExtension & RendererExtension);
 
 type RendererApi = Omit<_Renderer, 'constructor' | 'options'>;
 type RendererObject = {
-  [K in keyof RendererApi]?: (...args: Parameters<RendererApi[K]>) => ReturnType<RendererApi[K]> | false
+  [K in keyof RendererApi]?: (
+    ...args: Parameters<RendererApi[K]>
+  ) => ReturnType<RendererApi[K]> | false;
 };
 
-type TokenizerApi = Omit<_Tokenizer, 'constructor' | 'options' | 'rules' | 'lexer'>;
+type TokenizerApi = Omit<
+  _Tokenizer,
+  'constructor' | 'options' | 'rules' | 'lexer'
+>;
 type TokenizerObject = {
-  [K in keyof TokenizerApi]?: (...args: Parameters<TokenizerApi[K]>) => ReturnType<TokenizerApi[K]> | false
+  [K in keyof TokenizerApi]?: (
+    ...args: Parameters<TokenizerApi[K]>
+  ) => ReturnType<TokenizerApi[K]> | false;
 };
 
 export interface MarkedExtension {
@@ -57,9 +77,7 @@ export interface MarkedExtension {
   /**
    * Add tokenizers and renderers to marked
    */
-  extensions?:
-    | TokenizerAndRendererExtension[]
-    | undefined | null;
+  extensions?: TokenizerAndRendererExtension[] | undefined | null;
 
   /**
    * Enable GitHub flavored markdown.
@@ -72,10 +90,10 @@ export interface MarkedExtension {
    * postprocess is called to process html after marked has finished parsing.
    */
   hooks?: {
-    preprocess: (markdown: string) => string | Promise<string>,
-    postprocess: (html: string) => string | Promise<string>,
+    preprocess: (markdown: string) => string | Promise<string>;
+    postprocess: (html: string) => string | Promise<string>;
     // eslint-disable-next-line no-use-before-define
-    options?: MarkedOptions
+    options?: MarkedOptions;
   } | null;
 
   /**
@@ -109,7 +127,11 @@ export interface MarkedExtension {
   walkTokens?: ((token: Token) => void | Promise<void>) | undefined | null;
 }
 
-export interface MarkedOptions extends Omit<MarkedExtension, 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
+export interface MarkedOptions
+  extends Omit<
+    MarkedExtension,
+    'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'
+  > {
   /**
    * Type: object Default: new Renderer()
    *
@@ -141,5 +163,7 @@ export interface MarkedOptions extends Omit<MarkedExtension, 'renderer' | 'token
   /**
    * walkTokens function returns array of values for Promise.all
    */
-  walkTokens?: null | ((token: Token) => void | Promise<void> | (void | Promise<void>)[]);
+  walkTokens?:
+    | null
+    | ((token: Token) => void | Promise<void> | (void | Promise<void>)[]);
 }

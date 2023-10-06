@@ -1,15 +1,15 @@
 import { _defaults } from './defaults.ts';
-import {
-  rtrim,
-  splitCells,
-  escape,
-  findClosingBracket
-} from './helpers.ts';
+import { rtrim, splitCells, escape, findClosingBracket } from './helpers.ts';
 import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
-function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer): Tokens.Link | Tokens.Image {
+function outputLink(
+  cap: string[],
+  link: Pick<Tokens.Link, 'href' | 'title'>,
+  raw: string,
+  lexer: _Lexer
+): Tokens.Link | Tokens.Image {
   const href = link.href;
   const title = link.title ? escape(link.title) : null;
   const text = cap[1].replace(/\\([\[\]])/g, '$1');
@@ -47,7 +47,7 @@ function indentCodeCompensation(raw: string, text: string) {
 
   return text
     .split('\n')
-    .map(node => {
+    .map((node) => {
       const matchIndentInNode = node.match(/^\s+/);
       if (matchIndentInNode === null) {
         return node;
@@ -95,9 +95,7 @@ export class _Tokenizer {
         type: 'code',
         raw: cap[0],
         codeBlockStyle: 'indented',
-        text: !this.options.pedantic
-          ? rtrim(text, '\n')
-          : text
+        text: !this.options.pedantic ? rtrim(text, '\n') : text
       };
     }
   }
@@ -111,7 +109,9 @@ export class _Tokenizer {
       return {
         type: 'code',
         raw,
-        lang: cap[2] ? cap[2].trim().replace(this.rules.inline._escapes, '$1') : cap[2],
+        lang: cap[2]
+          ? cap[2].trim().replace(this.rules.inline._escapes, '$1')
+          : cap[2],
         text
       };
     }
@@ -192,7 +192,9 @@ export class _Tokenizer {
       }
 
       // Get next list item
-      const itemRegex = new RegExp(`^( {0,3}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`);
+      const itemRegex = new RegExp(
+        `^( {0,3}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`
+      );
       let raw = '';
       let itemContents = '';
       let endsWithBlankLine = false;
@@ -203,14 +205,17 @@ export class _Tokenizer {
           break;
         }
 
-        if (this.rules.block.hr.test(src)) { // End list if bullet was actually HR (possibly move into itemRegex?)
+        if (this.rules.block.hr.test(src)) {
+          // End list if bullet was actually HR (possibly move into itemRegex?)
           break;
         }
 
         raw = cap[0] as string;
         src = src.substring(raw.length);
 
-        let line = cap[2].split('\n', 1)[0].replace(/^\t+/, (t: string) => ' '.repeat(3 * t.length)) as string;
+        let line = cap[2]
+          .split('\n', 1)[0]
+          .replace(/^\t+/, (t: string) => ' '.repeat(3 * t.length)) as string;
         let nextLine = src.split('\n', 1)[0];
 
         let indent = 0;
@@ -226,17 +231,32 @@ export class _Tokenizer {
 
         let blankLine = false;
 
-        if (!line && /^ *$/.test(nextLine)) { // Items begin with at most one blank line
+        if (!line && /^ *$/.test(nextLine)) {
+          // Items begin with at most one blank line
           raw += nextLine + '\n';
           src = src.substring(nextLine.length + 1);
           endEarly = true;
         }
 
         if (!endEarly) {
-          const nextBulletRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))`);
-          const hrRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`);
-          const fencesBeginRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:\`\`\`|~~~)`);
-          const headingBeginRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}#`);
+          const nextBulletRegex = new RegExp(
+            `^ {0,${Math.min(
+              3,
+              indent - 1
+            )}}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))`
+          );
+          const hrRegex = new RegExp(
+            `^ {0,${Math.min(
+              3,
+              indent - 1
+            )}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`
+          );
+          const fencesBeginRegex = new RegExp(
+            `^ {0,${Math.min(3, indent - 1)}}(?:\`\`\`|~~~)`
+          );
+          const headingBeginRegex = new RegExp(
+            `^ {0,${Math.min(3, indent - 1)}}#`
+          );
 
           // Check if following lines should be included in List Item
           while (src) {
@@ -268,7 +288,8 @@ export class _Tokenizer {
               break;
             }
 
-            if (nextLine.search(/[^ ]/) >= indent || !nextLine.trim()) { // Dedent if possible
+            if (nextLine.search(/[^ ]/) >= indent || !nextLine.trim()) {
+              // Dedent if possible
               itemContents += '\n' + nextLine.slice(indent);
             } else {
               // not enough indentation
@@ -277,7 +298,8 @@ export class _Tokenizer {
               }
 
               // paragraph continuation unless last line was a different block level element
-              if (line.search(/[^ ]/) >= 4) { // indented code block
+              if (line.search(/[^ ]/) >= 4) {
+                // indented code block
                 break;
               }
               if (fencesBeginRegex.test(line)) {
@@ -293,7 +315,8 @@ export class _Tokenizer {
               itemContents += '\n' + nextLine;
             }
 
-            if (!blankLine && !nextLine.trim()) { // Check if current line is blank
+            if (!blankLine && !nextLine.trim()) {
+              // Check if current line is blank
               blankLine = true;
             }
 
@@ -338,7 +361,8 @@ export class _Tokenizer {
 
       // Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
       list.items[list.items.length - 1].raw = raw.trimEnd();
-      (list.items[list.items.length - 1] as Tokens.ListItem).text = itemContents.trimEnd();
+      (list.items[list.items.length - 1] as Tokens.ListItem).text =
+        itemContents.trimEnd();
       list.raw = list.raw.trimEnd();
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first
@@ -348,8 +372,11 @@ export class _Tokenizer {
 
         if (!list.loose) {
           // Check if list should be loose
-          const spacers = list.items[i].tokens.filter(t => t.type === 'space');
-          const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => /\n.*\n/.test(t.raw));
+          const spacers = list.items[i].tokens.filter(
+            (t) => t.type === 'space'
+          );
+          const hasMultipleLineBreaks =
+            spacers.length > 0 && spacers.some((t) => /\n.*\n/.test(t.raw));
 
           list.loose = hasMultipleLineBreaks;
         }
@@ -384,8 +411,16 @@ export class _Tokenizer {
     const cap = this.rules.block.def.exec(src);
     if (cap) {
       const tag = cap[1].toLowerCase().replace(/\s+/g, ' ');
-      const href = cap[2] ? cap[2].replace(/^<(.*)>$/, '$1').replace(this.rules.inline._escapes, '$1') : '';
-      const title = cap[3] ? cap[3].substring(1, cap[3].length - 1).replace(this.rules.inline._escapes, '$1') : cap[3];
+      const href = cap[2]
+        ? cap[2]
+            .replace(/^<(.*)>$/, '$1')
+            .replace(this.rules.inline._escapes, '$1')
+        : '';
+      const title = cap[3]
+        ? cap[3]
+            .substring(1, cap[3].length - 1)
+            .replace(this.rules.inline._escapes, '$1')
+        : cap[3];
       return {
         type: 'def',
         tag,
@@ -407,11 +442,14 @@ export class _Tokenizer {
       const item: Tokens.Table = {
         type: 'table',
         raw: cap[0],
-        header: splitCells(cap[1]).map(c => {
+        header: splitCells(cap[1]).map((c) => {
           return { text: c, tokens: [] };
         }),
         align: cap[2].replace(/^\||\| *$/g, '').split('|'),
-        rows: cap[3] && cap[3].trim() ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : []
+        rows:
+          cap[3] && cap[3].trim()
+            ? cap[3].replace(/\n[ \t]*$/, '').split('\n')
+            : []
       };
 
       if (item.header.length === item.align.length) {
@@ -434,7 +472,10 @@ export class _Tokenizer {
 
         l = item.rows.length;
         for (i = 0; i < l; i++) {
-          item.rows[i] = splitCells(item.rows[i] as unknown as string, item.header.length).map(c => {
+          item.rows[i] = splitCells(
+            item.rows[i] as unknown as string,
+            item.header.length
+          ).map((c) => {
             return { text: c, tokens: [] };
           });
         }
@@ -477,9 +518,10 @@ export class _Tokenizer {
   paragraph(src: string): Tokens.Paragraph | undefined {
     const cap = this.rules.block.paragraph.exec(src);
     if (cap) {
-      const text = cap[1].charAt(cap[1].length - 1) === '\n'
-        ? cap[1].slice(0, -1)
-        : cap[1];
+      const text =
+        cap[1].charAt(cap[1].length - 1) === '\n'
+          ? cap[1].slice(0, -1)
+          : cap[1];
       return {
         type: 'paragraph',
         raw: cap[0],
@@ -520,9 +562,15 @@ export class _Tokenizer {
       } else if (this.lexer.state.inLink && /^<\/a>/i.test(cap[0])) {
         this.lexer.state.inLink = false;
       }
-      if (!this.lexer.state.inRawBlock && /^<(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+      if (
+        !this.lexer.state.inRawBlock &&
+        /^<(pre|code|kbd|script)(\s|>)/i.test(cap[0])
+      ) {
         this.lexer.state.inRawBlock = true;
-      } else if (this.lexer.state.inRawBlock && /^<\/(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+      } else if (
+        this.lexer.state.inRawBlock &&
+        /^<\/(pre|code|kbd|script)(\s|>)/i.test(cap[0])
+      ) {
         this.lexer.state.inRawBlock = false;
       }
 
@@ -543,7 +591,7 @@ export class _Tokenizer {
       const trimmedUrl = cap[2].trim();
       if (!this.options.pedantic && /^</.test(trimmedUrl)) {
         // commonmark requires matching angle brackets
-        if (!(/>$/.test(trimmedUrl))) {
+        if (!/>$/.test(trimmedUrl)) {
           return;
         }
 
@@ -579,24 +627,34 @@ export class _Tokenizer {
 
       href = href.trim();
       if (/^</.test(href)) {
-        if (this.options.pedantic && !(/>$/.test(trimmedUrl))) {
+        if (this.options.pedantic && !/>$/.test(trimmedUrl)) {
           // pedantic allows starting angle bracket without ending angle bracket
           href = href.slice(1);
         } else {
           href = href.slice(1, -1);
         }
       }
-      return outputLink(cap, {
-        href: href ? href.replace(this.rules.inline._escapes, '$1') : href,
-        title: title ? title.replace(this.rules.inline._escapes, '$1') : title
-      }, cap[0], this.lexer);
+      return outputLink(
+        cap,
+        {
+          href: href ? href.replace(this.rules.inline._escapes, '$1') : href,
+          title: title ? title.replace(this.rules.inline._escapes, '$1') : title
+        },
+        cap[0],
+        this.lexer
+      );
     }
   }
 
-  reflink(src: string, links: Links): Tokens.Link | Tokens.Image | Tokens.Text | undefined {
+  reflink(
+    src: string,
+    links: Links
+  ): Tokens.Link | Tokens.Image | Tokens.Text | undefined {
     let cap;
-    if ((cap = this.rules.inline.reflink.exec(src))
-      || (cap = this.rules.inline.nolink.exec(src))) {
+    if (
+      (cap = this.rules.inline.reflink.exec(src)) ||
+      (cap = this.rules.inline.nolink.exec(src))
+    ) {
       let link = (cap[2] || cap[1]).replace(/\s+/g, ' ');
       link = links[link.toLowerCase()];
       if (!link) {
@@ -611,7 +669,11 @@ export class _Tokenizer {
     }
   }
 
-  emStrong(src: string, maskedSrc: string, prevChar = ''): Tokens.Em | Tokens.Strong | undefined {
+  emStrong(
+    src: string,
+    maskedSrc: string,
+    prevChar = ''
+  ): Tokens.Em | Tokens.Strong | undefined {
     let match = this.rules.inline.emStrong.lDelim.exec(src);
     if (!match) return;
 
@@ -620,28 +682,41 @@ export class _Tokenizer {
 
     const nextChar = match[1] || match[2] || '';
 
-    if (!nextChar || !prevChar || this.rules.inline.punctuation.exec(prevChar)) {
+    if (
+      !nextChar ||
+      !prevChar ||
+      this.rules.inline.punctuation.exec(prevChar)
+    ) {
       // unicode Regex counts emoji as 1 char; spread into array for proper count (used multiple times below)
       const lLength = [...match[0]].length - 1;
-      let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
+      let rDelim,
+        rLength,
+        delimTotal = lLength,
+        midDelimTotal = 0;
 
-      const endReg = match[0][0] === '*' ? this.rules.inline.emStrong.rDelimAst : this.rules.inline.emStrong.rDelimUnd;
+      const endReg =
+        match[0][0] === '*'
+          ? this.rules.inline.emStrong.rDelimAst
+          : this.rules.inline.emStrong.rDelimUnd;
       endReg.lastIndex = 0;
 
       // Clip maskedSrc to same section of string as src (move to lexer?)
       maskedSrc = maskedSrc.slice(-1 * src.length + match[0].length - 1);
 
       while ((match = endReg.exec(maskedSrc)) != null) {
-        rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
+        rDelim =
+          match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
         if (!rDelim) continue; // skip single * in __abc*abc__
 
         rLength = [...rDelim].length;
 
-        if (match[3] || match[4]) { // found another Left Delim
+        if (match[3] || match[4]) {
+          // found another Left Delim
           delimTotal += rLength;
           continue;
-        } else if (match[5] || match[6]) { // either Left or Right Delim
+        } else if (match[5] || match[6]) {
+          // either Left or Right Delim
           if (lLength % 3 && !((lLength + rLength) % 3)) {
             midDelimTotal += rLength;
             continue; // CommonMark Emphasis Rules 9-10
@@ -655,7 +730,9 @@ export class _Tokenizer {
         // Remove extra characters. *a*** -> *a*
         rLength = Math.min(rLength, rLength + delimTotal + midDelimTotal);
 
-        const raw = [...src].slice(0, lLength + match.index + rLength + 1).join('');
+        const raw = [...src]
+          .slice(0, lLength + match.index + rLength + 1)
+          .join('');
 
         // Create `em` if smallest delimiter has odd char count. *a***
         if (Math.min(lLength, rLength) % 2) {
@@ -750,7 +827,7 @@ export class _Tokenizer {
 
   url(src: string): Tokens.Link | undefined {
     let cap;
-    if (cap = this.rules.inline.url.exec(src)) {
+    if ((cap = this.rules.inline.url.exec(src))) {
       let text, href;
       if (cap[2] === '@') {
         text = escape(cap[0]);
