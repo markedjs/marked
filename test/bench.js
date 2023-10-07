@@ -55,24 +55,24 @@ export async function runBench(options) {
   tests['esm marked'] = esmMarked.parse;
 
   try {
-    tests.commonmark = (await (async() => {
+    tests.commonmark = await (async () => {
       const { Parser, HtmlRenderer } = await import('commonmark');
       const parser = new Parser();
       const writer = new HtmlRenderer();
-      return function(text) {
+      return function (text) {
         return writer.render(parser.parse(text));
       };
-    })());
+    })();
   } catch (e) {
     console.error('Could not bench commonmark. (Error: %s)', e.message);
   }
 
   try {
-    tests['markdown-it'] = (await (async() => {
+    tests['markdown-it'] = await (async () => {
       const MarkdownIt = (await import('markdown-it')).default;
       const md = new MarkdownIt();
       return md.render.bind(md);
-    })());
+    })();
   } catch (e) {
     console.error('Could not bench markdown-it. (Error: %s)', e.message);
   }
@@ -92,7 +92,11 @@ export async function bench(tests, specs) {
   console.log();
   for (let i = 0; i < specs.length; i++) {
     const spec = specs[i];
-    process.stdout.write(`${(i * 100 / specs.length).toFixed(1).padStart(5)}% ${i.toString().padStart(specs.length.toString().length)} of ${specs.length}\r`);
+    process.stdout.write(
+      `${((i * 100) / specs.length).toFixed(1).padStart(5)}% ${i
+        .toString()
+        .padStart(specs.length.toString().length)} of ${specs.length}\r`
+    );
     for (const name in tests) {
       const test = tests[name];
       const before = process.hrtime.bigint();
@@ -101,13 +105,18 @@ export async function bench(tests, specs) {
       }
       const after = process.hrtime.bigint();
       stats[name].elapsed += after - before;
-      stats[name].correct += (await isEqual(spec.html, await test(spec.markdown)) ? 1 : 0);
+      stats[name].correct += (await isEqual(
+        spec.html,
+        await test(spec.markdown)
+      ))
+        ? 1
+        : 0;
     }
   }
 
   for (const name in tests) {
     const ms = prettyElapsedTime(stats[name].elapsed);
-    const percent = (stats[name].correct / specs.length * 100).toFixed(2);
+    const percent = ((stats[name].correct / specs.length) * 100).toFixed(2);
     console.log(`${name} completed in ${ms}ms and passed ${percent}%`);
   }
 }
@@ -135,9 +144,13 @@ function parseArg(argv) {
     } else if (arg[0] === '-') {
       if (arg.length > 2) {
         // e.g. -abc
-        argv = arg.substring(1).split('').map(ch => {
-          return `-${ch}`;
-        }).concat(argv);
+        argv = arg
+          .substring(1)
+          .split('')
+          .map((ch) => {
+            return `-${ch}`;
+          })
+          .concat(argv);
         arg = argv.shift();
       } else {
         // e.g. -a
@@ -160,13 +173,10 @@ function parseArg(argv) {
       }
       options.marked = options.marked || {};
       if (arg.indexOf('--no-') === 0) {
-        options.marked[opt] = typeof defaults[opt] !== 'boolean'
-          ? null
-          : false;
+        options.marked[opt] = typeof defaults[opt] !== 'boolean' ? null : false;
       } else {
-        options.marked[opt] = typeof defaults[opt] !== 'boolean'
-          ? argv.shift()
-          : true;
+        options.marked[opt] =
+          typeof defaults[opt] !== 'boolean' ? argv.shift() : true;
       }
     } else {
       orphans.push(arg);
@@ -176,7 +186,7 @@ function parseArg(argv) {
   if (orphans.length > 0) {
     console.error();
     console.error('The following arguments are not used:');
-    orphans.forEach(arg => console.error(`  ${arg}`));
+    orphans.forEach((arg) => console.error(`  ${arg}`));
     console.error();
   }
 

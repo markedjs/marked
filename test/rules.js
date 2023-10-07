@@ -61,7 +61,8 @@ if (process.argv.length > 2) {
         rule = rule[prop];
       }
     }
-    rulesList[rulePath[0]] = rule && rule[rulePath[0]] ? rule[rulePath[0]] : null;
+    rulesList[rulePath[0]] =
+      rule && rule[rulePath[0]] ? rule[rulePath[0]] : null;
   }
 } else {
   rulesObj = rules;
@@ -69,9 +70,17 @@ if (process.argv.length > 2) {
 
 rulesObj = propsToString(rulesObj);
 let output = JSON.stringify(rulesObj, null, 2);
-output = output.replace(/^(\s*)"(.*)": null,?$/gm, `$1${COLOR.fgGreen}$2${COLOR.reset}: undefined`);
-output = output.replace(/^(\s*)"(.*)": {$/gm, `$1${COLOR.fgGreen}$2${COLOR.reset}: {`);
+output = output.replace(
+  /^(\s*)"(.*)": null,?$/gm,
+  `$1${COLOR.fgGreen}$2${COLOR.reset}: undefined`
+);
+output = output.replace(
+  /^(\s*)"(.*)": {$/gm,
+  `$1${COLOR.fgGreen}$2${COLOR.reset}: {`
+);
 output = output.replace(/^(\s*)"(.*)": "(.*)",?$/gm, (...p) => {
-  return `${p[1]}${COLOR.fgGreen}${p[2]}${COLOR.reset}: ${COLOR.fgRed}${p[3].replace(/\\\\/g, '\\')}${COLOR.reset}`;
+  return `${p[1]}${COLOR.fgGreen}${p[2]}${COLOR.reset}: ${
+    COLOR.fgRed
+  }${p[3].replace(/\\\\/g, '\\')}${COLOR.reset}`;
 });
 console.log(output, COLOR.reset);
