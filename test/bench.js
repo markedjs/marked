@@ -146,9 +146,7 @@ function parseArg(argv) {
         argv = arg
           .substring(1)
           .split('')
-          .map((ch) => {
-            return `-${ch}`;
-          })
+          .map((ch) => `-${ch}`)
           .concat(argv);
         arg = argv.shift();
       } else {
