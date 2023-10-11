@@ -25,6 +25,7 @@
       "default": "./lib/marked.cjs"
     },
     "./bin/marked": "./bin/marked.js",
+    "./marked.min.js": "./marked.min.js",
     "./package.json": "./package.json"
   },
   "repository": "git://github.com/markedjs/marked.git",
