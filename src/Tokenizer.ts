@@ -156,7 +156,7 @@ export class _Tokenizer {
   blockquote(src: string): Tokens.Blockquote | undefined {
     const cap = this.rules.block.blockquote.exec(src);
     if (cap) {
-      const text = cap[0].replace(/^ *>[ \t]?/gm, '');
+      const text = rtrim(cap[0].replace(/^ *>[ \t]?/gm, ''), '\n');
       const top = this.lexer.state.top;
       this.lexer.state.top = true;
       const tokens = this.lexer.blockTokens(text);

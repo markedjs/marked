@@ -382,6 +382,27 @@ a | b
       });
     });
 
+    it('trim newline in text', () => {
+      expectTokens({
+        md: '> blockquote\n',
+        tokens: [
+          {
+            type: 'blockquote',
+            raw: '> blockquote\n',
+            text: 'blockquote',
+            tokens: [{
+              type: 'paragraph',
+              raw: 'blockquote',
+              text: 'blockquote',
+              tokens: [
+                { type: 'text', raw: 'blockquote', text: 'blockquote' }
+              ]
+            }]
+          }
+        ]
+      });
+    });
+
     it('paragraph token in list', () => {
       expectTokens({
         md: '- > blockquote',
