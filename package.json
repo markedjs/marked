@@ -20,9 +20,14 @@
   ],
   "exports": {
     ".": {
-      "types": "./lib/marked.d.ts",
-      "import": "./lib/marked.esm.js",
-      "default": "./lib/marked.cjs"
+      "import": {
+        "types": "./lib/marked.d.ts",
+        "default": "./lib/marked.esm.js"
+      },
+      "default": {
+        "types": "./lib/marked.d.cts",
+        "default": "./lib/marked.cjs"
+      }
     },
     "./bin/marked": "./bin/marked.js",
     "./marked.min.js": "./marked.min.js",
@@ -45,6 +50,7 @@
     "html"
   ],
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.12.2",
     "@markedjs/html-differ": "^4.0.2",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
@@ -58,6 +64,7 @@
     "cheerio": "^1.0.0-rc.12",
     "commonmark": "0.30.0",
     "cross-env": "^7.0.3",
+    "dts-bundle-generator": "^8.0.1",
     "eslint": "^8.52.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.0",
@@ -85,7 +92,7 @@
     "test:specs": "npm test -- test/specs/**/*-spec.js",
     "test:lint": "eslint .",
     "test:redos": "node test/recheck.js > vuln.js",
-    "test:types": "tsc --project tsconfig-type-test.json",
+    "test:types": "tsc --project tsconfig-type-test.json && attw -P --exclude-entrypoints ./bin/marked ./marked.min.js",
     "test:umd": "node test/umd-test.js",
     "test:update": "node test/update-specs.js",
     "rules": "node test/rules.js",
@@ -94,7 +101,7 @@
     "build:reset": "git checkout upstream/master lib/marked.cjs lib/marked.umd.js lib/marked.esm.js marked.min.js",
     "build": "npm run rollup && npm run build:types && npm run build:man",
     "build:docs": "npm run build && node docs/build.js",
-    "build:types": "tsc --project tsconfig-types.json",
+    "build:types": "dts-bundle-generator --project tsconfig.json -o lib/marked.d.ts src/marked.ts && dts-bundle-generator --project tsconfig.json -o lib/marked.d.cts src/marked.ts",
     "build:man": "marked-man man/marked.1.md > man/marked.1",
     "rollup": "rollup -c rollup.config.js"
   },
