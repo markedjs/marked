@@ -127,7 +127,7 @@ Output:
 
 Unordered (bulleted) lists use asterisks, pluses, and hyphens (`*`,
 `+`, and `-`) as list markers. These three markers are
-interchangable; this:
+interchangeable; this:
 
     *   Candy.
     *   Gum.
@@ -274,7 +274,7 @@ it easy to use Markdown to write about HTML example code:
     I strongly recommend against using any `<blink>` tags.
 
     I wish SmartyPants used named entities like `&mdash;`
-    instead of decimal-encoded entites like `&#8212;`.
+    instead of decimal-encoded entities like `&#8212;`.
 
 Output:
 
@@ -283,7 +283,7 @@ Output:
 
     <p>I wish SmartyPants used named entities like
     <code>&amp;mdash;</code> instead of decimal-encoded
-    entites like <code>&amp;#8212;</code>.</p>
+    entities like <code>&amp;#8212;</code>.</p>
 
 
 To specify an entire block of pre-formatted code, indent every line of
