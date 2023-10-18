@@ -157,7 +157,7 @@ export class Marked {
         opts.renderer = renderer;
       }
       if (pack.tokenizer) {
-        const tokenizer = this.defaults.tokenizer || new _Tokenizer(this defaults);
+        const tokenizer = this.defaults.tokenizer || new _Tokenizer(this.defaults);
         for (const prop in pack.tokenizer) {
           const tokenizerFunc = pack.tokenizer[prop as keyof MarkedExtension['tokenizer']] as UnknownFunction;
           const tokenizerKey = prop as keyof _Tokenizer;
