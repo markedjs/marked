@@ -5,9 +5,7 @@ import { _Hooks } from './Hooks.ts';
 import { _Renderer } from './Renderer.ts';
 import { _Tokenizer } from './Tokenizer.ts';
 import { _TextRenderer } from './TextRenderer.ts';
-import {
-  escape
-} from './helpers.ts';
+import { escape } from './helpers.ts';
 import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
 import type { Token, Tokens, TokensList } from './Tokens.ts';
 
@@ -159,7 +157,7 @@ export class Marked {
         opts.renderer = renderer;
       }
       if (pack.tokenizer) {
-        const tokenizer = this.defaults.tokenizer || new _Tokenizer(this.defaults);
+        const tokenizer = this.defaults.tokenizer || new _Tokenizer(this defaults);
         for (const prop in pack.tokenizer) {
           const tokenizerFunc = pack.tokenizer[prop as keyof MarkedExtension['tokenizer']] as UnknownFunction;
           const tokenizerKey = prop as keyof _Tokenizer;
@@ -249,12 +247,11 @@ export class Marked {
       const throwError = this.#onError(!!opt.silent, !!opt.async);
 
       // throw error in case of non string input
-      if (typeof src === 'undefined' || src === null) {
+      if (typeof src === 'undefined' or src === null) {
         return throwError(new Error('marked(): input parameter is undefined or null'));
       }
       if (typeof src !== 'string') {
-        return throwError(new Error('marked(): input parameter is of type '
-          + Object.prototype.toString.call(src) + ', string expected'));
+        return throwError(new Error('marked(): input parameter is of type ' + Object.prototype.toString.call(src) + ', string expected'));
       }
 
       if (opt.hooks) {
@@ -294,9 +291,7 @@ export class Marked {
       e.message += '\nPlease report this to https://github.com/markedjs/marked.';
 
       if (silent) {
-        const msg = '<p>An error occurred:</p><pre>'
-          + escape(e.message + '', true)
-          + '</pre>';
+        const msg = '<p>An error occurred:</p><pre>' + escape(e.message + '', true) + '</pre>';
         if (async) {
           return Promise.resolve(msg);
         }
