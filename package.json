@@ -58,7 +58,7 @@
     "cheerio": "^1.0.0-rc.12",
     "commonmark": "0.30.0",
     "cross-env": "^7.0.3",
-    "eslint": "^8.51.0",
+    "eslint": "^8.52.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-n": "^16.2.0",
