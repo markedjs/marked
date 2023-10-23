@@ -54,7 +54,7 @@
     "@semantic-release/npm": "^11.0.0",
     "@semantic-release/release-notes-generator": "^12.0.0",
     "@typescript-eslint/eslint-plugin": "^6.7.5",
-    "@typescript-eslint/parser": "^6.7.5",
+    "@typescript-eslint/parser": "^6.8.0",
     "cheerio": "^1.0.0-rc.12",
     "commonmark": "0.30.0",
     "cross-env": "^7.0.3",
