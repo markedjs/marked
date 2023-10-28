@@ -131,7 +131,7 @@ block.lheading = edit(block.lheading)
 
 block.paragraph = edit(block._paragraph)
   .replace('hr', block.hr)
-  .replace('heading', ' {0,3}#{1,6} ')
+  .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
   .replace('|lheading', '') // setex headings don't interrupt commonmark paragraphs
   .replace('|table', '')
   .replace('blockquote', ' {0,3}>')
@@ -164,7 +164,7 @@ block.gfm = {
 
 block.gfm.table = edit(block.gfm.table as Rule)
   .replace('hr', block.hr)
-  .replace('heading', ' {0,3}#{1,6} ')
+  .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
   .replace('blockquote', ' {0,3}>')
   .replace('code', ' {4}[^\\n]')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n')
@@ -175,7 +175,7 @@ block.gfm.table = edit(block.gfm.table as Rule)
 
 block.gfm.paragraph = edit(block._paragraph)
   .replace('hr', block.hr)
-  .replace('heading', ' {0,3}#{1,6} ')
+  .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
   .replace('|lheading', '') // setex headings don't interrupt commonmark paragraphs
   .replace('table', block.gfm.table as RegExp) // interrupt paragraphs with table
   .replace('blockquote', ' {0,3}>')
