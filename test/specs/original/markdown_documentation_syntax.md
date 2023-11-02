@@ -302,7 +302,7 @@ Quote Level from the Text menu.
 
 Markdown supports ordered (numbered) and unordered (bulleted) lists.
 
-Unordered lists use asterisks, pluses, and hyphens -- interchangably
+Unordered lists use asterisks, pluses, and hyphens -- interchangeably
 -- as list markers:
 
     *   Red

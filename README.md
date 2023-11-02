@@ -26,8 +26,8 @@ Our [documentation pages](https://marked.js.org) are also rendered using marked 
 
 Also read about:
 
-* [Options](https://marked.js.org/#/USING_ADVANCED.md)
-* [Extensibility](https://marked.js.org/#/USING_PRO.md)
+* [Options](https://marked.js.org/using_advanced)
+* [Extensibility](https://marked.js.org/using_pro)
 
 ## Compatibility
 
@@ -51,7 +51,7 @@ npm install marked
 
 ## Usage
 
-### Warning: 🚨 Marked does not [sanitize](https://marked.js.org/#/USING_ADVANCED.md#options) the output HTML. Please use a sanitize library, like [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [sanitize-html](https://github.com/apostrophecms/sanitize-html) or [insane](https://github.com/bevacqua/insane) on the *output* HTML! 🚨
+### Warning: 🚨 Marked does not [sanitize](https://marked.js.org/using_advanced#options) the output HTML. Please use a sanitize library, like [DOMPurify](https://github.com/cure53/DOMPurify) (recommended), [sanitize-html](https://github.com/apostrophecms/sanitize-html) or [insane](https://github.com/bevacqua/insane) on the *output* HTML! 🚨
 
 ```
 DOMPurify.sanitize(marked.parse(`<img src="x" onerror="alert('not happening')">`));

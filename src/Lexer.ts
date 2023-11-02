@@ -137,7 +137,7 @@ export class _Lexer {
         src = src.substring(token.raw.length);
         if (token.raw.length === 1 && tokens.length > 0) {
           // if there's a single \n as a spacer, it's terminating the last line,
-          // so move it there so that we don't get unecessary paragraph tags
+          // so move it there so that we don't get unnecessary paragraph tags
           tokens[tokens.length - 1].raw += '\n';
         } else {
           tokens.push(token);
