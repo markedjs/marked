@@ -921,7 +921,7 @@ br
       ]);
     });
 
-    it('should asign marked to `this`', () => {
+    it('should assign marked to `this`', () => {
       marked.use({
         walkTokens(token) {
           if (token.type === 'em') {
