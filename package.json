@@ -50,7 +50,7 @@
     "html"
   ],
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.12.2",
+    "@arethetypeswrong/cli": "^0.13.1",
     "@markedjs/html-differ": "^4.0.2",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
