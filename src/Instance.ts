@@ -24,11 +24,9 @@ export class Marked {
   parseInline = this.#parseMarkdown(_Lexer.lexInline, _Parser.parseInline);
 
   Parser = _Parser;
-  parser = _Parser.parse;
   Renderer = _Renderer;
   TextRenderer = _TextRenderer;
   Lexer = _Lexer;
-  lexer = _Lexer.lex;
   Tokenizer = _Tokenizer;
   Hooks = _Hooks;
 
@@ -230,6 +228,14 @@ export class Marked {
   setOptions(opt: MarkedOptions) {
     this.defaults = { ...this.defaults, ...opt };
     return this;
+  }
+
+  lexer(src: string, options?: MarkedOptions) {
+    return _Lexer.lex(src, options ?? this.defaults);
+  }
+
+  parser(tokens: Token[], options?: MarkedOptions) {
+    return _Parser.parse(tokens, options ?? this.defaults);
   }
 
   #parseMarkdown(lexer: (src: string, options?: MarkedOptions) => TokensList | Token[], parser: (tokens: Token[], options?: MarkedOptions) => string) {
