@@ -87,6 +87,6 @@ describe('Marked', () => {
     const tokens = marked1.lexer('# hi');
     const html = marked1.parser(tokens);
 
-    expect(html).toBe('test');
+    assert.strictEqual(html, 'test');
   });
 });
