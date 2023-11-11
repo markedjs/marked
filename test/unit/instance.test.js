@@ -74,4 +74,19 @@ describe('Marked', () => {
     assert.strictEqual(marked2.parse('# header'), 'im marked2');
     assert.strictEqual(marked.parse('# header'), '<h1>header</h1>\n');
   });
+
+  it('should pass defaults to lexer and parser', () => {
+    const marked1 = new Marked();
+    marked1.use({
+      renderer: {
+        heading() {
+          return 'test';
+        }
+      }
+    });
+    const tokens = marked1.lexer('# hi');
+    const html = marked1.parser(tokens);
+
+    expect(html).toBe('test');
+  });
 });
