@@ -1,9 +1,13 @@
-import { _Parser } from '../../src/Parser.js';
+import { Parser } from '../../lib/marked.esm.js';
+import { htmlIsEqual, firstDiff } from '@markedjs/testutils';
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
 
 async function expectHtml({ tokens, options, html, inline }) {
-  const parser = new _Parser(options);
+  const parser = new Parser(options);
   const actual = parser[inline ? 'parseInline' : 'parse'](tokens);
-  await expectAsync(actual).toEqualHtml(html);
+  const testDiff = await firstDiff(actual, html);
+  assert.ok(await htmlIsEqual(html, actual), `Expected: ${testDiff.expected}\n  Actual: ${testDiff.actual}`);
 }
 
 describe('Parser', () => {
@@ -14,17 +18,13 @@ describe('Parser', () => {
           {
             type: 'paragraph',
             text: 'paragraph 1',
-            tokens: [
-              { type: 'text', text: 'paragraph 1' }
-            ]
+            tokens: [{ type: 'text', text: 'paragraph 1' }]
           },
           { type: 'space' },
           {
             type: 'paragraph',
             text: 'paragraph 2',
-            tokens: [
-              { type: 'text', text: 'paragraph 2' }
-            ]
+            tokens: [{ type: 'text', text: 'paragraph 2' }]
           }
         ],
         html: '<p>paragraph 1</p><p>paragraph 2</p>'
@@ -33,65 +33,71 @@ describe('Parser', () => {
 
     it('hr', async() => {
       await expectHtml({
-        tokens: [{
-          type: 'hr'
-        }],
+        tokens: [
+          {
+            type: 'hr'
+          }
+        ],
         html: '<hr />'
       });
     });
 
     it('heading', async() => {
       await expectHtml({
-        tokens: [{
-          type: 'heading',
-          depth: 1,
-          text: 'heading',
-          tokens: [
-            { type: 'text', text: 'heading' }
-          ]
-        }],
+        tokens: [
+          {
+            type: 'heading',
+            depth: 1,
+            text: 'heading',
+            tokens: [{ type: 'text', text: 'heading' }]
+          }
+        ],
         html: '<h1>heading</h1>'
       });
     });
 
     it('code', async() => {
       await expectHtml({
-        tokens: [{
-          type: 'code',
-          text: 'code'
-        }],
+        tokens: [
+          {
+            type: 'code',
+            text: 'code'
+          }
+        ],
         html: '<pre><code>code</code></pre>'
       });
     });
 
     it('table', async() => {
       await expectHtml({
-        tokens: [{
-          type: 'table',
-          align: ['left', 'right'],
-          header: [
-            {
-              text: 'a',
-              tokens: [{ type: 'text', raw: 'a', text: 'a' }]
-            },
-            {
-              text: 'b',
-              tokens: [{ type: 'text', raw: 'b', text: 'b' }]
-            }
-          ],
-          rows: [
-            [
+        tokens: [
+          {
+            type: 'table',
+            align: ['left', 'right'],
+            header: [
               {
-                text: '1',
-                tokens: [{ type: 'text', raw: '1', text: '1' }]
+                text: 'a',
+                tokens: [{ type: 'text', raw: 'a', text: 'a' }]
               },
               {
-                text: '2',
-                tokens: [{ type: 'text', raw: '2', text: '2' }]
+                text: 'b',
+                tokens: [{ type: 'text', raw: 'b', text: 'b' }]
               }
+            ],
+            rows: [
+              [
+                {
+                  text: '1',
+                  tokens: [{ type: 'text', raw: '1', text: '1' }]
+                },
+                {
+                  text: '2',
+                  tokens: [{ type: 'text', raw: '2', text: '2' }]
+                }
+              ]
             ]
-          ]
-        }],
+          }
+        ],
         html: `
 <table>
   <thead>
@@ -115,13 +121,13 @@ describe('Parser', () => {
         tokens: [
           {
             type: 'blockquote',
-            tokens: [{
-              type: 'paragraph',
-              text: 'blockquote',
-              tokens: [
-                { type: 'text', text: 'blockquote' }
-              ]
-            }]
+            tokens: [
+              {
+                type: 'paragraph',
+                text: 'blockquote',
+                tokens: [{ type: 'text', text: 'blockquote' }]
+              }
+            ]
           }
         ],
         html: '<blockquote><p>blockquote</p></blockquote>'
@@ -141,20 +147,24 @@ describe('Parser', () => {
                 {
                   task: false,
                   checked: undefined,
-                  tokens: [{
-                    type: 'text',
-                    text: 'item 1',
-                    tokens: [{ type: 'text', text: 'item 1' }]
-                  }]
+                  tokens: [
+                    {
+                      type: 'text',
+                      text: 'item 1',
+                      tokens: [{ type: 'text', text: 'item 1' }]
+                    }
+                  ]
                 },
                 {
                   task: false,
                   checked: undefined,
-                  tokens: [{
-                    type: 'text',
-                    text: 'item 2',
-                    tokens: [{ type: 'text', text: 'item 2' }]
-                  }]
+                  tokens: [
+                    {
+                      type: 'text',
+                      text: 'item 2',
+                      tokens: [{ type: 'text', text: 'item 2' }]
+                    }
+                  ]
                 }
               ]
             }
@@ -179,20 +189,24 @@ describe('Parser', () => {
                 {
                   task: false,
                   checked: undefined,
-                  tokens: [{
-                    type: 'text',
-                    text: 'item 1',
-                    tokens: [{ type: 'text', text: 'item 1' }]
-                  }]
+                  tokens: [
+                    {
+                      type: 'text',
+                      text: 'item 1',
+                      tokens: [{ type: 'text', text: 'item 1' }]
+                    }
+                  ]
                 },
                 {
                   task: false,
                   checked: undefined,
-                  tokens: [{
-                    type: 'text',
-                    text: 'item 2',
-                    tokens: [{ type: 'text', text: 'item 2' }]
-                  }]
+                  tokens: [
+                    {
+                      type: 'text',
+                      text: 'item 2',
+                      tokens: [{ type: 'text', text: 'item 2' }]
+                    }
+                  ]
                 }
               ]
             }
@@ -217,20 +231,24 @@ describe('Parser', () => {
                 {
                   task: true,
                   checked: false,
-                  tokens: [{
-                    type: 'text',
-                    text: 'item 1',
-                    tokens: [{ type: 'text', text: 'item 1' }]
-                  }]
+                  tokens: [
+                    {
+                      type: 'text',
+                      text: 'item 1',
+                      tokens: [{ type: 'text', text: 'item 1' }]
+                    }
+                  ]
                 },
                 {
                   task: true,
                   checked: true,
-                  tokens: [{
-                    type: 'text',
-                    text: 'item 2',
-                    tokens: [{ type: 'text', text: 'item 2' }]
-                  }]
+                  tokens: [
+                    {
+                      type: 'text',
+                      text: 'item 2',
+                      tokens: [{ type: 'text', text: 'item 2' }]
+                    }
+                  ]
                 }
               ]
             }
@@ -255,20 +273,24 @@ describe('Parser', () => {
                 {
                   task: false,
                   checked: undefined,
-                  tokens: [{
-                    type: 'text',
-                    text: 'item 1',
-                    tokens: [{ type: 'text', text: 'item 1' }]
-                  }]
+                  tokens: [
+                    {
+                      type: 'text',
+                      text: 'item 1',
+                      tokens: [{ type: 'text', text: 'item 1' }]
+                    }
+                  ]
                 },
                 {
                   task: false,
                   checked: undefined,
-                  tokens: [{
-                    type: 'text',
-                    text: 'item 2',
-                    tokens: [{ type: 'text', text: 'item 2' }]
-                  }]
+                  tokens: [
+                    {
+                      type: 'text',
+                      text: 'item 2',
+                      tokens: [{ type: 'text', text: 'item 2' }]
+                    }
+                  ]
                 }
               ]
             }
@@ -284,23 +306,25 @@ describe('Parser', () => {
 
     it('html', async() => {
       await expectHtml({
-        tokens: [{
-          type: 'html',
-          text: '<div>html</div>'
-        }],
+        tokens: [
+          {
+            type: 'html',
+            text: '<div>html</div>'
+          }
+        ],
         html: '<div>html</div>'
       });
     });
 
     it('paragraph', async() => {
       await expectHtml({
-        tokens: [{
-          type: 'paragraph',
-          text: 'paragraph 1',
-          tokens: [
-            { type: 'text', text: 'paragraph 1' }
-          ]
-        }],
+        tokens: [
+          {
+            type: 'paragraph',
+            text: 'paragraph 1',
+            tokens: [{ type: 'text', text: 'paragraph 1' }]
+          }
+        ],
         html: '<p>paragraph 1</p>'
       });
     });
@@ -320,9 +344,7 @@ describe('Parser', () => {
     it('escape', async() => {
       await expectHtml({
         inline: true,
-        tokens: [
-          { type: 'escape', text: '&gt;' }
-        ],
+        tokens: [{ type: 'escape', text: '&gt;' }],
         html: '&gt;'
       });
     });
@@ -348,9 +370,7 @@ describe('Parser', () => {
             text: 'link',
             href: 'https://example.com',
             title: 'title',
-            tokens: [
-              { type: 'text', text: 'link' }
-            ]
+            tokens: [{ type: 'text', text: 'link' }]
           }
         ],
         html: '<a href="https://example.com" title="title">link</a>'
@@ -379,9 +399,7 @@ describe('Parser', () => {
           {
             type: 'strong',
             text: 'strong',
-            tokens: [
-              { type: 'text', text: 'strong' }
-            ]
+            tokens: [{ type: 'text', text: 'strong' }]
           }
         ],
         html: '<strong>strong</strong>'
@@ -395,9 +413,7 @@ describe('Parser', () => {
           {
             type: 'em',
             text: 'em',
-            tokens: [
-              { type: 'text', text: 'em' }
-            ]
+            tokens: [{ type: 'text', text: 'em' }]
           }
         ],
         html: '<em>em</em>'
@@ -420,9 +436,11 @@ describe('Parser', () => {
     it('br', async() => {
       await expectHtml({
         inline: true,
-        tokens: [{
-          type: 'br'
-        }],
+        tokens: [
+          {
+            type: 'br'
+          }
+        ],
         html: '<br />'
       });
     });
@@ -434,9 +452,7 @@ describe('Parser', () => {
           {
             type: 'del',
             text: 'del',
-            tokens: [
-              { type: 'text', text: 'del' }
-            ]
+            tokens: [{ type: 'text', text: 'del' }]
           }
         ],
         html: '<del>del</del>'

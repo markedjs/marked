@@ -1,4 +1,6 @@
-import { marked, Marked, Renderer } from '../../src/marked.js';
+import { marked, Marked, Renderer } from '../../lib/marked.esm.js';
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
 
 describe('Marked', () => {
   it('should allow multiple instances', () => {
@@ -20,9 +22,9 @@ describe('Marked', () => {
       }
     });
 
-    expect(marked1.parse('# header')).toBe('im marked1');
-    expect(marked2.parse('# header')).toBe('im marked2');
-    expect(marked.parse('# header')).toBe('<h1>header</h1>\n');
+    assert.strictEqual(marked1.parse('# header'), 'im marked1');
+    assert.strictEqual(marked2.parse('# header'), 'im marked2');
+    assert.strictEqual(marked.parse('# header'), '<h1>header</h1>\n');
   });
 
   it('should work with use', () => {
@@ -46,9 +48,9 @@ describe('Marked', () => {
       }
     });
 
-    expect(marked1.parse('# header')).toBe('im marked1');
-    expect(marked2.parse('# header')).toBe('im marked2');
-    expect(marked.parse('# header')).toBe('<h1>header</h1>\n');
+    assert.strictEqual(marked1.parse('# header'), 'im marked1');
+    assert.strictEqual(marked2.parse('# header'), 'im marked2');
+    assert.strictEqual(marked.parse('# header'), '<h1>header</h1>\n');
   });
 
   it('should work with setOptions', () => {
@@ -68,9 +70,9 @@ describe('Marked', () => {
       renderer: marked2Renderer
     });
 
-    expect(marked1.parse('# header')).toBe('im marked1');
-    expect(marked2.parse('# header')).toBe('im marked2');
-    expect(marked.parse('# header')).toBe('<h1>header</h1>\n');
+    assert.strictEqual(marked1.parse('# header'), 'im marked1');
+    assert.strictEqual(marked2.parse('# header'), 'im marked2');
+    assert.strictEqual(marked.parse('# header'), '<h1>header</h1>\n');
   });
 
   it('should pass defaults to lexer and parser', () => {
@@ -85,6 +87,6 @@ describe('Marked', () => {
     const tokens = marked1.lexer('# hi');
     const html = marked1.parser(tokens);
 
-    expect(html).toBe('test');
+    assert.strictEqual(html, 'test');
   });
 });

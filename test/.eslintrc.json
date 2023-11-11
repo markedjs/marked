@@ -22,7 +22,6 @@
     "no-var": "error"
   },
   "env": {
-    "node": true,
-    "jasmine": true
+    "node": true
   }
 }

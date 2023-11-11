@@ -9,11 +9,11 @@ permissions:
   contents: read
 
 jobs:
-  Test:
+  UnitTests:
     strategy:
       matrix:
         # lowest verison here should also be in `engines` field
-        node_version: [16, 18, 'lts/*', '*']
+        node_version: [18, "lts/*", "*"]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -25,16 +25,14 @@ jobs:
           check-latest: true
       - name: Install Dependencies
         run: npm ci
+      - name: Build 🗜️
+        run: npm run build
       - name: Run Unit Tests 👩🏽‍💻
         run: npm run test:unit
       - name: Run Spec Tests 👩🏽‍💻
         run: npm run test:specs
-      - name: Run UMD Tests 👩🏽‍💻
-        run: npm run test:umd
-      - name: Run Types Tests 👩🏽‍💻
-        run: npm run test:types
 
-  Lint:
+  OtherTests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -42,33 +40,22 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
-      - name: Install Dependencies
-        run: npm ci
-      - name: Lint ✨
-        run: npm run test:lint
-
-  Build:
-    name: Build and Test Types
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Install Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
+          node-version: "lts/*"
       - name: Install Dependencies
         run: npm ci
       - name: Build 🗜️
         run: npm run build
+      - name: Run UMD Tests 👩🏽‍💻
+        run: npm run test:umd
       - name: Run Types Tests 👩🏽‍💻
         run: npm run test:types
+      - name: Lint ✨
+        run: npm run test:lint
 
   Release:
     permissions:
       contents: write
-    needs: [Test, Lint, Build]
+    needs: [UnitTests, OtherTests]
     if: |
       github.ref == 'refs/heads/master' &&
       github.event.repository.fork == false
@@ -79,7 +66,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: "lts/*"
       - name: Install Dependencies
         run: npm ci
       - name: Build 🗜️

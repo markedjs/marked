@@ -1,6 +1,10 @@
 import { main } from '../../bin/main.js';
+import { htmlIsEqual } from '@markedjs/testutils';
 import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
+import { describe, it, mock } from 'node:test';
+import assert from 'node:assert';
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function createMocks() {
@@ -14,23 +18,23 @@ function createMocks() {
       end: null
     },
     process: {
-      cwd: jasmine.createSpy('process.cwd').and.returnValue('/cwd'),
+      cwd: mock.fn(() => '/cwd'),
       env: [],
       argv: [],
       stdout: {
-        write: jasmine.createSpy('process.stdout.write').and.callFake((str) => { mocks.stdout += str; })
+        write: mock.fn((str) => { mocks.stdout += str; })
       },
       stderr: {
-        write: jasmine.createSpy('process.stderr.write').and.callFake((str) => { mocks.stderr += str; })
+        write: mock.fn((str) => { mocks.stderr += str; })
       },
       stdin: {
-        setEncoding: jasmine.createSpy('process.stdin.setEncoding'),
-        on: jasmine.createSpy('process.stdin.on').and.callFake((method, func) => {
+        setEncoding: mock.fn(),
+        on: mock.fn((method, func) => {
           mocks.stdin[method] = func;
         }),
-        resume: jasmine.createSpy('process.stdin.resume')
+        resume: mock.fn
       },
-      exit: jasmine.createSpy('process.exit').and.callFake((code) => { mocks.code = code; })
+      exit: mock.fn((code) => { mocks.code = code; })
     }
   };
 
@@ -53,9 +57,9 @@ function testInput({ args = [], stdin = '', stdinError = '', stdout = '', stderr
     }
     await mainPromise;
 
-    await expectAsync(mocks.stdout).toEqualHtml(stdout);
-    expect(mocks.stderr).toEqual(stderr);
-    expect(mocks.code).toBe(code);
+    assert.ok(await htmlIsEqual(mocks.stdout, stdout));
+    assert.strictEqual(mocks.stderr, stderr);
+    assert.strictEqual(mocks.code, code);
   };
 }
 
@@ -89,7 +93,7 @@ describe('bin/marked', () => {
 
     it('not found', testInput({
       args: ['--config', fixturePath('does-not-exist.js'), '-s', 'line1\nline2'],
-      stderr: jasmine.stringContaining(`Cannot load config file '${fixturePath('does-not-exist.js')}'`),
+      stderr: `Error: Cannot load config file '${fixturePath('does-not-exist.js')}'`,
       code: 1
     }));
   });

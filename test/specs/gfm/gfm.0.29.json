@@ -61,8 +61,8 @@
   },
   {
     "section": "[extension] Strikethrough",
-    "html": "<p><del>Hi</del> Hello, world!</p>",
-    "markdown": "~~Hi~~ Hello, world!",
+    "html": "<p><del>Hi</del> Hello, <del>there</del> world!</p>",
+    "markdown": "~~Hi~~ Hello, ~there~ world!",
     "example": 491
   },
   {
@@ -72,76 +72,103 @@
     "example": 492
   },
   {
+    "section": "[extension] Strikethrough",
+    "html": "<p>This will ~~~not~~~ strike.</p>",
+    "markdown": "This will ~~~not~~~ strike.",
+    "example": 493
+  },
+  {
     "section": "[extension] Autolinks",
     "html": "<p><a href=\"http://www.commonmark.org\">www.commonmark.org</a></p>",
     "markdown": "www.commonmark.org",
-    "example": 621
+    "example": 622
   },
   {
     "section": "[extension] Autolinks",
     "html": "<p>Visit <a href=\"http://www.commonmark.org/help\">www.commonmark.org/help</a> for more information.</p>",
     "markdown": "Visit www.commonmark.org/help for more information.",
-    "example": 622
+    "example": 623
   },
   {
     "section": "[extension] Autolinks",
     "html": "<p>Visit <a href=\"http://www.commonmark.org\">www.commonmark.org</a>.</p>\n<p>Visit <a href=\"http://www.commonmark.org/a.b\">www.commonmark.org/a.b</a>.</p>",
     "markdown": "Visit www.commonmark.org.\n\nVisit www.commonmark.org/a.b.",
-    "example": 623
+    "example": 624
   },
   {
     "section": "[extension] Autolinks",
     "html": "<p><a href=\"http://www.google.com/search?q=Markup+(business)\">www.google.com/search?q=Markup+(business)</a></p>\n<p><a href=\"http://www.google.com/search?q=Markup+(business)\">www.google.com/search?q=Markup+(business)</a>))</p>\n<p>(<a href=\"http://www.google.com/search?q=Markup+(business)\">www.google.com/search?q=Markup+(business)</a>)</p>\n<p>(<a href=\"http://www.google.com/search?q=Markup+(business)\">www.google.com/search?q=Markup+(business)</a></p>",
     "markdown": "www.google.com/search?q=Markup+(business)\n\nwww.google.com/search?q=Markup+(business)))\n\n(www.google.com/search?q=Markup+(business))\n\n(www.google.com/search?q=Markup+(business)",
-    "example": 624
+    "example": 625
   },
   {
     "section": "[extension] Autolinks",
     "html": "<p><a href=\"http://www.google.com/search?q=(business))+ok\">www.google.com/search?q=(business))+ok</a></p>",
     "markdown": "www.google.com/search?q=(business))+ok",
-    "example": 625
+    "example": 626
   },
   {
     "section": "[extension] Autolinks",
     "html": "<p><a href=\"http://www.google.com/search?q=commonmark&amp;hl=en\">www.google.com/search?q=commonmark&amp;hl=en</a></p>\n<p><a href=\"http://www.google.com/search?q=commonmark\">www.google.com/search?q=commonmark</a>&amp;hl;</p>",
     "markdown": "www.google.com/search?q=commonmark&hl=en\n\nwww.google.com/search?q=commonmark&hl;",
-    "example": 626
+    "example": 627
   },
   {
     "section": "[extension] Autolinks",
     "html": "<p><a href=\"http://www.commonmark.org/he\">www.commonmark.org/he</a>&lt;lp</p>",
     "markdown": "www.commonmark.org/he<lp",
-    "example": 627
+    "example": 628
   },
   {
     "section": "[extension] Autolinks",
     "html": "<p><a href=\"http://commonmark.org\">http://commonmark.org</a></p>\n<p>(Visit <a href=\"https://encrypted.google.com/search?q=Markup+(business)\">https://encrypted.google.com/search?q=Markup+(business)</a>)</p>",
     "markdown": "http://commonmark.org\n\n(Visit https://encrypted.google.com/search?q=Markup+(business))",
-    "example": 628
+    "example": 629
   },
   {
     "section": "[extension] Autolinks",
     "html": "<p><a href=\"mailto:foo@bar.baz\">foo@bar.baz</a></p>",
     "markdown": "foo@bar.baz",
-    "example": 629
+    "example": 630
   },
   {
     "section": "[extension] Autolinks",
     "html": "<p>hello@mail+xyz.example isn't valid, but <a href=\"mailto:hello+xyz@mail.example\">hello+xyz@mail.example</a> is.</p>",
     "markdown": "hello@mail+xyz.example isn't valid, but hello+xyz@mail.example is.",
-    "example": 630
+    "example": 631
   },
   {
     "section": "[extension] Autolinks",
     "html": "<p><a href=\"mailto:a.b-c_d@a.b\">a.b-c_d@a.b</a></p>\n<p><a href=\"mailto:a.b-c_d@a.b\">a.b-c_d@a.b</a>.</p>\n<p>a.b-c_d@a.b-</p>\n<p>a.b-c_d@a.b_</p>",
     "markdown": "a.b-c_d@a.b\n\na.b-c_d@a.b.\n\na.b-c_d@a.b-\n\na.b-c_d@a.b_",
-    "example": 631
+    "example": 632
+  },
+  {
+    "section": "[extension] Autolinks",
+    "html": "<p><a href=\"mailto:foo@bar.baz\">mailto:foo@bar.baz</a></p>\n<p><a href=\"mailto:a.b-c_d@a.b\">mailto:a.b-c_d@a.b</a></p>\n<p><a href=\"mailto:a.b-c_d@a.b\">mailto:a.b-c_d@a.b</a>.</p>\n<p><a href=\"mailto:a.b-c_d@a.b\">mailto:a.b-c_d@a.b</a>/</p>\n<p>mailto:a.b-c_d@a.b-</p>\n<p>mailto:a.b-c_d@a.b_</p>\n<p><a href=\"xmpp:foo@bar.baz\">xmpp:foo@bar.baz</a></p>\n<p><a href=\"xmpp:foo@bar.baz\">xmpp:foo@bar.baz</a>.</p>",
+    "markdown": "mailto:foo@bar.baz\n\nmailto:a.b-c_d@a.b\n\nmailto:a.b-c_d@a.b.\n\nmailto:a.b-c_d@a.b/\n\nmailto:a.b-c_d@a.b-\n\nmailto:a.b-c_d@a.b_\n\nxmpp:foo@bar.baz\n\nxmpp:foo@bar.baz.",
+    "example": 633,
+    "shouldFail": true
+  },
+  {
+    "section": "[extension] Autolinks",
+    "html": "<p><a href=\"xmpp:foo@bar.baz/txt\">xmpp:foo@bar.baz/txt</a></p>\n<p><a href=\"xmpp:foo@bar.baz/txt@bin\">xmpp:foo@bar.baz/txt@bin</a></p>\n<p><a href=\"xmpp:foo@bar.baz/txt@bin.com\">xmpp:foo@bar.baz/txt@bin.com</a></p>",
+    "markdown": "xmpp:foo@bar.baz/txt\n\nxmpp:foo@bar.baz/txt@bin\n\nxmpp:foo@bar.baz/txt@bin.com",
+    "example": 634,
+    "shouldFail": true
+  },
+  {
+    "section": "[extension] Autolinks",
+    "html": "<p><a href=\"xmpp:foo@bar.baz/txt\">xmpp:foo@bar.baz/txt</a>/bin</p>",
+    "markdown": "xmpp:foo@bar.baz/txt/bin",
+    "example": 635,
+    "shouldFail": true
   },
   {
     "section": "[extension] Disallowed Raw HTML",
     "html": "<p><strong> &lt;title> &lt;style> <em></p>\n<blockquote>\n  &lt;xmp> is disallowed.  &lt;XMP> is also disallowed.\n</blockquote>",
     "markdown": "<strong> <title> <style> <em>\n\n<blockquote>\n  <xmp> is disallowed.  <XMP> is also disallowed.\n</blockquote>",
-    "example": 653,
+    "example": 657,
     "shouldFail": true
   }
 ]
