@@ -142,10 +142,14 @@ export class Marked {
       if (pack.renderer) {
         const renderer = this.defaults.renderer || new _Renderer(this.defaults);
         for (const prop in pack.renderer) {
-          const rendererFunc = pack.renderer[prop as keyof MarkedExtension['renderer']] as GenericRendererFunction;
-          const prevRenderer = renderer[prop as keyof _Renderer] as GenericRendererFunction;
+          if (!(prop in renderer) || prop === 'options') {
+            throw new Error(`renderer '${prop}' does not exist`);
+          }
+          const rendererProp = prop as Exclude<keyof _Renderer, 'options'>;
+          const rendererFunc = pack.renderer[rendererProp] as GenericRendererFunction;
+          const prevRenderer = renderer[rendererProp] as GenericRendererFunction;
           // Replace renderer with func to run extension, but fall back if false
-          renderer[prop as keyof _Renderer] = (...args: unknown[]) => {
+          renderer[rendererProp] = (...args: unknown[]) => {
             let ret = rendererFunc.apply(renderer, args);
             if (ret === false) {
               ret = prevRenderer.apply(renderer, args);
@@ -158,11 +162,15 @@ export class Marked {
       if (pack.tokenizer) {
         const tokenizer = this.defaults.tokenizer || new _Tokenizer(this.defaults);
         for (const prop in pack.tokenizer) {
-          const tokenizerFunc = pack.tokenizer[prop as keyof MarkedExtension['tokenizer']] as UnknownFunction;
-          const prevTokenizer = tokenizer[prop as keyof _Tokenizer] as UnknownFunction;
+          if (!(prop in tokenizer) || ['options', 'rules', 'lexer'].includes(prop)) {
+            throw new Error(`tokenizer '${prop}' does not exist`);
+          }
+          const tokenizerProp = prop as Exclude<keyof _Tokenizer, 'options' | 'rules' | 'lexer'>;
+          const tokenizerFunc = pack.tokenizer[tokenizerProp] as UnknownFunction;
+          const prevTokenizer = tokenizer[tokenizerProp] as UnknownFunction;
           // Replace tokenizer with func to run extension, but fall back if false
           // @ts-expect-error cannot type tokenizer function dynamically
-          tokenizer[prop as keyof _Tokenizer] = (...args: unknown[]) => {
+          tokenizer[tokenizerProp] = (...args: unknown[]) => {
             let ret = tokenizerFunc.apply(tokenizer, args);
             if (ret === false) {
               ret = prevTokenizer.apply(tokenizer, args);
@@ -177,10 +185,14 @@ export class Marked {
       if (pack.hooks) {
         const hooks = this.defaults.hooks || new _Hooks();
         for (const prop in pack.hooks) {
-          const hooksFunc = pack.hooks[prop as keyof MarkedExtension['hooks']] as UnknownFunction;
-          const prevHook = hooks[prop as keyof _Hooks] as UnknownFunction;
+          if (!(prop in hooks) || prop === 'options') {
+            throw new Error(`hook '${prop}' does not exist`);
+          }
+          const hooksProp = prop as Exclude<keyof _Hooks, 'options'>;
+          const hooksFunc = pack.hooks[hooksProp] as UnknownFunction;
+          const prevHook = hooks[hooksProp] as UnknownFunction;
           if (_Hooks.passThroughHooks.has(prop)) {
-            hooks[prop as 'preprocess' | 'postprocess'] = (arg: string | undefined) => {
+            hooks[hooksProp] = (arg: string | undefined) => {
               if (this.defaults.async) {
                 return Promise.resolve(hooksFunc.call(hooks, arg)).then(ret => {
                   return prevHook.call(hooks, ret) as string;
@@ -191,7 +203,7 @@ export class Marked {
               return prevHook.call(hooks, ret) as string;
             };
           } else {
-            hooks[prop as keyof _Hooks] = (...args: unknown[]) => {
+            hooks[hooksProp] = (...args: unknown[]) => {
               let ret = hooksFunc.apply(hooks, args);
               if (ret === false) {
                 ret = prevHook.apply(hooks, args);
