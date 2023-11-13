@@ -163,6 +163,7 @@ export class Marked {
           const tokenizerKey = prop as keyof _Tokenizer;
           const prevTokenizer = tokenizer[tokenizerKey] as UnknownFunction;
           // Replace tokenizer with func to run extension, but fall back if false
+          // @ts-expect-error cannot type tokenizer function dynamically
           tokenizer[tokenizerKey] = (...args: unknown[]) => {
             let ret = tokenizerFunc.apply(tokenizer, args);
             if (ret === false) {

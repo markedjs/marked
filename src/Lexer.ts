@@ -3,7 +3,6 @@ import { _defaults } from './defaults.ts';
 import { block, inline } from './rules.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions, TokenizerExtension } from './MarkedOptions.ts';
-import type { Rules } from './rules.ts';
 
 /**
  * Block Lexer
@@ -59,7 +58,7 @@ export class _Lexer {
   /**
    * Expose Rules
    */
-  static get rules(): Rules {
+  static get rules() {
     return {
       block,
       inline

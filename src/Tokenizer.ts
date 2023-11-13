@@ -5,6 +5,7 @@ import {
   escape,
   findClosingBracket
 } from './helpers.ts';
+import type { Rules } from './rules.ts';
 import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
@@ -69,8 +70,7 @@ function indentCodeCompensation(raw: string, text: string) {
  */
 export class _Tokenizer {
   options: MarkedOptions;
-  // TODO: Fix this rules type
-  rules: any;
+  rules!: Rules;
   lexer!: _Lexer;
 
   constructor(options?: MarkedOptions) {
@@ -410,7 +410,9 @@ export class _Tokenizer {
         header: splitCells(cap[1]).map(c => {
           return { text: c, tokens: [] };
         }),
+        // @ts-expect-error
         align: cap[2].replace(/^\||\| *$/g, '').split('|'),
+        // @ts-expect-error
         rows: cap[3] && cap[3].trim() ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : []
       };
 
@@ -597,8 +599,8 @@ export class _Tokenizer {
     let cap;
     if ((cap = this.rules.inline.reflink.exec(src))
       || (cap = this.rules.inline.nolink.exec(src))) {
-      let link = (cap[2] || cap[1]).replace(/\s+/g, ' ');
-      link = links[link.toLowerCase()];
+      const linkString = (cap[2] || cap[1]).replace(/\s+/g, ' ');
+      const link = links[linkString.toLowerCase()];
       if (!link) {
         const text = cap[0].charAt(0);
         return {
@@ -612,7 +614,7 @@ export class _Tokenizer {
   }
 
   emStrong(src: string, maskedSrc: string, prevChar = ''): Tokens.Em | Tokens.Strong | undefined {
-    let match = this.rules.inline.emStrong.lDelim.exec(src);
+    let match = this.rules.inline.emStrongLDelim.exec(src);
     if (!match) return;
 
     // _ can't be between two alphanumerics. \p{L}\p{N} includes non-english alphabet/numbers as well
@@ -625,7 +627,7 @@ export class _Tokenizer {
       const lLength = [...match[0]].length - 1;
       let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
 
-      const endReg = match[0][0] === '*' ? this.rules.inline.emStrong.rDelimAst : this.rules.inline.emStrong.rDelimUnd;
+      const endReg = match[0][0] === '*' ? this.rules.inline.emStrongRDelimAst : this.rules.inline.emStrongRDelimUnd;
       endReg.lastIndex = 0;
 
       // Clip maskedSrc to same section of string as src (move to lexer?)
@@ -761,7 +763,7 @@ export class _Tokenizer {
         let prevCapZero;
         do {
           prevCapZero = cap[0];
-          cap[0] = this.rules.inline._backpedal.exec(cap[0])[0];
+          cap[0] = this.rules.inline._backpedal.exec(cap[0])?.[0] ?? '';
         } while (prevCapZero !== cap[0]);
         text = escape(cap[0]);
         if (cap[1] === 'www.') {

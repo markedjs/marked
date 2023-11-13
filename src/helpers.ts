@@ -1,5 +1,3 @@
-import type { Rule } from './rules.ts';
-
 /**
  * Helpers
  */
@@ -48,7 +46,7 @@ export function unescape(html: string) {
 
 const caret = /(^|[^\[])\^/g;
 
-export function edit(regex: Rule, opt?: string) {
+export function edit(regex: string | RegExp, opt?: string) {
   regex = typeof regex === 'string' ? regex : regex.source;
   opt = opt || '';
   const obj = {
@@ -74,7 +72,7 @@ export function cleanUrl(href: string) {
   return href;
 }
 
-export const noopTest = { exec: () => null };
+export const noopTest = { exec: () => null } as unknown as RegExp;
 
 export function splitCells(tableRow: string, count?: number) {
   // ensure that every cell-delimiting pipe has a space
