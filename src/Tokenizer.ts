@@ -70,8 +70,8 @@ function indentCodeCompensation(raw: string, text: string) {
  */
 export class _Tokenizer {
   options: MarkedOptions;
-  rules!: Rules;
-  lexer!: _Lexer;
+  rules!: Rules; // set by the lexer
+  lexer!: _Lexer; // set by the lexer
 
   constructor(options?: MarkedOptions) {
     this.options = options || _defaults;
@@ -398,69 +398,61 @@ export class _Tokenizer {
 
   table(src: string): Tokens.Table | undefined {
     const cap = this.rules.block.table.exec(src);
-    if (cap) {
-      if (!/[:|]/.test(cap[2])) {
-        // delimiter row must have a pipe (|) or colon (:) otherwise it is a setext heading
-        return;
-      }
+    if (!cap) {
+      return;
+    }
 
-      const item: Tokens.Table = {
-        type: 'table',
-        raw: cap[0],
-        header: splitCells(cap[1]).map(c => {
-          return { text: c, tokens: [] };
-        }),
-        // @ts-expect-error
-        align: cap[2].replace(/^\||\| *$/g, '').split('|'),
-        // @ts-expect-error
-        rows: cap[3] && cap[3].trim() ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : []
-      };
+    if (!/[:|]/.test(cap[2])) {
+      // delimiter row must have a pipe (|) or colon (:) otherwise it is a setext heading
+      return;
+    }
 
-      if (item.header.length === item.align.length) {
-        let l = item.align.length;
-        let i, j, k, row;
-        for (i = 0; i < l; i++) {
-          const align = item.align[i];
-          if (align) {
-            if (/^ *-+: *$/.test(align)) {
-              item.align[i] = 'right';
-            } else if (/^ *:-+: *$/.test(align)) {
-              item.align[i] = 'center';
-            } else if (/^ *:-+ *$/.test(align)) {
-              item.align[i] = 'left';
-            } else {
-              item.align[i] = null;
-            }
-          }
-        }
+    const headers = splitCells(cap[1]);
+    const aligns = cap[2].replace(/^\||\| *$/g, '').split('|');
+    const rows = cap[3] && cap[3].trim() ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : [];
 
-        l = item.rows.length;
-        for (i = 0; i < l; i++) {
-          item.rows[i] = splitCells(item.rows[i] as unknown as string, item.header.length).map(c => {
-            return { text: c, tokens: [] };
-          });
-        }
+    const item: Tokens.Table = {
+      type: 'table',
+      raw: cap[0],
+      header: [],
+      align: [],
+      rows: []
+    };
 
-        // parse child tokens inside headers and cells
+    if (headers.length !== aligns.length) {
+      // header and align columns must be equal, rows can be different.
+      return;
+    }
 
-        // header child tokens
-        l = item.header.length;
-        for (j = 0; j < l; j++) {
-          item.header[j].tokens = this.lexer.inline(item.header[j].text);
-        }
-
-        // cell child tokens
-        l = item.rows.length;
-        for (j = 0; j < l; j++) {
-          row = item.rows[j];
-          for (k = 0; k < row.length; k++) {
-            row[k].tokens = this.lexer.inline(row[k].text);
-          }
-        }
-
-        return item;
+    for (const align of aligns) {
+      if (/^ *-+: *$/.test(align)) {
+        item.align.push('right');
+      } else if (/^ *:-+: *$/.test(align)) {
+        item.align.push('center');
+      } else if (/^ *:-+ *$/.test(align)) {
+        item.align.push('left');
+      } else {
+        item.align.push(null);
       }
     }
+
+    for (const header of headers) {
+      item.header.push({
+        text: header,
+        tokens: this.lexer.inline(header)
+      });
+    }
+
+    for (const row of rows) {
+      item.rows.push(splitCells(row, item.header.length).map(cell => {
+        return {
+          text: cell,
+          tokens: this.lexer.inline(cell)
+        };
+      }));
+    }
+
+    return item;
   }
 
   lheading(src: string): Tokens.Heading | undefined {
