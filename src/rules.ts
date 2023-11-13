@@ -10,19 +10,16 @@ const blockCode = /^( {4}[^\n]+(?:\n(?: *(?:\n|$))*)?)+/;
 const fences = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}\1[~`]* *(?=\n|$)|$)/;
 const hr = /^ {0,3}((?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/;
 const heading = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
-let blockquote = /^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/;
-const table = noopTest;
 const bullet = /(?:[*+-]|\d{1,9}[.)])/;
 const lheading = edit(/^(?!bull )((?:.|\n(?!\s*?\n|bull ))+?)\n {0,3}(=+|-+) *(?:\n+|$)/)
   .replace(/bull/g, bullet) // lists can interrupt
   .getRegex();
 const _paragraph = /^([^\n]+(?:\n(?!hr|heading|lheading|blockquote|fences|list|html|table| +\n)[^\n]+)*)/;
 const blockText = /^[^\n]+/;
-const _label = /(?!\s*\])(?:\\.|[^\[\]\\])+/;
-const _title = /(?:"(?:\\"?|[^"\\])*"|'[^'\n]*(?:\n[^'\n]+)*\n?'|\([^()]*\))/;
+const _blockLabel = /(?!\s*\])(?:\\.|[^\[\]\\])+/;
 const def = edit(/^ {0,3}\[(label)\]: *(?:\n *)?([^<\s][^\s]*|<.*?>)(?:(?: +(?:\n *)?| *\n *)(title))? *(?:\n+|$)/)
-  .replace('label', _label)
-  .replace('title', _title)
+  .replace('label', _blockLabel)
+  .replace('title', /(?:"(?:\\"?|[^"\\])*"|'[^'\n]*(?:\n[^'\n]+)*\n?'|\([^()]*\))/)
   .getRegex();
 
 const list = edit(/^( {0,3}bull)([ \t][^\n]+?)?(?:\n|$)/)
@@ -38,18 +35,17 @@ const _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
   + '|p|param|section|source|summary|table|tbody|td|tfoot|th|thead|title|tr'
   + '|track|ul';
 const _comment = /<!--(?!-?>)[\s\S]*?(?:-->|$)/;
-const _html =
-      '^ {0,3}(?:' // optional indentation
-    + '<(script|pre|style|textarea)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n+|$)' // (1)
-    + '|comment[^\\n]*(\\n+|$)' // (2)
-    + '|<\\?[\\s\\S]*?(?:\\?>\\n*|$)' // (3)
-    + '|<![A-Z][\\s\\S]*?(?:>\\n*|$)' // (4)
-    + '|<!\\[CDATA\\[[\\s\\S]*?(?:\\]\\]>\\n*|$)' // (5)
-    + '|</?(tag)(?: +|\\n|/?>)[\\s\\S]*?(?:(?:\\n *)+\\n|$)' // (6)
-    + '|<(?!script|pre|style|textarea)([a-z][\\w-]*)(?:attribute)*? */?>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n *)+\\n|$)' // (7) open tag
-    + '|</(?!script|pre|style|textarea)[a-z][\\w-]*\\s*>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n *)+\\n|$)' // (7) closing tag
-    + ')';
-const html = edit(_html, 'i')
+const html = edit(
+  '^ {0,3}(?:' // optional indentation
++ '<(script|pre|style|textarea)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n+|$)' // (1)
++ '|comment[^\\n]*(\\n+|$)' // (2)
++ '|<\\?[\\s\\S]*?(?:\\?>\\n*|$)' // (3)
++ '|<![A-Z][\\s\\S]*?(?:>\\n*|$)' // (4)
++ '|<!\\[CDATA\\[[\\s\\S]*?(?:\\]\\]>\\n*|$)' // (5)
++ '|</?(tag)(?: +|\\n|/?>)[\\s\\S]*?(?:(?:\\n *)+\\n|$)' // (6)
++ '|<(?!script|pre|style|textarea)([a-z][\\w-]*)(?:attribute)*? */?>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n *)+\\n|$)' // (7) open tag
++ '|</(?!script|pre|style|textarea)[a-z][\\w-]*\\s*>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n *)+\\n|$)' // (7) closing tag
++ ')', 'i')
   .replace('comment', _comment)
   .replace('tag', _tag)
   .replace('attribute', / +[a-zA-Z:_][\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'| *= *[^\s"'=<>`]+)?/)
@@ -67,7 +63,7 @@ const paragraph = edit(_paragraph)
   .replace('tag', _tag) // pars can be interrupted by type (6) html blocks
   .getRegex();
 
-blockquote = edit(blockquote)
+const blockquote = edit(/^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/)
   .replace('paragraph', paragraph)
   .getRegex();
 
@@ -87,20 +83,20 @@ const blockNormal = {
   list,
   newline,
   paragraph,
-  table,
+  table: noopTest,
   text: blockText
 };
+
+type BlockKeys = keyof typeof blockNormal;
 
 /**
  * GFM Block Grammar
  */
 
-const gfmTableString =
-    '^ *([^\\n ].*)\\n' // Header
-  + ' {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)' // Align
-  + '(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)'; // Cells
-
-const gfmTable = edit(gfmTableString)
+const gfmTable = edit(
+  '^ *([^\\n ].*)\\n' // Header
++ ' {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)' // Align
++ '(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)') // Cells
   .replace('hr', hr)
   .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
   .replace('blockquote', ' {0,3}>')
@@ -111,7 +107,7 @@ const gfmTable = edit(gfmTableString)
   .replace('tag', _tag) // tables can be interrupted by type (6) html blocks
   .getRegex();
 
-const blockGfm: Record<keyof typeof blockNormal, RegExp> = {
+const blockGfm: Record<BlockKeys, RegExp> = {
   ...blockNormal,
   table: gfmTable,
   paragraph: edit(_paragraph)
@@ -131,7 +127,7 @@ const blockGfm: Record<keyof typeof blockNormal, RegExp> = {
  * Pedantic grammar (original John Gruber's loose markdown specification)
  */
 
-const blockPedantic: Record<keyof typeof blockNormal, RegExp> = {
+const blockPedantic: Record<BlockKeys, RegExp> = {
   ...blockNormal,
   html: edit(
     '^ *(?:comment *(?:\\n|\\s*$)'
@@ -151,10 +147,12 @@ const blockPedantic: Record<keyof typeof blockNormal, RegExp> = {
     .replace('hr', hr)
     .replace('heading', ' *#{1,6} *[^\n]')
     .replace('lheading', lheading)
+    .replace('|table', '')
     .replace('blockquote', ' {0,3}>')
     .replace('|fences', '')
     .replace('|list', '')
     .replace('|html', '')
+    .replace('|tag', '')
     .getRegex()
 };
 
@@ -163,46 +161,26 @@ const blockPedantic: Record<keyof typeof blockNormal, RegExp> = {
  */
 
 const escape = /^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/;
-let autolink = /^<(scheme:[^\s\x00-\x1f<>]*|email)>/;
-const url = noopTest;
-const tagString =
-      '^comment'
-    + '|^</[a-zA-Z][\\w:-]*\\s*>' // self-closing tag
-    + '|^<[a-zA-Z][\\w-]*(?:attribute)*?\\s*/?>' // open tag
-    + '|^<\\?[\\s\\S]*?\\?>' // processing instruction, e.g. <?php ?>
-    + '|^<![a-zA-Z]+\\s[\\s\\S]*?>' // declaration, e.g. <!DOCTYPE html>
-    + '|^<!\\[CDATA\\[[\\s\\S]*?\\]\\]>'; // CDATA section
-let link = /^!?\[(label)\]\(\s*(href)(?:\s+(title))?\s*\)/;
-let reflink = /^!?\[(label)\]\[(ref)\]/;
-let nolink = /^!?\[(ref)\](?:\[\])?/;
-const reflinkSearchString = 'reflink|nolink(?!\\()';
-let emStrongLDelim = /^(?:\*+(?:((?!\*)[punct])|[^\s*]))|^_+(?:((?!_)[punct])|([^\s_]))/;
-//                        (1) and (2) can only be a Right Delimiter. (3) and (4) can only be Left.  (5) and (6) can be either Left or Right.
-//                        | Skip orphan inside strong      | Consume to delim | (1) #***              | (2) a***#, a***                    | (3) #***a, ***a                  | (4) ***#                 | (5) #***#                         | (6) a***a
-let emStrongRDelimAst = /^[^_*]*?__[^_*]*?\*[^_*]*?(?=__)|[^*]+(?=[^*])|(?!\*)[punct](\*+)(?=[\s]|$)|[^punct\s](\*+)(?!\*)(?=[punct\s]|$)|(?!\*)[punct\s](\*+)(?=[^punct\s])|[\s](\*+)(?!\*)(?=[punct])|(?!\*)[punct](\*+)(?!\*)(?=[punct])|[^punct\s](\*+)(?=[^punct\s])/;
-let emStrongRDelimUnd = /^[^_*]*?\*\*[^_*]*?_[^_*]*?(?=\*\*)|[^_]+(?=[^_])|(?!_)[punct](_+)(?=[\s]|$)|[^punct\s](_+)(?!_)(?=[punct\s]|$)|(?!_)[punct\s](_+)(?=[^punct\s])|[\s](_+)(?!_)(?=[punct])|(?!_)[punct](_+)(?!_)(?=[punct])/; // ^- Not allowed for _
-const code = /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/;
+const inlineCode = /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/;
 const br = /^( {2,}|\\)\n(?!\s*$)/;
-const del = noopTest;
-const text = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
-let punctuation = /^((?![*_])[\spunctuation])/;
+const inlineText = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
 
 // list of unicode punctuation marks, plus any missing characters from CommonMark spec
 const _punctuation = '\\p{P}$+<=>`^|~';
-punctuation = edit(punctuation, 'u')
+const punctuation = edit(/^((?![*_])[\spunctuation])/, 'u')
   .replace(/punctuation/g, _punctuation).getRegex();
 
 // sequences em should skip over [title](link), `code`, <html>
 const blockSkip = /\[[^[\]]*?\]\([^\(\)]*?\)|`[^`]*?`|<[^<>]*?>/g;
-let anyPunctuation = /\\[punct]/g;
-let _escapes = /\\([punct])/g;
 
-const _inlineComment = edit(_comment).replace('(?:-->|$)', '-->').getRegex();
-
-emStrongLDelim = edit(emStrongLDelim, 'u')
+const emStrongLDelim = edit(/^(?:\*+(?:((?!\*)[punct])|[^\s*]))|^_+(?:((?!_)[punct])|([^\s_]))/, 'u')
   .replace(/punct/g, _punctuation)
   .getRegex();
 
+//                        (1) and (2) can only be a Right Delimiter. (3) and (4) can only be Left.  (5) and (6) can be either Left or Right.
+//                        | Skip orphan inside strong      | Consume to delim | (1) #***              | (2) a***#, a***                    | (3) #***a, ***a                  | (4) ***#                 | (5) #***#                         | (6) a***a
+let emStrongRDelimAst = /^[^_*]*?__[^_*]*?\*[^_*]*?(?=__)|[^*]+(?=[^*])|(?!\*)[punct](\*+)(?=[\s]|$)|[^punct\s](\*+)(?!\*)(?=[punct\s]|$)|(?!\*)[punct\s](\*+)(?=[^punct\s])|[\s](\*+)(?!\*)(?=[punct])|(?!\*)[punct](\*+)(?!\*)(?=[punct])|[^punct\s](\*+)(?=[^punct\s])/;
+let emStrongRDelimUnd = /^[^_*]*?\*\*[^_*]*?_[^_*]*?(?=\*\*)|[^_]+(?=[^_])|(?!_)[punct](_+)(?=[\s]|$)|[^punct\s](_+)(?!_)(?=[punct\s]|$)|(?!_)[punct\s](_+)(?=[^punct\s])|[\s](_+)(?!_)(?=[punct])|(?!_)[punct](_+)(?!_)(?=[punct])/; // ^- Not allowed for _
 emStrongRDelimAst = edit(emStrongRDelimAst, 'gu')
   .replace(/punct/g, _punctuation)
   .getRegex();
@@ -211,48 +189,45 @@ emStrongRDelimUnd = edit(emStrongRDelimUnd, 'gu')
   .replace(/punct/g, _punctuation)
   .getRegex();
 
-anyPunctuation = edit(anyPunctuation, 'gu')
+const anyPunctuation = edit(/\\([punct])/, 'gu')
   .replace(/punct/g, _punctuation)
   .getRegex();
 
-_escapes = edit(_escapes, 'gu')
-  .replace(/punct/g, _punctuation)
+const autolink = edit(/^<(scheme:[^\s\x00-\x1f<>]*|email)>/)
+  .replace('scheme', /[a-zA-Z][a-zA-Z0-9+.-]{1,31}/)
+  .replace('email', /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(@)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+(?![-_])/)
   .getRegex();
 
-const _scheme = /[a-zA-Z][a-zA-Z0-9+.-]{1,31}/;
-const _email = /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(@)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+(?![-_])/;
-autolink = edit(autolink)
-  .replace('scheme', _scheme)
-  .replace('email', _email)
-  .getRegex();
-
-const _attribute = /\s+[a-zA-Z:_][\w.:-]*(?:\s*=\s*"[^"]*"|\s*=\s*'[^']*'|\s*=\s*[^\s"'=<>`]+)?/;
-
-const tag = edit(tagString)
+const _inlineComment = edit(_comment).replace('(?:-->|$)', '-->').getRegex();
+const tag = edit(
+  '^comment'
+    + '|^</[a-zA-Z][\\w:-]*\\s*>' // self-closing tag
+    + '|^<[a-zA-Z][\\w-]*(?:attribute)*?\\s*/?>' // open tag
+    + '|^<\\?[\\s\\S]*?\\?>' // processing instruction, e.g. <?php ?>
+    + '|^<![a-zA-Z]+\\s[\\s\\S]*?>' // declaration, e.g. <!DOCTYPE html>
+    + '|^<!\\[CDATA\\[[\\s\\S]*?\\]\\]>') // CDATA section
   .replace('comment', _inlineComment)
-  .replace('attribute', _attribute)
+  .replace('attribute', /\s+[a-zA-Z:_][\w.:-]*(?:\s*=\s*"[^"]*"|\s*=\s*'[^']*'|\s*=\s*[^\s"'=<>`]+)?/)
   .getRegex();
 
 const _inlineLabel = /(?:\[(?:\\.|[^\[\]\\])*\]|\\.|`[^`]*`|[^\[\]\\`])*?/;
-const _href = /<(?:\\.|[^\n<>\\])+>|[^\s\x00-\x1f]*/;
-const _inlineTitle = /"(?:\\"?|[^"\\])*"|'(?:\\'?|[^'\\])*'|\((?:\\\)?|[^)\\])*\)/;
 
-link = edit(link)
+const link = edit(/^!?\[(label)\]\(\s*(href)(?:\s+(title))?\s*\)/)
   .replace('label', _inlineLabel)
-  .replace('href', _href)
-  .replace('title', _inlineTitle)
+  .replace('href', /<(?:\\.|[^\n<>\\])+>|[^\s\x00-\x1f]*/)
+  .replace('title', /"(?:\\"?|[^"\\])*"|'(?:\\'?|[^'\\])*'|\((?:\\\)?|[^)\\])*\)/)
   .getRegex();
 
-reflink = edit(reflink)
+const reflink = edit(/^!?\[(label)\]\[(ref)\]/)
   .replace('label', _inlineLabel)
-  .replace('ref', _label)
+  .replace('ref', _blockLabel)
   .getRegex();
 
-nolink = edit(nolink)
-  .replace('ref', _label)
+const nolink = edit(/^!?\[(ref)\](?:\[\])?/)
+  .replace('ref', _blockLabel)
   .getRegex();
 
-const reflinkSearch = edit(reflinkSearchString, 'g')
+const reflinkSearch = edit('reflink|nolink(?!\\()', 'g')
   .replace('reflink', reflink)
   .replace('nolink', nolink)
   .getRegex();
@@ -262,14 +237,13 @@ const reflinkSearch = edit(reflinkSearchString, 'g')
  */
 
 const inlineNormal = {
-  _escapes,
   _backpedal: noopTest, // only used for GFM url
   anyPunctuation,
   autolink,
   blockSkip,
   br,
-  code,
-  del,
+  code: inlineCode,
+  del: noopTest,
   emStrongLDelim,
   emStrongRDelimAst,
   emStrongRDelimUnd,
@@ -280,15 +254,17 @@ const inlineNormal = {
   reflink,
   reflinkSearch,
   tag,
-  text,
-  url
+  text: inlineText,
+  url: noopTest
 };
+
+type InlineKeys = keyof typeof inlineNormal;
 
 /**
  * Pedantic Inline Grammar
  */
 
-const inlinePedantic: Record<keyof typeof inlineNormal, RegExp> = {
+const inlinePedantic: Record<InlineKeys, RegExp> = {
   ...inlineNormal,
   link: edit(/^!?\[(label)\]\((.*?)\)/)
     .replace('label', _inlineLabel)
@@ -305,7 +281,7 @@ const gfmUrl = edit(/^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^
   .replace('email', /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/)
   .getRegex();
 
-const inlineGfm: Record<keyof typeof inlineNormal, RegExp> = {
+const inlineGfm: Record<InlineKeys, RegExp> = {
   ...inlineNormal,
   escape: edit(escape).replace('])', '~|])').getRegex(),
   url: gfmUrl,
@@ -318,7 +294,7 @@ const inlineGfm: Record<keyof typeof inlineNormal, RegExp> = {
  * GFM + Line Breaks Inline Grammar
  */
 
-const inlineBreaks: Record<keyof typeof inlineNormal, RegExp> = {
+const inlineBreaks: Record<InlineKeys, RegExp> = {
   ...inlineGfm,
   br: edit(br).replace('{2,}', '*').getRegex(),
   text: edit(inlineGfm.text)
@@ -341,6 +317,6 @@ export const inline = {
 };
 
 export interface Rules {
-  block: Record<keyof typeof blockNormal, RegExp>
-  inline: Record<keyof typeof inlineNormal, RegExp>
+  block: Record<BlockKeys, RegExp>
+  inline: Record<InlineKeys, RegExp>
 }

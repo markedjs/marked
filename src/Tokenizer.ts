@@ -111,7 +111,7 @@ export class _Tokenizer {
       return {
         type: 'code',
         raw,
-        lang: cap[2] ? cap[2].trim().replace(this.rules.inline._escapes, '$1') : cap[2],
+        lang: cap[2] ? cap[2].trim().replace(this.rules.inline.anyPunctuation, '$1') : cap[2],
         text
       };
     }
@@ -384,8 +384,8 @@ export class _Tokenizer {
     const cap = this.rules.block.def.exec(src);
     if (cap) {
       const tag = cap[1].toLowerCase().replace(/\s+/g, ' ');
-      const href = cap[2] ? cap[2].replace(/^<(.*)>$/, '$1').replace(this.rules.inline._escapes, '$1') : '';
-      const title = cap[3] ? cap[3].substring(1, cap[3].length - 1).replace(this.rules.inline._escapes, '$1') : cap[3];
+      const href = cap[2] ? cap[2].replace(/^<(.*)>$/, '$1').replace(this.rules.inline.anyPunctuation, '$1') : '';
+      const title = cap[3] ? cap[3].substring(1, cap[3].length - 1).replace(this.rules.inline.anyPunctuation, '$1') : cap[3];
       return {
         type: 'def',
         tag,
@@ -581,8 +581,8 @@ export class _Tokenizer {
         }
       }
       return outputLink(cap, {
-        href: href ? href.replace(this.rules.inline._escapes, '$1') : href,
-        title: title ? title.replace(this.rules.inline._escapes, '$1') : title
+        href: href ? href.replace(this.rules.inline.anyPunctuation, '$1') : href,
+        title: title ? title.replace(this.rules.inline.anyPunctuation, '$1') : title
       }, cap[0], this.lexer);
     }
   }
