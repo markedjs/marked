@@ -182,7 +182,7 @@ export class _Tokenizer {
         ordered: isordered,
         start: isordered ? +bull.slice(0, -1) : '',
         loose: false,
-        items: [] as Tokens.ListItem[]
+        items: []
       };
 
       bull = isordered ? `\\d{1,9}\\${bull.slice(-1)}` : `\\${bull}`;
@@ -207,10 +207,10 @@ export class _Tokenizer {
           break;
         }
 
-        raw = cap[0] as string;
+        raw = cap[0];
         src = src.substring(raw.length);
 
-        let line = cap[2].split('\n', 1)[0].replace(/^\t+/, (t: string) => ' '.repeat(3 * t.length)) as string;
+        let line = cap[2].split('\n', 1)[0].replace(/^\t+/, (t: string) => ' '.repeat(3 * t.length));
         let nextLine = src.split('\n', 1)[0];
 
         let indent = 0;
@@ -338,7 +338,7 @@ export class _Tokenizer {
 
       // Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
       list.items[list.items.length - 1].raw = raw.trimEnd();
-      (list.items[list.items.length - 1] as Tokens.ListItem).text = itemContents.trimEnd();
+      (list.items[list.items.length - 1]).text = itemContents.trimEnd();
       list.raw = list.raw.trimEnd();
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first

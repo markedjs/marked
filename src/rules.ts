@@ -5,6 +5,7 @@ import {
 /**
  * Block-Level Grammar
  */
+
 const newline = /^(?: *(?:\n|$))+/;
 const blockCode = /^( {4}[^\n]+(?:\n(?: *(?:\n|$))*)?)+/;
 const fences = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}\1[~`]* *(?=\n|$)|$)/;
@@ -277,6 +278,7 @@ const inlinePedantic: Record<InlineKeys, RegExp> = {
 /**
  * GFM Inline Grammar
  */
+
 const gfmUrl = edit(/^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/, 'i')
   .replace('email', /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/)
   .getRegex();
@@ -302,6 +304,10 @@ const inlineBreaks: Record<InlineKeys, RegExp> = {
     .replace(/\{2,\}/g, '*')
     .getRegex()
 };
+
+/**
+ * exports
+ */
 
 export const block = {
   normal: blockNormal,

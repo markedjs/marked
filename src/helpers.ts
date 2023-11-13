@@ -47,17 +47,17 @@ export function unescape(html: string) {
 const caret = /(^|[^\[])\^/g;
 
 export function edit(regex: string | RegExp, opt?: string) {
-  regex = typeof regex === 'string' ? regex : regex.source;
+  let source = typeof regex === 'string' ? regex : regex.source;
   opt = opt || '';
   const obj = {
     replace: (name: string | RegExp, val: string | RegExp) => {
-      val = typeof val === 'object' && 'source' in val ? val.source : val;
-      val = val.replace(caret, '$1');
-      regex = (regex as string).replace(name, val);
+      let valSource = typeof val === 'string' ? val : val.source;
+      valSource = valSource.replace(caret, '$1');
+      source = source.replace(name, valSource);
       return obj;
     },
     getRegex: () => {
-      return new RegExp(regex, opt);
+      return new RegExp(source, opt);
     }
   };
   return obj;
