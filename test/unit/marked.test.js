@@ -569,7 +569,7 @@ used extension2 walked</p>
       assert.ok(marked.defaults.async);
     });
 
-    it.only('should be async if any extension in use is async', () => {
+    it('should be async if any extension in use is async', () => {
       marked.use({ async: true });
       marked.use({ async: false });
 
