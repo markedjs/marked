@@ -26,13 +26,13 @@ const markedInstance = new Marked();
 export function marked(src: string, options: MarkedOptions & { async: true }): Promise<string>;
 
 /**
- * Compiles markdown to HTML synchronously.
+ * Compiles markdown to HTML.
  *
  * @param src String of markdown source to be compiled
  * @param options Optional hash of options
- * @return String of compiled HTML
+ * @return String of compiled HTML. Wil be a Promise of string if async is set to true by any extensions.
  */
-export function marked(src: string, options?: MarkedOptions): string;
+export function marked(src: string, options?: MarkedOptions): string | Promise<string>;
 export function marked(src: string, opt?: MarkedOptions): string | Promise<string> {
   return markedInstance.parse(src, opt);
 }
