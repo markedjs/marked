@@ -117,6 +117,15 @@ $ marked -s 'line1\nline2' -c config.json
 </body>
 </html>
 ```
+or import esm module
+
+```html
+<script type="module">
+  import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+  document.getElementById('content').innerHTML =
+    marked.parse('# Marked in the browser\n\nRendered by **marked**.');
+</script>
+```
 
 **Node.js**
 

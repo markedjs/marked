@@ -37,13 +37,13 @@ Also read about:
 
 ## Installation
 
-**CLI:** 
+**CLI:**
 
-```sh 
+```sh
 npm install -g marked
 ```
 
-**In-browser:** 
+**In-browser:**
 
 ```sh
 npm install marked
@@ -91,6 +91,15 @@ $ marked --help
   </script>
 </body>
 </html>
+```
+or import esm module
+
+```html
+<script type="module">
+  import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+  document.getElementById('content').innerHTML =
+    marked.parse('# Marked in the browser\n\nRendered by **marked**.');
+</script>
 ```
 
 ## License
