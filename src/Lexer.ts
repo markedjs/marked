@@ -3,7 +3,6 @@ import { _defaults } from './defaults.ts';
 import { block, inline } from './rules.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions, TokenizerExtension } from './MarkedOptions.ts';
-import type { Rules } from './rules.ts';
 
 /**
  * Block Lexer
@@ -22,8 +21,7 @@ export class _Lexer {
 
   constructor(options?: MarkedOptions) {
     // TokenList cannot be created in one go
-    // @ts-expect-error
-    this.tokens = [];
+    this.tokens = [] as unknown as TokensList;
     this.tokens.links = Object.create(null);
     this.options = options || _defaults;
     this.options.tokenizer = this.options.tokenizer || new _Tokenizer();
@@ -59,7 +57,7 @@ export class _Lexer {
   /**
    * Expose Rules
    */
-  static get rules(): Rules {
+  static get rules() {
     return {
       block,
       inline

@@ -1,5 +1,3 @@
-import type { Rule } from './rules.ts';
-
 /**
  * Helpers
  */
@@ -48,18 +46,18 @@ export function unescape(html: string) {
 
 const caret = /(^|[^\[])\^/g;
 
-export function edit(regex: Rule, opt?: string) {
-  regex = typeof regex === 'string' ? regex : regex.source;
+export function edit(regex: string | RegExp, opt?: string) {
+  let source = typeof regex === 'string' ? regex : regex.source;
   opt = opt || '';
   const obj = {
     replace: (name: string | RegExp, val: string | RegExp) => {
-      val = typeof val === 'object' && 'source' in val ? val.source : val;
-      val = val.replace(caret, '$1');
-      regex = (regex as string).replace(name, val);
+      let valSource = typeof val === 'string' ? val : val.source;
+      valSource = valSource.replace(caret, '$1');
+      source = source.replace(name, valSource);
       return obj;
     },
     getRegex: () => {
-      return new RegExp(regex, opt);
+      return new RegExp(source, opt);
     }
   };
   return obj;
@@ -74,7 +72,7 @@ export function cleanUrl(href: string) {
   return href;
 }
 
-export const noopTest = { exec: () => null };
+export const noopTest = { exec: () => null } as unknown as RegExp;
 
 export function splitCells(tableRow: string, count?: number) {
   // ensure that every cell-delimiting pipe has a space

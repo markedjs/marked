@@ -1,11 +1,10 @@
 /* eslint-disable */
 import { marked } from 'marked';
-import { expectType } from 'ts-expect';
 
 // other exports
 
 import { Lexer, Parser, Tokenizer, Renderer, TextRenderer } from 'marked';
-import type { Tokens, MarkedExtension, TokenizerAndRendererExtension, Token ,TokenizerExtension, MarkedOptions, TokensList, Rules, RendererExtension } from 'marked';
+import type { Tokens, MarkedExtension, TokenizerAndRendererExtension, Token ,TokenizerExtension, MarkedOptions, TokensList, RendererExtension } from 'marked';
 
 const tokenizer = new marked.Tokenizer();
 
@@ -76,7 +75,7 @@ console.log(tokens3);
 // verifying that the second param to inlineTokens can be ignored
 const tokens3a = lexer.inlineTokens(text);
 console.log(tokens3a);
-const re: Rules = marked.Lexer.rules;
+const re: Record<string, Record<string, Record<string, RegExp>>> = marked.Lexer.rules;
 const lexerOptions: MarkedOptions = lexer.options;
 
 const renderer = new marked.Renderer();
