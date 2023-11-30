@@ -323,3 +323,10 @@ marked.use({
     }
   }
 });
+marked.use({
+  hooks: {
+    tokens(tokens) {
+      return tokens;
+    }
+  }
+});

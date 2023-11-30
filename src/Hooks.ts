@@ -1,5 +1,6 @@
 import { _defaults } from './defaults.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
+import type { Token, TokensList } from './Tokens.ts';
 
 export class _Hooks {
   options: MarkedOptions;
@@ -10,7 +11,8 @@ export class _Hooks {
 
   static passThroughHooks = new Set([
     'preprocess',
-    'postprocess'
+    'postprocess',
+    'tokens'
   ]);
 
   /**
@@ -25,5 +27,12 @@ export class _Hooks {
    */
   postprocess(html: string) {
     return html;
+  }
+
+  /**
+   * Process tokens before walk tokens
+   */
+  tokens(tokens: Token[] | TokensList) {
+    return tokens;
   }
 }
