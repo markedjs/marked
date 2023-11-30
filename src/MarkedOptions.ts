@@ -72,8 +72,8 @@ export interface MarkedExtension {
    * postprocess is called to process html after marked has finished parsing.
    */
   hooks?: {
-    preprocess: (markdown: string) => string | Promise<string>,
-    postprocess: (html: string) => string | Promise<string>,
+    preprocess?: (markdown: string) => string | Promise<string>,
+    postprocess?: (html: string) => string | Promise<string>,
     // eslint-disable-next-line no-use-before-define
     options?: MarkedOptions
   } | null;
