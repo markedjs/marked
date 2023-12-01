@@ -64,8 +64,8 @@ export interface MarkedExtension {
    * Add tokenizers and renderers to marked
    */
   extensions?:
-    | TokenizerAndRendererExtension[]
-    | undefined | null;
+  | TokenizerAndRendererExtension[]
+  | undefined | null;
 
   /**
    * Enable GitHub flavored markdown.
@@ -111,7 +111,7 @@ export interface MarkedExtension {
   walkTokens?: ((token: Token) => void | Promise<void>) | undefined | null;
 }
 
-export interface MarkedOptions extends Omit<MarkedExtension, 'hooks' | 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
+interface _MarkedOptions extends Omit<MarkedExtension, 'hooks' | 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
   /**
    * Hooks are methods that hook into some part of marked.
    */
@@ -149,4 +149,22 @@ export interface MarkedOptions extends Omit<MarkedExtension, 'hooks' | 'renderer
    * walkTokens function returns array of values for Promise.all
    */
   walkTokens?: null | ((token: Token) => void | Promise<void> | (void | Promise<void>)[]);
+}
+
+export interface MarkedSyncOptions extends _MarkedOptions {
+  async?: false;
+}
+
+export interface MarkedAsyncOptions extends _MarkedOptions {
+  async: true;
+}
+
+export type MarkedOptions = MarkedSyncOptions | MarkedAsyncOptions;
+
+export function isAsyncOptions(options: MarkedOptions): options is MarkedAsyncOptions {
+  return 'async' in options && options.async === true;
+}
+
+export function isSyncOptions(options: MarkedOptions): options is MarkedSyncOptions {
+  return !isAsyncOptions(options);
 }

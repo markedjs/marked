@@ -10,7 +10,7 @@ import {
   changeDefaults,
   _defaults
 } from './defaults.ts';
-import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
+import type { MarkedExtension, MarkedOptions, MarkedAsyncOptions, MarkedSyncOptions } from './MarkedOptions.ts';
 import type { Token, TokensList } from './Tokens.ts';
 import type { MaybePromise } from './Instance.ts';
 
@@ -23,8 +23,15 @@ const markedInstance = new Marked();
  * @param options Hash of options, having async: true
  * @return Promise of string of compiled HTML
  */
-export function marked(src: string, options: MarkedOptions & { async: true }): Promise<string>;
-
+export function marked(src: string, options: MarkedAsyncOptions): Promise<string>;
+/**
+ * Compiles markdown to HTML synchronously.
+ *
+ * @param src String of markdown source to be compiled
+ * @param options Hash of options, having async: false or undefined
+ * @return String of compiled HTML
+ */
+export function marked(src: string, options?: MarkedSyncOptions): string;
 /**
  * Compiles markdown to HTML.
  *
@@ -115,5 +122,6 @@ export { _TextRenderer as TextRenderer } from './TextRenderer.ts';
 export { _Hooks as Hooks } from './Hooks.ts';
 export { Marked } from './Instance.ts';
 export type * from './MarkedOptions.ts';
+export { isSyncOptions, isAsyncOptions } from './MarkedOptions.ts';
 export type * from './rules.ts';
 export type * from './Tokens.ts';

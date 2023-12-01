@@ -3,6 +3,7 @@ import { marked } from 'marked';
 
 // other exports
 
+import { isAsyncOptions, isSyncOptions } from 'marked';
 import { Lexer, Parser, Tokenizer, Renderer, TextRenderer } from 'marked';
 import type { Tokens, MarkedExtension, TokenizerAndRendererExtension, Token ,TokenizerExtension, MarkedOptions, TokensList, RendererExtension } from 'marked';
 
@@ -88,6 +89,20 @@ renderer.hr = () => {
 renderer.checkbox = checked => {
   return checked ? 'CHECKED' : 'UNCHECKED';
 };
+
+options = {...options, async: false};
+
+if (isSyncOptions(options)) {
+  console.log(await marked.parseInline('12) I am using __markdown__.', options));
+}
+
+options = {...options, async: true};
+
+if (isAsyncOptions(options)) {
+  (async () => {
+    console.log(await marked.parseInline('12) I am using __markdown__.', options));
+  })()
+}
 
 class ExtendedRenderer extends marked.Renderer {
   code = (code: string, language: string | undefined, isEscaped: boolean): string => super.code(code, language, isEscaped);
@@ -246,21 +261,13 @@ marked.use(asyncExtension);
 const md = '# foobar';
 const asyncMarked: string = await marked(md, { async: true });
 const promiseMarked: Promise<string> = marked(md, { async: true });
-// @ts-expect-error marked can still be async if an extension sets `async: true`
 const notAsyncMarked: string = marked(md, { async: false });
-// @ts-expect-error marked can still be async if an extension sets `async: true`
 const defaultMarked: string = marked(md);
-// as string can be used if no extensions set `async: true`
-const stringMarked: string = marked(md) as string;
 
 const asyncMarkedParse: string = await marked.parse(md, { async: true });
 const promiseMarkedParse: Promise<string> = marked.parse(md, { async: true });
-// @ts-expect-error marked can still be async if an extension sets `async: true`
 const notAsyncMarkedParse: string = marked.parse(md, { async: false });
-// @ts-expect-error marked can still be async if an extension sets `async: true`
 const defaultMarkedParse: string = marked.parse(md);
-// as string can be used if no extensions set `async: true`
-const stringMarkedParse: string = marked.parse(md) as string;
 })();
 
 // Tests for List and ListItem

@@ -8,7 +8,12 @@ import { _TextRenderer } from './TextRenderer.ts';
 import {
   escape
 } from './helpers.ts';
-import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
+import {
+  isAsyncOptions,
+  isSyncOptions,
+  type MarkedExtension,
+  type MarkedOptions
+} from './MarkedOptions.ts';
 import type { Token, Tokens, TokensList } from './Tokens.ts';
 
 export type MaybePromise = void | Promise<void>;
@@ -265,11 +270,11 @@ export class Marked {
 
   #parseMarkdown(lexer: (src: string, options?: MarkedOptions) => TokensList | Token[], parser: (tokens: Token[], options?: MarkedOptions) => string) {
     return (src: string, options?: MarkedOptions | undefined | null): string | Promise<string> => {
-      const origOpt = { ...options };
-      const opt = { ...this.defaults, ...origOpt };
+      const origOpt: MarkedOptions = { ...options };
+      const opt: MarkedOptions = { ...this.defaults, ...origOpt };
 
       // Show warning if an extension set async to true but the parse was called with async: false
-      if (this.defaults.async === true && origOpt.async === false) {
+      if (isAsyncOptions(this.defaults) && isSyncOptions(origOpt)) {
         if (!opt.silent) {
           console.warn('marked(): The async option was set to true by an extension. The async: false option sent to parse will be ignored.');
         }
@@ -292,7 +297,7 @@ export class Marked {
         opt.hooks.options = opt;
       }
 
-      if (opt.async) {
+      if (isAsyncOptions(opt)) {
         return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
           .then(src => lexer(src, opt))
           .then(tokens => opt.hooks ? opt.hooks.processAllTokens(tokens) : tokens)
