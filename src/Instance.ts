@@ -142,8 +142,12 @@ export class Marked {
       if (pack.renderer) {
         const renderer = this.defaults.renderer || new _Renderer(this.defaults);
         for (const prop in pack.renderer) {
-          if (!(prop in renderer) || prop === 'options') {
+          if (!(prop in renderer)) {
             throw new Error(`renderer '${prop}' does not exist`);
+          }
+          if (prop === 'options') {
+            // ignore options property
+            continue;
           }
           const rendererProp = prop as Exclude<keyof _Renderer, 'options'>;
           const rendererFunc = pack.renderer[rendererProp] as GenericRendererFunction;
@@ -162,8 +166,12 @@ export class Marked {
       if (pack.tokenizer) {
         const tokenizer = this.defaults.tokenizer || new _Tokenizer(this.defaults);
         for (const prop in pack.tokenizer) {
-          if (!(prop in tokenizer) || ['options', 'rules', 'lexer'].includes(prop)) {
+          if (!(prop in tokenizer)) {
             throw new Error(`tokenizer '${prop}' does not exist`);
+          }
+          if (['options', 'rules', 'lexer'].includes(prop)) {
+            // ignore options, rules, and lexer properties
+            continue;
           }
           const tokenizerProp = prop as Exclude<keyof _Tokenizer, 'options' | 'rules' | 'lexer'>;
           const tokenizerFunc = pack.tokenizer[tokenizerProp] as UnknownFunction;
@@ -185,8 +193,12 @@ export class Marked {
       if (pack.hooks) {
         const hooks = this.defaults.hooks || new _Hooks();
         for (const prop in pack.hooks) {
-          if (!(prop in hooks) || prop === 'options') {
+          if (!(prop in hooks)) {
             throw new Error(`hook '${prop}' does not exist`);
+          }
+          if (prop === 'options') {
+            // ignore options property
+            continue;
           }
           const hooksProp = prop as Exclude<keyof _Hooks, 'options'>;
           const hooksFunc = pack.hooks[hooksProp] as UnknownFunction;
