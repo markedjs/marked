@@ -36,7 +36,7 @@ export type TokenizerAndRendererExtension = TokenizerExtension | RendererExtensi
 
 type HooksApi = Omit<_Hooks, 'constructor' | 'options'>;
 type HooksObject = {
-  [K in keyof HooksApi]?: (...args: Parameters<HooksApi[K]>) => ReturnType<HooksApi[K]> | false
+  [K in keyof HooksApi]?: (...args: Parameters<HooksApi[K]>) => ReturnType<HooksApi[K]> | Promise<ReturnType<HooksApi[K]>>
 };
 
 type RendererApi = Omit<_Renderer, 'constructor' | 'options'>;

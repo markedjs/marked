@@ -330,3 +330,17 @@ marked.use({
     }
   }
 });
+marked.use({
+  async: true,
+  hooks: {
+    async preprocess(markdown) {
+      return markdown;
+    },
+    async postprocess(html) {
+      return html;
+    },
+    async tokens(tokens) {
+      return tokens;
+    }
+  }
+});
