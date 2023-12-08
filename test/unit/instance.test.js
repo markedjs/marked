@@ -1,5 +1,5 @@
-import { marked, Marked, Renderer } from '../../lib/marked.esm.js';
-import { describe, it } from 'node:test';
+import { marked, Marked, Renderer, Tokenizer, Hooks } from '../../lib/marked.esm.js';
+import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert';
 
 describe('Marked', () => {
@@ -88,5 +88,55 @@ describe('Marked', () => {
     const html = marked1.parser(tokens);
 
     assert.strictEqual(html, 'test');
+  });
+
+  describe('use class objects', () => {
+    beforeEach(() => {
+      marked.setOptions(marked.getDefaults());
+    });
+
+    it('allow new Renderer()', () => {
+      const marked1 = new Marked();
+      const newRenderer = new Renderer();
+      newRenderer.heading = () => 'im marked renderer';
+
+      marked1.use({ renderer: newRenderer });
+      marked.use({ renderer: newRenderer });
+
+      assert.strictEqual(marked1.parse('# header'), 'im marked renderer');
+      assert.strictEqual(marked.parse('# header'), 'im marked renderer');
+    });
+
+    it('allow new Tokenizer()', () => {
+      const marked1 = new Marked();
+      const newTokenizer = new Tokenizer();
+      newTokenizer.heading = function(src) {
+        return {
+          type: 'heading',
+          raw: src,
+          depth: 1,
+          text: 'im marked tokenizer',
+          tokens: this.lexer.inlineTokens('im marked tokenizer')
+        };
+      };
+
+      marked1.use({ tokenizer: newTokenizer });
+      marked.use({ tokenizer: newTokenizer });
+
+      assert.strictEqual(marked1.parse('# header'), '<h1>im marked tokenizer</h1>\n');
+      assert.strictEqual(marked.parse('# header'), '<h1>im marked tokenizer</h1>\n');
+    });
+
+    it('allow new Hooks()', () => {
+      const marked1 = new Marked();
+      const newHooks = new Hooks();
+      newHooks.preprocess = () => 'im marked hooks';
+
+      marked1.use({ hooks: newHooks });
+      marked.use({ hooks: newHooks });
+
+      assert.strictEqual(marked1.parse('# header'), '<p>im marked hooks</p>\n');
+      assert.strictEqual(marked.parse('# header'), '<p>im marked hooks</p>\n');
+    });
   });
 });
