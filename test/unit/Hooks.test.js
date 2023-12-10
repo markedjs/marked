@@ -108,8 +108,8 @@ describe('Hooks', () => {
   it('should process tokens before walkTokens', () => {
     marked.use({
       hooks: {
-        tokens(tokens) {
-          tokens.push(createHeadingToken('tokens'));
+        processAllTokens(tokens) {
+          tokens.push(createHeadingToken('processAllTokens'));
           return tokens;
         }
       },
@@ -121,16 +121,16 @@ describe('Hooks', () => {
       }
     });
     const html = marked.parse('*text*');
-    assert.strictEqual(html.trim(), '<p><em>text</em></p>\n<h1>tokens walked</h1>');
+    assert.strictEqual(html.trim(), '<p><em>text</em></p>\n<h1>processAllTokens walked</h1>');
   });
 
   it('should process tokens async before walkTokens', async() => {
     marked.use({
       async: true,
       hooks: {
-        async tokens(tokens) {
+        async processAllTokens(tokens) {
           await timeout();
-          tokens.push(createHeadingToken('tokens async'));
+          tokens.push(createHeadingToken('processAllTokens async'));
           return tokens;
         }
       },
@@ -144,7 +144,7 @@ describe('Hooks', () => {
     const promise = marked.parse('*text*');
     assert.ok(promise instanceof Promise);
     const html = await promise;
-    assert.strictEqual(html.trim(), '<p><em>text</em></p>\n<h1>tokens async walked</h1>');
+    assert.strictEqual(html.trim(), '<p><em>text</em></p>\n<h1>processAllTokens async walked</h1>');
   });
 
   it('should process all hooks in reverse', async() => {
@@ -156,8 +156,8 @@ describe('Hooks', () => {
         postprocess(html) {
           return html + '<h1>postprocess1</h1>\n';
         },
-        tokens(tokens) {
-          tokens.push(createHeadingToken('tokens1'));
+        processAllTokens(tokens) {
+          tokens.push(createHeadingToken('processAllTokens1'));
           return tokens;
         }
       }
@@ -172,8 +172,8 @@ describe('Hooks', () => {
           await timeout();
           return html + '<h1>postprocess2 async</h1>\n';
         },
-        tokens(tokens) {
-          tokens.push(createHeadingToken('tokens2'));
+        processAllTokens(tokens) {
+          tokens.push(createHeadingToken('processAllTokens2'));
           return tokens;
         }
       }
@@ -185,8 +185,8 @@ describe('Hooks', () => {
 <h1>preprocess1</h1>
 <h1>preprocess2</h1>
 <p><em>text</em></p>
-<h1>tokens2</h1>
-<h1>tokens1</h1>
+<h1>processAllTokens2</h1>
+<h1>processAllTokens1</h1>
 <h1>postprocess2 async</h1>
 <h1>postprocess1</h1>`);
   });

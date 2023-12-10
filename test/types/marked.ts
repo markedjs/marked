@@ -325,7 +325,7 @@ marked.use({
 });
 marked.use({
   hooks: {
-    tokens(tokens) {
+    processAllTokens(tokens) {
       return tokens;
     }
   }
@@ -339,7 +339,7 @@ marked.use({
     async postprocess(html) {
       return html;
     },
-    async tokens(tokens) {
+    async processAllTokens(tokens) {
       return tokens;
     }
   }

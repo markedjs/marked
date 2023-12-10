@@ -282,7 +282,7 @@ export class Marked {
       if (opt.async) {
         return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
           .then(src => lexer(src, opt))
-          .then(tokens => opt.hooks ? opt.hooks.tokens(tokens) : tokens)
+          .then(tokens => opt.hooks ? opt.hooks.processAllTokens(tokens) : tokens)
           .then(tokens => opt.walkTokens ? Promise.all(this.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
           .then(tokens => parser(tokens, opt))
           .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
@@ -295,7 +295,7 @@ export class Marked {
         }
         let tokens = lexer(src, opt);
         if (opt.hooks) {
-          tokens = opt.hooks.tokens(tokens) as Token[] | TokensList;
+          tokens = opt.hooks.processAllTokens(tokens) as Token[] | TokensList;
         }
         if (opt.walkTokens) {
           this.walkTokens(tokens, opt.walkTokens);

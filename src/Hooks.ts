@@ -12,7 +12,7 @@ export class _Hooks {
   static passThroughHooks = new Set([
     'preprocess',
     'postprocess',
-    'tokens'
+    'processAllTokens'
   ]);
 
   /**
@@ -30,9 +30,9 @@ export class _Hooks {
   }
 
   /**
-   * Process tokens before walk tokens
+   * Process all tokens before walk tokens
    */
-  tokens(tokens: Token[] | TokensList) {
+  processAllTokens(tokens: Token[] | TokensList) {
     return tokens;
   }
 }
