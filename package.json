@@ -56,7 +56,7 @@
     "@rollup/plugin-typescript": "^11.1.5",
     "@semantic-release/commit-analyzer": "^11.1.0",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^9.2.4",
+    "@semantic-release/github": "^9.2.5",
     "@semantic-release/npm": "^11.0.1",
     "@semantic-release/release-notes-generator": "^12.1.0",
     "@typescript-eslint/eslint-plugin": "^6.13.1",
