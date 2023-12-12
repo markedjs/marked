@@ -204,23 +204,25 @@ export class Marked {
           const hooksFunc = pack.hooks[hooksProp] as UnknownFunction;
           const prevHook = hooks[hooksProp] as UnknownFunction;
           if (_Hooks.passThroughHooks.has(prop)) {
-            hooks[hooksProp] = (arg: string | undefined) => {
+            // @ts-expect-error cannot type hook function dynamically
+            hooks[hooksProp] = (arg: unknown) => {
               if (this.defaults.async) {
                 return Promise.resolve(hooksFunc.call(hooks, arg)).then(ret => {
-                  return prevHook.call(hooks, ret) as string;
+                  return prevHook.call(hooks, ret);
                 });
               }
 
               const ret = hooksFunc.call(hooks, arg);
-              return prevHook.call(hooks, ret) as string;
+              return prevHook.call(hooks, ret);
             };
           } else {
+            // @ts-expect-error cannot type hook function dynamically
             hooks[hooksProp] = (...args: unknown[]) => {
               let ret = hooksFunc.apply(hooks, args);
               if (ret === false) {
                 ret = prevHook.apply(hooks, args);
               }
-              return ret as string;
+              return ret;
             };
           }
         }
@@ -292,6 +294,7 @@ export class Marked {
       if (opt.async) {
         return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
           .then(src => lexer(src, opt))
+          .then(tokens => opt.hooks ? opt.hooks.processAllTokens(tokens) : tokens)
           .then(tokens => opt.walkTokens ? Promise.all(this.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
           .then(tokens => parser(tokens, opt))
           .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
@@ -302,7 +305,10 @@ export class Marked {
         if (opt.hooks) {
           src = opt.hooks.preprocess(src) as string;
         }
-        const tokens = lexer(src, opt);
+        let tokens = lexer(src, opt);
+        if (opt.hooks) {
+          tokens = opt.hooks.processAllTokens(tokens) as Token[] | TokensList;
+        }
         if (opt.walkTokens) {
           this.walkTokens(tokens, opt.walkTokens);
         }

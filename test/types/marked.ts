@@ -323,3 +323,24 @@ marked.use({
     }
   }
 });
+marked.use({
+  hooks: {
+    processAllTokens(tokens) {
+      return tokens;
+    }
+  }
+});
+marked.use({
+  async: true,
+  hooks: {
+    async preprocess(markdown) {
+      return markdown;
+    },
+    async postprocess(html) {
+      return html;
+    },
+    async processAllTokens(tokens) {
+      return tokens;
+    }
+  }
+});

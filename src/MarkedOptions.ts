@@ -3,6 +3,7 @@ import type { _Parser } from './Parser.ts';
 import type { _Lexer } from './Lexer.ts';
 import type { _Renderer } from './Renderer.ts';
 import type { _Tokenizer } from './Tokenizer.ts';
+import type { _Hooks } from './Hooks.ts';
 
 export interface TokenizerThis {
   lexer: _Lexer;
@@ -32,6 +33,11 @@ export interface RendererExtension {
 }
 
 export type TokenizerAndRendererExtension = TokenizerExtension | RendererExtension | (TokenizerExtension & RendererExtension);
+
+type HooksApi = Omit<_Hooks, 'constructor' | 'options'>;
+type HooksObject = {
+  [K in keyof HooksApi]?: (...args: Parameters<HooksApi[K]>) => ReturnType<HooksApi[K]> | Promise<ReturnType<HooksApi[K]>>
+};
 
 type RendererApi = Omit<_Renderer, 'constructor' | 'options'>;
 type RendererObject = {
@@ -69,14 +75,10 @@ export interface MarkedExtension {
   /**
    * Hooks are methods that hook into some part of marked.
    * preprocess is called to process markdown before sending it to marked.
+   * processAllTokens is called with the TokensList before walkTokens.
    * postprocess is called to process html after marked has finished parsing.
    */
-  hooks?: {
-    preprocess: (markdown: string) => string | Promise<string>,
-    postprocess: (html: string) => string | Promise<string>,
-    // eslint-disable-next-line no-use-before-define
-    options?: MarkedOptions
-  } | null;
+  hooks?: HooksObject | undefined | null;
 
   /**
    * Conform to obscure parts of markdown.pl as much as possible. Don't fix any of the original markdown bugs or poor behavior.
@@ -109,7 +111,12 @@ export interface MarkedExtension {
   walkTokens?: ((token: Token) => void | Promise<void>) | undefined | null;
 }
 
-export interface MarkedOptions extends Omit<MarkedExtension, 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
+export interface MarkedOptions extends Omit<MarkedExtension, 'hooks' | 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
+  /**
+   * Hooks are methods that hook into some part of marked.
+   */
+  hooks?: _Hooks | undefined | null;
+
   /**
    * Type: object Default: new Renderer()
    *
