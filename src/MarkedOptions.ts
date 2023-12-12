@@ -75,7 +75,7 @@ export interface MarkedExtension {
   /**
    * Hooks are methods that hook into some part of marked.
    * preprocess is called to process markdown before sending it to marked.
-   * tokens is called with the TokensList before walkTokens.
+   * processAllTokens is called with the TokensList before walkTokens.
    * postprocess is called to process html after marked has finished parsing.
    */
   hooks?: HooksObject | undefined | null;
