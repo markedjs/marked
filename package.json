@@ -51,7 +51,7 @@
   ],
   "devDependencies": {
     "@markedjs/testutils": "9.1.5-0",
-    "@arethetypeswrong/cli": "^0.13.3",
+    "@arethetypeswrong/cli": "^0.13.5",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
     "@semantic-release/commit-analyzer": "^11.1.0",
