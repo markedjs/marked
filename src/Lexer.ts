@@ -93,6 +93,7 @@ export class _Lexer {
       const next = this.inlineQueue[i];
       this.inlineTokens(next.src, next.tokens);
     }
+    this.inlineQueue = [];
 
     return this.tokens;
   }
