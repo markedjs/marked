@@ -89,10 +89,11 @@ export class _Lexer {
 
     this.blockTokens(src, this.tokens);
 
-    let next;
-    while (next = this.inlineQueue.shift()) {
+    for (let i = 0; i < this.inlineQueue.length; i++) {
+      const next = this.inlineQueue[i];
       this.inlineTokens(next.src, next.tokens);
     }
+    this.inlineQueue = [];
 
     return this.tokens;
   }
