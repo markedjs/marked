@@ -46,11 +46,6 @@ let options: MarkedOptions = {
 options = marked.getDefaults();
 options = marked.defaults;
 
-function callback(err: Error | null, markdown: string | undefined) {
-  console.log('Callback called!');
-  console.log(markdown);
-}
-
 let myOldMarked: typeof marked = marked.options(options);
 myOldMarked = marked.setOptions(options);
 
