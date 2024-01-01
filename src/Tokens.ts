@@ -36,8 +36,8 @@ export namespace Tokens {
   export interface Code {
     type: 'code';
     raw: string;
-    codeBlockStyle?: 'indented' | undefined;
-    lang?: string | undefined;
+    codeBlockStyle?: 'indented';
+    lang?: string;
     text: string;
     escaped?: boolean;
   }
@@ -94,7 +94,7 @@ export namespace Tokens {
     type: 'list_item';
     raw: string;
     task: boolean;
-    checked?: boolean | undefined;
+    checked?: boolean;
     loose: boolean;
     text: string;
     tokens: Token[];
@@ -107,7 +107,7 @@ export namespace Tokens {
   export interface Paragraph {
     type: 'paragraph';
     raw: string;
-    pre?: boolean | undefined;
+    pre?: boolean;
     text: string;
     tokens: Token[];
   }
@@ -206,7 +206,7 @@ export namespace Tokens {
 
     type: string;
     raw: string;
-    tokens?: Token[] | undefined;
+    tokens?: Token[];
   }
 }
 

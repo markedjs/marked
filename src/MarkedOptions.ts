@@ -16,9 +16,9 @@ export type TokenizerStartFunction = (this: TokenizerThis, src: string) => numbe
 export interface TokenizerExtension {
   name: string;
   level: 'block' | 'inline';
-  start?: TokenizerStartFunction | undefined;
+  start?: TokenizerStartFunction;
   tokenizer: TokenizerExtensionFunction;
-  childTokens?: string[] | undefined;
+  childTokens?: string[];
 }
 
 export interface RendererThis {
@@ -58,19 +58,19 @@ export interface MarkedExtension {
   /**
    * Enable GFM line breaks. This option requires the gfm option to be true.
    */
-  breaks?: boolean | undefined;
+  breaks?: boolean;
 
   /**
    * Add tokenizers and renderers to marked
    */
   extensions?:
     | TokenizerAndRendererExtension[]
-    | undefined | null;
+    | null;
 
   /**
    * Enable GitHub flavored markdown.
    */
-  gfm?: boolean | undefined;
+  gfm?: boolean;
 
   /**
    * Hooks are methods that hook into some part of marked.
@@ -80,29 +80,29 @@ export interface MarkedExtension {
    * provideLexer is called to provide a function to tokenize markdown.
    * provideParser is called to provide a function to parse tokens.
    */
-  hooks?: HooksObject | undefined | null;
+  hooks?: HooksObject | null;
 
   /**
    * Conform to obscure parts of markdown.pl as much as possible. Don't fix any of the original markdown bugs or poor behavior.
    */
-  pedantic?: boolean | undefined;
+  pedantic?: boolean;
 
   /**
    * Type: object Default: new Renderer()
    *
    * An object containing functions to render tokens to HTML.
    */
-  renderer?: RendererObject | undefined | null;
+  renderer?: RendererObject | null;
 
   /**
    * Shows an HTML error message when rendering fails.
    */
-  silent?: boolean | undefined;
+  silent?: boolean;
 
   /**
    * The tokenizer defines how to turn markdown text into tokens.
    */
-  tokenizer?: TokenizerObject | undefined | null;
+  tokenizer?: TokenizerObject | null;
 
   /**
    * The walkTokens function gets called with every token.
@@ -110,26 +110,26 @@ export interface MarkedExtension {
    * Each token is passed by reference so updates are persisted when passed to the parser.
    * The return value of the function is ignored.
    */
-  walkTokens?: ((token: Token) => void | Promise<void>) | undefined | null;
+  walkTokens?: ((token: Token) => void | Promise<void>) | null;
 }
 
 export interface MarkedOptions extends Omit<MarkedExtension, 'hooks' | 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
   /**
    * Hooks are methods that hook into some part of marked.
    */
-  hooks?: _Hooks | undefined | null;
+  hooks?: _Hooks | null;
 
   /**
    * Type: object Default: new Renderer()
    *
    * An object containing functions to render tokens to HTML.
    */
-  renderer?: _Renderer | undefined | null;
+  renderer?: _Renderer | null;
 
   /**
    * The tokenizer defines how to turn markdown text into tokens.
    */
-  tokenizer?: _Tokenizer | undefined | null;
+  tokenizer?: _Tokenizer | null;
 
   /**
    * Custom extensions

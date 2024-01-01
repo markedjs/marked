@@ -34,8 +34,8 @@ export function marked(src: string, options: MarkedOptions & { async: true }): P
  */
 export function marked(src: string, options: MarkedOptions & { async: false }): string;
 export function marked(src: string, options: MarkedOptions & { async: true }): Promise<string>;
-export function marked(src: string, options?: MarkedOptions | undefined | null): string | Promise<string>;
-export function marked(src: string, opt?: MarkedOptions | undefined | null): string | Promise<string> {
+export function marked(src: string, options?: MarkedOptions | null): string | Promise<string>;
+export function marked(src: string, opt?: MarkedOptions | null): string | Promise<string> {
   return markedInstance.parse(src, opt);
 }
 
