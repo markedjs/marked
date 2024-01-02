@@ -64,7 +64,7 @@
     "cheerio": "^1.0.0-rc.12",
     "commonmark": "0.30.0",
     "cross-env": "^7.0.3",
-    "dts-bundle-generator": "^9.0.0",
+    "dts-bundle-generator": "^9.2.1",
     "eslint": "^8.56.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
