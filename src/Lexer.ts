@@ -85,8 +85,7 @@ export class _Lexer {
    * Preprocessing
    */
   lex(src: string) {
-    src = src
-      .replace(other.carriageReturn, '\n');
+    src = src.replace(other.carriageReturn, '\n');
 
     this.blockTokens(src, this.tokens);
 
@@ -109,10 +108,9 @@ export class _Lexer {
       src = src.replace(other.tabCharGlobal, '    ').replace(other.spaceLine, '');
     }
 
-    let token: Tokens.Generic | undefined;
-    let cutSrc;
-
     while (src) {
+      let token: Tokens.Generic | undefined;
+
       if (this.options.extensions?.block?.some((extTokenizer) => {
         if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
           src = src.substring(token.raw.length);
@@ -228,14 +226,16 @@ export class _Lexer {
 
       // top-level paragraph
       // prevent paragraph consuming extensions by clipping 'src' to extension start
-      cutSrc = src;
+      let cutSrc = src;
       if (this.options.extensions?.startBlock) {
         let startIndex = Infinity;
         const tempSrc = src.slice(1);
         let tempStart;
         this.options.extensions.startBlock.forEach((getStartIndex) => {
           tempStart = getStartIndex.call({ lexer: this }, tempSrc);
-          if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
+          if (typeof tempStart === 'number' && tempStart >= 0) {
+            startIndex = Math.min(startIndex, tempStart);
+          }
         });
         if (startIndex < Infinity && startIndex >= 0) {
           cutSrc = src.substring(0, startIndex + 1);
@@ -251,7 +251,7 @@ export class _Lexer {
         } else {
           tokens.push(token);
         }
-        lastParagraphClipped = (cutSrc.length !== src.length);
+        lastParagraphClipped = cutSrc.length !== src.length;
         src = src.substring(token.raw.length);
         continue;
       }
@@ -295,12 +295,9 @@ export class _Lexer {
    * Lexing/Compiling
    */
   inlineTokens(src: string, tokens: Token[] = []): Token[] {
-    let token, cutSrc;
-
     // String with links masked to avoid interference with em and strong
     let maskedSrc = src;
-    let match;
-    let keepPrevChar, prevChar;
+    let match: RegExpExecArray | null = null;
 
     // Mask out reflinks
     if (this.tokens.links) {
@@ -308,7 +305,9 @@ export class _Lexer {
       if (links.length > 0) {
         while ((match = this.tokenizer.rules.inline.reflinkSearch.exec(maskedSrc)) != null) {
           if (links.includes(match[0].slice(match[0].lastIndexOf('[') + 1, -1))) {
-            maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
+            maskedSrc = maskedSrc.slice(0, match.index)
+              + '[' + 'a'.repeat(match[0].length - 2) + ']'
+              + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
           }
         }
       }
@@ -323,11 +322,15 @@ export class _Lexer {
       maskedSrc = maskedSrc.slice(0, match.index) + '++' + maskedSrc.slice(this.tokenizer.rules.inline.anyPunctuation.lastIndex);
     }
 
+    let keepPrevChar = false;
+    let prevChar = '';
     while (src) {
       if (!keepPrevChar) {
         prevChar = '';
       }
       keepPrevChar = false;
+
+      let token: Tokens.Generic | undefined;
 
       // extensions
       if (this.options.extensions?.inline?.some((extTokenizer) => {
@@ -419,14 +422,16 @@ export class _Lexer {
 
       // text
       // prevent inlineText consuming extensions by clipping 'src' to extension start
-      cutSrc = src;
+      let cutSrc = src;
       if (this.options.extensions?.startInline) {
         let startIndex = Infinity;
         const tempSrc = src.slice(1);
         let tempStart;
         this.options.extensions.startInline.forEach((getStartIndex) => {
           tempStart = getStartIndex.call({ lexer: this }, tempSrc);
-          if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
+          if (typeof tempStart === 'number' && tempStart >= 0) {
+            startIndex = Math.min(startIndex, tempStart);
+          }
         });
         if (startIndex < Infinity && startIndex >= 0) {
           cutSrc = src.substring(0, startIndex + 1);

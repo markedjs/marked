@@ -132,8 +132,7 @@ export class _Parser {
   /**
    * Parse Inline Tokens
    */
-  parseInline(tokens: Token[], renderer?: _Renderer | _TextRenderer): string {
-    renderer = renderer || this.renderer;
+  parseInline(tokens: Token[], renderer: _Renderer | _TextRenderer = this.renderer): string {
     let out = '';
 
     for (let i = 0; i < tokens.length; i++) {
