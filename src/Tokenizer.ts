@@ -486,7 +486,7 @@ export class _Tokenizer {
 
     const headers = splitCells(cap[1]);
     const aligns = cap[2].replace(this.rules.other.tableAlignChars, '').split('|');
-    const rows = cap[3] && cap[3].trim() ? cap[3].replace(this.rules.other.tableRowBlankLine, '').split('\n') : [];
+    const rows = cap[3]?.trim() ? cap[3].replace(this.rules.other.tableRowBlankLine, '').split('\n') : [];
 
     const item: Tokens.Table = {
       type: 'table',

@@ -674,7 +674,7 @@ used extension2 walked</p>
         walkTokens(token) {
           if (token.tokens) {
             const finalChildToken = token.tokens[token.tokens.length - 1];
-            if (finalChildToken && finalChildToken.type === 'inlineStyleTag') {
+            if (finalChildToken?.type === 'inlineStyleTag') {
               token.originalType = token.type;
               token.type = 'styled';
               token.style = `style="color:${finalChildToken.text};"`;
