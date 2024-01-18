@@ -271,9 +271,10 @@ export async function main(nodeProcess) {
     nodeProcess.exit(0);
   } catch (err) {
     if (err.code === 'ENOENT') {
-      nodeProcess.stderr.write('marked: output to ' + err.path + ': No such directory');
+      nodeProcess.stderr.write('marked: ' + err.path + ': No such directory');
+    } else {
+      nodeProcess.stderr.write(err.message);
     }
-    nodeProcess.stderr.write(err);
     return nodeProcess.exit(1);
   }
 }
