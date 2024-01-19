@@ -97,4 +97,12 @@ describe('bin/marked', () => {
       code: 1
     }));
   });
+
+  describe('input', () => {
+    it('input file not found', testInput({
+      args: [fixturePath('does-not-exist.md')],
+      stderr: `marked: ${fixturePath('does-not-exist.md')} : No such directory'`,
+      code: 1
+    }));
+  });
 });
