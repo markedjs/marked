@@ -91,9 +91,9 @@ describe('bin/marked', () => {
       stdout: '<p>line1<br>line2</p>'
     }));
 
-    it('not found', testInput({
+    it('config not found', testInput({
       args: ['--config', fixturePath('does-not-exist.js'), '-s', 'line1\nline2'],
-      stderr: `Error: Cannot load config file '${fixturePath('does-not-exist.js')}'`,
+      stderr: `Cannot load config file '${fixturePath('does-not-exist.js')}'`,
       code: 1
     }));
   });
