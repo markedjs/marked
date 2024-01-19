@@ -101,7 +101,7 @@ describe('bin/marked', () => {
   describe('input', () => {
     it('input file not found', testInput({
       args: [fixturePath('does-not-exist.md')],
-      stderr: `marked: ${fixturePath('does-not-exist.md')} : No such directory'`,
+      stderr: `Cannot load input file '${fixturePath('does-not-exist.md')}'`,
       code: 1
     }));
   });
