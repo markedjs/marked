@@ -157,6 +157,9 @@ export async function main(nodeProcess) {
         }
         input = files.pop();
       }
+      if (!await fileExists(input)) {
+        throw Error(`Input file "${input}" not found.`);
+      }
       return await readFile(input, 'utf8');
     }
 
@@ -222,8 +225,7 @@ export async function main(nodeProcess) {
 
     if (output) {
       if (noclobber && await fileExists(output)) {
-        nodeProcess.stderr.write('marked: output file \'' + output + '\' already exists, disable the \'-n\' / \'--no-clobber\' flag to overwrite\n');
-        nodeProcess.exit(1);
+        throw Error('marked: output file \'' + output + '\' already exists, disable the \'-n\' / \'--no-clobber\' flag to overwrite\n');
       }
       return await writeFile(output, html);
     }
