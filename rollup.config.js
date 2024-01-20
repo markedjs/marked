@@ -59,7 +59,7 @@ export default defineConfig([
       banner
     }],
     plugins: [
-      typescript()
+      typescript({tsconfig: 'tsconfig.build.json'}),
     ]
   }
 ]);
