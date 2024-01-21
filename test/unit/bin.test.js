@@ -32,7 +32,7 @@ function createMocks() {
         on: mock.fn((method, func) => {
           mocks.stdin[method] = func;
         }),
-        resume: mock.fn
+        resume: mock.fn()
       },
       exit: mock.fn((code) => { mocks.code = code; })
     }
@@ -44,7 +44,7 @@ function createMocks() {
 function testInput({ args = [], stdin = '', stdinError = '', stdout = '', stderr = '', code = 0 } = {}) {
   return async() => {
     const mocks = createMocks();
-    mocks.process.argv = args;
+    mocks.process.argv = ['node', 'marked', ...args];
     const mainPromise = main(mocks.process);
     if (typeof mocks.stdin.end === 'function') {
       if (stdin) {
@@ -67,7 +67,7 @@ function fixturePath(filePath) {
   return resolve(__dirname, './fixtures', filePath);
 }
 
-describe('bin/marked', () => {
+describe.only('bin/marked', () => {
   describe('string', () => {
     it('-s', testInput({
       args: ['-s', '# test'],
@@ -98,8 +98,8 @@ describe('bin/marked', () => {
     }));
   });
 
-  describe('input', () => {
-    it('input file not found', testInput({
+  describe.only('input', () => {
+    it.only('input file not found', testInput({
       args: [fixturePath('does-not-exist.md')],
       stderr: `Cannot load input file '${fixturePath('does-not-exist.md')}'`,
       code: 1
