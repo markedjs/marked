@@ -67,7 +67,7 @@ function fixturePath(filePath) {
   return resolve(__dirname, './fixtures', filePath);
 }
 
-describe.only('bin/marked', () => {
+describe('bin/marked', () => {
   describe('string', () => {
     it('-s', testInput({
       args: ['-s', '# test'],
@@ -98,9 +98,15 @@ describe.only('bin/marked', () => {
     }));
   });
 
-  describe.only('input', () => {
-    it.only('input file not found', testInput({
+  describe('input', () => {
+    it('input file not found', testInput({
       args: [fixturePath('does-not-exist.md')],
+      stderr: `Cannot load input file '${fixturePath('does-not-exist.md')}'`,
+      code: 1
+    }));
+
+    it('input file not found --input', testInput({
+      args: ['--input', fixturePath('does-not-exist.md')],
       stderr: `Cannot load input file '${fixturePath('does-not-exist.md')}'`,
       code: 1
     }));
