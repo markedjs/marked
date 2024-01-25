@@ -270,7 +270,7 @@ export async function main(nodeProcess) {
     nodeProcess.exit(0);
   } catch (err) {
     if (err.code === 'ENOENT') {
-      nodeProcess.stderr.write('marked: ' + err.path + ': No such directory');
+      nodeProcess.stderr.write('marked: ' + err.path + ': No such file or directory');
     } else {
       nodeProcess.stderr.write(err.message);
     }
