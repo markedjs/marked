@@ -157,9 +157,6 @@ export async function main(nodeProcess) {
         }
         input = files.pop();
       }
-      if (!await fileExists(input)) {
-        throw Error(`Cannot load input file '${input}'`);
-      }
       return await readFile(input, 'utf8');
     }
 
