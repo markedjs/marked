@@ -395,6 +395,43 @@ describe('marked unit', () => {
                     + '\n<dt><strong>Topic 2 walked</strong> - unwalked</dt><dd><em>Description 2 walked</em></dd></p>\n');
     });
 
+    it('should walk child token arrays', () => {
+      const walkableDescription = {
+        extensions: [{
+          name: 'walkableDescription',
+          level: 'inline',
+          start(src) { return src.indexOf(':'); },
+          tokenizer(src, tokens) {
+            const rule = /^:([^:\n]+):([^:\n]*)(?:\n|$)/;
+            const match = rule.exec(src);
+            if (match) {
+              const token = {
+                type: 'walkableDescription',
+                raw: match[0],
+                dt: [this.lexer.inline(match[1].trim())],
+                dd: [[this.lexer.inline(match[2].trim())]]
+              };
+              return token;
+            }
+          },
+          renderer(token) {
+            return `\n<dt>${this.parser.parseInline(token.dt[0])}</dt><dd>${this.parser.parseInline(token.dd[0][0])}</dd>`;
+          },
+          childTokens: ['dd', 'dt']
+        }],
+        walkTokens(token) {
+          if (token.type === 'text') {
+            token.text += ' walked';
+          }
+        }
+      };
+      marked.use(walkableDescription);
+      const html = marked.parse(':   Topic 1   :  Description 1\n'
+                      + ': **Topic 2** : *Description 2*');
+      assert.strictEqual(html, '<p>\n<dt>Topic 1 walked</dt><dd>Description 1 walked</dd>'
+                    + '\n<dt><strong>Topic 2 walked</strong></dt><dd><em>Description 2 walked</em></dd></p>\n');
+    });
+
     describe('multiple extensions', () => {
       function createExtension(name) {
         return {

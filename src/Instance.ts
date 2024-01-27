@@ -63,7 +63,8 @@ export class Marked {
           const genericToken = token as Tokens.Generic;
           if (this.defaults.extensions?.childTokens?.[genericToken.type]) {
             this.defaults.extensions.childTokens[genericToken.type].forEach((childTokens) => {
-              values = values.concat(this.walkTokens(genericToken[childTokens], callback));
+              const tokens = genericToken[childTokens].flat(Infinity) as Token[] | TokensList;
+              values = values.concat(this.walkTokens(tokens, callback));
             });
           } else if (genericToken.tokens) {
             values = values.concat(this.walkTokens(genericToken.tokens, callback));
