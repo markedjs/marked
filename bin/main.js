@@ -222,8 +222,7 @@ export async function main(nodeProcess) {
 
     if (output) {
       if (noclobber && await fileExists(output)) {
-        nodeProcess.stderr.write('marked: output file \'' + output + '\' already exists, disable the \'-n\' / \'--no-clobber\' flag to overwrite\n');
-        nodeProcess.exit(1);
+        throw Error('marked: output file \'' + output + '\' already exists, disable the \'-n\' / \'--no-clobber\' flag to overwrite\n');
       }
       return await writeFile(output, html);
     }
@@ -271,9 +270,10 @@ export async function main(nodeProcess) {
     nodeProcess.exit(0);
   } catch (err) {
     if (err.code === 'ENOENT') {
-      nodeProcess.stderr.write('marked: output to ' + err.path + ': No such directory');
+      nodeProcess.stderr.write('marked: ' + err.path + ': No such file or directory');
+    } else {
+      nodeProcess.stderr.write(err.message);
     }
-    nodeProcess.stderr.write(err);
     return nodeProcess.exit(1);
   }
 }

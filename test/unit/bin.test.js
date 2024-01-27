@@ -32,7 +32,7 @@ function createMocks() {
         on: mock.fn((method, func) => {
           mocks.stdin[method] = func;
         }),
-        resume: mock.fn
+        resume: mock.fn()
       },
       exit: mock.fn((code) => { mocks.code = code; })
     }
@@ -44,7 +44,7 @@ function createMocks() {
 function testInput({ args = [], stdin = '', stdinError = '', stdout = '', stderr = '', code = 0 } = {}) {
   return async() => {
     const mocks = createMocks();
-    mocks.process.argv = args;
+    mocks.process.argv = ['node', 'marked', ...args];
     const mainPromise = main(mocks.process);
     if (typeof mocks.stdin.end === 'function') {
       if (stdin) {
@@ -91,9 +91,23 @@ describe('bin/marked', () => {
       stdout: '<p>line1<br>line2</p>'
     }));
 
-    it('not found', testInput({
+    it('config not found', testInput({
       args: ['--config', fixturePath('does-not-exist.js'), '-s', 'line1\nline2'],
-      stderr: `Error: Cannot load config file '${fixturePath('does-not-exist.js')}'`,
+      stderr: `Cannot load config file '${fixturePath('does-not-exist.js')}'`,
+      code: 1
+    }));
+  });
+
+  describe('input', () => {
+    it('input file not found', testInput({
+      args: [fixturePath('does-not-exist.md')],
+      stderr: `marked: ${fixturePath('does-not-exist.md')}: No such file or directory`,
+      code: 1
+    }));
+
+    it('input file not found --input', testInput({
+      args: ['--input', fixturePath('does-not-exist.md')],
+      stderr: `marked: ${fixturePath('does-not-exist.md')}: No such file or directory`,
       code: 1
     }));
   });
