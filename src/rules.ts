@@ -33,7 +33,7 @@ const _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
   + '|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option'
   + '|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title'
   + '|tr|track|ul';
-const _comment = /<!--(?!-?>)[\s\S]*?(?:-->|$)/;
+const _comment = /<!--(?:-?>|[\s\S]*?(?:-->|$))/;
 const html = edit(
   '^ {0,3}(?:' // optional indentation
 + '<(script|pre|style|textarea)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n+|$)' // (1)

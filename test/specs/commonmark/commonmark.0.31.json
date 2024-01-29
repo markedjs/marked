@@ -5032,8 +5032,7 @@
     "example": 626,
     "start_line": 9142,
     "end_line": 9149,
-    "section": "Raw HTML",
-    "shouldFail": true
+    "section": "Raw HTML"
   },
   {
     "markdown": "foo <?php echo $a; ?>\n",
