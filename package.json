@@ -62,7 +62,7 @@
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.1",
     "cheerio": "^1.0.0-rc.12",
-    "commonmark": "0.30.0",
+    "commonmark": "0.31.0",
     "cross-env": "^7.0.3",
     "dts-bundle-generator": "^9.2.5",
     "eslint": "^8.56.0",
