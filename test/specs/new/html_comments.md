@@ -37,7 +37,7 @@
 ### Example 10
 
 <!-- multi
-line	
+line
 comment
 -->
 
@@ -49,11 +49,11 @@ comment
 
 ### Example 12
 
-<!--> not a comment -->
+<!--> a comment -->
 
-<!---> not a comment -->
+<!---> a comment -->
 
-<!-- <!-- not a comment? --> -->
+<!-- <!-- a comment? --> -->
 
 ### Example 13
 
