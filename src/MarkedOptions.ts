@@ -162,7 +162,7 @@ export interface MarkedAsyncOptions extends _MarkedOptions {
 export type MarkedOptions = MarkedSyncOptions | MarkedAsyncOptions;
 
 export function isAsyncOptions(options: MarkedOptions): options is MarkedAsyncOptions {
-  return 'async' in options && options.async === true;
+  return options.async === true;
 }
 
 export function isSyncOptions(options: MarkedOptions): options is MarkedSyncOptions {

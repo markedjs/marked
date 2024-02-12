@@ -273,16 +273,12 @@ export class Marked {
       const origOpt: MarkedOptions = { ...options };
       const opt: MarkedOptions = { ...this.defaults, ...origOpt };
 
-      // Show warning if an extension set async to true but the parse was called with async: false
-      if (isAsyncOptions(this.defaults) && isSyncOptions(origOpt)) {
-        if (!opt.silent) {
-          console.warn('marked(): The async option was set to true by an extension. The async: false option sent to parse will be ignored.');
-        }
-
-        opt.async = true;
-      }
-
       const throwError = this.#onError(!!opt.silent, !!opt.async);
+
+      if (isAsyncOptions(this.defaults) && isSyncOptions(origOpt)) {
+        // Throw an error if an extension set async to true but the parse was called with async: false
+        return throwError(new Error('marked(): The async option was set to true by an extension. Remove the async: false option to continue.'));
+      }
 
       // throw error in case of non string input
       if (typeof src === 'undefined' || src === null) {

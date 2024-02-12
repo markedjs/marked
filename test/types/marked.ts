@@ -261,13 +261,25 @@ marked.use(asyncExtension);
 const md = '# foobar';
 const asyncMarked: string = await marked(md, { async: true });
 const promiseMarked: Promise<string> = marked(md, { async: true });
-const notAsyncMarked: string = marked(md, { async: false });
+const notAsyncMarked: string = marked(md, { async: false, silent: true });
 const defaultMarked: string = marked(md);
 
 const asyncMarkedParse: string = await marked.parse(md, { async: true });
 const promiseMarkedParse: Promise<string> = marked.parse(md, { async: true });
-const notAsyncMarkedParse: string = marked.parse(md, { async: false });
+const notAsyncMarkedParse: string = marked.parse(md, { async: false, silent: true });
 const defaultMarkedParse: string = marked.parse(md);
+
+try {
+  const notAsyncMarkedThrow: string = marked(md, { async: false, silent: false });
+} catch {
+  console.log('expected throw');
+}
+
+try {
+  const notAsyncMarkedParseThrow: string = marked.parse(md, { async: false, silent: false });
+} catch {
+  console.log('expected throw');
+}
 })();
 
 // Tests for List and ListItem
