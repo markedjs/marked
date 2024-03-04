@@ -1,9 +1,16 @@
-a
+    indented code block
+=
+
+fenced code block
 ```
 =
 ```
 
-b
-```
--
-```
+> blockquote
+=
+
+### heading
+=
+
+<html>
+=
