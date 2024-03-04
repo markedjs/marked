@@ -7,6 +7,7 @@ describe('marked unit', () => {
   let marked;
   beforeEach(() => {
     marked = new Marked();
+    setOptions(getDefaults());
   });
 
   describe('Test paragraph token type', () => {
