@@ -12,8 +12,13 @@ const fences = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\
 const hr = /^ {0,3}((?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/;
 const heading = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
 const bullet = /(?:[*+-]|\d{1,9}[.)])/;
-const lheading = edit(/^(?!bull )((?:.|\n(?!\s*?\n|bull ))+?)\n {0,3}(=+|-+) *(?:\n+|$)/)
+const lheading = edit(/^(?!bull |blockCode|fences|blockquote|heading|html)((?:.|\n(?!\s*?\n|bull |blockCode|fences|blockquote|heading|html))+?)\n {0,3}(=+|-+) *(?:\n+|$)/)
   .replace(/bull/g, bullet) // lists can interrupt
+  .replace(/blockCode/g, / {4}/) // indented code blocks can interrupt
+  .replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/) // fenced code blocks can interrupt
+  .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
+  .replace(/heading/g, / {0,3}#{1,6}/) // ATX heading can interrupt
+  .replace(/html/g, / {0,3}<[^\n>]+>\n/) // block html can interrupt
   .getRegex();
 const _paragraph = /^([^\n]+(?:\n(?!hr|heading|lheading|blockquote|fences|list|html|table| +\n)[^\n]+)*)/;
 const blockText = /^[^\n]+/;
