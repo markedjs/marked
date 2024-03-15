@@ -23,6 +23,17 @@ export type Token = (
   | Tokens.Del
   | Tokens.Generic);
 
+export type CustomToken<
+    N extends string = string,
+    T extends Record<string, unknown> = Record<string, any>
+> = {
+    type: N;
+    raw: string;
+    tokens?: Token[];
+} & {
+    [Key in keyof T]: T[Key];
+};
+
 export namespace Tokens {
     export interface Space {
         type: 'space';

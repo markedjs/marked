@@ -1,4 +1,4 @@
-import type { Token, Tokens, TokensList } from './Tokens.ts';
+import type { CustomToken, Token, TokensList } from './Tokens.ts';
 import type { _Parser } from './Parser.ts';
 import type { _Lexer } from './Lexer.ts';
 import type { _Renderer } from './Renderer.ts';
@@ -9,15 +9,21 @@ export interface TokenizerThis {
   lexer: _Lexer;
 }
 
-export type TokenizerExtensionFunction = (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
+export type TokenizerExtensionFunction<
+  N extends string = string,
+  T extends Record<string, unknown> = Record<string, any>
+> = (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => CustomToken<N, T> | undefined;
 
 export type TokenizerStartFunction = (this: TokenizerThis, src: string) => number | void;
 
-export interface TokenizerExtension {
-  name: string;
+export interface TokenizerExtension<
+  N extends string = string,
+  T extends Record<string, unknown> = Record<string, any>
+> {
+  name: N;
   level: 'block' | 'inline';
   start?: TokenizerStartFunction | undefined;
-  tokenizer: TokenizerExtensionFunction;
+  tokenizer: TokenizerExtensionFunction<N, T>;
   childTokens?: string[] | undefined;
 }
 
@@ -25,14 +31,23 @@ export interface RendererThis {
   parser: _Parser;
 }
 
-export type RendererExtensionFunction = (this: RendererThis, token: Tokens.Generic) => string | false | undefined;
+export type RendererExtensionFunction<
+  N extends string = string,
+  T extends Record<string, unknown> = Record<string, any>
+> = (this: RendererThis, token: CustomToken<N, T>) => string | false | undefined;
 
-export interface RendererExtension {
-  name: string;
-  renderer: RendererExtensionFunction;
+export interface RendererExtension<
+  N extends string = string,
+  T extends Record<string, unknown> = Record<string, any>
+> {
+  name: N;
+  renderer: RendererExtensionFunction<N, T>;
 }
 
-export type TokenizerAndRendererExtension = TokenizerExtension | RendererExtension | (TokenizerExtension & RendererExtension);
+export type TokenizerAndRendererExtension<
+  N extends string = string,
+  T extends Record<string, unknown> = Record<string, any>
+> = TokenizerExtension<N, T> | RendererExtension<N, T> | (TokenizerExtension<N, T> & RendererExtension<N, T>);
 
 type HooksApi = Omit<_Hooks, 'constructor' | 'options'>;
 type HooksObject = {
@@ -49,7 +64,10 @@ type TokenizerObject = {
   [K in keyof TokenizerApi]?: (...args: Parameters<TokenizerApi[K]>) => ReturnType<TokenizerApi[K]> | false
 };
 
-export interface MarkedExtension {
+export interface MarkedExtension<
+  N extends string = string,
+  T extends Record<string, unknown> = Record<string, any>
+> {
   /**
    * True will tell marked to await any walkTokens functions before parsing the tokens and returning an HTML string.
    */
@@ -64,7 +82,7 @@ export interface MarkedExtension {
    * Add tokenizers and renderers to marked
    */
   extensions?:
-    | TokenizerAndRendererExtension[]
+    | TokenizerAndRendererExtension<N, T>[]
     | undefined | null;
 
   /**
@@ -133,16 +151,16 @@ export interface MarkedOptions extends Omit<MarkedExtension, 'hooks' | 'renderer
    * Custom extensions
    */
   extensions?: null | {
-    renderers: {
-      [name: string]: RendererExtensionFunction;
-    };
-    childTokens: {
-      [name: string]: string[];
-    };
-    inline?: TokenizerExtensionFunction[];
-    block?: TokenizerExtensionFunction[];
-    startInline?: TokenizerStartFunction[];
-    startBlock?: TokenizerStartFunction[];
+  renderers: {
+    [name: string]: RendererExtensionFunction;
+  };
+  childTokens: {
+    [name: string]: string[];
+  };
+  inline?: TokenizerExtensionFunction[];
+  block?: TokenizerExtensionFunction[];
+  startInline?: TokenizerStartFunction[];
+  startBlock?: TokenizerStartFunction[];
   };
 
   /**
