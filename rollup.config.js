@@ -1,4 +1,5 @@
 import typescript from '@rollup/plugin-typescript';
+import { babel } from '@rollup/plugin-babel';
 import terser from '@rollup/plugin-terser';
 import { defineConfig } from 'rollup';
 import fs from 'fs';
@@ -59,7 +60,8 @@ export default defineConfig([
       banner
     }],
     plugins: [
-      typescript()
+      typescript(),
+      babel({ plugins: ['@babel/plugin-transform-unicode-regex'] })
     ]
   }
 ]);

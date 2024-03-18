@@ -1,5 +1,5 @@
 import {
-  edit, isSupportPunctuationRegex, noopTest
+  edit, noopTest
 } from './helpers.ts';
 
 /**
@@ -171,44 +171,40 @@ const inlineText = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^
 
 // list of unicode punctuation marks, plus any missing characters from CommonMark spec
 // fallback to explicit punctuation list if runtime environment doesn't support punctuation regex syntax
-const _punctuation = isSupportPunctuationRegex ? '\\p{P}\\p{S}' : '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
-const punctuation = edit(/^((?![*_])[\spunctuation])/, 'u')
-  .replace(/punctuation/g, _punctuation).getRegex();
+const punctuation = /^((?![*_])[\s\p{P}\p{S}])/u;
 
 // sequences em should skip over [title](link), `code`, <html>
 const blockSkip = /\[[^[\]]*?\]\([^\(\)]*?\)|`[^`]*?`|<[^<>]*?>/g;
 
-const emStrongLDelim = edit(/^(?:\*+(?:((?!\*)[punct])|[^\s*]))|^_+(?:((?!_)[punct])|([^\s_]))/, 'u')
-  .replace(/punct/g, _punctuation)
-  .getRegex();
+const emStrongLDelim = /^(?:\*+(?:((?!\*)[\p{P}\p{S}])|[^\s*]))|^_+(?:((?!_)[\p{P}\p{S}])|([^\s_]))/u;
 
-const emStrongRDelimAst = edit(
-  '^[^_*]*?__[^_*]*?\\*[^_*]*?(?=__)' // Skip orphan inside strong
-+ '|[^*]+(?=[^*])' // Consume to delim
-+ '|(?!\\*)[punct](\\*+)(?=[\\s]|$)' // (1) #*** can only be a Right Delimiter
-+ '|[^punct\\s](\\*+)(?!\\*)(?=[punct\\s]|$)' // (2) a***#, a*** can only be a Right Delimiter
-+ '|(?!\\*)[punct\\s](\\*+)(?=[^punct\\s])' // (3) #***a, ***a can only be Left Delimiter
-+ '|[\\s](\\*+)(?!\\*)(?=[punct])' // (4) ***# can only be Left Delimiter
-+ '|(?!\\*)[punct](\\*+)(?!\\*)(?=[punct])' // (5) #***# can be either Left or Right Delimiter
-+ '|[^punct\\s](\\*+)(?=[^punct\\s])', 'gu') // (6) a***a can be either Left or Right Delimiter
-  .replace(/punct/g, _punctuation)
-  .getRegex();
+const emStrongRDelimAst = /^[^_*]*?__[^_*]*?\*[^_*]*?(?=__)|[^*]+(?=[^*])|(?!\*)[\p{P}\p{S}](\*+)(?=[\s]|$)|[^\p{P}\p{S}\s](\*+)(?!\*)(?=[\p{P}\p{S}\s]|$)|(?!\*)[\p{P}\p{S}\s](\*+)(?=[^\p{P}\p{S}\s])|[\s](\*+)(?!\*)(?=[\p{P}\p{S}])|(?!\*)[\p{P}\p{S}](\*+)(?!\*)(?=[\p{P}\p{S}])|[^\p{P}\p{S}\s](\*+)(?=[^\p{P}\p{S}\s])/gu;
+// const _emStrongRDelimAst = edit(
+//   '^[^_*]*?__[^_*]*?\\*[^_*]*?(?=__)' // Skip orphan inside strong
+// + '|[^*]+(?=[^*])' // Consume to delim
+// + '|(?!\\*)[punct](\\*+)(?=[\\s]|$)' // (1) #*** can only be a Right Delimiter
+// + '|[^punct\\s](\\*+)(?!\\*)(?=[punct\\s]|$)' // (2) a***#, a*** can only be a Right Delimiter
+// + '|(?!\\*)[punct\\s](\\*+)(?=[^punct\\s])' // (3) #***a, ***a can only be Left Delimiter
+// + '|[\\s](\\*+)(?!\\*)(?=[punct])' // (4) ***# can only be Left Delimiter
+// + '|(?!\\*)[punct](\\*+)(?!\\*)(?=[punct])' // (5) #***# can be either Left or Right Delimiter
+// + '|[^punct\\s](\\*+)(?=[^punct\\s])', 'gu') // (6) a***a can be either Left or Right Delimiter
+// .replace(/punct/g, _punctuation)
+//   .getRegex();
 
 // (6) Not allowed for _
-const emStrongRDelimUnd = edit(
-  '^[^_*]*?\\*\\*[^_*]*?_[^_*]*?(?=\\*\\*)' // Skip orphan inside strong
-+ '|[^_]+(?=[^_])' // Consume to delim
-+ '|(?!_)[punct](_+)(?=[\\s]|$)' // (1) #___ can only be a Right Delimiter
-+ '|[^punct\\s](_+)(?!_)(?=[punct\\s]|$)' // (2) a___#, a___ can only be a Right Delimiter
-+ '|(?!_)[punct\\s](_+)(?=[^punct\\s])' // (3) #___a, ___a can only be Left Delimiter
-+ '|[\\s](_+)(?!_)(?=[punct])' // (4) ___# can only be Left Delimiter
-+ '|(?!_)[punct](_+)(?!_)(?=[punct])', 'gu') // (5) #___# can be either Left or Right Delimiter
-  .replace(/punct/g, _punctuation)
-  .getRegex();
+const emStrongRDelimUnd = /^[^_*]*?\*\*[^_*]*?_[^_*]*?(?=\*\*)|[^_]+(?=[^_])|(?!_)[\p{P}\p{S}](_+)(?=[\s]|$)|[^\p{P}\p{S}\s](_+)(?!_)(?=[\p{P}\p{S}\s]|$)|(?!_)[\p{P}\p{S}\s](_+)(?=[^\p{P}\p{S}\s])|[\s](_+)(?!_)(?=[\p{P}\p{S}])|(?!_)[\p{P}\p{S}](_+)(?!_)(?=[\p{P}\p{S}])/gu;
+// const emStrongRDelimUnd = edit(
+//   '^[^_*]*?\\*\\*[^_*]*?_[^_*]*?(?=\\*\\*)' // Skip orphan inside strong
+// + '|[^_]+(?=[^_])' // Consume to delim
+// + '|(?!_)[punct](_+)(?=[\\s]|$)' // (1) #___ can only be a Right Delimiter
+// + '|[^punct\\s](_+)(?!_)(?=[punct\\s]|$)' // (2) a___#, a___ can only be a Right Delimiter
+// + '|(?!_)[punct\\s](_+)(?=[^punct\\s])' // (3) #___a, ___a can only be Left Delimiter
+// + '|[\\s](_+)(?!_)(?=[punct])' // (4) ___# can only be Left Delimiter
+// + '|(?!_)[punct](_+)(?!_)(?=[punct])', 'gu') // (5) #___# can be either Left or Right Delimiter
+//   .replace(/punct/g, _punctuation)
+//   .getRegex();
 
-const anyPunctuation = edit(/\\([punct])/, 'gu')
-  .replace(/punct/g, _punctuation)
-  .getRegex();
+const anyPunctuation = /\\([\p{P}\p{S}])/gu;
 
 const autolink = edit(/^<(scheme:[^\s\x00-\x1f<>]*|email)>/)
   .replace('scheme', /[a-zA-Z][a-zA-Z0-9+.-]{1,31}/)
