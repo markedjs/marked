@@ -632,7 +632,19 @@ used extension2 walked</p>
     it('should return Promise if async is set by extension', () => {
       marked.use({ async: true });
 
-      assert.ok(marked.parse('test', { async: false }) instanceof Promise);
+      assert.ok(marked.parse('test') instanceof Promise);
+    });
+
+    it('should throw an if async is set by extension and a different async parameter is set', () => {
+      marked.use({ async: true });
+
+      assert.throws(() => marked.parse('test', { async: false }), /The async option was set to true by an extension/);
+    });
+
+    it('should return a string error message if async is set by extension and a different async parameter is set and the silent parameter is set', () => {
+      marked.use({ async: true });
+
+      assert.match(marked.parse('test', { async: false, silent: true }), /The async option was set to true by an extension/);
     });
 
     it('should allow deleting/editing tokens', () => {

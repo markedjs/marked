@@ -8,7 +8,12 @@ import { _TextRenderer } from './TextRenderer.ts';
 import {
   escape
 } from './helpers.ts';
-import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
+import {
+  isAsyncOptions,
+  isSyncOptions,
+  type MarkedExtension,
+  type MarkedOptions
+} from './MarkedOptions.ts';
 import type { Token, Tokens, TokensList } from './Tokens.ts';
 
 export type MaybePromise = void | Promise<void>;
@@ -265,19 +270,15 @@ export class Marked {
 
   #parseMarkdown(lexer: (src: string, options?: MarkedOptions) => TokensList | Token[], parser: (tokens: Token[], options?: MarkedOptions) => string) {
     return (src: string, options?: MarkedOptions | undefined | null): string | Promise<string> => {
-      const origOpt = { ...options };
-      const opt = { ...this.defaults, ...origOpt };
-
-      // Show warning if an extension set async to true but the parse was called with async: false
-      if (this.defaults.async === true && origOpt.async === false) {
-        if (!opt.silent) {
-          console.warn('marked(): The async option was set to true by an extension. The async: false option sent to parse will be ignored.');
-        }
-
-        opt.async = true;
-      }
+      const origOpt: MarkedOptions = { ...options };
+      const opt: MarkedOptions = { ...this.defaults, ...origOpt };
 
       const throwError = this.#onError(!!opt.silent, !!opt.async);
+
+      if (isAsyncOptions(this.defaults) && isSyncOptions(origOpt)) {
+        // Throw an error if an extension set async to true but the parse was called with async: false
+        return throwError(new Error('marked(): The async option was set to true by an extension. Remove the async: false option to continue.'));
+      }
 
       // throw error in case of non string input
       if (typeof src === 'undefined' || src === null) {
@@ -292,7 +293,7 @@ export class Marked {
         opt.hooks.options = opt;
       }
 
-      if (opt.async) {
+      if (isAsyncOptions(opt)) {
         return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
           .then(src => lexer(src, opt))
           .then(tokens => opt.hooks ? opt.hooks.processAllTokens(tokens) : tokens)
