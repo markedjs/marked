@@ -58,7 +58,7 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^10.0.2",
     "@semantic-release/npm": "^12.0.0",
-    "@semantic-release/release-notes-generator": "^12.1.0",
+    "@semantic-release/release-notes-generator": "^13.0.0",
     "@typescript-eslint/eslint-plugin": "^7.4.0",
     "@typescript-eslint/parser": "^7.4.0",
     "cheerio": "1.0.0-rc.12",
