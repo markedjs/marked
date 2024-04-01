@@ -71,7 +71,7 @@
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
     "highlight.js": "^11.9.0",
-    "markdown-it": "14.0.0",
+    "markdown-it": "14.1.0",
     "marked-highlight": "^2.1.1",
     "marked-man": "^2.0.0",
     "node-fetch": "^3.3.2",
