@@ -156,8 +156,8 @@ export class _Tokenizer {
   blockquote(src: string): Tokens.Blockquote | undefined {
     const cap = this.rules.block.blockquote.exec(src);
     if (cap) {
-      // replace newline with space before setext continuation
-      let text = cap[0].replace(/\n *((?:=+|-+) *(?:\n|$))/, ' $1');
+      // preceded setext continuation with 4 spaces so it isn't a setext
+      let text = cap[0].replace(/\n {0,3}((?:=+|-+) *(?:\n|$))/, '\n    $1');
       text = rtrim(text.replace(/^ *>[ \t]?/gm, ''), '\n');
       const top = this.lexer.state.top;
       this.lexer.state.top = true;
