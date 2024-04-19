@@ -6,9 +6,6 @@ fenced code block
 =
 ```
 
-> blockquote
-=
-
 ### heading
 =
 

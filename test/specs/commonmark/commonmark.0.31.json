@@ -743,8 +743,7 @@
     "example": 93,
     "start_line": 1527,
     "end_line": 1537,
-    "section": "Setext headings",
-    "shouldFail": true
+    "section": "Setext headings"
   },
   {
     "markdown": "- Foo\n---\n",
