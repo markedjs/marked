@@ -7,7 +7,7 @@ import {
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
 import type { _Lexer } from './Lexer.ts';
-import type { Links, Tokens } from './Tokens.ts';
+import type { Links, Tokens, Token } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
 function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer): Tokens.Link | Tokens.Image {
@@ -156,16 +156,71 @@ export class _Tokenizer {
   blockquote(src: string): Tokens.Blockquote | undefined {
     const cap = this.rules.block.blockquote.exec(src);
     if (cap) {
-      // precede setext continuation with 4 spaces so it isn't a setext
-      let text = cap[0].replace(/\n {0,3}((?:=+|-+) *)(?=\n|$)/g, '\n    $1');
-      text = rtrim(text.replace(/^ *>[ \t]?/gm, ''), '\n');
-      const top = this.lexer.state.top;
-      this.lexer.state.top = true;
-      const tokens = this.lexer.blockTokens(text);
-      this.lexer.state.top = top;
+      let lines = rtrim(cap[0], '\n').split('\n');
+      let raw = '';
+      let text = '';
+      const tokens: Token[] = [];
+
+      while (lines.length > 0) {
+        let inBlockquote = false;
+        const currentLines = [];
+
+        while (lines.length > 0) {
+          if (/^ {0,3}>/.test(lines[0])) {
+            currentLines.push(lines.shift());
+            inBlockquote = true;
+          } else if (!inBlockquote) {
+            currentLines.push(lines.shift());
+          } else {
+            break;
+          }
+        }
+
+        const currentRaw = currentLines.join('\n');
+        const currentText = currentRaw
+        // precede setext continuation with 4 spaces so it isn't a setext
+          .replace(/\n {0,3}((?:=+|-+) *)(?=\n|$)/g, '\n    $1')
+          .replace(/^ {0,3}>[ \t]?/gm, '');
+        raw = raw ? `${raw}\n${currentRaw}` : currentRaw;
+        text = text ? `${text}\n${currentText}` : currentText;
+        const top = this.lexer.state.top;
+        this.lexer.state.top = true;
+        this.lexer.blockTokens(currentText, tokens, true);
+        this.lexer.state.top = top;
+
+        if (lines.length === 0) {
+          break;
+        }
+
+        const lastToken = tokens[tokens.length - 1];
+
+        if (lastToken?.type === 'code') {
+          break;
+        } else if (lastToken?.type === 'blockquote') {
+          const oldBlockquoteToken = lastToken as Tokens.Blockquote;
+          const newText = oldBlockquoteToken.raw + '\n' + lines.join('\n');
+          const newBlockquoteToken = this.blockquote(newText)!;
+          tokens[tokens.length - 1] = newBlockquoteToken;
+
+          raw = raw.substring(0, raw.length - oldBlockquoteToken.raw.length) + newBlockquoteToken.raw;
+          text = text.substring(0, text.length - oldBlockquoteToken.text.length) + newBlockquoteToken.text;
+          break;
+        } else if (lastToken?.type === 'list') {
+          const oldListToken = lastToken as Tokens.List;
+          const newText = oldListToken.raw + '\n' + lines.join('\n');
+          const newListToken = this.list(newText)!;
+          tokens[tokens.length - 1] = newListToken;
+
+          raw = raw.substring(0, raw.length - lastToken.raw.length) + newListToken.raw;
+          text = text.substring(0, text.length - oldListToken.raw.length) + newListToken.raw;
+          lines = newText.substring(tokens[tokens.length - 1].raw.length).split('\n');
+          continue;
+        }
+      }
+
       return {
         type: 'blockquote',
-        raw: cap[0],
+        raw,
         tokens,
         text
       };

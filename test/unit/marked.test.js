@@ -18,7 +18,7 @@ describe('marked unit', () => {
 
       assert.strictEqual(tokens[0].type, 'paragraph');
       assert.strictEqual(tokens[2].tokens[0].type, 'paragraph');
-      assert.strictEqual(tokens[3].items[0].tokens[0].type, 'text');
+      assert.strictEqual(tokens[4].items[0].tokens[0].type, 'text');
     });
   });
 
@@ -924,6 +924,7 @@ br
         ['blockquote', '> blockquote'],
         ['paragraph', 'blockquote'],
         ['text', 'blockquote'],
+        ['space', ''],
         ['list', '- list'],
         ['list_item', '- list'],
         ['text', 'list'],
