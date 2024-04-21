@@ -910,6 +910,7 @@ br
         ['text', 'paragraph'],
         ['space', ''],
         ['hr', '---'],
+        ['space', ''],
         ['heading', '# heading'],
         ['text', 'heading'],
         ['code', '```code```'],

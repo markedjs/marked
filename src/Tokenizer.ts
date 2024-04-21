@@ -148,7 +148,7 @@ export class _Tokenizer {
     if (cap) {
       return {
         type: 'hr',
-        raw: cap[0]
+        raw: rtrim(cap[0], '\n')
       };
     }
   }
