@@ -166,6 +166,7 @@ export class _Tokenizer {
         const currentLines = [];
 
         while (lines.length > 0) {
+          // get lines up to a continuation
           if (/^ {0,3}>/.test(lines[0])) {
             currentLines.push(lines.shift());
             inBlockquote = true;
@@ -178,16 +179,20 @@ export class _Tokenizer {
 
         const currentRaw = currentLines.join('\n');
         const currentText = currentRaw
-        // precede setext continuation with 4 spaces so it isn't a setext
+          // precede setext continuation with 4 spaces so it isn't a setext
           .replace(/\n {0,3}((?:=+|-+) *)(?=\n|$)/g, '\n    $1')
           .replace(/^ {0,3}>[ \t]?/gm, '');
         raw = raw ? `${raw}\n${currentRaw}` : currentRaw;
         text = text ? `${text}\n${currentText}` : currentText;
+
+        // parse blockquote lines as top level tokens
+        // merge paragraphs if this is a continuation
         const top = this.lexer.state.top;
         this.lexer.state.top = true;
         this.lexer.blockTokens(currentText, tokens, true);
         this.lexer.state.top = top;
 
+        // if there is no continuation then we are done
         if (lines.length === 0) {
           break;
         }
@@ -195,8 +200,10 @@ export class _Tokenizer {
         const lastToken = tokens[tokens.length - 1];
 
         if (lastToken?.type === 'code') {
+          // blockquote continuation cannot be preceded by a code block
           break;
         } else if (lastToken?.type === 'blockquote') {
+          // include continuation in nested blockquote
           const oldBlockquoteToken = lastToken as Tokens.Blockquote;
           const newText = oldBlockquoteToken.raw + '\n' + lines.join('\n');
           const newBlockquoteToken = this.blockquote(newText)!;
@@ -206,6 +213,7 @@ export class _Tokenizer {
           text = text.substring(0, text.length - oldBlockquoteToken.text.length) + newBlockquoteToken.text;
           break;
         } else if (lastToken?.type === 'list') {
+          // include continuation in nested list
           const oldListToken = lastToken as Tokens.List;
           const newText = oldListToken.raw + '\n' + lines.join('\n');
           const newListToken = this.list(newText)!;
