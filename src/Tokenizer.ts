@@ -165,17 +165,19 @@ export class _Tokenizer {
         let inBlockquote = false;
         const currentLines = [];
 
-        while (lines.length > 0) {
+        let i;
+        for (i = 0; i < lines.length; i++) {
           // get lines up to a continuation
-          if (/^ {0,3}>/.test(lines[0])) {
-            currentLines.push(lines.shift());
+          if (/^ {0,3}>/.test(lines[i])) {
+            currentLines.push(lines[i]);
             inBlockquote = true;
           } else if (!inBlockquote) {
-            currentLines.push(lines.shift());
+            currentLines.push(lines[i]);
           } else {
             break;
           }
         }
+        lines = lines.slice(i);
 
         const currentRaw = currentLines.join('\n');
         const currentText = currentRaw
@@ -204,23 +206,23 @@ export class _Tokenizer {
           break;
         } else if (lastToken?.type === 'blockquote') {
           // include continuation in nested blockquote
-          const oldBlockquoteToken = lastToken as Tokens.Blockquote;
-          const newText = oldBlockquoteToken.raw + '\n' + lines.join('\n');
-          const newBlockquoteToken = this.blockquote(newText)!;
-          tokens[tokens.length - 1] = newBlockquoteToken;
+          const oldToken = lastToken as Tokens.Blockquote;
+          const newText = oldToken.raw + '\n' + lines.join('\n');
+          const newToken = this.blockquote(newText)!;
+          tokens[tokens.length - 1] = newToken;
 
-          raw = raw.substring(0, raw.length - oldBlockquoteToken.raw.length) + newBlockquoteToken.raw;
-          text = text.substring(0, text.length - oldBlockquoteToken.text.length) + newBlockquoteToken.text;
+          raw = raw.substring(0, raw.length - oldToken.raw.length) + newToken.raw;
+          text = text.substring(0, text.length - oldToken.text.length) + newToken.text;
           break;
         } else if (lastToken?.type === 'list') {
           // include continuation in nested list
-          const oldListToken = lastToken as Tokens.List;
-          const newText = oldListToken.raw + '\n' + lines.join('\n');
-          const newListToken = this.list(newText)!;
-          tokens[tokens.length - 1] = newListToken;
+          const oldToken = lastToken as Tokens.List;
+          const newText = oldToken.raw + '\n' + lines.join('\n');
+          const newToken = this.list(newText)!;
+          tokens[tokens.length - 1] = newToken;
 
-          raw = raw.substring(0, raw.length - lastToken.raw.length) + newListToken.raw;
-          text = text.substring(0, text.length - oldListToken.raw.length) + newListToken.raw;
+          raw = raw.substring(0, raw.length - lastToken.raw.length) + newToken.raw;
+          text = text.substring(0, text.length - oldToken.raw.length) + newToken.raw;
           lines = newText.substring(tokens[tokens.length - 1].raw.length).split('\n');
           continue;
         }
