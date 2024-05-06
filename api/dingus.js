@@ -1,4 +1,4 @@
-import { marked } from '../src/marked.js';
+import { marked } from '../lib/marked.esm.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const version = require('../package.json').version;
