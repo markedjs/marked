@@ -1,38 +1,40 @@
+import type { Tokens } from './Tokens.ts';
+
 /**
  * TextRenderer
  * returns only the textual part of the token
  */
 export class _TextRenderer {
   // no need for block level renderers
-  strong(text: string) {
+  strong({ text }: Tokens.Strong) {
     return text;
   }
 
-  em(text: string) {
+  em({ text }: Tokens.Em) {
     return text;
   }
 
-  codespan(text: string) {
+  codespan({ text }: Tokens.Codespan) {
     return text;
   }
 
-  del(text: string) {
+  del({ text }: Tokens.Del) {
     return text;
   }
 
-  html(text: string) {
+  html({ text }: Tokens.HTML | Tokens.Tag) {
     return text;
   }
 
-  text(text: string) {
+  text({ text }: Tokens.Text | Tokens.Escape | Tokens.Tag) {
     return text;
   }
 
-  link(href: string, title: string | null | undefined, text: string) {
+  link({ text }: Tokens.Link) {
     return '' + text;
   }
 
-  image(href: string, title: string | null, text: string) {
+  image({ text }: Tokens.Image) {
     return '' + text;
   }
 

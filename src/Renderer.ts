@@ -40,16 +40,15 @@ export class _Renderer {
     return `<blockquote>\n${body}</blockquote>\n`;
   }
 
-  html(html: string, block?: boolean) : string {
-    return html;
+  html({ text }: Tokens.HTML | Tokens.Tag) : string {
+    return text;
   }
 
-  heading(text: string, level: number, raw: string): string {
-    // ignore IDs
-    return `<h${level}>${text}</h${level}>\n`;
+  heading({ tokens, depth }: Tokens.Heading): string {
+    return `<h${depth}>${this.parser.parseInline(tokens)}</h${depth}>\n`;
   }
 
-  hr(): string {
+  hr(token: Tokens.Hr): string {
     return '<hr>\n';
   }
 
@@ -69,8 +68,8 @@ export class _Renderer {
       + 'disabled="" type="checkbox">';
   }
 
-  paragraph(text: string): string {
-    return `<p>${text}</p>\n`;
+  paragraph({ tokens }: Tokens.Paragraph): string {
+    return `<p>${this.parser.parseInline(tokens)}</p>\n`;
   }
 
   table(header: string, body: string): string {
@@ -102,27 +101,28 @@ export class _Renderer {
   /**
    * span level renderer
    */
-  strong(text: string): string {
-    return `<strong>${text}</strong>`;
+  strong({ tokens }: Tokens.Strong): string {
+    return `<strong>${this.parser.parseInline(tokens)}</strong>`;
   }
 
-  em(text: string): string {
-    return `<em>${text}</em>`;
+  em({ tokens }: Tokens.Em): string {
+    return `<em>${this.parser.parseInline(tokens)}</em>`;
   }
 
-  codespan(text: string): string {
+  codespan({ text }: Tokens.Codespan): string {
     return `<code>${text}</code>`;
   }
 
-  br(): string {
+  br(token: Tokens.Br): string {
     return '<br>';
   }
 
-  del(text: string): string {
-    return `<del>${text}</del>`;
+  del({ tokens }: Tokens.Del): string {
+    return `<del>${this.parser.parseInline(tokens)}</del>`;
   }
 
-  link(href: string, title: string | null | undefined, text: string): string {
+  link({ href, title, tokens }: Tokens.Link): string {
+    const text = this.parser.parseInline(tokens);
     const cleanHref = cleanUrl(href);
     if (cleanHref === null) {
       return text;
@@ -136,7 +136,7 @@ export class _Renderer {
     return out;
   }
 
-  image(href: string, title: string | null, text: string): string {
+  image({ href, title, text }: Tokens.Image): string {
     const cleanHref = cleanUrl(href);
     if (cleanHref === null) {
       return text;
@@ -151,7 +151,7 @@ export class _Renderer {
     return out;
   }
 
-  text(text: string) : string {
+  text({ text }: Tokens.Text | Tokens.Escape | Tokens.Tag) : string {
     return text;
   }
 }

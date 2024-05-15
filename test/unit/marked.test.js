@@ -38,7 +38,7 @@ describe('marked unit', () => {
       const md = 'HTML Image: <img alt="MY IMAGE" src="example.png" />';
       marked.parse(md, { renderer });
 
-      assert.strictEqual(renderer.html.mock.calls[0].arguments[0], '<img alt="MY IMAGE" src="example.png" />');
+      assert.strictEqual(renderer.html.mock.calls[0].arguments[0].raw, '<img alt="MY IMAGE" src="example.png" />');
     });
   });
 
@@ -490,7 +490,7 @@ describe('marked unit', () => {
             }
           },
           renderer: {
-            heading(text, depth, raw) {
+            heading({ text, depth }) {
               if (text === name) {
                 return `<h${depth}>${text}</h${depth}>\n`;
               }
@@ -692,7 +692,7 @@ used extension2 walked</p>
     it('should use renderer', () => {
       const extension = {
         renderer: {
-          paragraph(text) {
+          paragraph() {
             return 'extension';
           }
         }
@@ -700,7 +700,7 @@ used extension2 walked</p>
       mock.method(extension.renderer, 'paragraph');
       marked.use(extension);
       const html = marked.parse('text');
-      assert.strictEqual(extension.renderer.paragraph.mock.calls[0].arguments[0], 'text');
+      assert.strictEqual(extension.renderer.paragraph.mock.calls[0].arguments[0].raw, 'text');
       assert.strictEqual(html, 'extension');
     });
 
@@ -773,17 +773,17 @@ used extension2 walked</p>
     it('should use last extension function and not override others', () => {
       const extension1 = {
         renderer: {
-          paragraph(text) {
+          paragraph() {
             return 'extension1 paragraph\n';
           },
-          html(html) {
+          html() {
             return 'extension1 html\n';
           }
         }
       };
       const extension2 = {
         renderer: {
-          paragraph(text) {
+          paragraph() {
             return 'extension2 paragraph\n';
           }
         }
@@ -803,7 +803,7 @@ paragraph
     it('should use previous extension when returning false', () => {
       const extension1 = {
         renderer: {
-          paragraph(text) {
+          paragraph({ text }) {
             if (text !== 'original') {
               return 'extension1 paragraph\n';
             }
@@ -813,7 +813,7 @@ paragraph
       };
       const extension2 = {
         renderer: {
-          paragraph(text) {
+          paragraph({ text }) {
             if (text !== 'extension1' && text !== 'original') {
               return 'extension2 paragraph\n';
             }
