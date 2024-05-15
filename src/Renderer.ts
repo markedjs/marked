@@ -52,17 +52,49 @@ export class _Renderer {
     return '<hr>\n';
   }
 
-  list(body: string, ordered: boolean, start: number | ''): string {
+  list(token: Tokens.List): string {
+    const ordered = token.ordered;
+    const start = token.start;
+
+    let body = '';
+    for (let j = 0; j < token.items.length; j++) {
+      const item = token.items[j];
+      body += this.listitem(item);
+    }
+
     const type = ordered ? 'ol' : 'ul';
-    const startatt = (ordered && start !== 1) ? (' start="' + start + '"') : '';
-    return '<' + type + startatt + '>\n' + body + '</' + type + '>\n';
+    const startAttr = (ordered && start !== 1) ? (' start="' + start + '"') : '';
+    return '<' + type + startAttr + '>\n' + body + '</' + type + '>\n';
   }
 
-  listitem(text: string, task: boolean, checked: boolean): string {
-    return `<li>${text}</li>\n`;
+  listitem(item: Tokens.ListItem): string {
+    let itemBody = '';
+    if (item.task) {
+      const checkbox = this.checkbox({ checked: !!item.checked });
+      if (item.loose) {
+        if (item.tokens.length > 0 && item.tokens[0].type === 'paragraph') {
+          item.tokens[0].text = checkbox + ' ' + item.tokens[0].text;
+          if (item.tokens[0].tokens && item.tokens[0].tokens.length > 0 && item.tokens[0].tokens[0].type === 'text') {
+            item.tokens[0].tokens[0].text = checkbox + ' ' + item.tokens[0].tokens[0].text;
+          }
+        } else {
+          item.tokens.unshift({
+            type: 'text',
+            raw: checkbox + ' ',
+            text: checkbox + ' '
+          });
+        }
+      } else {
+        itemBody += checkbox + ' ';
+      }
+    }
+
+    itemBody += this.parser.parse(item.tokens, !!item.loose);
+
+    return `<li>${itemBody}</li>\n`;
   }
 
-  checkbox(checked: boolean): string {
+  checkbox({ checked }: Tokens.Checkbox): string {
     return '<input '
       + (checked ? 'checked="" ' : '')
       + 'disabled="" type="checkbox">';

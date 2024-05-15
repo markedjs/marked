@@ -94,6 +94,10 @@ export namespace Tokens {
         tokens: Token[];
     }
 
+    export interface Checkbox {
+        checked: boolean;
+    }
+
     export interface Paragraph {
         type: 'paragraph';
         raw: string;

@@ -273,6 +273,7 @@ describe('Parser', () => {
                 {
                   task: false,
                   checked: undefined,
+                  loose: true,
                   tokens: [
                     {
                       type: 'text',
@@ -284,6 +285,7 @@ describe('Parser', () => {
                 {
                   task: false,
                   checked: undefined,
+                  loose: true,
                   tokens: [
                     {
                       type: 'text',
