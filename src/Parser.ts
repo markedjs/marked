@@ -96,10 +96,10 @@ export class _Parser {
         }
         case 'text': {
           let textToken = token;
-          let body = 'tokens' in textToken && textToken.tokens ? this.parseInline(textToken.tokens) : textToken.text;
+          let body = this.renderer.text(textToken);
           while (i + 1 < tokens.length && tokens[i + 1].type === 'text') {
-            textToken = tokens[++i] as Tokens.Text;
-            body += '\n' + (textToken.tokens ? this.parseInline(textToken.tokens) : textToken.text);
+            textToken = tokens[++i] as Tokens.Text | Tokens.Tag;
+            body += '\n' + this.renderer.text(textToken);
           }
           if (top) {
             out += this.renderer.paragraph({

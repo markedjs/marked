@@ -217,7 +217,7 @@ export class _Renderer {
     return out;
   }
 
-  text({ text }: Tokens.Text | Tokens.Escape | Tokens.Tag) : string {
-    return text;
+  text(token: Tokens.Text | Tokens.Escape | Tokens.Tag) : string {
+    return 'tokens' in token && token.tokens ? this.parser.parseInline(token.tokens) : token.text;
   }
 }
