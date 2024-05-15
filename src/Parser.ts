@@ -19,6 +19,7 @@ export class _Parser {
     this.options.renderer = this.options.renderer || new _Renderer();
     this.renderer = this.options.renderer;
     this.renderer.options = this.options;
+    this.renderer.parser = this;
     this.textRenderer = new _TextRenderer();
   }
 
@@ -75,9 +76,7 @@ export class _Parser {
         }
         case 'code': {
           const codeToken = token as Tokens.Code;
-          out += this.renderer.code(codeToken.text,
-            codeToken.lang,
-            !!codeToken.escaped);
+          out += this.renderer.code(codeToken);
           continue;
         }
         case 'table': {
@@ -113,8 +112,7 @@ export class _Parser {
         }
         case 'blockquote': {
           const blockquoteToken = token as Tokens.Blockquote;
-          const body = this.parse(blockquoteToken.tokens);
-          out += this.renderer.blockquote(body);
+          out += this.renderer.blockquote(blockquoteToken);
           continue;
         }
         case 'list': {

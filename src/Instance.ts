@@ -146,11 +146,11 @@ export class Marked {
           if (!(prop in renderer)) {
             throw new Error(`renderer '${prop}' does not exist`);
           }
-          if (prop === 'options') {
+          if (['options', 'parser'].includes(prop)) {
             // ignore options property
             continue;
           }
-          const rendererProp = prop as Exclude<keyof _Renderer, 'options'>;
+          const rendererProp = prop as Exclude<keyof _Renderer, 'options' | 'parser'>;
           const rendererFunc = pack.renderer[rendererProp] as GenericRendererFunction;
           const prevRenderer = renderer[rendererProp] as GenericRendererFunction;
           // Replace renderer with func to run extension, but fall back if false

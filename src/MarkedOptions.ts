@@ -39,7 +39,7 @@ type HooksObject = {
   [K in keyof HooksApi]?: (...args: Parameters<HooksApi[K]>) => ReturnType<HooksApi[K]> | Promise<ReturnType<HooksApi[K]>>
 };
 
-type RendererApi = Omit<_Renderer, 'constructor' | 'options'>;
+type RendererApi = Omit<_Renderer, 'constructor' | 'options' | 'parser'>;
 type RendererObject = {
   [K in keyof RendererApi]?: (...args: Parameters<RendererApi[K]>) => ReturnType<RendererApi[K]> | false
 };

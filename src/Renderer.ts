@@ -4,36 +4,40 @@ import {
   escape
 } from './helpers.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
+import type { Tokens } from './Tokens.ts';
+import type { _Parser } from './Parser.ts';
 
 /**
  * Renderer
  */
 export class _Renderer {
   options: MarkedOptions;
+  parser!: _Parser; // set by the parser
   constructor(options?: MarkedOptions) {
     this.options = options || _defaults;
   }
 
-  code(code: string, infostring: string | undefined, escaped: boolean): string {
-    const lang = (infostring || '').match(/^\S*/)?.[0];
+  code({ text, lang, escaped }: Tokens.Code): string {
+    const langString = (lang || '').match(/^\S*/)?.[0];
 
-    code = code.replace(/\n$/, '') + '\n';
+    const code = text.replace(/\n$/, '') + '\n';
 
-    if (!lang) {
+    if (!langString) {
       return '<pre><code>'
         + (escaped ? code : escape(code, true))
         + '</code></pre>\n';
     }
 
     return '<pre><code class="language-'
-      + escape(lang)
+      + escape(langString)
       + '">'
       + (escaped ? code : escape(code, true))
       + '</code></pre>\n';
   }
 
-  blockquote(quote: string): string {
-    return `<blockquote>\n${quote}</blockquote>\n`;
+  blockquote({ tokens }: Tokens.Blockquote): string {
+    const body = this.parser.parse(tokens);
+    return `<blockquote>\n${body}</blockquote>\n`;
   }
 
   html(html: string, block?: boolean) : string {
