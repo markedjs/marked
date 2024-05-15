@@ -17,6 +17,10 @@ export class _Renderer {
     this.options = options || _defaults;
   }
 
+  space(token: Tokens.Space): string {
+    return '';
+  }
+
   code({ text, lang, escaped }: Tokens.Code): string {
     const langString = (lang || '').match(/^\S*/)?.[0];
 

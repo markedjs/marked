@@ -59,6 +59,7 @@ export class _Parser {
 
       switch (token.type) {
         case 'space': {
+          out += this.renderer.space(token);
           continue;
         }
         case 'hr': {
