@@ -4,7 +4,7 @@ import {
   escape
 } from './helpers.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
-import type { Tokens } from './Tokens.ts';
+import type { Tokens, Token } from './Tokens.ts';
 import type { _Parser } from './Parser.ts';
 
 /**
@@ -104,7 +104,35 @@ export class _Renderer {
     return `<p>${this.parser.parseInline(tokens)}</p>\n`;
   }
 
-  table(header: string, body: string): string {
+  table(token: Tokens.Table): string {
+    let header = '';
+
+    // header
+    let cell = '';
+    for (let j = 0; j < token.header.length; j++) {
+      cell += this.tablecell({
+        tokens: token.header[j].tokens,
+        header: true,
+        align: token.align[j]
+      });
+    }
+    header += this.tablerow({ text: cell });
+
+    let body = '';
+    for (let j = 0; j < token.rows.length; j++) {
+      const row = token.rows[j];
+
+      cell = '';
+      for (let k = 0; k < row.length; k++) {
+        cell += this.tablecell({
+          tokens: row[k].tokens,
+          header: false,
+          align: token.align[k]
+        });
+      }
+
+      body += this.tablerow({ text: cell });
+    }
     if (body) body = `<tbody>${body}</tbody>`;
 
     return '<table>\n'
@@ -115,17 +143,19 @@ export class _Renderer {
       + '</table>\n';
   }
 
-  tablerow(content: string): string {
-    return `<tr>\n${content}</tr>\n`;
+  tablerow({ text }: { text: string }): string {
+    return `<tr>\n${text}</tr>\n`;
   }
 
-  tablecell(content: string, flags: {
+  tablecell(token: {
+    tokens: Token[];
     header: boolean;
     align: 'center' | 'left' | 'right' | null;
   }): string {
-    const type = flags.header ? 'th' : 'td';
-    const tag = flags.align
-      ? `<${type} align="${flags.align}">`
+    const content = this.parser.parseInline(token.tokens);
+    const type = token.header ? 'th' : 'td';
+    const tag = token.align
+      ? `<${type} align="${token.align}">`
       : `<${type}>`;
     return tag + content + `</${type}>\n`;
   }

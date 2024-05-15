@@ -74,34 +74,7 @@ export class _Parser {
           continue;
         }
         case 'table': {
-          const tableToken = token as Tokens.Table;
-          let header = '';
-
-          // header
-          let cell = '';
-          for (let j = 0; j < tableToken.header.length; j++) {
-            cell += this.renderer.tablecell(
-              this.parseInline(tableToken.header[j].tokens),
-              { header: true, align: tableToken.align[j] }
-            );
-          }
-          header += this.renderer.tablerow(cell);
-
-          let body = '';
-          for (let j = 0; j < tableToken.rows.length; j++) {
-            const row = tableToken.rows[j];
-
-            cell = '';
-            for (let k = 0; k < row.length; k++) {
-              cell += this.renderer.tablecell(
-                this.parseInline(row[k].tokens),
-                { header: false, align: tableToken.align[k] }
-              );
-            }
-
-            body += this.renderer.tablerow(cell);
-          }
-          out += this.renderer.table(header, body);
+          out += this.renderer.table(token);
           continue;
         }
         case 'blockquote': {
