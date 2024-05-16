@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 
-export type TokenWithoutGeneric = (
+export type MarkedToken = (
     Tokens.Space
   | Tokens.Code
   | Tokens.Heading
@@ -24,7 +24,7 @@ export type TokenWithoutGeneric = (
   | Tokens.Del);
 
 export type Token = (
-    TokenWithoutGeneric
+    MarkedToken
   | Tokens.Generic);
 
 export namespace Tokens {

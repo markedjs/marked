@@ -1,7 +1,7 @@
 import { _Renderer } from './Renderer.ts';
 import { _TextRenderer } from './TextRenderer.ts';
 import { _defaults } from './defaults.ts';
-import type { TokenWithoutGeneric, Token, Tokens } from './Tokens.ts';
+import type { MarkedToken, Token, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
 /**
@@ -55,7 +55,7 @@ export class _Parser {
         }
       }
 
-      const token = anyToken as TokenWithoutGeneric;
+      const token = anyToken as MarkedToken;
 
       switch (token.type) {
         case 'space': {
@@ -148,7 +148,7 @@ export class _Parser {
         }
       }
 
-      const token = anyToken as TokenWithoutGeneric;
+      const token = anyToken as MarkedToken;
 
       switch (token.type) {
         case 'escape': {
