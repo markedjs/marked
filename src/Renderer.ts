@@ -4,7 +4,7 @@ import {
   escape
 } from './helpers.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
-import type { Tokens, Token } from './Tokens.ts';
+import type { Tokens } from './Tokens.ts';
 import type { _Parser } from './Parser.ts';
 
 /**
@@ -114,11 +114,7 @@ export class _Renderer {
     // header
     let cell = '';
     for (let j = 0; j < token.header.length; j++) {
-      cell += this.tablecell({
-        tokens: token.header[j].tokens,
-        header: true,
-        align: token.align[j]
-      });
+      cell += this.tablecell(token.header[j]);
     }
     header += this.tablerow({ text: cell });
 
@@ -128,11 +124,7 @@ export class _Renderer {
 
       cell = '';
       for (let k = 0; k < row.length; k++) {
-        cell += this.tablecell({
-          tokens: row[k].tokens,
-          header: false,
-          align: token.align[k]
-        });
+        cell += this.tablecell(row[k]);
       }
 
       body += this.tablerow({ text: cell });
@@ -147,15 +139,11 @@ export class _Renderer {
       + '</table>\n';
   }
 
-  tablerow({ text }: { text: string }): string {
+  tablerow({ text }: Tokens.TableRow): string {
     return `<tr>\n${text}</tr>\n`;
   }
 
-  tablecell(token: {
-    tokens: Token[];
-    header: boolean;
-    align: 'center' | 'left' | 'right' | null;
-  }): string {
+  tablecell(token: Tokens.TableCell): string {
     const content = this.parser.parseInline(token.tokens);
     const type = token.header ? 'th' : 'td';
     const tag = token.align

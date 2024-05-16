@@ -196,22 +196,30 @@ lheading 2
           header: [
             {
               text: 'a',
-              tokens: [{ type: 'text', raw: 'a', text: 'a' }]
+              tokens: [{ type: 'text', raw: 'a', text: 'a' }],
+              header: true,
+              align: null
             },
             {
               text: 'b',
-              tokens: [{ type: 'text', raw: 'b', text: 'b' }]
+              tokens: [{ type: 'text', raw: 'b', text: 'b' }],
+              header: true,
+              align: null
             }
           ],
           rows: [
             [
               {
                 text: '1',
-                tokens: [{ type: 'text', raw: '1', text: '1' }]
+                tokens: [{ type: 'text', raw: '1', text: '1' }],
+                header: false,
+                align: null
               },
               {
                 text: '2',
-                tokens: [{ type: 'text', raw: '2', text: '2' }]
+                tokens: [{ type: 'text', raw: '2', text: '2' }],
+                header: false,
+                align: null
               }
             ]
           ]
@@ -243,22 +251,30 @@ paragraph 1
           header: [
             {
               text: 'a',
-              tokens: [{ type: 'text', raw: 'a', text: 'a' }]
+              tokens: [{ type: 'text', raw: 'a', text: 'a' }],
+              header: true,
+              align: null
             },
             {
               text: 'b',
-              tokens: [{ type: 'text', raw: 'b', text: 'b' }]
+              tokens: [{ type: 'text', raw: 'b', text: 'b' }],
+              header: true,
+              align: null
             }
           ],
           rows: [
             [
               {
                 text: '1',
-                tokens: [{ type: 'text', raw: '1', text: '1' }]
+                tokens: [{ type: 'text', raw: '1', text: '1' }],
+                header: false,
+                align: null
               },
               {
                 text: '2',
-                tokens: [{ type: 'text', raw: '2', text: '2' }]
+                tokens: [{ type: 'text', raw: '2', text: '2' }],
+                header: false,
+                align: null
               }
             ]
           ]
@@ -284,30 +300,42 @@ paragraph 1
           header: [
             {
               text: 'a',
-              tokens: [{ type: 'text', raw: 'a', text: 'a' }]
+              tokens: [{ type: 'text', raw: 'a', text: 'a' }],
+              header: true,
+              align: 'left'
             },
             {
               text: 'b',
-              tokens: [{ type: 'text', raw: 'b', text: 'b' }]
+              tokens: [{ type: 'text', raw: 'b', text: 'b' }],
+              header: true,
+              align: 'center'
             },
             {
               text: 'c',
-              tokens: [{ type: 'text', raw: 'c', text: 'c' }]
+              tokens: [{ type: 'text', raw: 'c', text: 'c' }],
+              header: true,
+              align: 'right'
             }
           ],
           rows: [
             [
               {
                 text: '1',
-                tokens: [{ type: 'text', raw: '1', text: '1' }]
+                tokens: [{ type: 'text', raw: '1', text: '1' }],
+                header: false,
+                align: 'left'
               },
               {
                 text: '2',
-                tokens: [{ type: 'text', raw: '2', text: '2' }]
+                tokens: [{ type: 'text', raw: '2', text: '2' }],
+                header: false,
+                align: 'center'
               },
               {
                 text: '3',
-                tokens: [{ type: 'text', raw: '3', text: '3' }]
+                tokens: [{ type: 'text', raw: '3', text: '3' }],
+                header: false,
+                align: 'right'
               }
             ]
           ]
@@ -333,22 +361,30 @@ a | b
             header: [
               {
                 text: 'a',
-                tokens: [{ type: 'text', raw: 'a', text: 'a' }]
+                tokens: [{ type: 'text', raw: 'a', text: 'a' }],
+                header: true,
+                align: null
               },
               {
                 text: 'b',
-                tokens: [{ type: 'text', raw: 'b', text: 'b' }]
+                tokens: [{ type: 'text', raw: 'b', text: 'b' }],
+                header: true,
+                align: null
               }
             ],
             rows: [
               [
                 {
                   text: '1',
-                  tokens: [{ type: 'text', raw: '1', text: '1' }]
+                  tokens: [{ type: 'text', raw: '1', text: '1' }],
+                  header: false,
+                  align: null
                 },
                 {
                   text: '2',
-                  tokens: [{ type: 'text', raw: '2', text: '2' }]
+                  tokens: [{ type: 'text', raw: '2', text: '2' }],
+                  header: false,
+                  align: null
                 }
               ]
             ]

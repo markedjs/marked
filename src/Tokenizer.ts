@@ -438,18 +438,22 @@ export class _Tokenizer {
       }
     }
 
-    for (const header of headers) {
+    for (let i = 0; i < headers.length; i++) {
       item.header.push({
-        text: header,
-        tokens: this.lexer.inline(header)
+        text: headers[i],
+        tokens: this.lexer.inline(headers[i]),
+        header: true,
+        align: item.align[i]
       });
     }
 
     for (const row of rows) {
-      item.rows.push(splitCells(row, item.header.length).map(cell => {
+      item.rows.push(splitCells(row, item.header.length).map((cell, i) => {
         return {
           text: cell,
-          tokens: this.lexer.inline(cell)
+          tokens: this.lexer.inline(cell),
+          header: false,
+          align: item.align[i]
         };
       }));
     }

@@ -58,9 +58,15 @@ export namespace Tokens {
         rows: TableCell[][];
     }
 
+    export interface TableRow {
+        text: string;
+    }
+
     export interface TableCell {
         text: string;
         tokens: Token[];
+        header: boolean;
+        align: 'center' | 'left' | 'right' | null;
     }
 
     export interface Hr {

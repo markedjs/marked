@@ -77,22 +77,30 @@ describe('Parser', () => {
             header: [
               {
                 text: 'a',
-                tokens: [{ type: 'text', raw: 'a', text: 'a' }]
+                tokens: [{ type: 'text', raw: 'a', text: 'a' }],
+                header: true,
+                align: 'left'
               },
               {
                 text: 'b',
-                tokens: [{ type: 'text', raw: 'b', text: 'b' }]
+                tokens: [{ type: 'text', raw: 'b', text: 'b' }],
+                header: true,
+                align: 'right'
               }
             ],
             rows: [
               [
                 {
                   text: '1',
-                  tokens: [{ type: 'text', raw: '1', text: '1' }]
+                  tokens: [{ type: 'text', raw: '1', text: '1' }],
+                  header: false,
+                  align: 'left'
                 },
                 {
                   text: '2',
-                  tokens: [{ type: 'text', raw: '2', text: '2' }]
+                  tokens: [{ type: 'text', raw: '2', text: '2' }],
+                  header: false,
+                  align: 'right'
                 }
               ]
             ]
