@@ -68,16 +68,16 @@ import { marked } from 'marked';
 
 // Override function
 const renderer = {
-  heading(text, level) {
+  heading({ text, depth }) {
     const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 
     return `
-            <h${level}>
+            <h${depth}>
               <a name="${escapedText}" class="anchor" href="#${escapedText}">
                 <span class="header-link"></span>
               </a>
               ${text}
-            </h${level}>`;
+            </h${depth}>`;
   }
 };
 
@@ -97,7 +97,7 @@ console.log(marked.parse('# heading+'));
   heading+
 </h1>
 ```
-**Note:** Calling `marked.use()` in the following way will avoid overriding the `heading` token output but create a new renderer in the process.
+**Note:** Calling `marked.use()` in the following way will avoid overriding the `heading` token output but create a new `heading` renderer in the process.
 
 ```js
 marked.use({
@@ -112,38 +112,32 @@ marked.use({
 
 ### Block-level renderer methods
 
-- <code>**code**(*string* code, *string* infostring, *boolean* escaped)</code>
-- <code>**blockquote**(*string* quote)</code>
-- <code>**html**(*string* html, *boolean* block)</code>
-- <code>**heading**(*string* text, *number* level, *string* raw)</code>
-- <code>**hr**()</code>
-- <code>**list**(*string* body, *boolean* ordered, *number* start)</code>
-- <code>**listitem**(*string* text, *boolean* task, *boolean* checked)</code>
-- <code>**checkbox**(*boolean* checked)</code>
-- <code>**paragraph**(*string* text)</code>
-- <code>**table**(*string* header, *string* body)</code>
-- <code>**tablerow**(*string* content)</code>
-- <code>**tablecell**(*string* content, *object* flags)</code>
+- <code>**space**(token: *Tokens.Space*): *string*</code>
+- <code>**code**(token: *Tokens.Code*): *string*</code>
+- <code>**blockquote**(token: *Tokens.Blockquote*): *string*</code>
+- <code>**html**(token: *Tokens.HTML | Tokens.Tag*): *string*</code>
+- <code>**heading**(token: *Tokens.Heading*): *string*</code>
+- <code>**hr**(token: *Tokens.Hr*): *string*</code>
+- <code>**list**(token: *Tokens.List*): *string*</code>
+- <code>**listitem**(token: *Tokens.ListItem*): *string*</code>
+- <code>**checkbox**(token: *Tokens.Checkbox*): *string*</code>
+- <code>**paragraph**(token: *Tokens.Paragraph*): *string*</code>
+- <code>**table**(token: *Tokens.Table*): *string*</code>
+- <code>**tablerow**(token: *Tokens.TableRow*): *string*</code>
+- <code>**tablecell**(token: *Tokens.TableCell*): *string*</code>
 
 ### Inline-level renderer methods
 
-- <code>**strong**(*string* text)</code>
-- <code>**em**(*string* text)</code>
-- <code>**codespan**(*string* code)</code>
-- <code>**br**()</code>
-- <code>**del**(*string* text)</code>
-- <code>**link**(*string* href, *string* title, *string* text)</code>
-- <code>**image**(*string* href, *string* title, *string* text)</code>
-- <code>**text**(*string* text)</code>
+- <code>**strong**(token: *Tokens.Strong*): *string*</code>
+- <code>**em**(token: *Tokens.Em*): *string*</code>
+- <code>**codespan**(token: *Tokens.Codespan*): *string*</code>
+- <code>**br**(token: *Tokens.Br*): *string*</code>
+- <code>**del**(token: *Tokens.Del*): *string*</code>
+- <code>**link**(token: *Tokens.Link*): *string*</code>
+- <code>**image**(token: *Tokens.Image*): *string*</code>
+- <code>**text**(token: *Tokens.Text | Tokens.Escape | Tokens.Tag*): *string*</code>
 
-`flags` has the following properties:
-
-```js
-{
-    header: true || false,
-    align: 'center' || 'left' || 'right'
-}
-```
+The Tokens.* properties can be found [here](https://github.com/markedjs/marked/blob/master/src/Tokens.ts).
 
 ***
 
@@ -192,33 +186,35 @@ console.log(marked.parse('$ latex code $\n\n` other code `'));
 
 ### Block level tokenizer methods
 
-- <code>**space**(*string* src)</code>
-- <code>**code**(*string* src)</code>
-- <code>**fences**(*string* src)</code>
-- <code>**heading**(*string* src)</code>
-- <code>**hr**(*string* src)</code>
-- <code>**blockquote**(*string* src)</code>
-- <code>**list**(*string* src)</code>
-- <code>**html**(*string* src)</code>
-- <code>**def**(*string* src)</code>
-- <code>**table**(*string* src)</code>
-- <code>**lheading**(*string* src)</code>
-- <code>**paragraph**(*string* src)</code>
-- <code>**text**(*string* src)</code>
+- <code>**space**(src: *string*): *Tokens.Space*</code>
+- <code>**code**(src: *string*): *Tokens.Code*</code>
+- <code>**fences**(src: *string*): *Tokens.Code*</code>
+- <code>**heading**(src: *string*): *Tokens.Heading*</code>
+- <code>**hr**(src: *string*): *Tokens.Hr*</code>
+- <code>**blockquote**(src: *string*): *Tokens.Blockquote*</code>
+- <code>**list**(src: *string*): *Tokens.List*</code>
+- <code>**html**(src: *string*): *Tokens.HTML*</code>
+- <code>**def**(src: *string*): *Tokens.Def*</code>
+- <code>**table**(src: *string*): *Tokens.Table*</code>
+- <code>**lheading**(src: *string*): *Tokens.Heading*</code>
+- <code>**paragraph**(src: *string*): *Tokens.Paragraph*</code>
+- <code>**text**(src: *string*): *Tokens.Text*</code>
 
 ### Inline level tokenizer methods
 
-- <code>**escape**(*string* src)</code>
-- <code>**tag**(*string* src)</code>
-- <code>**link**(*string* src)</code>
-- <code>**reflink**(*string* src, *object* links)</code>
-- <code>**emStrong**(*string* src, *string* maskedSrc, *string* prevChar)</code>
-- <code>**codespan**(*string* src)</code>
-- <code>**br**(*string* src)</code>
-- <code>**del**(*string* src)</code>
-- <code>**autolink**(*string* src)</code>
-- <code>**url**(*string* src)</code>
-- <code>**inlineText**(*string* src)</code>
+- <code>**escape**(src: *string*): *Tokens.Escape*</code>
+- <code>**tag**(src: *string*): *Tokens.Tag*</code>
+- <code>**link**(src: *string*): *Tokens.Link | Tokens.Image*</code>
+- <code>**reflink**(src: *string*, links: *object*): *Tokens.Link | Tokens.Image | Tokens.Text*</code>
+- <code>**emStrong**(src: *string*, maskedSrc: *string*, prevChar: *string*): *Tokens.Em | Tokens.Strong*</code>
+- <code>**codespan**(src: *string*): *Tokens.Codespan*</code>
+- <code>**br**(src: *string*): *Tokens.Br*</code>
+- <code>**del**(src: *string*): *Tokens.Del*</code>
+- <code>**autolink**(src: *string*): *Tokens.Link*</code>
+- <code>**url**(src: *string*): *Tokens.Link*</code>
+- <code>**inlineText**(src: *string*): *Tokens.Text*</code>
+
+The Tokens.* properties can be found [here](https://github.com/markedjs/marked/blob/master/src/Tokens.ts).
 
 ***
 
@@ -263,6 +259,7 @@ Hooks are methods that hook into some part of marked. The following hooks are av
 |-----------|-------------|
 | `preprocess(markdown: string): string` | Process markdown before sending it to marked. |
 | `postprocess(html: string): string` | Process html after marked has finished parsing. |
+| `processAllTokens(tokens: Token[]): Token[]` | Process all tokens before walk tokens. |
 
 `marked.use()` can be called multiple times with different `hooks` functions. Each function will be called in order, starting with the function that was assigned *last*.
 
