@@ -33,6 +33,9 @@
     "./marked.min.js": "./marked.min.js",
     "./package.json": "./package.json"
   },
+  "publishConfig": {
+    "provenance": true
+  },
   "repository": "git://github.com/markedjs/marked.git",
   "homepage": "https://marked.js.org",
   "bugs": {
