@@ -55,6 +55,7 @@ jobs:
   Release:
     permissions:
       contents: write
+      id-token: write
     needs: [UnitTests, OtherTests]
     if: |
       github.ref == 'refs/heads/master' &&
