@@ -489,6 +489,7 @@ describe('marked unit', () => {
               return false;
             }
           },
+          useNewRenderer: true,
           renderer: {
             heading({ text, depth }) {
               if (text === name) {
@@ -691,6 +692,7 @@ used extension2 walked</p>
 
     it('should use renderer', () => {
       const extension = {
+        useNewRenderer: true,
         renderer: {
           paragraph() {
             return 'extension';
@@ -772,6 +774,7 @@ used extension2 walked</p>
 
     it('should use last extension function and not override others', () => {
       const extension1 = {
+        useNewRenderer: true,
         renderer: {
           paragraph() {
             return 'extension1 paragraph\n';
@@ -782,6 +785,7 @@ used extension2 walked</p>
         }
       };
       const extension2 = {
+        useNewRenderer: true,
         renderer: {
           paragraph() {
             return 'extension2 paragraph\n';
@@ -802,6 +806,7 @@ paragraph
 
     it('should use previous extension when returning false', () => {
       const extension1 = {
+        useNewRenderer: true,
         renderer: {
           paragraph({ text }) {
             if (text !== 'original') {
@@ -812,6 +817,7 @@ paragraph
         }
       };
       const extension2 = {
+        useNewRenderer: true,
         renderer: {
           paragraph({ text }) {
             if (text !== 'extension1' && text !== 'original') {
@@ -835,6 +841,7 @@ original
 
     it('should get options with this.options', () => {
       const extension = {
+        useNewRenderer: true,
         renderer: {
           heading: () => {
             return this && this.options ? 'arrow options\n' : 'arrow no options\n';
