@@ -565,8 +565,6 @@ The parser takes tokens as input and calls the renderer functions.
 
 You also have direct access to the lexer and parser if you so desire. The lexer and parser options are the same as passed to `marked.setOptions()` except they have to be full options objects, they don't get merged with the current or default options.
 
-
-
 ``` js
 const tokens = marked.lexer(markdown, options);
 console.log(marked.parser(tokens, options));
@@ -581,6 +579,11 @@ console.log(lexer.tokenizer.rules.inline); // inline level rules used
 console.log(marked.Lexer.rules.block); // all block level rules
 console.log(marked.Lexer.rules.inline); // all inline level rules
 ```
+
+Note that the lexer can be used in two different ways:
+
+- `marked.lexer()`: this method tokenizes a string and returns its tokens. Subsequent calls to `lexer()` ignore any previous calls.
+- `new marked.Lexer().lex()`: this instance tokenizes a string and returns its tokens along with any previous tokens. Subsequent calls to `lex()` accumulate tokens.
 
 ``` bash
 $ node
