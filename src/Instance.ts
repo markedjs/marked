@@ -6,7 +6,8 @@ import { _Renderer } from './Renderer.ts';
 import { _Tokenizer } from './Tokenizer.ts';
 import { _TextRenderer } from './TextRenderer.ts';
 import {
-  escape
+  escape,
+  unescape
 } from './helpers.ts';
 import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
 import type { Token, Tokens, TokensList } from './Tokens.ts';
@@ -151,10 +152,14 @@ export class Marked {
             continue;
           }
           const rendererProp = prop as Exclude<keyof _Renderer, 'options' | 'parser'>;
-          const rendererFunc = pack.renderer[rendererProp] as GenericRendererFunction;
+          let rendererFunc = pack.renderer[rendererProp] as GenericRendererFunction;
           const prevRenderer = renderer[rendererProp] as GenericRendererFunction;
           // Replace renderer with func to run extension, but fall back if false
           renderer[rendererProp] = (...args: unknown[]) => {
+            if (!pack.useNewRenderer) {
+              // Remove this in next major version
+              rendererFunc = this.#convertRendererFunction(rendererFunc, rendererProp, renderer) as GenericRendererFunction;
+            }
             let ret = rendererFunc.apply(renderer, args);
             if (ret === false) {
               ret = prevRenderer.apply(renderer, args);
@@ -248,6 +253,159 @@ export class Marked {
     });
 
     return this;
+  }
+
+  #convertRendererFunction(func: GenericRendererFunction, prop: string, renderer: _Renderer) {
+    switch (prop) {
+      case 'heading':
+        return function(token: Tokens.Heading) {
+          return func(
+            renderer.parser.parseInline(token.tokens),
+            token.depth,
+            unescape(renderer.parser.parseInline(token.tokens, renderer.parser.textRenderer))
+          );
+        };
+      case 'code':
+        return function(token: Tokens.Code) {
+          return func(
+            token.text,
+            token.lang,
+            !!token.escaped
+          );
+        };
+      case 'table':
+        return function(this: _Renderer, token: Tokens.Table) {
+          let header = '';
+          // header
+          let cell = '';
+          for (let j = 0; j < token.header.length; j++) {
+            cell += this.tablecell(
+              {
+                text: token.header[j].text,
+                tokens: token.header[j].tokens,
+                header: true,
+                align: token.align[j]
+              }
+            );
+          }
+          header += this.tablerow({ text: cell });
+
+          let body = '';
+          for (let j = 0; j < token.rows.length; j++) {
+            const row = token.rows[j];
+
+            cell = '';
+            for (let k = 0; k < row.length; k++) {
+              cell += this.tablecell(
+                {
+                  text: row[k].text,
+                  tokens: row[k].tokens,
+                  header: false,
+                  align: token.align[k]
+                }
+              );
+            }
+
+            body += this.tablerow({ text: cell });
+          }
+
+          return func(header, body);
+        };
+      case 'blockquote':
+        return function(this: _Renderer, token: Tokens.Blockquote) {
+          const body = this.parser.parse(token.tokens);
+          return func(body);
+        };
+      case 'list':
+        return function(this: _Renderer, token: Tokens.List) {
+          const ordered = token.ordered;
+          const start = token.start;
+          const loose = token.loose;
+
+          let body = '';
+          for (let j = 0; j < token.items.length; j++) {
+            const item = token.items[j];
+            const checked = item.checked;
+            const task = item.task;
+
+            let itemBody = '';
+            if (item.task) {
+              const checkbox = this.checkbox({ checked: !!checked });
+              if (loose) {
+                if (item.tokens.length > 0 && item.tokens[0].type === 'paragraph') {
+                  item.tokens[0].text = checkbox + ' ' + item.tokens[0].text;
+                  if (item.tokens[0].tokens && item.tokens[0].tokens.length > 0 && item.tokens[0].tokens[0].type === 'text') {
+                    item.tokens[0].tokens[0].text = checkbox + ' ' + item.tokens[0].tokens[0].text;
+                  }
+                } else {
+                  item.tokens.unshift({
+                    type: 'text',
+                    text: checkbox + ' '
+                  } as Tokens.Text);
+                }
+              } else {
+                itemBody += checkbox + ' ';
+              }
+            }
+
+            itemBody += this.parser.parse(item.tokens, loose);
+            body += this.listitem({
+              type: 'list_item',
+              raw: itemBody,
+              text: itemBody,
+              task,
+              checked: !!checked,
+              loose,
+              tokens: item.tokens
+            });
+          }
+
+          return func(body, ordered, start);
+        };
+      case 'html':
+        return function(token: Tokens.HTML) {
+          return func(token.text, token.block);
+        };
+      case 'paragraph':
+        return function(this: _Renderer, token: Tokens.Paragraph) {
+          return func(this.parser.parseInline(token.tokens));
+        };
+      case 'escape':
+        return function(token: Tokens.Escape) {
+          return func(token.text);
+        };
+      case 'link':
+        return function(this: _Renderer, token: Tokens.Link) {
+          return func(token.href, token.title, this.parser.parseInline(token.tokens));
+        };
+      case 'image':
+        return function(token: Tokens.Image) {
+          return func(token.href, token.title, token.text);
+        };
+      case 'strong':
+        return function(this: _Renderer, token: Tokens.Strong) {
+          return func(this.parser.parseInline(token.tokens));
+        };
+      case 'em':
+        return function(this: _Renderer, token: Tokens.Em) {
+          return func(this.parser.parseInline(token.tokens));
+        };
+      case 'codespan':
+        return function(token: Tokens.Codespan) {
+          return func(token.text);
+        };
+      case 'del':
+        return function(this: _Renderer, token: Tokens.Del) {
+          return func(this.parser.parseInline(token.tokens));
+        };
+      case 'text':
+        return function(token: Tokens.Text) {
+          return func(token.text);
+        };
+      default:
+        // do nothing
+    }
+    return func;
   }
 
   setOptions(opt: MarkedOptions) {
