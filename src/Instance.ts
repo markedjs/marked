@@ -157,7 +157,7 @@ export class Marked {
           // Replace renderer with func to run extension, but fall back if false
           renderer[rendererProp] = (...args: unknown[]) => {
             if (!pack.useNewRenderer) {
-              // Remove this in next major version
+              // TODO: Remove this in next major version
               rendererFunc = this.#convertRendererFunction(rendererFunc, rendererProp, renderer) as GenericRendererFunction;
             }
             let ret = rendererFunc.apply(renderer, args);
