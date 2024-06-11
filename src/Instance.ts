@@ -255,7 +255,7 @@ export class Marked {
     return this;
   }
 
-  // Remove this in next major release
+  // TODO: Remove this in next major release
   #convertRendererFunction(func: GenericRendererFunction, prop: string, renderer: _Renderer) {
     switch (prop) {
       case 'heading':
