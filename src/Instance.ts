@@ -255,10 +255,17 @@ export class Marked {
     return this;
   }
 
+  // Remove this in next major release
   #convertRendererFunction(func: GenericRendererFunction, prop: string, renderer: _Renderer) {
     switch (prop) {
       case 'heading':
         return function(token: Tokens.Heading) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           return func(
             renderer.parser.parseInline(token.tokens),
             token.depth,
@@ -267,6 +274,12 @@ export class Marked {
         };
       case 'code':
         return function(token: Tokens.Code) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           return func(
             token.text,
             token.lang,
@@ -275,6 +288,12 @@ export class Marked {
         };
       case 'table':
         return function(this: _Renderer, token: Tokens.Table) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           let header = '';
           // header
           let cell = '';
@@ -313,11 +332,23 @@ export class Marked {
         };
       case 'blockquote':
         return function(this: _Renderer, token: Tokens.Blockquote) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           const body = this.parser.parse(token.tokens);
           return func(body);
         };
       case 'list':
         return function(this: _Renderer, token: Tokens.List) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           const ordered = token.ordered;
           const start = token.start;
           const loose = token.loose;
@@ -364,42 +395,102 @@ export class Marked {
         };
       case 'html':
         return function(token: Tokens.HTML) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           return func(token.text, token.block);
         };
       case 'paragraph':
         return function(this: _Renderer, token: Tokens.Paragraph) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           return func(this.parser.parseInline(token.tokens));
         };
       case 'escape':
         return function(token: Tokens.Escape) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           return func(token.text);
         };
       case 'link':
         return function(this: _Renderer, token: Tokens.Link) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           return func(token.href, token.title, this.parser.parseInline(token.tokens));
         };
       case 'image':
         return function(token: Tokens.Image) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           return func(token.href, token.title, token.text);
         };
       case 'strong':
         return function(this: _Renderer, token: Tokens.Strong) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           return func(this.parser.parseInline(token.tokens));
         };
       case 'em':
         return function(this: _Renderer, token: Tokens.Em) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           return func(this.parser.parseInline(token.tokens));
         };
       case 'codespan':
         return function(token: Tokens.Codespan) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           return func(token.text);
         };
       case 'del':
         return function(this: _Renderer, token: Tokens.Del) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           return func(this.parser.parseInline(token.tokens));
         };
       case 'text':
         return function(token: Tokens.Text) {
+          if (!token.type || token.type !== prop) {
+            // @ts-ignore
+            // eslint-disable-next-line prefer-rest-params
+            return func.apply(this, arguments);
+          }
+
           return func(token.text);
         };
       default:
