@@ -64,6 +64,7 @@ console.log(marked.parseInline('9) I am using __markdown__.'));
 console.log(marked.parseInline('10) I am using __markdown__.', options));
 
 const text = 'Something';
+const raw = 'Raw';
 const tokens: TokensList = marked.lexer(text, options);
 console.log(marked.parser(tokens));
 
@@ -79,8 +80,8 @@ const re: Record<string, Record<string, Record<string, RegExp>>> = marked.Lexer.
 const lexerOptions: MarkedOptions = lexer.options;
 
 const renderer = new marked.Renderer();
-renderer.heading = (text, level, raw) => {
-  return text + level.toString();
+renderer.heading = ({ text, depth }) => {
+  return text + depth.toString();
 };
 renderer.hr = () => {
   return `<hr>\n`;
@@ -90,31 +91,31 @@ renderer.checkbox = checked => {
 };
 
 class ExtendedRenderer extends marked.Renderer {
-  code = (code: string, language: string | undefined, isEscaped: boolean): string => super.code(code, language, isEscaped);
-  blockquote = (quote: string): string => super.blockquote(quote);
-  html = (html: string): string => super.html(html);
-  heading = (text: string, level: 1 | 2 | 3 | 4 | 5 | 6, raw: string): string => super.heading(text, level, raw);
-  hr = (): string => super.hr();
-  list = (body: string, ordered: boolean, start: number): string => super.list(body, ordered, start);
-  listitem = (text: string, task: boolean, checked: boolean): string => super.listitem(text, task, checked);
-  checkbox = (checked: boolean): string => super.checkbox(checked);
-  paragraph = (text: string): string => super.paragraph(text);
-  table = (header: string, body: string): string => super.table(header, body);
-  tablerow = (content: string): string => super.tablerow(content);
-  tablecell = (content: string, flags: { header: boolean; align: 'center' | 'left' | 'right' | null }): string => super.tablecell(content, flags);
-  strong = (text: string): string => super.strong(text);
-  em = (text: string): string => super.em(text);
-  codespan = (code: string): string => super.codespan(code);
-  br = (): string => super.br();
-  del = (text: string): string => super.del(text);
-  link = (href: string, title: string, text: string): string => super.link(href, title, text);
-  image = (href: string, title: string, text: string): string => super.image(href, title, text);
+  code = ({ type, raw,  text, codeBlockStyle, lang, escaped }: Tokens.Code): string => super.code({ type, raw, text, codeBlockStyle, lang, escaped });
+  blockquote = ({ type, raw, text, tokens }: Tokens.Blockquote): string => super.blockquote({ type, raw, text, tokens });
+  html = ({ type, raw, text, pre, block }: Tokens.HTML): string => super.html({ type, raw, text, pre, block });
+  heading = ({ type, raw, text, depth, tokens }: Tokens.Heading): string => super.heading({ type, raw, text, depth, tokens });
+  hr = ({ type, raw }: Tokens.Hr): string => super.hr({ type, raw });
+  list = ({ type, raw, ordered, start, loose, items }: Tokens.List): string => super.list({ type, raw, ordered, start, loose, items});
+  listitem = ({ type, raw, task, checked, loose, text, tokens }: Tokens.ListItem): string => super.listitem({ type, raw, task, checked, loose, text, tokens });
+  checkbox = ({ checked }: Tokens.Checkbox): string => super.checkbox({ checked });
+  paragraph = ({ type, raw, pre, text, tokens }: Tokens.Paragraph): string => super.paragraph({ type, raw, pre, text, tokens });
+  table = ({ type, raw, align, header, rows }: Tokens.Table): string => super.table({ type, raw, align, header, rows });
+  tablerow = ({ text }: Tokens.TableRow): string => super.tablerow({ text });
+  tablecell = ({ text, tokens, header, align }: Tokens.TableCell): string => super.tablecell({ text, tokens, header, align });
+  strong = ({ type, raw, text, tokens }: Tokens.Strong): string => super.strong({ type, raw, text, tokens });
+  em = ({ type, raw, text, tokens }: Tokens.Em): string => super.em({ type, raw, text, tokens });
+  codespan = ({ type, raw, text }: Tokens.Codespan): string => super.codespan({ type, raw, text });
+  br = ({ type, raw }: Tokens.Br): string => super.br({ type, raw });
+  del = ({ type, raw, text, tokens }: Tokens.Del): string => super.del({ type, raw, text, tokens });
+  link = ({ type, raw, href, title, text, tokens }: Tokens.Link): string => super.link({ type, raw, href, title, text, tokens });
+  image = ({ type, raw, href, title, text }: Tokens.Image): string => super.image({ type, raw, href, title, text });
 }
 
 const rendererOptions: MarkedOptions = renderer.options;
 
 const textRenderer = new marked.TextRenderer();
-console.log(textRenderer.strong(text));
+console.log(textRenderer.strong({ type : 'strong', raw, text, tokens }));
 
 const parseTestText = '- list1\n  - list1.1\n\n listend';
 const parseTestTokens: TokensList = marked.lexer(parseTestText, options);
@@ -135,14 +136,14 @@ marked.use({ renderer }, { tokenizer });
 
 marked.use({
   renderer: {
-    heading(text, level) {
-      if (level > 3) {
+    heading({ text, depth }) {
+      if (depth > 3) {
         return `<p>${text}</p>`;
       }
 
       return false;
     },
-    listitem(text, task, checked) {
+    listitem({ text, task, checked }) {
       if (task) return `<li class="task-list-item ${checked ? 'checked' : ''}">${text}</li>\n`;
       else return `<li>${text}</li>\n`;
     }

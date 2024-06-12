@@ -1,5 +1,6 @@
 /* eslint-disable no-use-before-define */
-export type Token = (
+
+export type MarkedToken = (
     Tokens.Space
   | Tokens.Code
   | Tokens.Heading
@@ -20,7 +21,10 @@ export type Token = (
   | Tokens.Em
   | Tokens.Codespan
   | Tokens.Br
-  | Tokens.Del
+  | Tokens.Del);
+
+export type Token = (
+    MarkedToken
   | Tokens.Generic);
 
 export namespace Tokens {
@@ -54,9 +58,15 @@ export namespace Tokens {
         rows: TableCell[][];
     }
 
+    export interface TableRow {
+        text: string;
+    }
+
     export interface TableCell {
         text: string;
         tokens: Token[];
+        header: boolean;
+        align: 'center' | 'left' | 'right' | null;
     }
 
     export interface Hr {
@@ -88,6 +98,10 @@ export namespace Tokens {
         loose: boolean;
         text: string;
         tokens: Token[];
+    }
+
+    export interface Checkbox {
+        checked: boolean;
     }
 
     export interface Paragraph {
