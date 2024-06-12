@@ -1887,8 +1887,7 @@
     "example": 236,
     "start_line": 3838,
     "end_line": 3848,
-    "section": "Block quotes",
-    "shouldFail": true
+    "section": "Block quotes"
   },
   {
     "markdown": "> ```\nfoo\n```\n",
@@ -1896,8 +1895,7 @@
     "example": 237,
     "start_line": 3851,
     "end_line": 3861,
-    "section": "Block quotes",
-    "shouldFail": true
+    "section": "Block quotes"
   },
   {
     "markdown": "> foo\n    - bar\n",

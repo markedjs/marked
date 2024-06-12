@@ -101,9 +101,9 @@ export class _Lexer {
   /**
    * Lexing
    */
-  blockTokens(src: string, tokens?: Token[]): Token[];
-  blockTokens(src: string, tokens?: TokensList): TokensList;
-  blockTokens(src: string, tokens: Token[] = []) {
+  blockTokens(src: string, tokens?: Token[], lastParagraphClipped?: boolean): Token[];
+  blockTokens(src: string, tokens?: TokensList, lastParagraphClipped?: boolean): TokensList;
+  blockTokens(src: string, tokens: Token[] = [], lastParagraphClipped = false) {
     if (this.options.pedantic) {
       src = src.replace(/\t/g, '    ').replace(/^ +$/gm, '');
     } else {
@@ -115,7 +115,6 @@ export class _Lexer {
     let token: Tokens.Generic | undefined;
     let lastToken;
     let cutSrc;
-    let lastParagraphClipped;
 
     while (src) {
       if (this.options.extensions
@@ -249,7 +248,7 @@ export class _Lexer {
       }
       if (this.state.top && (token = this.tokenizer.paragraph(cutSrc))) {
         lastToken = tokens[tokens.length - 1];
-        if (lastParagraphClipped && lastToken.type === 'paragraph') {
+        if (lastParagraphClipped && lastToken?.type === 'paragraph') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
           this.inlineQueue.pop();
