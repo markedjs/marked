@@ -68,7 +68,7 @@ import { marked } from 'marked';
 
 // Override function
 const renderer = {
-  heading({ text, depth }) {
+  heading(text, depth) {
     const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
 
     return `
