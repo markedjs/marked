@@ -59,6 +59,7 @@ console.log(marked.parse(markdownString));
 
 |Member      |Type      |Default  |Since    |Notes         |
 |:-----------|:---------|:--------|:--------|:-------------|
+|smartLists (**removed**)| `boolean` | `false` |v0.2.8 | Removed in v3.0.0. |
 |baseUrl (**removed**)|`string`  |`null`   |v0.3.9    |Removed in v8.0.0 use [`marked-base-url`](https://www.npmjs.com/package/marked-base-url) to prefix url for any relative link. |
 |headerIds (**removed**)|`boolean` |`true`   |v0.4.0   |Removed in v8.0.0 use [`marked-gfm-heading-id`](https://www.npmjs.com/package/marked-gfm-heading-id) to include an `id` attribute when emitting headings (h1, h2, h3, etc).|
 |headerPrefix (**removed**)|`string`  |`''`     |v0.3.0   |Removed in v8.0.0 use [`marked-gfm-heading-id`](https://www.npmjs.com/package/marked-gfm-heading-id) to add a string to prefix the `id` attribute when emitting headings (h1, h2, h3, etc).|
