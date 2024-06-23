@@ -136,9 +136,9 @@ marked.use({ renderer }, { tokenizer });
 
 marked.use({
   renderer: {
-    heading({ text, depth }) {
+    heading({ tokens, depth }) {
       if (depth > 3) {
-        return `<p>${text}</p>`;
+        return `<p>${this.parser.parseInline(tokens)}</p>`;
       }
 
       return false;
@@ -149,6 +149,20 @@ marked.use({
     }
   },
   tokenizer: {
+    heading(src) {
+      const cap = this.rules.block.heading.exec(src);
+      if (cap) {
+        let text = cap[2].trim();
+
+        return {
+          type: 'heading',
+          raw: cap[0],
+          depth: cap[1].length,
+          text,
+          tokens: this.lexer.inline(text)
+        };
+      }
+    },
     codespan(src) {
       const match = src.match(/\$+([^\$\n]+?)\$+/);
       if (match) {
@@ -317,6 +331,9 @@ marked.use({ tokenizer: new Tokenizer() });
 marked.use({
   hooks: {
     preprocess(markdown) {
+      if (this.options.async) {
+        return Promise.resolve(markdown);
+      }
       return markdown;
     },
     postprocess(html) {
