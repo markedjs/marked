@@ -21,8 +21,8 @@ export class Marked {
   defaults = _getDefaults();
   options = this.setOptions;
 
-  parse = this.#parseMarkdown(_Lexer.lex, _Parser.parse);
-  parseInline = this.#parseMarkdown(_Lexer.lexInline, _Parser.parseInline);
+  parse = this.parseMarkdown(_Lexer.lex, _Parser.parse);
+  parseInline = this.parseMarkdown(_Lexer.lexInline, _Parser.parseInline);
 
   Parser = _Parser;
   Renderer = _Renderer;
@@ -514,21 +514,23 @@ export class Marked {
     return _Parser.parse(tokens, options ?? this.defaults);
   }
 
-  #parseMarkdown(lexer: (src: string, options?: MarkedOptions) => TokensList | Token[], parser: (tokens: Token[], options?: MarkedOptions) => string) {
-    return (src: string, options?: MarkedOptions | undefined | null): string | Promise<string> => {
+  private parseMarkdown(lexer: (src: string, options?: MarkedOptions) => TokensList | Token[], parser: (tokens: Token[], options?: MarkedOptions) => string) {
+    type overloadedParse = {
+      (src: string, options: MarkedOptions & { async: true }): Promise<string>;
+      (src: string, options: MarkedOptions & { async: false }): string;
+      (src: string, options?: MarkedOptions | undefined | null): string | Promise<string>;
+    };
+
+    const parse: overloadedParse = (src: string, options?: MarkedOptions | undefined | null): any => {
       const origOpt = { ...options };
       const opt = { ...this.defaults, ...origOpt };
 
-      // Show warning if an extension set async to true but the parse was called with async: false
+      const throwError = this.onError(!!opt.silent, !!opt.async);
+
+      // throw error if an extension set async to true but parse was called with async: false
       if (this.defaults.async === true && origOpt.async === false) {
-        if (!opt.silent) {
-          console.warn('marked(): The async option was set to true by an extension. The async: false option sent to parse will be ignored.');
-        }
-
-        opt.async = true;
+        return throwError(new Error('marked(): The async option was set to true by an extension. Remove async: false from the parse options object to return a Promise.'));
       }
-
-      const throwError = this.#onError(!!opt.silent, !!opt.async);
 
       // throw error in case of non string input
       if (typeof src === 'undefined' || src === null) {
@@ -573,9 +575,11 @@ export class Marked {
         return throwError(e as Error);
       }
     };
+
+    return parse;
   }
 
-  #onError(silent: boolean, async: boolean) {
+  private onError(silent: boolean, async: boolean) {
     return (e: Error): string | Promise<string> => {
       e.message += '\nPlease report this to https://github.com/markedjs/marked.';
 
