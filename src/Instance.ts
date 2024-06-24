@@ -259,28 +259,30 @@ export class Marked {
   #convertRendererFunction(func: GenericRendererFunction, prop: string, renderer: _Renderer) {
     switch (prop) {
       case 'heading':
-        return function(token: Tokens.Heading) {
+        return function(this: _Renderer, token: Tokens.Heading) {
           if (!token.type || token.type !== prop) {
             // @ts-ignore
             // eslint-disable-next-line prefer-rest-params
             return func.apply(this, arguments);
           }
 
-          return func(
+          return func.call(
+            this,
             renderer.parser.parseInline(token.tokens),
             token.depth,
             unescape(renderer.parser.parseInline(token.tokens, renderer.parser.textRenderer))
           );
         };
       case 'code':
-        return function(token: Tokens.Code) {
+        return function(this: _Renderer, token: Tokens.Code) {
           if (!token.type || token.type !== prop) {
             // @ts-ignore
             // eslint-disable-next-line prefer-rest-params
             return func.apply(this, arguments);
           }
 
-          return func(
+          return func.call(
+            this,
             token.text,
             token.lang,
             !!token.escaped
@@ -328,7 +330,7 @@ export class Marked {
             body += this.tablerow({ text: cell });
           }
 
-          return func(header, body);
+          return func.call(this, header, body);
         };
       case 'blockquote':
         return function(this: _Renderer, token: Tokens.Blockquote) {
@@ -339,7 +341,7 @@ export class Marked {
           }
 
           const body = this.parser.parse(token.tokens);
-          return func(body);
+          return func.call(this, body);
         };
       case 'list':
         return function(this: _Renderer, token: Tokens.List) {
@@ -391,17 +393,17 @@ export class Marked {
             });
           }
 
-          return func(body, ordered, start);
+          return func.call(this, body, ordered, start);
         };
       case 'html':
-        return function(token: Tokens.HTML) {
+        return function(this: _Renderer, token: Tokens.HTML) {
           if (!token.type || token.type !== prop) {
             // @ts-ignore
             // eslint-disable-next-line prefer-rest-params
             return func.apply(this, arguments);
           }
 
-          return func(token.text, token.block);
+          return func.call(this, token.text, token.block);
         };
       case 'paragraph':
         return function(this: _Renderer, token: Tokens.Paragraph) {
@@ -411,17 +413,17 @@ export class Marked {
             return func.apply(this, arguments);
           }
 
-          return func(this.parser.parseInline(token.tokens));
+          return func.call(this, this.parser.parseInline(token.tokens));
         };
       case 'escape':
-        return function(token: Tokens.Escape) {
+        return function(this: _Renderer, token: Tokens.Escape) {
           if (!token.type || token.type !== prop) {
             // @ts-ignore
             // eslint-disable-next-line prefer-rest-params
             return func.apply(this, arguments);
           }
 
-          return func(token.text);
+          return func.call(this, token.text);
         };
       case 'link':
         return function(this: _Renderer, token: Tokens.Link) {
@@ -431,17 +433,17 @@ export class Marked {
             return func.apply(this, arguments);
           }
 
-          return func(token.href, token.title, this.parser.parseInline(token.tokens));
+          return func.call(this, token.href, token.title, this.parser.parseInline(token.tokens));
         };
       case 'image':
-        return function(token: Tokens.Image) {
+        return function(this: _Renderer, token: Tokens.Image) {
           if (!token.type || token.type !== prop) {
             // @ts-ignore
             // eslint-disable-next-line prefer-rest-params
             return func.apply(this, arguments);
           }
 
-          return func(token.href, token.title, token.text);
+          return func.call(this, token.href, token.title, token.text);
         };
       case 'strong':
         return function(this: _Renderer, token: Tokens.Strong) {
@@ -451,7 +453,7 @@ export class Marked {
             return func.apply(this, arguments);
           }
 
-          return func(this.parser.parseInline(token.tokens));
+          return func.call(this, this.parser.parseInline(token.tokens));
         };
       case 'em':
         return function(this: _Renderer, token: Tokens.Em) {
@@ -461,17 +463,17 @@ export class Marked {
             return func.apply(this, arguments);
           }
 
-          return func(this.parser.parseInline(token.tokens));
+          return func.call(this, this.parser.parseInline(token.tokens));
         };
       case 'codespan':
-        return function(token: Tokens.Codespan) {
+        return function(this: _Renderer, token: Tokens.Codespan) {
           if (!token.type || token.type !== prop) {
             // @ts-ignore
             // eslint-disable-next-line prefer-rest-params
             return func.apply(this, arguments);
           }
 
-          return func(token.text);
+          return func.call(this, token.text);
         };
       case 'del':
         return function(this: _Renderer, token: Tokens.Del) {
@@ -481,17 +483,17 @@ export class Marked {
             return func.apply(this, arguments);
           }
 
-          return func(this.parser.parseInline(token.tokens));
+          return func.call(this, this.parser.parseInline(token.tokens));
         };
       case 'text':
-        return function(token: Tokens.Text) {
+        return function(this: _Renderer, token: Tokens.Text) {
           if (!token.type || token.type !== prop) {
             // @ts-ignore
             // eslint-disable-next-line prefer-rest-params
             return func.apply(this, arguments);
           }
 
-          return func(token.text);
+          return func.call(this, token.text);
         };
       default:
         // do nothing
