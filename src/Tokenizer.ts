@@ -279,12 +279,13 @@ export class _Tokenizer {
 
         let line = cap[2].split('\n', 1)[0].replace(/^\t+/, (t: string) => ' '.repeat(3 * t.length));
         let nextLine = src.split('\n', 1)[0];
+        let blankLine = !line.trim();
 
         let indent = 0;
         if (this.options.pedantic) {
           indent = 2;
           itemContents = line.trimStart();
-        } else if (!line.trim()) {
+        } else if (blankLine) {
           indent = cap[1].length + 1;
         } else {
           indent = cap[2].search(/[^ ]/); // Find first non-space char
@@ -293,9 +294,7 @@ export class _Tokenizer {
           indent += cap[1].length;
         }
 
-        let blankLine = !line.trim();
-
-        if (!line.trim() && /^ *$/.test(nextLine)) { // Items begin with at most one blank line
+        if (blankLine && /^ *$/.test(nextLine)) { // Items begin with at most one blank line
           raw += nextLine + '\n';
           src = src.substring(nextLine.length + 1);
           endEarly = true;
