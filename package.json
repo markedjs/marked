@@ -53,8 +53,9 @@
     "html"
   ],
   "devDependencies": {
-    "@markedjs/testutils": "12.0.0-0",
     "@arethetypeswrong/cli": "^0.15.3",
+    "@jazzer.js/core": "^2.1.0",
+    "@markedjs/testutils": "12.0.0-0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@semantic-release/commit-analyzer": "^13.0.0",
@@ -103,7 +104,8 @@
     "build:docs": "npm run build && node docs/build.js",
     "build:types": "tsc && dts-bundle-generator --project tsconfig.json -o lib/marked.d.ts src/marked.ts && dts-bundle-generator --project tsconfig.json -o lib/marked.d.cts src/marked.ts",
     "build:man": "marked-man man/marked.1.md > man/marked.1",
-    "rollup": "rollup -c rollup.config.js"
+    "rollup": "rollup -c rollup.config.js",
+    "fuzz": "jazzer --sync -i lib/marked.esm.js test/fuzz.mjs"
   },
   "engines": {
     "node": ">= 18"
