@@ -53,8 +53,8 @@
     "html"
   ],
   "devDependencies": {
-    "@markedjs/testutils": "12.0.0-0",
     "@arethetypeswrong/cli": "^0.15.3",
+    "@markedjs/testutils": "13.0.1-0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@semantic-release/commit-analyzer": "^13.0.0",
@@ -87,9 +87,12 @@
   },
   "scripts": {
     "test": "npm run build && npm run test:specs && npm run test:unit",
+    "test:only": "npm run build && npm run test:specs:only && npm run test:unit:only",
     "test:all": "npm test && npm run test:umd && npm run test:types && npm run test:lint",
     "test:unit": "node --test --test-reporter=spec test/unit/*.test.js",
+    "test:unit:only": "node --test --test-only --test-reporter=spec test/unit/*.test.js",
     "test:specs": "node --test --test-reporter=spec test/run-spec-tests.js",
+    "test:specs:only": "node --test --test-only --test-reporter=spec test/run-spec-tests.js",
     "test:lint": "eslint .",
     "test:redos": "node test/recheck.js > vuln.js",
     "test:types": "tsc --project tsconfig-type-test.json && attw -P --exclude-entrypoints ./bin/marked ./marked.min.js",
