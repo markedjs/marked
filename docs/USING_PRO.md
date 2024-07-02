@@ -56,10 +56,6 @@ Marked provides methods for directly overriding the `renderer` and `tokenizer` f
 
 <h2 id="renderer">The Renderer : <code>renderer</code></h2>
 
-<!-- TODO: Remove this after next major version -->
-
-🚨 Marked v13 changed the renderer to accept tokens. To opt in to these new renderer functions add `useNewRenderer: true` to the extension. See [the v13 release notes](https://github.com/markedjs/marked/releases/tag/v13.0.0) for an example 🚨
-
 The renderer defines the HTML output of a given token. If you supply a `renderer` in the options object passed to `marked.use()`, any functions in the object will override the default handling of that token type.
 
 Calling `marked.use()` to override the same function multiple times will give priority to the version that was assigned *last*. Overriding functions can return `false` to fall back to the previous override in the sequence, or resume default behavior if all overrides return `false`. Returning any other value (including nothing) will prevent fallback behavior.

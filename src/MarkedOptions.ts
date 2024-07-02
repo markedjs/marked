@@ -109,15 +109,9 @@ export interface MarkedExtension {
    * The return value of the function is ignored.
    */
   walkTokens?: ((token: Token) => void | Promise<void>) | undefined | null;
-
-  /**
-   * Use the new renderer that accepts an object instead of individual parameters.
-   * This option will be removed and default to true in the next major version.
-   */
-  useNewRenderer?: boolean | undefined;
 }
 
-export interface MarkedOptions extends Omit<MarkedExtension, 'useNewRenderer' | 'hooks' | 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
+export interface MarkedOptions extends Omit<MarkedExtension, 'hooks' | 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
   /**
    * Hooks are methods that hook into some part of marked.
    */
