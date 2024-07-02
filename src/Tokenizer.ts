@@ -260,12 +260,12 @@ export class _Tokenizer {
 
       // Get next list item
       const itemRegex = new RegExp(`^( {0,3}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`);
-      let raw = '';
-      let itemContents = '';
       let endsWithBlankLine = false;
       // Check if current bullet point can start a new List Item
       while (src) {
         let endEarly = false;
+        let raw = '';
+        let itemContents = '';
         if (!(cap = itemRegex.exec(src))) {
           break;
         }
@@ -279,11 +279,14 @@ export class _Tokenizer {
 
         let line = cap[2].split('\n', 1)[0].replace(/^\t+/, (t: string) => ' '.repeat(3 * t.length));
         let nextLine = src.split('\n', 1)[0];
+        let blankLine = !line.trim();
 
         let indent = 0;
         if (this.options.pedantic) {
           indent = 2;
           itemContents = line.trimStart();
+        } else if (blankLine) {
+          indent = cap[1].length + 1;
         } else {
           indent = cap[2].search(/[^ ]/); // Find first non-space char
           indent = indent > 4 ? 1 : indent; // Treat indented code blocks (> 4 spaces) as having only 1 indent
@@ -291,9 +294,7 @@ export class _Tokenizer {
           indent += cap[1].length;
         }
 
-        let blankLine = false;
-
-        if (!line && /^ *$/.test(nextLine)) { // Items begin with at most one blank line
+        if (blankLine && /^ *$/.test(nextLine)) { // Items begin with at most one blank line
           raw += nextLine + '\n';
           src = src.substring(nextLine.length + 1);
           endEarly = true;
@@ -404,8 +405,8 @@ export class _Tokenizer {
       }
 
       // Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
-      list.items[list.items.length - 1].raw = raw.trimEnd();
-      (list.items[list.items.length - 1]).text = itemContents.trimEnd();
+      list.items[list.items.length - 1].raw = list.items[list.items.length - 1].raw.trimEnd();
+      list.items[list.items.length - 1].text = list.items[list.items.length - 1].text.trimEnd();
       list.raw = list.raw.trimEnd();
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first
