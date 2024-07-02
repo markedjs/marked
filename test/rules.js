@@ -1,5 +1,5 @@
-import { inline, block } from '../src/rules.js';
-const rules = { inline, block };
+import { Lexer } from '../lib/marked.esm.js';
+const rules = Lexer.rules;
 
 const COLOR = {
   reset: '\x1b[0m',
