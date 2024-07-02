@@ -630,10 +630,10 @@ used extension2 walked</p>
       assert.strictEqual(typeof marked.parse('test', { async: false }), 'string');
     });
 
-    it('should return Promise if async is set by extension', () => {
+    it('should throw and error if async is set by extension', () => {
       marked.use({ async: true });
 
-      assert.ok(marked.parse('test', { async: false }) instanceof Promise);
+      assert.throws(() => marked.parse('test', { async: false }));
     });
 
     it('should allow deleting/editing tokens', () => {

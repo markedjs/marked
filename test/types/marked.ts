@@ -261,7 +261,6 @@ marked.use(asyncExtension);
 const md = '# foobar';
 const asyncMarked: string = await marked(md, { async: true });
 const promiseMarked: Promise<string> = marked(md, { async: true });
-// @ts-expect-error marked can still be async if an extension sets `async: true`
 const notAsyncMarked: string = marked(md, { async: false });
 // @ts-expect-error marked can still be async if an extension sets `async: true`
 const defaultMarked: string = marked(md);
@@ -270,7 +269,6 @@ const stringMarked: string = marked(md) as string;
 
 const asyncMarkedParse: string = await marked.parse(md, { async: true });
 const promiseMarkedParse: Promise<string> = marked.parse(md, { async: true });
-// @ts-expect-error marked can still be async if an extension sets `async: true`
 const notAsyncMarkedParse: string = marked.parse(md, { async: false });
 // @ts-expect-error marked can still be async if an extension sets `async: true`
 const defaultMarkedParse: string = marked.parse(md);
