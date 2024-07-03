@@ -1,6 +1,7 @@
-import { inline, block } from '../src/rules.js';
+import { Lexer } from '../lib/marked.esm.js';
 import { check } from 'recheck';
 
+const { inline, block } = Lexer.rules;
 function checkRegexp(obj, name) {
   return Promise.all(Object.keys(obj).map(async(prop) => {
     const item = obj[prop];
@@ -26,7 +27,7 @@ function checkRegexp(obj, name) {
 }
 
 console.log(`
-import { marked } from './src/marked.js';
+import { marked } from '../lib/marked.esm.js';
 
 const start = Date.now();
 `);
