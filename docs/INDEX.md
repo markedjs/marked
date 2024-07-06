@@ -1,3 +1,5 @@
+[Translations List](./translations/index.md)
+
 Marked is
 
 1. built for speed.<sup>*</sup>
