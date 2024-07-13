@@ -66,7 +66,7 @@ export function edit(regex: string | RegExp, opt?: string) {
 export function cleanUrl(href: string) {
   try {
     href = encodeURI(href).replace(/%25/g, '%');
-  } catch (e) {
+  } catch {
     return null;
   }
   return href;

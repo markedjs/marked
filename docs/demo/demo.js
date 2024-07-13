@@ -268,7 +268,7 @@ function checkForChanges() {
       const newOptions = JSON.parse(optionsString);
       options = newOptions;
       $optionsElem.classList.remove('error');
-    } catch (err) {
+    } catch {
       $optionsElem.classList.add('error');
     }
 
@@ -312,7 +312,7 @@ function setResponseTime(ms) {
 function setParsed(parsed, lexed) {
   try {
     $previewIframe.contentDocument.body.innerHTML = parsed;
-  } catch (ex) {}
+  } catch {}
   $htmlElem.value = parsed;
   $lexerElem.value = lexed;
 }
