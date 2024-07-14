@@ -18,16 +18,16 @@ describe('Parser', () => {
           {
             type: 'paragraph',
             text: 'paragraph 1',
-            tokens: [{ type: 'text', text: 'paragraph 1' }]
+            tokens: [{ type: 'text', text: 'paragraph 1' }],
           },
           { type: 'space' },
           {
             type: 'paragraph',
             text: 'paragraph 2',
-            tokens: [{ type: 'text', text: 'paragraph 2' }]
-          }
+            tokens: [{ type: 'text', text: 'paragraph 2' }],
+          },
         ],
-        html: '<p>paragraph 1</p><p>paragraph 2</p>'
+        html: '<p>paragraph 1</p><p>paragraph 2</p>',
       });
     });
 
@@ -35,10 +35,10 @@ describe('Parser', () => {
       await expectHtml({
         tokens: [
           {
-            type: 'hr'
-          }
+            type: 'hr',
+          },
         ],
-        html: '<hr />'
+        html: '<hr />',
       });
     });
 
@@ -49,10 +49,10 @@ describe('Parser', () => {
             type: 'heading',
             depth: 1,
             text: 'heading',
-            tokens: [{ type: 'text', text: 'heading' }]
-          }
+            tokens: [{ type: 'text', text: 'heading' }],
+          },
         ],
-        html: '<h1>heading</h1>'
+        html: '<h1>heading</h1>',
       });
     });
 
@@ -61,10 +61,10 @@ describe('Parser', () => {
         tokens: [
           {
             type: 'code',
-            text: 'code'
-          }
+            text: 'code',
+          },
         ],
-        html: '<pre><code>code</code></pre>'
+        html: '<pre><code>code</code></pre>',
       });
     });
 
@@ -79,14 +79,14 @@ describe('Parser', () => {
                 text: 'a',
                 tokens: [{ type: 'text', raw: 'a', text: 'a' }],
                 header: true,
-                align: 'left'
+                align: 'left',
               },
               {
                 text: 'b',
                 tokens: [{ type: 'text', raw: 'b', text: 'b' }],
                 header: true,
-                align: 'right'
-              }
+                align: 'right',
+              },
             ],
             rows: [
               [
@@ -94,17 +94,17 @@ describe('Parser', () => {
                   text: '1',
                   tokens: [{ type: 'text', raw: '1', text: '1' }],
                   header: false,
-                  align: 'left'
+                  align: 'left',
                 },
                 {
                   text: '2',
                   tokens: [{ type: 'text', raw: '2', text: '2' }],
                   header: false,
-                  align: 'right'
-                }
-              ]
-            ]
-          }
+                  align: 'right',
+                },
+              ],
+            ],
+          },
         ],
         html: `
 <table>
@@ -120,7 +120,7 @@ describe('Parser', () => {
       <td align="right">2</td>
     </tr>
   </tbody>
-</table>`
+</table>`,
       });
     });
 
@@ -133,12 +133,12 @@ describe('Parser', () => {
               {
                 type: 'paragraph',
                 text: 'blockquote',
-                tokens: [{ type: 'text', text: 'blockquote' }]
-              }
-            ]
-          }
+                tokens: [{ type: 'text', text: 'blockquote' }],
+              },
+            ],
+          },
         ],
-        html: '<blockquote><p>blockquote</p></blockquote>'
+        html: '<blockquote><p>blockquote</p></blockquote>',
       });
     });
 
@@ -159,9 +159,9 @@ describe('Parser', () => {
                     {
                       type: 'text',
                       text: 'item 1',
-                      tokens: [{ type: 'text', text: 'item 1' }]
-                    }
-                  ]
+                      tokens: [{ type: 'text', text: 'item 1' }],
+                    },
+                  ],
                 },
                 {
                   task: false,
@@ -170,18 +170,18 @@ describe('Parser', () => {
                     {
                       type: 'text',
                       text: 'item 2',
-                      tokens: [{ type: 'text', text: 'item 2' }]
-                    }
-                  ]
-                }
-              ]
-            }
+                      tokens: [{ type: 'text', text: 'item 2' }],
+                    },
+                  ],
+                },
+              ],
+            },
           ],
           html: `
 <ul>
   <li>item 1</li>
   <li>item 2</li>
-</ul>`
+</ul>`,
         });
       });
 
@@ -201,9 +201,9 @@ describe('Parser', () => {
                     {
                       type: 'text',
                       text: 'item 1',
-                      tokens: [{ type: 'text', text: 'item 1' }]
-                    }
-                  ]
+                      tokens: [{ type: 'text', text: 'item 1' }],
+                    },
+                  ],
                 },
                 {
                   task: false,
@@ -212,18 +212,18 @@ describe('Parser', () => {
                     {
                       type: 'text',
                       text: 'item 2',
-                      tokens: [{ type: 'text', text: 'item 2' }]
-                    }
-                  ]
-                }
-              ]
-            }
+                      tokens: [{ type: 'text', text: 'item 2' }],
+                    },
+                  ],
+                },
+              ],
+            },
           ],
           html: `
 <ol start='2'>
   <li>item 1</li>
   <li>item 2</li>
-</ol>`
+</ol>`,
         });
       });
 
@@ -243,9 +243,9 @@ describe('Parser', () => {
                     {
                       type: 'text',
                       text: 'item 1',
-                      tokens: [{ type: 'text', text: 'item 1' }]
-                    }
-                  ]
+                      tokens: [{ type: 'text', text: 'item 1' }],
+                    },
+                  ],
                 },
                 {
                   task: true,
@@ -254,18 +254,18 @@ describe('Parser', () => {
                     {
                       type: 'text',
                       text: 'item 2',
-                      tokens: [{ type: 'text', text: 'item 2' }]
-                    }
-                  ]
-                }
-              ]
-            }
+                      tokens: [{ type: 'text', text: 'item 2' }],
+                    },
+                  ],
+                },
+              ],
+            },
           ],
           html: `
 <ul>
   <li><input disabled type="checkbox"> item 1</li>
   <li><input checked disabled type="checkbox"> item 2</li>
-</ul>`
+</ul>`,
         });
       });
 
@@ -286,9 +286,9 @@ describe('Parser', () => {
                     {
                       type: 'text',
                       text: 'item 1',
-                      tokens: [{ type: 'text', text: 'item 1' }]
-                    }
-                  ]
+                      tokens: [{ type: 'text', text: 'item 1' }],
+                    },
+                  ],
                 },
                 {
                   task: false,
@@ -298,18 +298,18 @@ describe('Parser', () => {
                     {
                       type: 'text',
                       text: 'item 2',
-                      tokens: [{ type: 'text', text: 'item 2' }]
-                    }
-                  ]
-                }
-              ]
-            }
+                      tokens: [{ type: 'text', text: 'item 2' }],
+                    },
+                  ],
+                },
+              ],
+            },
           ],
           html: `
   <ul>
     <li><p>item 1</p></li>
     <li><p>item 2</p></li>
-  </ul>`
+  </ul>`,
         });
       });
     });
@@ -319,10 +319,10 @@ describe('Parser', () => {
         tokens: [
           {
             type: 'html',
-            text: '<div>html</div>'
-          }
+            text: '<div>html</div>',
+          },
         ],
-        html: '<div>html</div>'
+        html: '<div>html</div>',
       });
     });
 
@@ -332,10 +332,10 @@ describe('Parser', () => {
           {
             type: 'paragraph',
             text: 'paragraph 1',
-            tokens: [{ type: 'text', text: 'paragraph 1' }]
-          }
+            tokens: [{ type: 'text', text: 'paragraph 1' }],
+          },
         ],
-        html: '<p>paragraph 1</p>'
+        html: '<p>paragraph 1</p>',
       });
     });
 
@@ -343,9 +343,9 @@ describe('Parser', () => {
       await expectHtml({
         tokens: [
           { type: 'text', text: 'text 1' },
-          { type: 'text', text: 'text 2' }
+          { type: 'text', text: 'text 2' },
         ],
-        html: '<p>text 1\ntext 2</p>'
+        html: '<p>text 1\ntext 2</p>',
       });
     });
   });
@@ -355,7 +355,7 @@ describe('Parser', () => {
       await expectHtml({
         inline: true,
         tokens: [{ type: 'escape', text: '&gt;' }],
-        html: '&gt;'
+        html: '&gt;',
       });
     });
 
@@ -365,9 +365,9 @@ describe('Parser', () => {
         tokens: [
           { type: 'html', text: '<div>' },
           { type: 'text', text: 'html' },
-          { type: 'html', text: '</div>' }
+          { type: 'html', text: '</div>' },
         ],
-        html: '<div>html</div>'
+        html: '<div>html</div>',
       });
     });
 
@@ -380,10 +380,10 @@ describe('Parser', () => {
             text: 'link',
             href: 'https://example.com',
             title: 'title',
-            tokens: [{ type: 'text', text: 'link' }]
-          }
+            tokens: [{ type: 'text', text: 'link' }],
+          },
         ],
-        html: '<a href="https://example.com" title="title">link</a>'
+        html: '<a href="https://example.com" title="title">link</a>',
       });
     });
 
@@ -395,10 +395,10 @@ describe('Parser', () => {
             type: 'image',
             text: 'image',
             href: 'image.png',
-            title: 'title'
-          }
+            title: 'title',
+          },
         ],
-        html: '<img src="image.png" alt="image" title="title">'
+        html: '<img src="image.png" alt="image" title="title">',
       });
     });
 
@@ -409,10 +409,10 @@ describe('Parser', () => {
           {
             type: 'strong',
             text: 'strong',
-            tokens: [{ type: 'text', text: 'strong' }]
-          }
+            tokens: [{ type: 'text', text: 'strong' }],
+          },
         ],
-        html: '<strong>strong</strong>'
+        html: '<strong>strong</strong>',
       });
     });
 
@@ -423,10 +423,10 @@ describe('Parser', () => {
           {
             type: 'em',
             text: 'em',
-            tokens: [{ type: 'text', text: 'em' }]
-          }
+            tokens: [{ type: 'text', text: 'em' }],
+          },
         ],
-        html: '<em>em</em>'
+        html: '<em>em</em>',
       });
     });
 
@@ -436,10 +436,10 @@ describe('Parser', () => {
         tokens: [
           {
             type: 'codespan',
-            text: 'code'
-          }
+            text: 'code',
+          },
         ],
-        html: '<code>code</code>'
+        html: '<code>code</code>',
       });
     });
 
@@ -448,10 +448,10 @@ describe('Parser', () => {
         inline: true,
         tokens: [
           {
-            type: 'br'
-          }
+            type: 'br',
+          },
         ],
-        html: '<br />'
+        html: '<br />',
       });
     });
 
@@ -462,10 +462,10 @@ describe('Parser', () => {
           {
             type: 'del',
             text: 'del',
-            tokens: [{ type: 'text', text: 'del' }]
-          }
+            tokens: [{ type: 'text', text: 'del' }],
+          },
         ],
-        html: '<del>del</del>'
+        html: '<del>del</del>',
       });
     });
 
@@ -474,9 +474,9 @@ describe('Parser', () => {
         inline: true,
         tokens: [
           { type: 'text', text: 'text 1' },
-          { type: 'text', text: 'text 2' }
+          { type: 'text', text: 'text 2' },
         ],
-        html: 'text 1text 2'
+        html: 'text 1text 2',
       });
     });
   });

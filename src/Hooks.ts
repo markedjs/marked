@@ -12,7 +12,7 @@ export class _Hooks {
   static passThroughHooks = new Set([
     'preprocess',
     'postprocess',
-    'processAllTokens'
+    'processAllTokens',
   ]);
 
   /**

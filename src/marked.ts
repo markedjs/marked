@@ -8,7 +8,7 @@ import { Marked } from './Instance.ts';
 import {
   _getDefaults,
   changeDefaults,
-  _defaults
+  _defaults,
 } from './defaults.ts';
 import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
 import type { Token, TokensList } from './Tokens.ts';

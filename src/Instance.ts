@@ -7,7 +7,7 @@ import { _Tokenizer } from './Tokenizer.ts';
 import { _TextRenderer } from './TextRenderer.ts';
 import {
   escape,
-  unescape
+  unescape,
 } from './helpers.ts';
 import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
 import type { Token, Tokens, TokensList } from './Tokens.ts';
@@ -270,7 +270,7 @@ export class Marked {
             this,
             renderer.parser.parseInline(token.tokens),
             token.depth,
-            unescape(renderer.parser.parseInline(token.tokens, renderer.parser.textRenderer))
+            unescape(renderer.parser.parseInline(token.tokens, renderer.parser.textRenderer)),
           );
         };
       case 'code':
@@ -285,7 +285,7 @@ export class Marked {
             this,
             token.text,
             token.lang,
-            !!token.escaped
+            !!token.escaped,
           );
         };
       case 'table':
@@ -305,8 +305,8 @@ export class Marked {
                 text: token.header[j].text,
                 tokens: token.header[j].tokens,
                 header: true,
-                align: token.align[j]
-              }
+                align: token.align[j],
+              },
             );
           }
           header += this.tablerow({ text: cell });
@@ -322,8 +322,8 @@ export class Marked {
                   text: row[k].text,
                   tokens: row[k].tokens,
                   header: false,
-                  align: token.align[k]
-                }
+                  align: token.align[k],
+                },
               );
             }
 
@@ -373,7 +373,7 @@ export class Marked {
                 } else {
                   item.tokens.unshift({
                     type: 'text',
-                    text: checkbox + ' '
+                    text: checkbox + ' ',
                   } as Tokens.Text);
                 }
               } else {
@@ -389,7 +389,7 @@ export class Marked {
               task,
               checked: !!checked,
               loose,
-              tokens: item.tokens
+              tokens: item.tokens,
             });
           }
 

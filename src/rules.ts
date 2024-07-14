@@ -1,5 +1,5 @@
 import {
-  edit, noopTest
+  edit, noopTest,
 } from './helpers.ts';
 
 /**
@@ -88,7 +88,7 @@ const blockNormal = {
   newline,
   paragraph,
   table: noopTest,
-  text: blockText
+  text: blockText,
 };
 
 type BlockKeys = keyof typeof blockNormal;
@@ -124,7 +124,7 @@ const blockGfm: Record<BlockKeys, RegExp> = {
     .replace('list', ' {0,3}(?:[*+-]|1[.)]) ') // only lists starting from 1 can interrupt
     .replace('html', '</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)')
     .replace('tag', _tag) // pars can be interrupted by type (6) html blocks
-    .getRegex()
+    .getRegex(),
 };
 
 /**
@@ -157,7 +157,7 @@ const blockPedantic: Record<BlockKeys, RegExp> = {
     .replace('|list', '')
     .replace('|html', '')
     .replace('|tag', '')
-    .getRegex()
+    .getRegex(),
 };
 
 /**
@@ -271,7 +271,7 @@ const inlineNormal = {
   reflinkSearch,
   tag,
   text: inlineText,
-  url: noopTest
+  url: noopTest,
 };
 
 type InlineKeys = keyof typeof inlineNormal;
@@ -287,7 +287,7 @@ const inlinePedantic: Record<InlineKeys, RegExp> = {
     .getRegex(),
   reflink: edit(/^!?\[(label)\]\s*\[([^\]]*)\]/)
     .replace('label', _inlineLabel)
-    .getRegex()
+    .getRegex(),
 };
 
 /**
@@ -302,7 +302,7 @@ const inlineGfm: Record<InlineKeys, RegExp> = {
     .getRegex(),
   _backpedal: /(?:[^?!.,:;*_'"~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_'"~)]+(?!$))+/,
   del: /^(~~?)(?=[^\s~])([\s\S]*?[^\s~])\1(?=[^~]|$)/,
-  text: /^([`~]+|[^`~])(?:(?= {2,}\n)|(?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|https?:\/\/|ftp:\/\/|www\.|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)))/
+  text: /^([`~]+|[^`~])(?:(?= {2,}\n)|(?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|https?:\/\/|ftp:\/\/|www\.|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)))/,
 };
 
 /**
@@ -315,7 +315,7 @@ const inlineBreaks: Record<InlineKeys, RegExp> = {
   text: edit(inlineGfm.text)
     .replace('\\b_', '\\b_| {2,}\\n')
     .replace(/\{2,\}/g, '*')
-    .getRegex()
+    .getRegex(),
 };
 
 /**
@@ -325,14 +325,14 @@ const inlineBreaks: Record<InlineKeys, RegExp> = {
 export const block = {
   normal: blockNormal,
   gfm: blockGfm,
-  pedantic: blockPedantic
+  pedantic: blockPedantic,
 };
 
 export const inline = {
   normal: inlineNormal,
   gfm: inlineGfm,
   breaks: inlineBreaks,
-  pedantic: inlinePedantic
+  pedantic: inlinePedantic,
 };
 
 export interface Rules {

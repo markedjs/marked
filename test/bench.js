@@ -36,7 +36,7 @@ export async function runBench(options) {
   cjsMarked.setOptions({
     gfm: false,
     breaks: false,
-    pedantic: false
+    pedantic: false,
   });
   if (options.marked) {
     cjsMarked.setOptions(options.marked);
@@ -46,7 +46,7 @@ export async function runBench(options) {
   esmMarked.setOptions({
     gfm: false,
     breaks: false,
-    pedantic: false
+    pedantic: false,
   });
   if (options.marked) {
     esmMarked.setOptions(options.marked);
@@ -84,7 +84,7 @@ export async function bench(tests, specs) {
   for (const name in tests) {
     stats[name] = {
       elapsed: 0n,
-      correct: 0
+      correct: 0,
     };
   }
 
@@ -94,7 +94,7 @@ export async function bench(tests, specs) {
     process.stdout.write(
       `${((i * 100) / specs.length).toFixed(1).padStart(5)}% ${i
         .toString()
-        .padStart(specs.length.toString().length)} of ${specs.length}\r`
+        .padStart(specs.length.toString().length)} of ${specs.length}\r`,
     );
     for (const name in tests) {
       const test = tests[name];
@@ -106,7 +106,7 @@ export async function bench(tests, specs) {
       stats[name].elapsed += after - before;
       stats[name].correct += (await htmlIsEqual(
         spec.html,
-        await test(spec.markdown)
+        await test(spec.markdown),
       ))
         ? 1
         : 0;

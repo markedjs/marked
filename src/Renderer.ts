@@ -1,7 +1,7 @@
 import { _defaults } from './defaults.ts';
 import {
   cleanUrl,
-  escape
+  escape,
 } from './helpers.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 import type { Tokens } from './Tokens.ts';
@@ -85,7 +85,7 @@ export class _Renderer {
           item.tokens.unshift({
             type: 'text',
             raw: checkbox + ' ',
-            text: checkbox + ' '
+            text: checkbox + ' ',
           });
         }
       } else {

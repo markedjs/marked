@@ -3,7 +3,7 @@ import {
   rtrim,
   splitCells,
   escape,
-  findClosingBracket
+  findClosingBracket,
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
 import type { _Lexer } from './Lexer.ts';
@@ -23,7 +23,7 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
       href,
       title,
       text,
-      tokens: lexer.inlineTokens(text)
+      tokens: lexer.inlineTokens(text),
     };
     lexer.state.inLink = false;
     return token;
@@ -33,7 +33,7 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
     raw,
     href,
     title,
-    text: escape(text)
+    text: escape(text),
   };
 }
 
@@ -82,7 +82,7 @@ export class _Tokenizer {
     if (cap && cap[0].length > 0) {
       return {
         type: 'space',
-        raw: cap[0]
+        raw: cap[0],
       };
     }
   }
@@ -97,7 +97,7 @@ export class _Tokenizer {
         codeBlockStyle: 'indented',
         text: !this.options.pedantic
           ? rtrim(text, '\n')
-          : text
+          : text,
       };
     }
   }
@@ -112,7 +112,7 @@ export class _Tokenizer {
         type: 'code',
         raw,
         lang: cap[2] ? cap[2].trim().replace(this.rules.inline.anyPunctuation, '$1') : cap[2],
-        text
+        text,
       };
     }
   }
@@ -138,7 +138,7 @@ export class _Tokenizer {
         raw: cap[0],
         depth: cap[1].length,
         text,
-        tokens: this.lexer.inline(text)
+        tokens: this.lexer.inline(text),
       };
     }
   }
@@ -148,7 +148,7 @@ export class _Tokenizer {
     if (cap) {
       return {
         type: 'hr',
-        raw: rtrim(cap[0], '\n')
+        raw: rtrim(cap[0], '\n'),
       };
     }
   }
@@ -232,7 +232,7 @@ export class _Tokenizer {
         type: 'blockquote',
         raw,
         tokens,
-        text
+        text,
       };
     }
   }
@@ -249,7 +249,7 @@ export class _Tokenizer {
         ordered: isordered,
         start: isordered ? +bull.slice(0, -1) : '',
         loose: false,
-        items: []
+        items: [],
       };
 
       bull = isordered ? `\\d{1,9}\\${bull.slice(-1)}` : `\\${bull}`;
@@ -398,7 +398,7 @@ export class _Tokenizer {
           checked: ischecked,
           loose: false,
           text: itemContents,
-          tokens: []
+          tokens: [],
         });
 
         list.raw += raw;
@@ -442,7 +442,7 @@ export class _Tokenizer {
         block: true,
         raw: cap[0],
         pre: cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style',
-        text: cap[0]
+        text: cap[0],
       };
       return token;
     }
@@ -459,7 +459,7 @@ export class _Tokenizer {
         tag,
         raw: cap[0],
         href,
-        title
+        title,
       };
     }
   }
@@ -484,7 +484,7 @@ export class _Tokenizer {
       raw: cap[0],
       header: [],
       align: [],
-      rows: []
+      rows: [],
     };
 
     if (headers.length !== aligns.length) {
@@ -509,7 +509,7 @@ export class _Tokenizer {
         text: headers[i],
         tokens: this.lexer.inline(headers[i]),
         header: true,
-        align: item.align[i]
+        align: item.align[i],
       });
     }
 
@@ -519,7 +519,7 @@ export class _Tokenizer {
           text: cell,
           tokens: this.lexer.inline(cell),
           header: false,
-          align: item.align[i]
+          align: item.align[i],
         };
       }));
     }
@@ -535,7 +535,7 @@ export class _Tokenizer {
         raw: cap[0],
         depth: cap[2].charAt(0) === '=' ? 1 : 2,
         text: cap[1],
-        tokens: this.lexer.inline(cap[1])
+        tokens: this.lexer.inline(cap[1]),
       };
     }
   }
@@ -550,7 +550,7 @@ export class _Tokenizer {
         type: 'paragraph',
         raw: cap[0],
         text,
-        tokens: this.lexer.inline(text)
+        tokens: this.lexer.inline(text),
       };
     }
   }
@@ -562,7 +562,7 @@ export class _Tokenizer {
         type: 'text',
         raw: cap[0],
         text: cap[0],
-        tokens: this.lexer.inline(cap[0])
+        tokens: this.lexer.inline(cap[0]),
       };
     }
   }
@@ -573,7 +573,7 @@ export class _Tokenizer {
       return {
         type: 'escape',
         raw: cap[0],
-        text: escape(cap[1])
+        text: escape(cap[1]),
       };
     }
   }
@@ -598,7 +598,7 @@ export class _Tokenizer {
         inLink: this.lexer.state.inLink,
         inRawBlock: this.lexer.state.inRawBlock,
         block: false,
-        text: cap[0]
+        text: cap[0],
       };
     }
   }
@@ -654,7 +654,7 @@ export class _Tokenizer {
       }
       return outputLink(cap, {
         href: href ? href.replace(this.rules.inline.anyPunctuation, '$1') : href,
-        title: title ? title.replace(this.rules.inline.anyPunctuation, '$1') : title
+        title: title ? title.replace(this.rules.inline.anyPunctuation, '$1') : title,
       }, cap[0], this.lexer);
     }
   }
@@ -670,7 +670,7 @@ export class _Tokenizer {
         return {
           type: 'text',
           raw: text,
-          text
+          text,
         };
       }
       return outputLink(cap, link, cap[0], this.lexer);
@@ -731,7 +731,7 @@ export class _Tokenizer {
             type: 'em',
             raw,
             text,
-            tokens: this.lexer.inlineTokens(text)
+            tokens: this.lexer.inlineTokens(text),
           };
         }
 
@@ -741,7 +741,7 @@ export class _Tokenizer {
           type: 'strong',
           raw,
           text,
-          tokens: this.lexer.inlineTokens(text)
+          tokens: this.lexer.inlineTokens(text),
         };
       }
     }
@@ -760,7 +760,7 @@ export class _Tokenizer {
       return {
         type: 'codespan',
         raw: cap[0],
-        text
+        text,
       };
     }
   }
@@ -770,7 +770,7 @@ export class _Tokenizer {
     if (cap) {
       return {
         type: 'br',
-        raw: cap[0]
+        raw: cap[0],
       };
     }
   }
@@ -782,7 +782,7 @@ export class _Tokenizer {
         type: 'del',
         raw: cap[0],
         text: cap[2],
-        tokens: this.lexer.inlineTokens(cap[2])
+        tokens: this.lexer.inlineTokens(cap[2]),
       };
     }
   }
@@ -808,9 +808,9 @@ export class _Tokenizer {
           {
             type: 'text',
             raw: text,
-            text
-          }
-        ]
+            text,
+          },
+        ],
       };
     }
   }
@@ -845,9 +845,9 @@ export class _Tokenizer {
           {
             type: 'text',
             raw: text,
-            text
-          }
-        ]
+            text,
+          },
+        ],
       };
     }
   }
@@ -864,7 +864,7 @@ export class _Tokenizer {
       return {
         type: 'text',
         raw: cap[0],
-        text
+        text,
       };
     }
   }

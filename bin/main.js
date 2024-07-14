@@ -28,7 +28,7 @@ export async function main(nodeProcess) {
     const options = {
       cwd: nodeProcess.cwd(),
       env: nodeProcess.env,
-      stdio: 'inherit'
+      stdio: 'inherit',
     };
 
     const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -204,7 +204,7 @@ export async function main(nodeProcess) {
       const defaultConfig = [
         '~/.marked.json',
         '~/.marked.js',
-        '~/.marked/index.js'
+        '~/.marked/index.js',
       ];
 
       for (const configFile of defaultConfig) {

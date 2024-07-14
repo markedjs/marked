@@ -5,13 +5,13 @@ import stylistic from '@stylistic/eslint-plugin';
 
 export default [
   {
-    ignores: ['**/lib', '**/*.min.js', '**/public']
+    ignores: ['**/lib', '**/*.min.js', '**/public'],
   },
   ...tsEslint.configs.recommended,
   {
     plugins: {
       '@n': pluginN,
-      '@stylistic': stylistic
+      '@stylistic': stylistic,
     },
 
     languageOptions: {
@@ -24,15 +24,15 @@ export default [
         ...globals.browser,
         document: 'readonly',
         navigator: 'readonly',
-        window: 'readonly'
-      }
+        window: 'readonly',
+      },
     },
 
     rules: {
       'accessor-pairs': ['error', { setWithoutGet: true, enforceForClassMembers: true }],
       'array-callback-return': ['error', {
         allowImplicit: false,
-        checkForEach: false
+        checkForEach: false,
       }],
       'constructor-super': 'error',
       curly: ['error', 'multi-line'],
@@ -108,13 +108,13 @@ export default [
       'no-unused-expressions': ['error', {
         allowShortCircuit: true,
         allowTernary: true,
-        allowTaggedTemplates: true
+        allowTaggedTemplates: true,
       }],
       'no-unused-vars': ['error', {
         args: 'none',
         caughtErrors: 'none',
         ignoreRestSiblings: true,
-        vars: 'all'
+        vars: 'all',
       }],
       'no-use-before-define': ['error', { functions: false, classes: false, variables: false }],
       'no-useless-call': 'error',
@@ -133,7 +133,7 @@ export default [
       'unicode-bom': ['error', 'never'],
       'use-isnan': ['error', {
         enforceForSwitchCase: true,
-        enforceForIndexOf: true
+        enforceForIndexOf: true,
       }],
       'valid-typeof': ['error', { requireStringLiterals: true }],
       yoda: ['error', 'never'],
@@ -145,9 +145,9 @@ export default [
       camelcase: ['error', {
         allow: ['^UNSAFE_'],
         properties: 'never',
-        ignoreGlobals: true
+        ignoreGlobals: true,
       }],
-      '@stylistic/comma-dangle': ['error', 'never'],
+      '@stylistic/comma-dangle': ['error', 'always-multiline'],
       '@stylistic/comma-spacing': ['error', { before: false, after: true }],
       '@stylistic/comma-style': ['error', 'last'],
       '@stylistic/computed-property-spacing': ['error', 'never', { enforceForClassMembers: true }],
@@ -159,10 +159,10 @@ export default [
         SwitchCase: 1,
 
         VariableDeclarator: {
-          var: 2
+          var: 2,
         },
 
-        outerIIFEBody: 0
+        outerIIFEBody: 0,
       }],
       '@stylistic/key-spacing': ['error', { beforeColon: false, afterColon: true }],
       '@stylistic/keyword-spacing': ['error', { before: true, after: true }],
@@ -176,9 +176,9 @@ export default [
         groups: [
           ['==', '!=', '===', '!==', '>', '>=', '<', '<='],
           ['&&', '||'],
-          ['in', 'instanceof']
+          ['in', 'instanceof'],
         ],
-        allowSamePrecedence: true
+        allowSamePrecedence: true,
       }],
       '@stylistic/no-mixed-spaces-and-tabs': 'error',
       '@stylistic/no-multi-spaces': 'error',
@@ -191,8 +191,8 @@ export default [
       '@stylistic/object-property-newline': ['error', { allowMultiplePropertiesPerLine: true }],
       '@stylistic/operator-linebreak': ['error', 'before', {
         overrides: {
-          '=': 'after'
-        }
+          '=': 'after',
+        },
       }],
       '@stylistic/padded-blocks': ['error', { blocks: 'never', switches: 'never', classes: 'never' }],
       '@stylistic/quote-props': ['error', 'as-needed'],
@@ -207,7 +207,7 @@ export default [
       '@stylistic/space-unary-ops': ['error', { words: true, nonwords: false }],
       '@stylistic/spaced-comment': ['error', 'always', {
         line: { markers: ['*package', '!', '/', ',', '='] },
-        block: { balanced: true, markers: ['*package', '!', ',', ':', '::', 'flow-include'], exceptions: ['*'] }
+        block: { balanced: true, markers: ['*package', '!', ',', ':', '::', 'flow-include'], exceptions: ['*'] },
       }],
       '@stylistic/template-curly-spacing': ['error', 'never'],
       '@stylistic/template-tag-spacing': ['error', 'never'],
@@ -225,8 +225,8 @@ export default [
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-namespace': 'off',
       '@typescript-eslint/no-unused-vars': ['error', {
-        args: 'none'
-      }]
-    }
-  }
+        args: 'none',
+      }],
+    },
+  },
 ];

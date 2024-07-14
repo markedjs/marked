@@ -106,7 +106,7 @@ export class _Parser {
               type: 'paragraph',
               raw: body,
               text: body,
-              tokens: [{ type: 'text', raw: body, text: body }]
+              tokens: [{ type: 'text', raw: body, text: body }],
             });
           } else {
             out += body;

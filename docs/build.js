@@ -38,7 +38,7 @@ async function init() {
 const ignoredFiles = [
   join(cwd, 'docs', 'build.js'),
   join(cwd, 'docs', '.eslintrc.json'),
-  join(cwd, 'docs', '_document.html')
+  join(cwd, 'docs', '_document.html'),
 ];
 
 async function build(currentDir, tmpl) {

@@ -10,7 +10,7 @@ const escapeReplacements: { [index: string]: string } = {
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
-  "'": '&#39;'
+  "'": '&#39;',
 };
 const getEscapeReplacement = (ch: string) => escapeReplacements[ch];
 
@@ -58,7 +58,7 @@ export function edit(regex: string | RegExp, opt?: string) {
     },
     getRegex: () => {
       return new RegExp(source, opt);
-    }
+    },
   };
   return obj;
 }
