@@ -120,7 +120,7 @@ function fetchMarked(file) {
         try {
           // eslint-disable-next-line no-new-func
           Function(text)();
-        } catch (err) {
+        } catch {
           throw new Error(`Cannot find ${file}`);
         }
         const marked = g.marked || g.module.exports;
