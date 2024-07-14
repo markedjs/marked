@@ -165,7 +165,7 @@ function parseArg(argv) {
     const arg = getArg();
     if (arg.indexOf('--') === 0) {
       const opt = camelize(arg.replace(/^--(no-)?/, ''));
-      if (!defaults.hasOwnProperty(opt)) {
+      if (!(opt in defaults)) {
         continue;
       }
       options.marked = options.marked || {};

@@ -17,7 +17,7 @@ export class _Lexer {
   };
 
   private tokenizer: _Tokenizer;
-  private inlineQueue: {src: string, tokens: Token[]}[];
+  private inlineQueue: { src: string, tokens: Token[] }[];
 
   constructor(options?: MarkedOptions) {
     // TokenList cannot be created in one go

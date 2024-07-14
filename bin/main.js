@@ -127,7 +127,7 @@ export async function main(nodeProcess) {
         default:
           if (arg.indexOf('--') === 0) {
             opt = camelize(arg.replace(/^--(no-)?/, ''));
-            if (!marked.defaults.hasOwnProperty(opt)) {
+            if (!(opt in marked.defaults)) {
               continue;
             }
             if (arg.indexOf('--no-') === 0) {
