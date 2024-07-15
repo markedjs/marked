@@ -1,3 +1,3 @@
 export default {
-  breaks: true
+  breaks: true,
 };

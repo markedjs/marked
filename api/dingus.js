@@ -9,8 +9,8 @@ export default function dingus(req, res) {
     return res.status(405).json({
       error: {
         code: 'method_not_allowed',
-        message: 'Only GET requests are supported for this endpoint.'
-      }
+        message: 'Only GET requests are supported for this endpoint.',
+      },
     });
   }
   const { text = '' } = req.query;

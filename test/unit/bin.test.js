@@ -15,27 +15,27 @@ function createMocks() {
     stdin: {
       data: null,
       error: null,
-      end: null
+      end: null,
     },
     process: {
       cwd: mock.fn(() => '/cwd'),
       env: [],
       argv: [],
       stdout: {
-        write: mock.fn((str) => { mocks.stdout += str; })
+        write: mock.fn((str) => { mocks.stdout += str; }),
       },
       stderr: {
-        write: mock.fn((str) => { mocks.stderr += str; })
+        write: mock.fn((str) => { mocks.stderr += str; }),
       },
       stdin: {
         setEncoding: mock.fn(),
         on: mock.fn((method, func) => {
           mocks.stdin[method] = func;
         }),
-        resume: mock.fn()
+        resume: mock.fn(),
       },
-      exit: mock.fn((code) => { mocks.code = code; })
-    }
+      exit: mock.fn((code) => { mocks.code = code; }),
+    },
   };
 
   return mocks;
@@ -71,30 +71,30 @@ describe('bin/marked', () => {
   describe('string', () => {
     it('-s', testInput({
       args: ['-s', '# test'],
-      stdout: '<h1>test</h1>'
+      stdout: '<h1>test</h1>',
     }));
 
     it('--string', testInput({
       args: ['--string', '# test'],
-      stdout: '<h1>test</h1>'
+      stdout: '<h1>test</h1>',
     }));
   });
 
   describe('config', () => {
     it('-c', testInput({
       args: ['-c', fixturePath('bin-config.js'), '-s', 'line1\nline2'],
-      stdout: '<p>line1<br>line2</p>'
+      stdout: '<p>line1<br>line2</p>',
     }));
 
     it('--config', testInput({
       args: ['--config', fixturePath('bin-config.js'), '-s', 'line1\nline2'],
-      stdout: '<p>line1<br>line2</p>'
+      stdout: '<p>line1<br>line2</p>',
     }));
 
     it('config not found', testInput({
       args: ['--config', fixturePath('does-not-exist.js'), '-s', 'line1\nline2'],
       stderr: `Cannot load config file '${fixturePath('does-not-exist.js')}'`,
-      code: 1
+      code: 1,
     }));
   });
 
@@ -102,13 +102,13 @@ describe('bin/marked', () => {
     it('input file not found', testInput({
       args: [fixturePath('does-not-exist.md')],
       stderr: `marked: ${fixturePath('does-not-exist.md')}: No such file or directory`,
-      code: 1
+      code: 1,
     }));
 
     it('input file not found --input', testInput({
       args: ['--input', fixturePath('does-not-exist.md')],
       stderr: `marked: ${fixturePath('does-not-exist.md')}: No such file or directory`,
-      code: 1
+      code: 1,
     }));
   });
 });

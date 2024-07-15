@@ -34,7 +34,7 @@ const start = Date.now();
 
 await Promise.all([
   checkRegexp(inline, 'inline'),
-  checkRegexp(block, 'block')
+  checkRegexp(block, 'block'),
 ]);
 
 console.log(`

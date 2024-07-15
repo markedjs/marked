@@ -40,7 +40,7 @@ function mergeOptions(options) {
     'walkTokens',
     'extensions',
     'highlight',
-    'sanitizer'
+    'sanitizer',
   ];
   for (const prop in defaults) {
     opts[prop] = invalidOptions.includes(prop) || !(prop in options)
@@ -56,7 +56,7 @@ function parse(e) {
       postMessage({
         id: e.data.id,
         task: e.data.task,
-        defaults: getDefaults()
+        defaults: getDefaults(),
       });
       break;
     }
@@ -74,7 +74,7 @@ function parse(e) {
         task: e.data.task,
         lexed: lexedList,
         parsed,
-        time: endTime - startTime
+        time: endTime - startTime,
       });
       break;
     }

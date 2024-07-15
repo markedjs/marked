@@ -84,13 +84,13 @@ describe('marked unit', () => {
             return {
               type: 'underline',
               raw: match[0], // This is the text that you want your token to consume from the source
-              text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+              text: match[1].trim(), // You can add additional properties to your tokens to pass along to the renderer
             };
           }
         },
         renderer(token) {
           return `<u>${token.text}</u>\n`;
-        }
+        },
       };
       marked.use({ extensions: [underline] });
       let html = marked.parse('Not Underlined\n:Underlined\nNot Underlined');
@@ -113,14 +113,14 @@ describe('marked unit', () => {
               return {
                 type: 'underline',
                 raw: match[0], // This is the text that you want your token to consume from the source
-                text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+                text: match[1].trim(), // You can add additional properties to your tokens to pass along to the renderer
               };
             }
           },
           renderer(token) {
             return `<u>${token.text}</u>\n`;
-          }
-        }]
+          },
+        }],
       };
       marked.use(underline);
       const html = marked.parse('Not Underlined A\n:Underlined B:\nNot Underlined C\n:Not Underlined D');
@@ -139,13 +139,13 @@ describe('marked unit', () => {
             return {
               type: 'underline',
               raw: match[0], // This is the text that you want your token to consume from the source
-              text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+              text: match[1].trim(), // You can add additional properties to your tokens to pass along to the renderer
             };
           }
         },
         renderer(token) {
           return `<u>${token.text}</u>`;
-        }
+        },
       };
       marked.use({ extensions: [underline] });
       const html = marked.parse('Not Underlined =Underlined= Not Underlined');
@@ -170,7 +170,7 @@ describe('marked unit', () => {
               type: 'descriptionList',
               raw: match[0], // This is the text that you want your token to consume from the source
               text: match[0].trim(), // You can add additional properties to your tokens to pass along to the renderer
-              tokens: []
+              tokens: [],
             };
             this.lexer.inlineTokens(token.text, token.tokens);
             return token;
@@ -178,7 +178,7 @@ describe('marked unit', () => {
         },
         renderer(token) {
           return `<dl>${this.parser.parseInline(token.tokens)}\n</dl>`;
-        }
+        },
       };
 
       const description = {
@@ -193,7 +193,7 @@ describe('marked unit', () => {
               type: 'description',
               raw: match[0],
               dt: [],
-              dd: []
+              dd: [],
             };
             this.lexer.inline(match[1].trim(), token.dt);
             this.lexer.inline(match[2].trim(), token.dd);
@@ -202,7 +202,7 @@ describe('marked unit', () => {
         },
         renderer(token) {
           return `\n<dt>${this.parser.parseInline(token.dt)}</dt><dd>${this.parser.parseInline(token.dd)}</dd>`;
-        }
+        },
       };
       marked.use({ extensions: [descriptionlist, description] });
       const html = marked.parse('A Description List with One Description:\n'
@@ -227,13 +227,13 @@ describe('marked unit', () => {
             return {
               type: 'underline',
               raw: match[0], // This is the text that you want your token to consume from the source
-              text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+              text: match[1].trim(), // You can add additional properties to your tokens to pass along to the renderer
             };
           }
         },
         renderer(token) {
           return `<u>${token.text}</u>\n`;
-        }
+        },
       };
       marked.use({ silent: true, extensions: [extension] });
       const html = marked.parse(':test:\ntest\n<div></div>');
@@ -251,7 +251,7 @@ describe('marked unit', () => {
             return {
               type: 'test',
               raw: match[0], // This is the text that you want your token to consume from the source
-              text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+              text: match[1].trim(), // You can add additional properties to your tokens to pass along to the renderer
             };
           }
         },
@@ -260,7 +260,7 @@ describe('marked unit', () => {
             return 'test';
           }
           return false;
-        }
+        },
       };
       const fallbackRenderer = {
         name: 'test',
@@ -270,7 +270,7 @@ describe('marked unit', () => {
             return 'fallback';
           }
           return false;
-        }
+        },
       };
       marked.use({ extensions: [fallbackRenderer, extension] });
       const html = marked.parse(':Test:\n\n:test:\n\n:none:');
@@ -288,14 +288,14 @@ describe('marked unit', () => {
             return {
               type: 'test',
               raw: match[0], // This is the text that you want your token to consume from the source
-              text: match[1].trim() // You can add additional properties to your tokens to pass along to the renderer
+              text: match[1].trim(), // You can add additional properties to your tokens to pass along to the renderer
             };
           }
           return false;
         },
         renderer(token) {
           return token.text;
-        }
+        },
       };
       const extension2 = {
         name: 'test',
@@ -308,12 +308,12 @@ describe('marked unit', () => {
               return {
                 type: 'test',
                 raw: match[0],
-                text: match[1].trim().toUpperCase()
+                text: match[1].trim().toUpperCase(),
               };
             }
           }
           return false;
-        }
+        },
       };
       marked.use({ extensions: [extension, extension2] });
       const html = marked.parse(':Test:\n\n:test:');
@@ -330,7 +330,7 @@ describe('marked unit', () => {
           },
           renderer(token) {
             return '<h' + token.depth + '>' + token.text + ' RENDERER EXTENSION</h' + token.depth + '>\n';
-          }
+          },
         },
         {
           name: 'code',
@@ -342,14 +342,14 @@ describe('marked unit', () => {
               return {
                 type: 'code',
                 raw: match[0],
-                text: match[1].trim() + ' TOKENIZER EXTENSION'
+                text: match[1].trim() + ' TOKENIZER EXTENSION',
               };
             }
           },
           renderer(token) {
             return false; // fall back to default `code` renderer
-          }
-        }]
+          },
+        }],
       };
       marked.use(extension);
       const html = marked.parse('# extension1\n:extension2:');
@@ -371,7 +371,7 @@ describe('marked unit', () => {
                 raw: match[0],
                 dt: this.lexer.inline(match[1].trim()),
                 dd: [],
-                tokens: []
+                tokens: [],
               };
               this.lexer.inline(match[2].trim(), token.dd);
               this.lexer.inline('unwalked', token.tokens);
@@ -381,13 +381,13 @@ describe('marked unit', () => {
           renderer(token) {
             return `\n<dt>${this.parser.parseInline(token.dt)} - ${this.parser.parseInline(token.tokens)}</dt><dd>${this.parser.parseInline(token.dd)}</dd>`;
           },
-          childTokens: ['dd', 'dt']
+          childTokens: ['dd', 'dt'],
         }],
         walkTokens(token) {
           if (token.type === 'text') {
             token.text += ' walked';
           }
-        }
+        },
       };
       marked.use(walkableDescription);
       const html = marked.parse(':   Topic 1   :  Description 1\n'
@@ -410,7 +410,7 @@ describe('marked unit', () => {
                 type: 'walkableDescription',
                 raw: match[0],
                 dt: [this.lexer.inline(match[1].trim())],
-                dd: [[this.lexer.inline(match[2].trim())]]
+                dd: [[this.lexer.inline(match[2].trim())]],
               };
               return token;
             }
@@ -418,13 +418,13 @@ describe('marked unit', () => {
           renderer(token) {
             return `\n<dt>${this.parser.parseInline(token.dt[0])}</dt><dd>${this.parser.parseInline(token.dd[0][0])}</dd>`;
           },
-          childTokens: ['dd', 'dt']
+          childTokens: ['dd', 'dt'],
         }],
         walkTokens(token) {
           if (token.type === 'text') {
             token.text += ' walked';
           }
-        }
+        },
       };
       marked.use(walkableDescription);
       const html = marked.parse(':   Topic 1   :  Description 1\n'
@@ -447,7 +447,7 @@ describe('marked unit', () => {
                   type: `block-${name}`,
                   raw: `::${name}\n`,
                   text,
-                  tokens: []
+                  tokens: [],
                 };
                 this.lexer.inline(token.text, token.tokens);
                 return token;
@@ -455,7 +455,7 @@ describe('marked unit', () => {
             },
             renderer(token) {
               return `<${token.type}>${this.parser.parseInline(token.tokens)}</${token.type}>\n`;
-            }
+            },
           }, {
             name: `inline-${name}`,
             level: 'inline',
@@ -465,13 +465,13 @@ describe('marked unit', () => {
                 return {
                   type: `inline-${name}`,
                   raw: `:${name}`,
-                  text: `used ${name}`
+                  text: `used ${name}`,
                 };
               }
             },
             renderer(token) {
               return token.text;
-            }
+            },
           }],
           tokenizer: {
             heading(src) {
@@ -481,13 +481,13 @@ describe('marked unit', () => {
                   raw: `# ${name}`,
                   text: `used ${name}`,
                   depth: 1,
-                  tokens: []
+                  tokens: [],
                 };
                 this.lexer.inline(token.text, token.tokens);
                 return token;
               }
               return false;
-            }
+            },
           },
           useNewRenderer: true,
           renderer: {
@@ -496,13 +496,13 @@ describe('marked unit', () => {
                 return `<h${depth}>${text}</h${depth}>\n`;
               }
               return false;
-            }
+            },
           },
           walkTokens(token) {
             if (token.text === `used ${name}`) {
               token.text += ' walked';
             }
-          }
+          },
         };
       }
 
@@ -517,7 +517,7 @@ describe('marked unit', () => {
             },
             renderer(token) {
               return false;
-            }
+            },
           }, {
             name: `inline-${name}`,
             level: 'inline',
@@ -527,8 +527,8 @@ describe('marked unit', () => {
             },
             renderer(token) {
               return false;
-            }
-          }]
+            },
+          }],
         };
       }
 
@@ -568,7 +568,7 @@ used extension2 walked</p>
       it('should merge extensions when calling marked.use with multiple extensions', () => {
         marked.use(
           createExtension('extension1'),
-          createExtension('extension2')
+          createExtension('extension2'),
         );
 
         runTest();
@@ -579,7 +579,7 @@ used extension2 walked</p>
           createExtension('extension1'),
           createExtension('extension2'),
           createFalseExtension('extension1'),
-          createFalseExtension('extension2')
+          createFalseExtension('extension2'),
         );
 
         runTest();
@@ -591,7 +591,7 @@ used extension2 walked</p>
           { tokenizer: {} },
           { renderer: {} },
           { walkTokens: () => {} },
-          { extensions: [] }
+          { extensions: [] },
         );
 
         // should not throw
@@ -602,7 +602,7 @@ used extension2 walked</p>
     it('should be async if any extension in use args is async', () => {
       marked.use(
         { async: true },
-        { async: false }
+        { async: false },
       );
 
       assert.ok(marked.defaults.async);
@@ -654,10 +654,10 @@ used extension2 walked</p>
               return {
                 type: 'inlineStyleTag',
                 raw: match[0], // This is the text that you want your token to consume from the source
-                text: match[1]
+                text: match[1],
               };
             }
-          }
+          },
         },
         {
           name: 'styled',
@@ -669,7 +669,7 @@ used extension2 walked</p>
               return `${openingTag[1]} ${token.style}${openingTag[2]}`;
             }
             return text;
-          }
+          },
         }],
         walkTokens(token) {
           if (token.tokens) {
@@ -681,7 +681,7 @@ used extension2 walked</p>
               token.tokens.pop();
             }
           }
-        }
+        },
       };
       marked.use(styleTags);
       const html = marked.parse('This is a *paragraph* with blue text. {blue}\n'
@@ -696,8 +696,8 @@ used extension2 walked</p>
         renderer: {
           paragraph() {
             return 'extension';
-          }
-        }
+          },
+        },
       };
       mock.method(extension.renderer, 'paragraph');
       marked.use(extension);
@@ -714,12 +714,12 @@ used extension2 walked</p>
               type: 'paragraph',
               raw: text,
               text: 'extension',
-              tokens: []
+              tokens: [],
             };
             this.lexer.inline(token.text, token.tokens);
             return token;
-          }
-        }
+          },
+        },
       };
       mock.method(extension.tokenizer, 'paragraph');
       marked.use(extension);
@@ -733,7 +733,7 @@ used extension2 walked</p>
       const extension = {
         walkTokens(token) {
           walked++;
-        }
+        },
       };
       marked.use(extension);
       marked.parse('text');
@@ -742,7 +742,7 @@ used extension2 walked</p>
 
     it('should use options from extension', () => {
       const extension = {
-        breaks: true
+        breaks: true,
       };
       marked.use(extension);
       const html = marked.parse('line1\nline2');
@@ -757,13 +757,13 @@ used extension2 walked</p>
           if (token.walkedOnce) {
             walkedTwice++;
           }
-        }
+        },
       };
       const extension2 = {
         walkTokens(token) {
           walkedOnce++;
           token.walkedOnce = true;
-        }
+        },
       };
       marked.use(extension1);
       marked.use(extension2);
@@ -781,16 +781,16 @@ used extension2 walked</p>
           },
           html() {
             return 'extension1 html\n';
-          }
-        }
+          },
+        },
       };
       const extension2 = {
         useNewRenderer: true,
         renderer: {
           paragraph() {
             return 'extension2 paragraph\n';
-          }
-        }
+          },
+        },
       };
       marked.use(extension1);
       marked.use(extension2);
@@ -813,8 +813,8 @@ paragraph
               return 'extension1 paragraph\n';
             }
             return false;
-          }
-        }
+          },
+        },
       };
       const extension2 = {
         useNewRenderer: true,
@@ -824,8 +824,8 @@ paragraph
               return 'extension2 paragraph\n';
             }
             return false;
-          }
-        }
+          },
+        },
       };
       marked.use(extension1);
       marked.use(extension2);
@@ -851,8 +851,8 @@ original
           },
           paragraph() {
             return this.options ? 'shorthand options\n' : 'shorthand no options\n';
-          }
-        }
+          },
+        },
       };
       marked.use(extension);
       const html = marked.parse(`
@@ -964,7 +964,7 @@ br
         ['paragraph', 'brbr'],
         ['text', 'br'],
         ['br', ''],
-        ['text', 'br']
+        ['text', 'br'],
       ]);
     });
 
@@ -975,7 +975,7 @@ br
             token.text += ' walked';
             token.tokens = this.Lexer.lexInline(token.text);
           }
-        }
+        },
       });
       assert.strictEqual(marked.parse('*text*').trim(), '<p><em>text walked</em></p>');
     });
@@ -989,7 +989,7 @@ br
             token.text += ' walked';
             token.tokens = this.Lexer.lexInline(token.text);
           }
-        }
+        },
       });
       const promise = marked.parse('*text*');
       assert.ok(promise instanceof Promise);
@@ -999,7 +999,7 @@ br
 
     it('should return promise if async and no walkTokens function', async() => {
       marked.use({
-        async: true
+        async: true,
       });
       const promise = marked.parse('*text*');
       assert.ok(promise instanceof Promise);

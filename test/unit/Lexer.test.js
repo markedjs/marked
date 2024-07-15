@@ -11,7 +11,7 @@ function expectTokens({ md, options, tokens = [], links = {}, log = false }) {
     console.log(JSON.stringify(
       actual,
       (k, v) => v === undefined ? null : v,
-      2
+      2,
     ));
   }
   assert.deepEqual(actual, expected);
@@ -35,16 +35,16 @@ describe('Lexer', () => {
             type: 'paragraph',
             raw: 'paragraph 1',
             text: 'paragraph 1',
-            tokens: [{ type: 'text', raw: 'paragraph 1', text: 'paragraph 1' }]
+            tokens: [{ type: 'text', raw: 'paragraph 1', text: 'paragraph 1' }],
           },
           { type: 'space', raw: '\n\n' },
           {
             type: 'paragraph',
             raw: 'paragraph 2',
             text: 'paragraph 2',
-            tokens: [{ type: 'text', raw: 'paragraph 2', text: 'paragraph 2' }]
-          }
-        ]
+            tokens: [{ type: 'text', raw: 'paragraph 2', text: 'paragraph 2' }],
+          },
+        ],
       });
     });
   });
@@ -54,8 +54,8 @@ describe('Lexer', () => {
       expectTokens({
         md: '    code',
         tokens: [
-          { type: 'code', raw: '    code', text: 'code', codeBlockStyle: 'indented' }
-        ]
+          { type: 'code', raw: '    code', text: 'code', codeBlockStyle: 'indented' },
+        ],
       });
     });
 
@@ -63,8 +63,8 @@ describe('Lexer', () => {
       expectTokens({
         md: '```\ncode\n```',
         tokens: [
-          { type: 'code', raw: '```\ncode\n```', text: 'code', lang: '' }
-        ]
+          { type: 'code', raw: '```\ncode\n```', text: 'code', lang: '' },
+        ],
       });
     });
 
@@ -72,8 +72,8 @@ describe('Lexer', () => {
       expectTokens({
         md: '```text\ncode\n```',
         tokens: [
-          { type: 'code', raw: '```text\ncode\n```', text: 'code', lang: 'text' }
-        ]
+          { type: 'code', raw: '```text\ncode\n```', text: 'code', lang: 'text' },
+        ],
       });
     });
   });
@@ -103,65 +103,65 @@ lheading 2
         tokens: [
           {
             type: 'space',
-            raw: '\n'
+            raw: '\n',
           },
           {
             type: 'heading',
             raw: '# heading 1\n\n',
             depth: 1,
             text: 'heading 1',
-            tokens: [{ type: 'text', raw: 'heading 1', text: 'heading 1' }]
+            tokens: [{ type: 'text', raw: 'heading 1', text: 'heading 1' }],
           },
           {
             type: 'heading',
             raw: '## heading 2\n\n',
             depth: 2,
             text: 'heading 2',
-            tokens: [{ type: 'text', raw: 'heading 2', text: 'heading 2' }]
+            tokens: [{ type: 'text', raw: 'heading 2', text: 'heading 2' }],
           },
           {
             type: 'heading',
             raw: '### heading 3\n\n',
             depth: 3,
             text: 'heading 3',
-            tokens: [{ type: 'text', raw: 'heading 3', text: 'heading 3' }]
+            tokens: [{ type: 'text', raw: 'heading 3', text: 'heading 3' }],
           },
           {
             type: 'heading',
             raw: '#### heading 4\n\n',
             depth: 4,
             text: 'heading 4',
-            tokens: [{ type: 'text', raw: 'heading 4', text: 'heading 4' }]
+            tokens: [{ type: 'text', raw: 'heading 4', text: 'heading 4' }],
           },
           {
             type: 'heading',
             raw: '##### heading 5\n\n',
             depth: 5,
             text: 'heading 5',
-            tokens: [{ type: 'text', raw: 'heading 5', text: 'heading 5' }]
+            tokens: [{ type: 'text', raw: 'heading 5', text: 'heading 5' }],
           },
           {
             type: 'heading',
             raw: '###### heading 6\n\n',
             depth: 6,
             text: 'heading 6',
-            tokens: [{ type: 'text', raw: 'heading 6', text: 'heading 6' }]
+            tokens: [{ type: 'text', raw: 'heading 6', text: 'heading 6' }],
           },
           {
             type: 'heading',
             raw: 'lheading 1\n==========\n\n',
             depth: 1,
             text: 'lheading 1',
-            tokens: [{ type: 'text', raw: 'lheading 1', text: 'lheading 1' }]
+            tokens: [{ type: 'text', raw: 'lheading 1', text: 'lheading 1' }],
           },
           {
             type: 'heading',
             raw: 'lheading 2\n----------\n',
             depth: 2,
             text: 'lheading 2',
-            tokens: [{ type: 'text', raw: 'lheading 2', text: 'lheading 2' }]
-          }
-        ]
+            tokens: [{ type: 'text', raw: 'lheading 2', text: 'lheading 2' }],
+          },
+        ],
       });
     });
 
@@ -172,8 +172,8 @@ lheading 2
           type: 'paragraph',
           raw: '####### heading 7',
           text: '####### heading 7',
-          tokens: [{ type: 'text', raw: '####### heading 7', text: '####### heading 7' }]
-        }]
+          tokens: [{ type: 'text', raw: '####### heading 7', text: '####### heading 7' }],
+        }],
       });
     });
   });
@@ -188,7 +188,7 @@ lheading 2
 `,
         tokens: [{
           type: 'space',
-          raw: '\n'
+          raw: '\n',
         }, {
           type: 'table',
           align: [null, null],
@@ -198,14 +198,14 @@ lheading 2
               text: 'a',
               tokens: [{ type: 'text', raw: 'a', text: 'a' }],
               header: true,
-              align: null
+              align: null,
             },
             {
               text: 'b',
               tokens: [{ type: 'text', raw: 'b', text: 'b' }],
               header: true,
-              align: null
-            }
+              align: null,
+            },
           ],
           rows: [
             [
@@ -213,17 +213,17 @@ lheading 2
                 text: '1',
                 tokens: [{ type: 'text', raw: '1', text: '1' }],
                 header: false,
-                align: null
+                align: null,
               },
               {
                 text: '2',
                 tokens: [{ type: 'text', raw: '2', text: '2' }],
                 header: false,
-                align: null
-              }
-            ]
-          ]
-        }]
+                align: null,
+              },
+            ],
+          ],
+        }],
       });
     });
 
@@ -237,12 +237,12 @@ paragraph 1
 `,
         tokens: [{
           type: 'space',
-          raw: '\n'
+          raw: '\n',
         }, {
           type: 'paragraph',
           raw: 'paragraph 1\n',
           text: 'paragraph 1',
-          tokens: [{ type: 'text', raw: 'paragraph 1', text: 'paragraph 1' }]
+          tokens: [{ type: 'text', raw: 'paragraph 1', text: 'paragraph 1' }],
         },
         {
           type: 'table',
@@ -253,14 +253,14 @@ paragraph 1
               text: 'a',
               tokens: [{ type: 'text', raw: 'a', text: 'a' }],
               header: true,
-              align: null
+              align: null,
             },
             {
               text: 'b',
               tokens: [{ type: 'text', raw: 'b', text: 'b' }],
               header: true,
-              align: null
-            }
+              align: null,
+            },
           ],
           rows: [
             [
@@ -268,18 +268,18 @@ paragraph 1
                 text: '1',
                 tokens: [{ type: 'text', raw: '1', text: '1' }],
                 header: false,
-                align: null
+                align: null,
               },
               {
                 text: '2',
                 tokens: [{ type: 'text', raw: '2', text: '2' }],
                 header: false,
-                align: null
-              }
-            ]
-          ]
-        }
-        ]
+                align: null,
+              },
+            ],
+          ],
+        },
+        ],
       });
     });
 
@@ -292,7 +292,7 @@ paragraph 1
 `,
         tokens: [{
           type: 'space',
-          raw: '\n'
+          raw: '\n',
         }, {
           type: 'table',
           align: ['left', 'center', 'right'],
@@ -302,20 +302,20 @@ paragraph 1
               text: 'a',
               tokens: [{ type: 'text', raw: 'a', text: 'a' }],
               header: true,
-              align: 'left'
+              align: 'left',
             },
             {
               text: 'b',
               tokens: [{ type: 'text', raw: 'b', text: 'b' }],
               header: true,
-              align: 'center'
+              align: 'center',
             },
             {
               text: 'c',
               tokens: [{ type: 'text', raw: 'c', text: 'c' }],
               header: true,
-              align: 'right'
-            }
+              align: 'right',
+            },
           ],
           rows: [
             [
@@ -323,23 +323,23 @@ paragraph 1
                 text: '1',
                 tokens: [{ type: 'text', raw: '1', text: '1' }],
                 header: false,
-                align: 'left'
+                align: 'left',
               },
               {
                 text: '2',
                 tokens: [{ type: 'text', raw: '2', text: '2' }],
                 header: false,
-                align: 'center'
+                align: 'center',
               },
               {
                 text: '3',
                 tokens: [{ type: 'text', raw: '3', text: '3' }],
                 header: false,
-                align: 'right'
-              }
-            ]
-          ]
-        }]
+                align: 'right',
+              },
+            ],
+          ],
+        }],
       });
     });
 
@@ -353,7 +353,7 @@ a | b
         tokens: [
           {
             type: 'space',
-            raw: '\n'
+            raw: '\n',
           }, {
             type: 'table',
             align: [null, null],
@@ -363,14 +363,14 @@ a | b
                 text: 'a',
                 tokens: [{ type: 'text', raw: 'a', text: 'a' }],
                 header: true,
-                align: null
+                align: null,
               },
               {
                 text: 'b',
                 tokens: [{ type: 'text', raw: 'b', text: 'b' }],
                 header: true,
-                align: null
-              }
+                align: null,
+              },
             ],
             rows: [
               [
@@ -378,17 +378,17 @@ a | b
                   text: '1',
                   tokens: [{ type: 'text', raw: '1', text: '1' }],
                   header: false,
-                  align: null
+                  align: null,
                 },
                 {
                   text: '2',
                   tokens: [{ type: 'text', raw: '2', text: '2' }],
                   header: false,
-                  align: null
-                }
-              ]
-            ]
-          }]
+                  align: null,
+                },
+              ],
+            ],
+          }],
       });
     });
   });
@@ -398,8 +398,8 @@ a | b
       expectTokens({
         md: '---',
         tokens: [
-          { type: 'hr', raw: '---' }
-        ]
+          { type: 'hr', raw: '---' },
+        ],
       });
     });
   });
@@ -418,11 +418,11 @@ a | b
               raw: 'blockquote',
               text: 'blockquote',
               tokens: [
-                { type: 'text', raw: 'blockquote', text: 'blockquote' }
-              ]
-            }]
-          }
-        ]
+                { type: 'text', raw: 'blockquote', text: 'blockquote' },
+              ],
+            }],
+          },
+        ],
       });
     });
 
@@ -439,11 +439,11 @@ a | b
               raw: 'blockquote',
               text: 'blockquote',
               tokens: [
-                { type: 'text', raw: 'blockquote', text: 'blockquote' }
-              ]
-            }]
-          }
-        ]
+                { type: 'text', raw: 'blockquote', text: 'blockquote' },
+              ],
+            }],
+          },
+        ],
       });
     });
 
@@ -475,17 +475,17 @@ a | b
                         raw: 'blockquote',
                         text: 'blockquote',
                         tokens: [
-                          { type: 'text', raw: 'blockquote', text: 'blockquote' }
-                        ]
-                      }
+                          { type: 'text', raw: 'blockquote', text: 'blockquote' },
+                        ],
+                      },
                     ],
-                    text: 'blockquote'
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                    text: 'blockquote',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       });
     });
   });
@@ -500,7 +500,7 @@ a | b
         tokens: [
           {
             type: 'space',
-            raw: '\n'
+            raw: '\n',
           }, {
             type: 'list',
             raw: '- item 1\n- item 2\n',
@@ -519,8 +519,8 @@ a | b
                   type: 'text',
                   raw: 'item 1',
                   text: 'item 1',
-                  tokens: [{ type: 'text', raw: 'item 1', text: 'item 1' }]
-                }]
+                  tokens: [{ type: 'text', raw: 'item 1', text: 'item 1' }],
+                }],
               },
               {
                 type: 'list_item',
@@ -533,12 +533,12 @@ a | b
                   type: 'text',
                   raw: 'item 2',
                   text: 'item 2',
-                  tokens: [{ type: 'text', raw: 'item 2', text: 'item 2' }]
-                }]
-              }
-            ]
-          }
-        ]
+                  tokens: [{ type: 'text', raw: 'item 2', text: 'item 2' }],
+                }],
+              },
+            ],
+          },
+        ],
       });
     });
 
@@ -551,7 +551,7 @@ a | b
         tokens: [
           {
             type: 'space',
-            raw: '\n'
+            raw: '\n',
           },
           {
             type: 'list',
@@ -576,11 +576,11 @@ a | b
                       {
                         type: 'text',
                         raw: 'item 1',
-                        text: 'item 1'
-                      }
-                    ]
-                  }
-                ]
+                        text: 'item 1',
+                      },
+                    ],
+                  },
+                ],
               },
               {
                 type: 'list_item',
@@ -598,15 +598,15 @@ a | b
                       {
                         type: 'text',
                         raw: 'item 2',
-                        text: 'item 2'
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                        text: 'item 2',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       });
     });
 
@@ -619,7 +619,7 @@ a | b
         tokens: [
           {
             type: 'space',
-            raw: '\n'
+            raw: '\n',
           },
           {
             type: 'list',
@@ -644,11 +644,11 @@ a | b
                       {
                         type: 'text',
                         raw: 'item 1',
-                        text: 'item 1'
-                      }
-                    ]
-                  }
-                ]
+                        text: 'item 1',
+                      },
+                    ],
+                  },
+                ],
               },
               {
                 type: 'list_item',
@@ -666,15 +666,15 @@ a | b
                       {
                         type: 'text',
                         raw: 'item 2',
-                        text: 'item 2'
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                        text: 'item 2',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       });
     });
 
@@ -689,7 +689,7 @@ paragraph
         tokens: [
           {
             type: 'space',
-            raw: '\n'
+            raw: '\n',
           },
           {
             type: 'list',
@@ -714,11 +714,11 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 1',
-                        text: 'item 1'
-                      }
-                    ]
-                  }
-                ]
+                        text: 'item 1',
+                      },
+                    ],
+                  },
+                ],
               },
               {
                 type: 'list_item',
@@ -736,17 +736,17 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 2',
-                        text: 'item 2'
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
+                        text: 'item 2',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
           },
           {
             type: 'space',
-            raw: '\n\n'
+            raw: '\n\n',
           },
           {
             type: 'paragraph',
@@ -756,11 +756,11 @@ paragraph
               {
                 type: 'text',
                 raw: 'paragraph',
-                text: 'paragraph'
-              }
-            ]
-          }
-        ]
+                text: 'paragraph',
+              },
+            ],
+          },
+        ],
       });
     });
 
@@ -773,7 +773,7 @@ paragraph
         tokens: [
           {
             type: 'space',
-            raw: '\n'
+            raw: '\n',
           },
           {
             type: 'list',
@@ -798,11 +798,11 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 1',
-                        text: 'item 1'
-                      }
-                    ]
-                  }
-                ]
+                        text: 'item 1',
+                      },
+                    ],
+                  },
+                ],
               },
               {
                 type: 'list_item',
@@ -820,15 +820,15 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 2',
-                        text: 'item 2'
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                        text: 'item 2',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       });
     });
 
@@ -842,7 +842,7 @@ paragraph
         tokens: [
           {
             type: 'space',
-            raw: '\n'
+            raw: '\n',
           },
           {
             type: 'list',
@@ -867,11 +867,11 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 1',
-                        text: 'item 1'
-                      }
-                    ]
-                  }
-                ]
+                        text: 'item 1',
+                      },
+                    ],
+                  },
+                ],
               },
               {
                 type: 'list_item',
@@ -889,15 +889,15 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 2',
-                        text: 'item 2'
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                        text: 'item 2',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       });
     });
 
@@ -913,7 +913,7 @@ paragraph
         tokens: [
           {
             type: 'space',
-            raw: '\n'
+            raw: '\n',
           },
           {
             type: 'list',
@@ -938,11 +938,11 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 1',
-                        text: 'item 1'
-                      }
-                    ]
-                  }
-                ]
+                        text: 'item 1',
+                      },
+                    ],
+                  },
+                ],
               },
               {
                 type: 'list_item',
@@ -960,13 +960,13 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 2',
-                        text: 'item 2'
-                      }
-                    ]
+                        text: 'item 2',
+                      },
+                    ],
                   },
                   {
                     type: 'space',
-                    raw: '\n\n'
+                    raw: '\n\n',
                   },
                   {
                     type: 'text',
@@ -976,11 +976,11 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 2a',
-                        text: 'item 2a'
-                      }
-                    ]
-                  }
-                ]
+                        text: 'item 2a',
+                      },
+                    ],
+                  },
+                ],
               },
               {
                 type: 'list_item',
@@ -998,15 +998,15 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 3',
-                        text: 'item 3'
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                        text: 'item 3',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       });
     });
 
@@ -1019,7 +1019,7 @@ paragraph
         tokens: [
           {
             type: 'space',
-            raw: '\n'
+            raw: '\n',
           },
           {
             type: 'list',
@@ -1044,9 +1044,9 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 1',
-                        text: 'item 1'
-                      }
-                    ]
+                        text: 'item 1',
+                      },
+                    ],
                   },
                   {
                     type: 'list',
@@ -1071,19 +1071,19 @@ paragraph
                               {
                                 type: 'text',
                                 raw: 'item 2',
-                                text: 'item 2'
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                                text: 'item 2',
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       });
     });
 
@@ -1096,7 +1096,7 @@ paragraph
         tokens: [
           {
             type: 'space',
-            raw: '\n'
+            raw: '\n',
           },
           {
             type: 'list',
@@ -1121,11 +1121,11 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 1',
-                        text: 'item 1'
-                      }
-                    ]
-                  }
-                ]
+                        text: 'item 1',
+                      },
+                    ],
+                  },
+                ],
               },
               {
                 type: 'list_item',
@@ -1143,15 +1143,15 @@ paragraph
                       {
                         type: 'text',
                         raw: 'item 2',
-                        text: 'item 2'
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                        text: 'item 2',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       });
     });
   });
@@ -1166,9 +1166,9 @@ paragraph
             raw: '<div>html</div>',
             pre: false,
             block: true,
-            text: '<div>html</div>'
-          }
-        ]
+            text: '<div>html</div>',
+          },
+        ],
       });
     });
 
@@ -1181,9 +1181,9 @@ paragraph
             raw: '<pre>html</pre>',
             pre: true,
             block: true,
-            text: '<pre>html</pre>'
-          }
-        ]
+            text: '<pre>html</pre>',
+          },
+        ],
       });
     });
   });
@@ -1193,8 +1193,8 @@ paragraph
       expectTokens({
         md: '[link]: https://example.com',
         links: {
-          link: { href: 'https://example.com', title: undefined }
-        }
+          link: { href: 'https://example.com', title: undefined },
+        },
       });
     });
 
@@ -1202,8 +1202,8 @@ paragraph
       expectTokens({
         md: '[link]: https://example.com "title"',
         links: {
-          link: { href: 'https://example.com', title: 'title' }
-        }
+          link: { href: 'https://example.com', title: 'title' },
+        },
       });
     });
   });
@@ -1214,8 +1214,8 @@ paragraph
         expectInlineTokens({
           md: '\\>',
           tokens: [
-            { type: 'escape', raw: '\\>', text: '&gt;' }
-          ]
+            { type: 'escape', raw: '\\>', text: '&gt;' },
+          ],
         });
       });
 
@@ -1229,11 +1229,11 @@ paragraph
               text: 'strong text\\[',
               tokens: [
                 { type: 'text', raw: 'strong text', text: 'strong text' },
-                { type: 'escape', raw: '\\[', text: '[' }
-              ]
+                { type: 'escape', raw: '\\[', text: '[' },
+              ],
             },
-            { type: 'escape', raw: '\\]', text: ']' }
-          ]
+            { type: 'escape', raw: '\\]', text: ']' },
+          ],
         });
         expectInlineTokens({
           md: '_em\\<pha\\>sis_',
@@ -1247,10 +1247,10 @@ paragraph
                 { type: 'escape', raw: '\\<', text: '&lt;' },
                 { type: 'text', raw: 'pha', text: 'pha' },
                 { type: 'escape', raw: '\\>', text: '&gt;' },
-                { type: 'text', raw: 'sis', text: 'sis' }
-              ]
-            }
-          ]
+                { type: 'text', raw: 'sis', text: 'sis' },
+              ],
+            },
+          ],
         });
       });
 
@@ -1260,8 +1260,8 @@ paragraph
           tokens: [
             { type: 'html', raw: '<div>', inLink: false, inRawBlock: false, block: false, text: '<div>' },
             { type: 'text', raw: 'html', text: 'html' },
-            { type: 'html', raw: '</div>', inLink: false, inRawBlock: false, block: false, text: '</div>' }
-          ]
+            { type: 'html', raw: '</div>', inLink: false, inRawBlock: false, block: false, text: '</div>' },
+          ],
         });
       });
 
@@ -1276,10 +1276,10 @@ paragraph
               title: null,
               text: 'link',
               tokens: [
-                { type: 'text', raw: 'link', text: 'link' }
-              ]
-            }
-          ]
+                { type: 'text', raw: 'link', text: 'link' },
+              ],
+            },
+          ],
         });
       });
 
@@ -1294,10 +1294,10 @@ paragraph
               title: 'title',
               text: 'link',
               tokens: [
-                { type: 'text', raw: 'link', text: 'link' }
-              ]
-            }
-          ]
+                { type: 'text', raw: 'link', text: 'link' },
+              ],
+            },
+          ],
         });
       });
 
@@ -1310,9 +1310,9 @@ paragraph
               raw: '![image](https://example.com/image.png)',
               text: 'image',
               href: 'https://example.com/image.png',
-              title: null
-            }
-          ]
+              title: null,
+            },
+          ],
         });
       });
 
@@ -1325,9 +1325,9 @@ paragraph
               raw: '![image](https://example.com/image.png "title")',
               text: 'image',
               href: 'https://example.com/image.png',
-              title: 'title'
-            }
-          ]
+              title: 'title',
+            },
+          ],
         });
       });
 
@@ -1336,7 +1336,7 @@ paragraph
           expectInlineTokens({
             md: '[link][]',
             links: {
-              link: { href: 'https://example.com', title: 'title' }
+              link: { href: 'https://example.com', title: 'title' },
             },
             tokens: [
               {
@@ -1348,10 +1348,10 @@ paragraph
                 tokens: [{
                   type: 'text',
                   raw: 'link',
-                  text: 'link'
-                }]
-              }
-            ]
+                  text: 'link',
+                }],
+              },
+            ],
           });
         });
 
@@ -1359,7 +1359,7 @@ paragraph
           expectInlineTokens({
             md: '[link]',
             links: {
-              link: { href: 'https://example.com', title: 'title' }
+              link: { href: 'https://example.com', title: 'title' },
             },
             tokens: [
               {
@@ -1371,10 +1371,10 @@ paragraph
                 tokens: [{
                   type: 'text',
                   raw: 'link',
-                  text: 'link'
-                }]
-              }
-            ]
+                  text: 'link',
+                }],
+              },
+            ],
           });
         });
 
@@ -1382,8 +1382,8 @@ paragraph
           expectInlineTokens({
             md: '[link]',
             tokens: [
-              { type: 'text', raw: '[link]', text: '[link]' }
-            ]
+              { type: 'text', raw: '[link]', text: '[link]' },
+            ],
           });
         });
       });
@@ -1397,10 +1397,10 @@ paragraph
               raw: '**strong**',
               text: 'strong',
               tokens: [
-                { type: 'text', raw: 'strong', text: 'strong' }
-              ]
-            }
-          ]
+                { type: 'text', raw: 'strong', text: 'strong' },
+              ],
+            },
+          ],
         });
       });
 
@@ -1413,10 +1413,10 @@ paragraph
               raw: '*em*',
               text: 'em',
               tokens: [
-                { type: 'text', raw: 'em', text: 'em' }
-              ]
-            }
-          ]
+                { type: 'text', raw: 'em', text: 'em' },
+              ],
+            },
+          ],
         });
       });
 
@@ -1425,8 +1425,8 @@ paragraph
           expectInlineTokens({
             md: '`code`',
             tokens: [
-              { type: 'codespan', raw: '`code`', text: 'code' }
-            ]
+              { type: 'codespan', raw: '`code`', text: 'code' },
+            ],
           });
         });
 
@@ -1434,8 +1434,8 @@ paragraph
           expectInlineTokens({
             md: '`   `',
             tokens: [
-              { type: 'codespan', raw: '`   `', text: '   ' }
-            ]
+              { type: 'codespan', raw: '`   `', text: '   ' },
+            ],
           });
         });
 
@@ -1443,8 +1443,8 @@ paragraph
           expectInlineTokens({
             md: '` a`',
             tokens: [
-              { type: 'codespan', raw: '` a`', text: ' a' }
-            ]
+              { type: 'codespan', raw: '` a`', text: ' a' },
+            ],
           });
         });
 
@@ -1452,8 +1452,8 @@ paragraph
           expectInlineTokens({
             md: '`a `',
             tokens: [
-              { type: 'codespan', raw: '`a `', text: 'a ' }
-            ]
+              { type: 'codespan', raw: '`a `', text: 'a ' },
+            ],
           });
         });
 
@@ -1461,8 +1461,8 @@ paragraph
           expectInlineTokens({
             md: '` a `',
             tokens: [
-              { type: 'codespan', raw: '` a `', text: 'a' }
-            ]
+              { type: 'codespan', raw: '` a `', text: 'a' },
+            ],
           });
         });
 
@@ -1470,8 +1470,8 @@ paragraph
           expectInlineTokens({
             md: '`\na\n`',
             tokens: [
-              { type: 'codespan', raw: '`\na\n`', text: 'a' }
-            ]
+              { type: 'codespan', raw: '`\na\n`', text: 'a' },
+            ],
           });
         });
 
@@ -1479,8 +1479,8 @@ paragraph
           expectInlineTokens({
             md: '`\ta\t`',
             tokens: [
-              { type: 'codespan', raw: '`\ta\t`', text: '\ta\t' }
-            ]
+              { type: 'codespan', raw: '`\ta\t`', text: '\ta\t' },
+            ],
           });
         });
 
@@ -1488,8 +1488,8 @@ paragraph
           expectInlineTokens({
             md: '`\na\n`',
             tokens: [
-              { type: 'codespan', raw: '`\na\n`', text: 'a' }
-            ]
+              { type: 'codespan', raw: '`\na\n`', text: 'a' },
+            ],
           });
         });
 
@@ -1497,8 +1497,8 @@ paragraph
           expectInlineTokens({
             md: '`  a  `',
             tokens: [
-              { type: 'codespan', raw: '`  a  `', text: ' a ' }
-            ]
+              { type: 'codespan', raw: '`  a  `', text: ' a ' },
+            ],
           });
         });
 
@@ -1506,8 +1506,8 @@ paragraph
           expectInlineTokens({
             md: '`a\nb`',
             tokens: [
-              { type: 'codespan', raw: '`a\nb`', text: 'a b' }
-            ]
+              { type: 'codespan', raw: '`a\nb`', text: 'a b' },
+            ],
           });
         });
       });
@@ -1520,18 +1520,18 @@ paragraph
             {
               raw: 'a',
               text: 'a',
-              type: 'text'
+              type: 'text',
             },
             {
               raw: '\n',
-              type: 'br'
+              type: 'br',
             },
             {
               raw: 'b',
               text: 'b',
-              type: 'text'
-            }
-          ]
+              type: 'text',
+            },
+          ],
         });
       });
 
@@ -1544,10 +1544,10 @@ paragraph
               raw: '~~del~~',
               text: 'del',
               tokens: [
-                { type: 'text', raw: 'del', text: 'del' }
-              ]
-            }
-          ]
+                { type: 'text', raw: 'del', text: 'del' },
+              ],
+            },
+          ],
         });
       });
 
@@ -1562,10 +1562,10 @@ paragraph
                 text: 'https://example.com',
                 href: 'https://example.com',
                 tokens: [
-                  { type: 'text', raw: 'https://example.com', text: 'https://example.com' }
-                ]
-              }
-            ]
+                  { type: 'text', raw: 'https://example.com', text: 'https://example.com' },
+                ],
+              },
+            ],
           });
         });
 
@@ -1580,10 +1580,10 @@ paragraph
                 text: 'test@example.com',
                 href: 'mailto:test@example.com',
                 tokens: [
-                  { type: 'text', raw: 'test@example.com', text: 'test@example.com' }
-                ]
-              }
-            ]
+                  { type: 'text', raw: 'test@example.com', text: 'test@example.com' },
+                ],
+              },
+            ],
           });
         });
 
@@ -1597,10 +1597,10 @@ paragraph
                 text: 'https://example.com',
                 href: 'https://example.com',
                 tokens: [
-                  { type: 'text', raw: 'https://example.com', text: 'https://example.com' }
-                ]
-              }
-            ]
+                  { type: 'text', raw: 'https://example.com', text: 'https://example.com' },
+                ],
+              },
+            ],
           });
         });
 
@@ -1615,10 +1615,10 @@ paragraph
                 text: 'test@example.com',
                 href: 'mailto:test@example.com',
                 tokens: [
-                  { type: 'text', raw: 'test@example.com', text: 'test@example.com' }
-                ]
-              }
-            ]
+                  { type: 'text', raw: 'test@example.com', text: 'test@example.com' },
+                ],
+              },
+            ],
           });
         });
       });
@@ -1630,9 +1630,9 @@ paragraph
             {
               type: 'text',
               raw: 'text',
-              text: 'text'
-            }
-          ]
+              text: 'text',
+            },
+          ],
         });
       });
     });

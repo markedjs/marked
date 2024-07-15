@@ -9,8 +9,8 @@ describe('Marked', () => {
       renderer: {
         heading() {
           return 'im marked1';
-        }
-      }
+        },
+      },
     });
 
     const marked2 = new Marked({
@@ -18,8 +18,8 @@ describe('Marked', () => {
       renderer: {
         heading() {
           return 'im marked2';
-        }
-      }
+        },
+      },
     });
 
     assert.strictEqual(marked1.parse('# header'), 'im marked1');
@@ -34,8 +34,8 @@ describe('Marked', () => {
       renderer: {
         heading() {
           return 'im marked1';
-        }
-      }
+        },
+      },
     });
 
     const marked2 = new Marked();
@@ -44,8 +44,8 @@ describe('Marked', () => {
       renderer: {
         heading() {
           return 'im marked2';
-        }
-      }
+        },
+      },
     });
 
     assert.strictEqual(marked1.parse('# header'), 'im marked1');
@@ -59,7 +59,7 @@ describe('Marked', () => {
     marked1Renderer.heading = () => 'im marked1';
     marked1.setOptions({
       silent: true,
-      renderer: marked1Renderer
+      renderer: marked1Renderer,
     });
 
     const marked2 = new Marked();
@@ -67,7 +67,7 @@ describe('Marked', () => {
     marked2Renderer.heading = () => 'im marked2';
     marked2.setOptions({
       silent: true,
-      renderer: marked2Renderer
+      renderer: marked2Renderer,
     });
 
     assert.strictEqual(marked1.parse('# header'), 'im marked1');
@@ -81,8 +81,8 @@ describe('Marked', () => {
       renderer: {
         heading() {
           return 'test';
-        }
-      }
+        },
+      },
     });
     const tokens = marked1.lexer('# hi');
     const html = marked1.parser(tokens);
@@ -116,7 +116,7 @@ describe('Marked', () => {
           raw: src,
           depth: 1,
           text: 'im marked tokenizer',
-          tokens: this.lexer.inlineTokens('im marked tokenizer')
+          tokens: this.lexer.inlineTokens('im marked tokenizer'),
         };
       };
 

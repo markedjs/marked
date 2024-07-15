@@ -16,35 +16,35 @@ const [commonMarkTests, gfmTests, newTests, originalTests, redosTests] =
     resolve(__dirname, './specs/gfm'),
     resolve(__dirname, './specs/new'),
     resolve(__dirname, './specs/original'),
-    resolve(__dirname, './specs/redos')
+    resolve(__dirname, './specs/redos'),
   ]);
 
 outputCompletionTable('CommonMark', commonMarkTests);
 runTests({
   tests: commonMarkTests,
   parse,
-  defaultMarkedOptions: { gfm: false, pedantic: false }
+  defaultMarkedOptions: { gfm: false, pedantic: false },
 });
 
 outputCompletionTable('GFM', gfmTests);
 runTests({
   tests: gfmTests,
   parse,
-  defaultMarkedOptions: { gfm: true, pedantic: false }
+  defaultMarkedOptions: { gfm: true, pedantic: false },
 });
 
 runTests({
   tests: newTests,
-  parse
+  parse,
 });
 
 runTests({
   tests: originalTests,
   parse,
-  defaultMarkedOptions: { gfm: false, pedantic: true }
+  defaultMarkedOptions: { gfm: false, pedantic: true },
 });
 
 runTests({
   tests: redosTests,
-  parse
+  parse,
 });

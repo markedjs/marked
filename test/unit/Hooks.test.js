@@ -10,8 +10,8 @@ function createHeadingToken(text) {
     depth: 1,
     text,
     tokens: [
-      { type: 'text', raw: text, text }
-    ]
+      { type: 'text', raw: text, text },
+    ],
   };
 }
 
@@ -26,8 +26,8 @@ describe('Hooks', () => {
       hooks: {
         preprocess(markdown) {
           return `# preprocess\n\n${markdown}`;
-        }
-      }
+        },
+      },
     });
     const html = marked.parse('*text*');
     assert.strictEqual(html.trim(), '<h1>preprocess</h1>\n<p><em>text</em></p>');
@@ -40,8 +40,8 @@ describe('Hooks', () => {
         async preprocess(markdown) {
           await timeout();
           return `# preprocess async\n\n${markdown}`;
-        }
-      }
+        },
+      },
     });
     const promise = marked.parse('*text*');
     assert.ok(promise instanceof Promise);
@@ -55,8 +55,8 @@ describe('Hooks', () => {
         preprocess(markdown) {
           this.options.breaks = true;
           return markdown;
-        }
-      }
+        },
+      },
     });
     const html = marked.parse('line1\nline2');
     assert.strictEqual(html.trim(), '<p>line1<br>line2</p>');
@@ -70,8 +70,8 @@ describe('Hooks', () => {
           await timeout();
           this.options.breaks = true;
           return markdown;
-        }
-      }
+        },
+      },
     });
     const html = await marked.parse('line1\nline2');
     assert.strictEqual(html.trim(), '<p>line1<br>line2</p>');
@@ -82,8 +82,8 @@ describe('Hooks', () => {
       hooks: {
         postprocess(html) {
           return html + '<h1>postprocess</h1>';
-        }
-      }
+        },
+      },
     });
     const html = marked.parse('*text*');
     assert.strictEqual(html.trim(), '<p><em>text</em></p>\n<h1>postprocess</h1>');
@@ -96,8 +96,8 @@ describe('Hooks', () => {
         async postprocess(html) {
           await timeout();
           return html + '<h1>postprocess async</h1>\n';
-        }
-      }
+        },
+      },
     });
     const promise = marked.parse('*text*');
     assert.ok(promise instanceof Promise);
@@ -111,14 +111,14 @@ describe('Hooks', () => {
         processAllTokens(tokens) {
           tokens.push(createHeadingToken('processAllTokens'));
           return tokens;
-        }
+        },
       },
       walkTokens(token) {
         if (token.type === 'heading') {
           token.tokens[0].text += ' walked';
         }
         return token;
-      }
+      },
     });
     const html = marked.parse('*text*');
     assert.strictEqual(html.trim(), '<p><em>text</em></p>\n<h1>processAllTokens walked</h1>');
@@ -132,14 +132,14 @@ describe('Hooks', () => {
           await timeout();
           tokens.push(createHeadingToken('processAllTokens async'));
           return tokens;
-        }
+        },
       },
       walkTokens(token) {
         if (token.type === 'heading') {
           token.tokens[0].text += ' walked';
         }
         return token;
-      }
+      },
     });
     const promise = marked.parse('*text*');
     assert.ok(promise instanceof Promise);
@@ -159,8 +159,8 @@ describe('Hooks', () => {
         processAllTokens(tokens) {
           tokens.push(createHeadingToken('processAllTokens1'));
           return tokens;
-        }
-      }
+        },
+      },
     });
     marked.use({
       async: true,
@@ -175,8 +175,8 @@ describe('Hooks', () => {
         processAllTokens(tokens) {
           tokens.push(createHeadingToken('processAllTokens2'));
           return tokens;
-        }
-      }
+        },
+      },
     });
     const promise = marked.parse('*text*');
     assert.ok(promise instanceof Promise);

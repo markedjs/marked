@@ -24,7 +24,7 @@ let $activeOutputElem = null;
 let latestVersion = 'master';
 const search = searchToObject();
 const markedVersions = {
-  master: '../'
+  master: '../',
 };
 let delayTime = 1;
 let checkChangeTimeout = null;
@@ -55,7 +55,7 @@ Promise.all([
   setInitialOutputType(),
   setInitialText(),
   setInitialVersion()
-    .then(setInitialOptions)
+    .then(setInitialOptions),
 ]).then(() => {
   handleInputChange();
   handleOutputChange();
@@ -177,7 +177,7 @@ function handleChange(panes, visiblePane) {
 function setDefaultOptions() {
   return messageWorker({
     task: 'defaults',
-    version: markedVersions[$markedVerElem.value]
+    version: markedVersions[$markedVerElem.value],
   });
 }
 
@@ -282,7 +282,7 @@ function checkForChanges() {
         task: 'parse',
         version,
         markdown,
-        options
+        options,
       });
     }
   }
@@ -305,7 +305,7 @@ function setResponseTime(ms) {
   $responseTimeElem.textContent = amount + suffix;
   $responseTimeElem.animate([
     { transform: 'scale(1.2)' },
-    { transform: 'scale(1)' }
+    { transform: 'scale(1)' },
   ], 200);
 }
 

@@ -17,7 +17,7 @@ export class _Lexer {
   };
 
   private tokenizer: _Tokenizer;
-  private inlineQueue: {src: string, tokens: Token[]}[];
+  private inlineQueue: { src: string, tokens: Token[] }[];
 
   constructor(options?: MarkedOptions) {
     // TokenList cannot be created in one go
@@ -32,12 +32,12 @@ export class _Lexer {
     this.state = {
       inLink: false,
       inRawBlock: false,
-      top: true
+      top: true,
     };
 
     const rules = {
       block: block.normal,
-      inline: inline.normal
+      inline: inline.normal,
     };
 
     if (this.options.pedantic) {
@@ -60,7 +60,7 @@ export class _Lexer {
   static get rules() {
     return {
       block,
-      inline
+      inline,
     };
   }
 
@@ -211,7 +211,7 @@ export class _Lexer {
         } else if (!this.tokens.links[token.tag]) {
           this.tokens.links[token.tag] = {
             href: token.href,
-            title: token.title
+            title: token.title,
           };
         }
         continue;

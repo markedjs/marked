@@ -26,14 +26,14 @@ export default defineConfig([
       file: 'lib/marked.esm.js',
       format: 'esm',
       sourcemap: true,
-      banner
+      banner,
     },
     {
       file: 'lib/marked.umd.js',
       format: 'umd',
       name: 'marked',
       sourcemap: true,
-      banner
+      banner,
     },
     {
       file: 'marked.min.js',
@@ -47,19 +47,19 @@ export default defineConfig([
             if (comment.type === 'comment2') {
               return comment.value.includes('Copyright (c)');
             }
-          }
-        }
-      })]
+          },
+        },
+      })],
     },
     {
       file: 'lib/marked.cjs',
       format: 'cjs',
       name: 'marked',
       sourcemap: true,
-      banner
+      banner,
     }],
     plugins: [
-      typescript()
-    ]
-  }
+      typescript(),
+    ],
+  },
 ]);

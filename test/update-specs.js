@@ -57,7 +57,7 @@ async function updateGfm(dir) {
           section: `[extension] ${section}`,
           html,
           markdown,
-          example
+          example,
         });
       });
     });
