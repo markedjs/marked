@@ -521,6 +521,7 @@ export class Marked {
       (src: string, options?: MarkedOptions | undefined | null): string | Promise<string>;
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const parse: overloadedParse = (src: string, options?: MarkedOptions | undefined | null): any => {
       const origOpt = { ...options };
       const opt = { ...this.defaults, ...origOpt };
