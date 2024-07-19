@@ -630,7 +630,7 @@ used extension2 walked</p>
       assert.strictEqual(typeof marked.parse('test', { async: false }), 'string');
     });
 
-    it('should throw and error if async is set by extension', () => {
+    it('should throw an error if async is set by extension', () => {
       marked.use({ async: true });
 
       assert.throws(() => marked.parse('test', { async: false }));
