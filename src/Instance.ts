@@ -153,13 +153,13 @@ export class Marked {
           }
           const rendererProp = prop as Exclude<keyof _Renderer, 'options' | 'parser'>;
           let rendererFunc = pack.renderer[rendererProp] as GenericRendererFunction;
+          if (!pack.useNewRenderer) {
+            // TODO: Remove this in next major version
+            rendererFunc = this.#convertRendererFunction(rendererFunc, rendererProp, renderer) as GenericRendererFunction;
+          }
           const prevRenderer = renderer[rendererProp] as GenericRendererFunction;
           // Replace renderer with func to run extension, but fall back if false
           renderer[rendererProp] = (...args: unknown[]) => {
-            if (!pack.useNewRenderer) {
-              // TODO: Remove this in next major version
-              rendererFunc = this.#convertRendererFunction(pack.renderer![rendererProp] as GenericRendererFunction, rendererProp, renderer) as GenericRendererFunction;
-            }
             let ret = rendererFunc.apply(renderer, args);
             if (ret === false) {
               ret = prevRenderer.apply(renderer, args);
