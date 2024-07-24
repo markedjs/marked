@@ -158,7 +158,7 @@ export class Marked {
           renderer[rendererProp] = (...args: unknown[]) => {
             if (!pack.useNewRenderer) {
               // TODO: Remove this in next major version
-              rendererFunc = this.#convertRendererFunction(rendererFunc, rendererProp, renderer) as GenericRendererFunction;
+              rendererFunc = this.#convertRendererFunction(pack.renderer![rendererProp] as GenericRendererFunction, rendererProp, renderer) as GenericRendererFunction;
             }
             let ret = rendererFunc.apply(renderer, args);
             if (ret === false) {
