@@ -69,7 +69,7 @@
     "dts-bundle-generator": "^9.5.1",
     "eslint": "^9.8.0",
     "eslint-plugin-n": "^17.10.1",
-    "globals": "^15.8.0",
+    "globals": "^15.9.0",
     "highlight.js": "^11.10.0",
     "markdown-it": "14.1.0",
     "marked-highlight": "^2.1.3",
