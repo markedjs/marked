@@ -64,7 +64,7 @@
     "@semantic-release/release-notes-generator": "^14.0.1",
     "@stylistic/eslint-plugin": "^2.3.0",
     "cheerio": "1.0.0-rc.12",
-    "commonmark": "0.31.0",
+    "commonmark": "0.31.1",
     "cross-env": "^7.0.3",
     "dts-bundle-generator": "^9.5.1",
     "eslint": "^9.8.0",
