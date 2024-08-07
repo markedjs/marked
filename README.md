@@ -11,6 +11,8 @@
 [![github actions](https://github.com/markedjs/marked/workflows/Tests/badge.svg)](https://github.com/markedjs/marked/actions)
 [![snyk](https://snyk.io/test/npm/marked/badge.svg)](https://snyk.io/test/npm/marked)
 
+English | [简体中文](./README.zh-cn.md) | [Translations List](./README.langs.md)
+
 - ⚡ built for speed
 - ⬇️ low-level compiler for parsing markdown without caching or blocking for long periods of time
 - ⚖️ light-weight while implementing all markdown features from the supported flavors & specifications
