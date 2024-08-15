@@ -18,8 +18,8 @@ export class Marked {
   defaults = _getDefaults();
   options = this.setOptions;
 
-  parse = this.parseMarkdown(_Lexer.lex, _Parser.parse);
-  parseInline = this.parseMarkdown(_Lexer.lexInline, _Parser.parseInline);
+  parse = this.parseMarkdown(true);
+  parseInline = this.parseMarkdown(false);
 
   Parser = _Parser;
   Renderer = _Renderer;
@@ -195,11 +195,11 @@ export class Marked {
           if (!(prop in hooks)) {
             throw new Error(`hook '${prop}' does not exist`);
           }
-          if (prop === 'options') {
-            // ignore options property
+          if (['options', 'block'].includes(prop)) {
+            // ignore options and block properties
             continue;
           }
-          const hooksProp = prop as Exclude<keyof _Hooks, 'options'>;
+          const hooksProp = prop as Exclude<keyof _Hooks, 'options' | 'block'>;
           const hooksFunc = pack.hooks[hooksProp] as UnknownFunction;
           const prevHook = hooks[hooksProp] as UnknownFunction;
           if (_Hooks.passThroughHooks.has(prop)) {
@@ -261,7 +261,7 @@ export class Marked {
     return _Parser.parse(tokens, options ?? this.defaults);
   }
 
-  private parseMarkdown(lexer: (src: string, options?: MarkedOptions) => TokensList | Token[], parser: (tokens: Token[], options?: MarkedOptions) => string) {
+  private parseMarkdown(blockType: boolean) {
     type overloadedParse = {
       (src: string, options: MarkedOptions & { async: true }): Promise<string>;
       (src: string, options: MarkedOptions & { async: false }): string;
@@ -291,7 +291,11 @@ export class Marked {
 
       if (opt.hooks) {
         opt.hooks.options = opt;
+        opt.hooks.block = blockType;
       }
+
+      const lexer = opt.hooks ? opt.hooks.provideLexer() : (blockType ? _Lexer.lex : _Lexer.lexInline);
+      const parser = opt.hooks ? opt.hooks.provideParser() : (blockType ? _Parser.parse : _Parser.parseInline);
 
       if (opt.async) {
         return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
@@ -309,7 +313,7 @@ export class Marked {
         }
         let tokens = lexer(src, opt);
         if (opt.hooks) {
-          tokens = opt.hooks.processAllTokens(tokens) as Token[] | TokensList;
+          tokens = opt.hooks.processAllTokens(tokens);
         }
         if (opt.walkTokens) {
           this.walkTokens(tokens, opt.walkTokens);
