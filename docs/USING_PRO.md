@@ -261,6 +261,8 @@ Hooks are methods that hook into some part of marked. The following hooks are av
 | `preprocess(markdown: string): string` | Process markdown before sending it to marked. |
 | `postprocess(html: string): string` | Process html after marked has finished parsing. |
 | `processAllTokens(tokens: Token[]): Token[]` | Process all tokens before walk tokens. |
+| `provideLexer(): (src: string, options?: MarkedOptions) => Token[]` | Provide function to tokenize markdown. |
+| `provideParser(): (tokens: Token[], options?: MarkedOptions) => Token[]` | Provide function to parse tokens. |
 
 `marked.use()` can be called multiple times with different `hooks` functions. Each function will be called in order, starting with the function that was assigned *last*.
 
