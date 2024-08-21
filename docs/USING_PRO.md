@@ -327,6 +327,45 @@ console.log(marked.parse(`
 <img src="x">
 ```
 
+**Example:** Save reflinks for chucked rendering
+
+```js
+import { marked, Lexer } from 'marked';
+
+let refLinks = {};
+
+// Override function
+function processAllTokens(tokens) {
+  refLinks = tokens.links;
+  return tokens;
+}
+
+function provideLexer(src, options) {
+  return (src, options) => {
+    const lexer = new Lexer(options);
+    lexer.tokens.links = refLinks;
+    return this.block ? lexer.lex(src) : lexer.inlineTokens(src);
+  };
+}
+
+marked.use({ hooks: { processAllTokens, provideLexer } });
+
+// Parse reflinks separately from markdown that uses them
+marked.parse(`
+[test]: http://example.com
+`);
+
+console.log(marked.parse(`
+[test link][test]
+`));
+```
+
+**Output:**
+
+```html
+<p><a href="http://example.com">test link</a></p>
+```
+
 ***
 
 <h2 id="extensions">Custom Extensions : <code>extensions</code></h2>
