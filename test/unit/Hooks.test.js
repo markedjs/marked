@@ -203,7 +203,7 @@ describe('Hooks', () => {
     assert.strictEqual(html.trim(), '<h1>text</h1>');
   });
 
-  it('should provide lexer async', () => {
+  it('should provide lexer async', async() => {
     marked.use({
       async: true,
       hooks: {
@@ -215,8 +215,20 @@ describe('Hooks', () => {
         },
       },
     });
-    const html = marked.parse('text');
+    const html = await marked.parse('text');
     assert.strictEqual(html.trim(), '<h1>text</h1>');
+  });
+
+  it('should provide parser return object', () => {
+    marked.use({
+      hooks: {
+        provideParser() {
+          return (tokens) => ({ text: 'test parser' });
+        },
+      },
+    });
+    const html = marked.parse('text');
+    assert.strictEqual(html.text, 'test parser');
   });
 
   it('should provide parser', () => {
@@ -231,7 +243,7 @@ describe('Hooks', () => {
     assert.strictEqual(html.trim(), 'test parser');
   });
 
-  it('should provide parser async', () => {
+  it('should provide parser async', async() => {
     marked.use({
       async: true,
       hooks: {
@@ -243,7 +255,7 @@ describe('Hooks', () => {
         },
       },
     });
-    const html = marked.parse('text');
+    const html = await marked.parse('text');
     assert.strictEqual(html.trim(), 'test parser');
   });
 });
