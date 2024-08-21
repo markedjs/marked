@@ -190,4 +190,60 @@ describe('Hooks', () => {
 <h1>postprocess2 async</h1>
 <h1>postprocess1</h1>`);
   });
+
+  it('should provide lexer', () => {
+    marked.use({
+      hooks: {
+        provideLexer() {
+          return (src) => [createHeadingToken(src)];
+        },
+      },
+    });
+    const html = marked.parse('text');
+    assert.strictEqual(html.trim(), '<h1>text</h1>');
+  });
+
+  it('should provide lexer async', () => {
+    marked.use({
+      async: true,
+      hooks: {
+        provideLexer() {
+          return async(src) => {
+            await timeout();
+            return [createHeadingToken(src)];
+          };
+        },
+      },
+    });
+    const html = marked.parse('text');
+    assert.strictEqual(html.trim(), '<h1>text</h1>');
+  });
+
+  it('should provide parser', () => {
+    marked.use({
+      hooks: {
+        provideParser() {
+          return (tokens) => 'test parser';
+        },
+      },
+    });
+    const html = marked.parse('text');
+    assert.strictEqual(html.trim(), 'test parser');
+  });
+
+  it('should provide parser async', () => {
+    marked.use({
+      async: true,
+      hooks: {
+        provideParser() {
+          return async(tokens) => {
+            await timeout();
+            return 'test parser';
+          };
+        },
+      },
+    });
+    const html = marked.parse('text');
+    assert.strictEqual(html.trim(), 'test parser');
+  });
 });
