@@ -1,7 +1,7 @@
 import { _defaults } from './defaults.ts';
 import { _Lexer } from './Lexer.ts';
-import type { MarkedOptions } from './MarkedOptions.ts';
 import { _Parser } from './Parser.ts';
+import type { MarkedOptions } from './MarkedOptions.ts';
 import type { Token, TokensList } from './Tokens.ts';
 
 export class _Hooks {
