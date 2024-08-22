@@ -327,7 +327,7 @@ console.log(marked.parse(`
 <img src="x">
 ```
 
-**Example:** Save reflinks for chucked rendering
+**Example:** Save reflinks for chunked rendering
 
 ```js
 import { marked, Lexer } from 'marked';
