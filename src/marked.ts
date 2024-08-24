@@ -117,5 +117,4 @@ export { _TextRenderer as TextRenderer } from './TextRenderer.ts';
 export { _Hooks as Hooks } from './Hooks.ts';
 export { Marked } from './Instance.ts';
 export type * from './MarkedOptions.ts';
-export type * from './rules.ts';
 export type * from './Tokens.ts';
