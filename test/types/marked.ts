@@ -347,6 +347,16 @@ marked.use({
   }
 });
 marked.use({
+  hooks: {
+    provideLexer() {
+      return this.block ? Lexer.lex : Lexer.lexInline;
+    },
+    provideParser() {
+      return this.block ? Parser.parse : Parser.parseInline;
+    },
+  }
+});
+marked.use({
   async: true,
   hooks: {
     async preprocess(markdown) {

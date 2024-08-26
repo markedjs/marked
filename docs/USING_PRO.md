@@ -261,6 +261,8 @@ Hooks are methods that hook into some part of marked. The following hooks are av
 | `preprocess(markdown: string): string` | Process markdown before sending it to marked. |
 | `postprocess(html: string): string` | Process html after marked has finished parsing. |
 | `processAllTokens(tokens: Token[]): Token[]` | Process all tokens before walk tokens. |
+| `provideLexer(): (src: string, options?: MarkedOptions) => Token[]` | Provide function to tokenize markdown. |
+| `provideParser(): (tokens: Token[], options?: MarkedOptions) => string` | Provide function to parse tokens. |
 
 `marked.use()` can be called multiple times with different `hooks` functions. Each function will be called in order, starting with the function that was assigned *last*.
 
@@ -323,6 +325,45 @@ console.log(marked.parse(`
 
 ```html
 <img src="x">
+```
+
+**Example:** Save reflinks for chunked rendering
+
+```js
+import { marked, Lexer } from 'marked';
+
+let refLinks = {};
+
+// Override function
+function processAllTokens(tokens) {
+  refLinks = tokens.links;
+  return tokens;
+}
+
+function provideLexer(src, options) {
+  return (src, options) => {
+    const lexer = new Lexer(options);
+    lexer.tokens.links = refLinks;
+    return this.block ? lexer.lex(src) : lexer.inlineTokens(src);
+  };
+}
+
+marked.use({ hooks: { processAllTokens, provideLexer } });
+
+// Parse reflinks separately from markdown that uses them
+marked.parse(`
+[test]: http://example.com
+`);
+
+console.log(marked.parse(`
+[test link][test]
+`));
+```
+
+**Output:**
+
+```html
+<p><a href="http://example.com">test link</a></p>
 ```
 
 ***

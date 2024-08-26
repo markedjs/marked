@@ -1,9 +1,12 @@
 import { _defaults } from './defaults.ts';
+import { _Lexer } from './Lexer.ts';
+import { _Parser } from './Parser.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 import type { Token, TokensList } from './Tokens.ts';
 
 export class _Hooks {
   options: MarkedOptions;
+  block: boolean | undefined;
 
   constructor(options?: MarkedOptions) {
     this.options = options || _defaults;
@@ -34,5 +37,19 @@ export class _Hooks {
    */
   processAllTokens(tokens: Token[] | TokensList) {
     return tokens;
+  }
+
+  /**
+   * Provide function to tokenize markdown
+   */
+  provideLexer() {
+    return this.block ? _Lexer.lex : _Lexer.lexInline;
+  }
+
+  /**
+   * Provide function to parse tokens
+   */
+  provideParser() {
+    return this.block ? _Parser.parse : _Parser.parseInline;
   }
 }

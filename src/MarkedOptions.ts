@@ -34,7 +34,7 @@ export interface RendererExtension {
 
 export type TokenizerAndRendererExtension = TokenizerExtension | RendererExtension | (TokenizerExtension & RendererExtension);
 
-type HooksApi = Omit<_Hooks, 'constructor' | 'options'>;
+type HooksApi = Omit<_Hooks, 'constructor' | 'options' | 'block'>;
 type HooksObject = {
   [K in keyof HooksApi]?: (this: _Hooks, ...args: Parameters<HooksApi[K]>) => ReturnType<HooksApi[K]> | Promise<ReturnType<HooksApi[K]>>
 };
@@ -77,6 +77,8 @@ export interface MarkedExtension {
    * preprocess is called to process markdown before sending it to marked.
    * processAllTokens is called with the TokensList before walkTokens.
    * postprocess is called to process html after marked has finished parsing.
+   * provideLexer is called to provide a function to tokenize markdown.
+   * provideParser is called to provide a function to parse tokens.
    */
   hooks?: HooksObject | undefined | null;
 
