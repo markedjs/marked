@@ -370,3 +370,11 @@ marked.use({
     }
   }
 });
+
+// @ts-expect-error block is not exported
+import { block } from 'marked';
+// @ts-expect-error inline is not exported
+import { inline } from 'marked';
+// Rules is exported
+import type { Rules } from 'marked';
+

@@ -87,7 +87,7 @@
     "build:docs": "npm run build && node docs/build.js",
     "build:man": "marked-man man/marked.1.md > man/marked.1",
     "build:reset": "git checkout upstream/master lib/marked.cjs lib/marked.umd.js lib/marked.esm.js marked.min.js",
-    "build:types": "tsc && dts-bundle-generator --project tsconfig.json -o lib/marked.d.ts src/marked.ts && dts-bundle-generator --project tsconfig.json -o lib/marked.d.cts src/marked.ts",
+    "build:types": "tsc && dts-bundle-generator --export-referenced-types --project tsconfig.json -o lib/marked.d.ts src/marked.ts && dts-bundle-generator --export-referenced-types --project tsconfig.json -o lib/marked.d.cts src/marked.ts",
     "lint": "eslint --fix",
     "rollup": "rollup -c rollup.config.js",
     "rules": "node test/rules.js",
