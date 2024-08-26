@@ -60,7 +60,7 @@
     "@rollup/plugin-typescript": "^11.1.6",
     "@semantic-release/commit-analyzer": "^13.0.0",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^10.1.6",
+    "@semantic-release/github": "^10.1.7",
     "@semantic-release/npm": "^12.0.1",
     "@semantic-release/release-notes-generator": "^14.0.1",
     "cheerio": "1.0.0",
