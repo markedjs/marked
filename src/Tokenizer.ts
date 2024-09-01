@@ -309,11 +309,15 @@ export class _Tokenizer {
           // Check if following lines should be included in List Item
           while (src) {
             const rawLine = src.split('\n', 1)[0];
+            let nextLineWithoutTabs;
             nextLine = rawLine;
 
             // Re-align to follow commonmark nesting rules
             if (this.options.pedantic) {
               nextLine = nextLine.replace(/^ {1,4}(?=( {4})*[^ ])/g, '  ');
+              nextLineWithoutTabs = nextLine;
+            } else {
+              nextLineWithoutTabs = nextLine.replace(/\t/g, '    ');
             }
 
             // End list item if found code fences
@@ -336,8 +340,8 @@ export class _Tokenizer {
               break;
             }
 
-            if (nextLine.replace(/\t/g, '    ').search(/[^ ]/) >= indent || !nextLine.trim()) { // Dedent if possible
-              itemContents += '\n' + nextLine.replace(/\t/g, '    ').slice(indent);
+            if (nextLineWithoutTabs.search(/[^ ]/) >= indent || !nextLine.trim()) { // Dedent if possible
+              itemContents += '\n' + nextLineWithoutTabs.slice(indent);
             } else {
               // not enough indentation
               if (blankLine) {
@@ -367,7 +371,7 @@ export class _Tokenizer {
 
             raw += rawLine + '\n';
             src = src.substring(rawLine.length + 1);
-            line = nextLine.replace(/\t/g, '    ').slice(indent);
+            line = nextLineWithoutTabs.slice(indent);
           }
         }
 
