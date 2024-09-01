@@ -106,10 +106,6 @@ export class _Lexer {
   blockTokens(src: string, tokens: Token[] = [], lastParagraphClipped = false) {
     if (this.options.pedantic) {
       src = src.replace(/\t/g, '    ').replace(/^ +$/gm, '');
-    } else {
-      src = src.replace(/^( *)(\t+)/gm, (_, leading, tabs) => {
-        return leading + '    '.repeat(tabs.length);
-      });
     }
 
     let token: Tokens.Generic | undefined;

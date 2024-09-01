@@ -90,7 +90,7 @@ export class _Tokenizer {
   code(src: string): Tokens.Code | undefined {
     const cap = this.rules.block.code.exec(src);
     if (cap) {
-      const text = cap[0].replace(/^ {1,4}/gm, '');
+      const text = cap[0].replace(/^(?: {1,4}|( {0,3})\t)/gm, '');
       return {
         type: 'code',
         raw: cap[0],
@@ -294,7 +294,7 @@ export class _Tokenizer {
           indent += cap[1].length;
         }
 
-        if (blankLine && /^ *$/.test(nextLine)) { // Items begin with at most one blank line
+        if (blankLine && /^[ \t]*$/.test(nextLine)) { // Items begin with at most one blank line
           raw += nextLine + '\n';
           src = src.substring(nextLine.length + 1);
           endEarly = true;
@@ -332,12 +332,12 @@ export class _Tokenizer {
             }
 
             // Horizontal rule found
-            if (hrRegex.test(src)) {
+            if (hrRegex.test(nextLine)) {
               break;
             }
 
-            if (nextLine.search(/[^ ]/) >= indent || !nextLine.trim()) { // Dedent if possible
-              itemContents += '\n' + nextLine.slice(indent);
+            if (nextLine.replace(/\t/g, '    ').search(/[^ ]/) >= indent || !nextLine.trim()) { // Dedent if possible
+              itemContents += '\n' + nextLine.replace(/\t/g, '    ').slice(indent);
             } else {
               // not enough indentation
               if (blankLine) {
@@ -345,7 +345,7 @@ export class _Tokenizer {
               }
 
               // paragraph continuation unless last line was a different block level element
-              if (line.search(/[^ ]/) >= 4) { // indented code block
+              if (line.replace(/\t/g, '    ').search(/[^ ]/) >= 4) { // indented code block
                 break;
               }
               if (fencesBeginRegex.test(line)) {
@@ -367,7 +367,7 @@ export class _Tokenizer {
 
             raw += rawLine + '\n';
             src = src.substring(rawLine.length + 1);
-            line = nextLine.slice(indent);
+            line = nextLine.replace(/\t/g, '    ').slice(indent);
           }
         }
 
@@ -375,7 +375,7 @@ export class _Tokenizer {
           // If the previous item ended with a blank line, the list is loose
           if (endsWithBlankLine) {
             list.loose = true;
-          } else if (/\n *\n *$/.test(raw)) {
+          } else if (/\n[ \t]*\n[ \t]*$/.test(raw)) {
             endsWithBlankLine = true;
           }
         }
