@@ -1,3 +1,6 @@
+---
+renderExact: true
+---
 ```
 	tab
 ```
