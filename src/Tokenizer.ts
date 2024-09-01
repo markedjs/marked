@@ -90,7 +90,7 @@ export class _Tokenizer {
   code(src: string): Tokens.Code | undefined {
     const cap = this.rules.block.code.exec(src);
     if (cap) {
-      const text = cap[0].replace(/^(?: {1,4}|( {0,3})\t)/gm, '');
+      const text = cap[0].replace(/^(?: {1,4}| {0,3}\t)/gm, '');
       return {
         type: 'code',
         raw: cap[0],
