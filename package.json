@@ -100,8 +100,8 @@
     "test:specs": "node --test --test-reporter=spec test/run-spec-tests.js",
     "test:types": "tsc --project tsconfig-type-test.json && attw -P --exclude-entrypoints ./bin/marked ./marked.min.js",
     "test:umd": "node test/umd-test.js",
-    "test:unit:only": "node --test --test-only --test-reporter=spec test/unit/*.test.js",
-    "test:unit": "node --test --test-reporter=spec test/unit/*.test.js",
+    "test:unit:only": "node --test --test-only --test-reporter=spec test/unit",
+    "test:unit": "node --test --test-reporter=spec test/unit",
     "test:update": "node test/update-specs.js"
   },
   "engines": {

@@ -804,6 +804,7 @@ export class _Tokenizer {
         raw: cap[0],
         text,
         href,
+        autolink: true,
         tokens: [
           {
             type: 'text',

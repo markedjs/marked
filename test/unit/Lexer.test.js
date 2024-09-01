@@ -1561,6 +1561,7 @@ paragraph
                 raw: '<https://example.com>',
                 text: 'https://example.com',
                 href: 'https://example.com',
+                autolink: true,
                 tokens: [
                   { type: 'text', raw: 'https://example.com', text: 'https://example.com' },
                 ],
@@ -1579,6 +1580,7 @@ paragraph
                 raw: '<test@example.com>',
                 text: 'test@example.com',
                 href: 'mailto:test@example.com',
+                autolink: true,
                 tokens: [
                   { type: 'text', raw: 'test@example.com', text: 'test@example.com' },
                 ],

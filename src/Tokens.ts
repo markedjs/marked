@@ -155,6 +155,7 @@ export namespace Tokens {
     raw: string;
     href: string;
     title?: string | null;
+    autolink?: boolean;
     text: string;
     tokens: Token[];
   }
