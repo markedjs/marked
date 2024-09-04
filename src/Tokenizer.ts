@@ -90,7 +90,7 @@ export class _Tokenizer {
   code(src: string): Tokens.Code | undefined {
     const cap = this.rules.block.code.exec(src);
     if (cap) {
-      const text = cap[0].replace(/^ {1,4}/gm, '');
+      const text = cap[0].replace(/^(?: {1,4}| {0,3}\t)/gm, '');
       return {
         type: 'code',
         raw: cap[0],
@@ -294,7 +294,7 @@ export class _Tokenizer {
           indent += cap[1].length;
         }
 
-        if (blankLine && /^ *$/.test(nextLine)) { // Items begin with at most one blank line
+        if (blankLine && /^[ \t]*$/.test(nextLine)) { // Items begin with at most one blank line
           raw += nextLine + '\n';
           src = src.substring(nextLine.length + 1);
           endEarly = true;
@@ -309,11 +309,15 @@ export class _Tokenizer {
           // Check if following lines should be included in List Item
           while (src) {
             const rawLine = src.split('\n', 1)[0];
+            let nextLineWithoutTabs;
             nextLine = rawLine;
 
             // Re-align to follow commonmark nesting rules
             if (this.options.pedantic) {
               nextLine = nextLine.replace(/^ {1,4}(?=( {4})*[^ ])/g, '  ');
+              nextLineWithoutTabs = nextLine;
+            } else {
+              nextLineWithoutTabs = nextLine.replace(/\t/g, '    ');
             }
 
             // End list item if found code fences
@@ -332,12 +336,12 @@ export class _Tokenizer {
             }
 
             // Horizontal rule found
-            if (hrRegex.test(src)) {
+            if (hrRegex.test(nextLine)) {
               break;
             }
 
-            if (nextLine.search(/[^ ]/) >= indent || !nextLine.trim()) { // Dedent if possible
-              itemContents += '\n' + nextLine.slice(indent);
+            if (nextLineWithoutTabs.search(/[^ ]/) >= indent || !nextLine.trim()) { // Dedent if possible
+              itemContents += '\n' + nextLineWithoutTabs.slice(indent);
             } else {
               // not enough indentation
               if (blankLine) {
@@ -345,7 +349,7 @@ export class _Tokenizer {
               }
 
               // paragraph continuation unless last line was a different block level element
-              if (line.search(/[^ ]/) >= 4) { // indented code block
+              if (line.replace(/\t/g, '    ').search(/[^ ]/) >= 4) { // indented code block
                 break;
               }
               if (fencesBeginRegex.test(line)) {
@@ -367,7 +371,7 @@ export class _Tokenizer {
 
             raw += rawLine + '\n';
             src = src.substring(rawLine.length + 1);
-            line = nextLine.slice(indent);
+            line = nextLineWithoutTabs.slice(indent);
           }
         }
 
@@ -375,7 +379,7 @@ export class _Tokenizer {
           // If the previous item ended with a blank line, the list is loose
           if (endsWithBlankLine) {
             list.loose = true;
-          } else if (/\n *\n *$/.test(raw)) {
+          } else if (/\n[ \t]*\n[ \t]*$/.test(raw)) {
             endsWithBlankLine = true;
           }
         }
