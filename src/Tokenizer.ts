@@ -305,6 +305,7 @@ export class _Tokenizer {
           const hrRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`);
           const fencesBeginRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:\`\`\`|~~~)`);
           const headingBeginRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}#`);
+          const htmlBeginRegex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}<[a-z].*>`, 'i');
 
           // Check if following lines should be included in List Item
           while (src) {
@@ -327,6 +328,11 @@ export class _Tokenizer {
 
             // End list item if found start of new heading
             if (headingBeginRegex.test(nextLine)) {
+              break;
+            }
+
+            // End list item if found start of html block
+            if (htmlBeginRegex.test(nextLine)) {
               break;
             }
 
