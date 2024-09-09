@@ -1,6 +1,6 @@
 import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
-import { block, inline } from './rules.ts';
+import { other, block, inline } from './rules.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions, TokenizerExtension } from './MarkedOptions.ts';
 
@@ -36,6 +36,7 @@ export class _Lexer {
     };
 
     const rules = {
+      other,
       block: block.normal,
       inline: inline.normal,
     };

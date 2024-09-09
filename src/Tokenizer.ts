@@ -9,10 +9,10 @@ import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens, Token } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
-function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer): Tokens.Link | Tokens.Image {
+function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer, rules: Rules): Tokens.Link | Tokens.Image {
   const href = link.href;
   const title = link.title || null;
-  const text = cap[1].replace(/\\([\[\]])/g, '$1');
+  const text = cap[1].replace(rules.other.outputLinkReplace, '$1');
 
   if (cap[0].charAt(0) !== '!') {
     lexer.state.inLink = true;
@@ -36,8 +36,8 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
   };
 }
 
-function indentCodeCompensation(raw: string, text: string) {
-  const matchIndentToCode = raw.match(/^(\s+)(?:```)/);
+function indentCodeCompensation(raw: string, text: string, rules: Rules) {
+  const matchIndentToCode = raw.match(rules.other.indentCodeCompensation);
 
   if (matchIndentToCode === null) {
     return text;
@@ -48,7 +48,7 @@ function indentCodeCompensation(raw: string, text: string) {
   return text
     .split('\n')
     .map(node => {
-      const matchIndentInNode = node.match(/^\s+/);
+      const matchIndentInNode = node.match(rules.other.beginningSpace);
       if (matchIndentInNode === null) {
         return node;
       }
@@ -89,7 +89,7 @@ export class _Tokenizer {
   code(src: string): Tokens.Code | undefined {
     const cap = this.rules.block.code.exec(src);
     if (cap) {
-      const text = cap[0].replace(/^(?: {1,4}| {0,3}\t)/gm, '');
+      const text = cap[0].replace(this.rules.other.codeRemoveIndent, '');
       return {
         type: 'code',
         raw: cap[0],
@@ -105,7 +105,7 @@ export class _Tokenizer {
     const cap = this.rules.block.fences.exec(src);
     if (cap) {
       const raw = cap[0];
-      const text = indentCodeCompensation(raw, cap[3] || '');
+      const text = indentCodeCompensation(raw, cap[3] || '', this.rules);
 
       return {
         type: 'code',
@@ -122,11 +122,11 @@ export class _Tokenizer {
       let text = cap[2].trim();
 
       // remove trailing #s
-      if (/#$/.test(text)) {
+      if (this.rules.other.endingHash.test(text)) {
         const trimmed = rtrim(text, '#');
         if (this.options.pedantic) {
           text = trimmed.trim();
-        } else if (!trimmed || / $/.test(trimmed)) {
+        } else if (!trimmed || this.rules.other.endingSpaceChar.test(trimmed)) {
           // CommonMark requires space before trailing #s
           text = trimmed.trim();
         }
@@ -167,7 +167,7 @@ export class _Tokenizer {
         let i;
         for (i = 0; i < lines.length; i++) {
           // get lines up to a continuation
-          if (/^ {0,3}>/.test(lines[i])) {
+          if (this.rules.other.blockquoteStart.test(lines[i])) {
             currentLines.push(lines[i]);
             inBlockquote = true;
           } else if (!inBlockquote) {
@@ -181,8 +181,8 @@ export class _Tokenizer {
         const currentRaw = currentLines.join('\n');
         const currentText = currentRaw
           // precede setext continuation with 4 spaces so it isn't a setext
-          .replace(/\n {0,3}((?:=+|-+) *)(?=\n|$)/g, '\n    $1')
-          .replace(/^ {0,3}>[ \t]?/gm, '');
+          .replace(this.rules.other.blockquoteSetextReplace, '\n    $1')
+          .replace(this.rules.other.blockquoteSetextReplace2, '');
         raw = raw ? `${raw}\n${currentRaw}` : currentRaw;
         text = text ? `${text}\n${currentText}` : currentText;
 
@@ -276,7 +276,7 @@ export class _Tokenizer {
         raw = cap[0];
         src = src.substring(raw.length);
 
-        let line = cap[2].split('\n', 1)[0].replace(/^\t+/, (t: string) => ' '.repeat(3 * t.length));
+        let line = cap[2].split('\n', 1)[0].replace(this.rules.other.listReplaceTabs, (t: string) => ' '.repeat(3 * t.length));
         let nextLine = src.split('\n', 1)[0];
         let blankLine = !line.trim();
 
@@ -287,13 +287,13 @@ export class _Tokenizer {
         } else if (blankLine) {
           indent = cap[1].length + 1;
         } else {
-          indent = cap[2].search(/[^ ]/); // Find first non-space char
+          indent = cap[2].search(this.rules.other.nonSpaceChar); // Find first non-space char
           indent = indent > 4 ? 1 : indent; // Treat indented code blocks (> 4 spaces) as having only 1 indent
           itemContents = line.slice(indent);
           indent += cap[1].length;
         }
 
-        if (blankLine && /^[ \t]*$/.test(nextLine)) { // Items begin with at most one blank line
+        if (blankLine && this.rules.other.blankLine.test(nextLine)) { // Items begin with at most one blank line
           raw += nextLine + '\n';
           src = src.substring(nextLine.length + 1);
           endEarly = true;
@@ -314,10 +314,10 @@ export class _Tokenizer {
 
             // Re-align to follow commonmark nesting rules
             if (this.options.pedantic) {
-              nextLine = nextLine.replace(/^ {1,4}(?=( {4})*[^ ])/g, '  ');
+              nextLine = nextLine.replace(this.rules.other.listReplaceNesting, '  ');
               nextLineWithoutTabs = nextLine;
             } else {
-              nextLineWithoutTabs = nextLine.replace(/\t/g, '    ');
+              nextLineWithoutTabs = nextLine.replace(this.rules.other.tabCharGlobal, '    ');
             }
 
             // End list item if found code fences
@@ -345,7 +345,7 @@ export class _Tokenizer {
               break;
             }
 
-            if (nextLineWithoutTabs.search(/[^ ]/) >= indent || !nextLine.trim()) { // Dedent if possible
+            if (nextLineWithoutTabs.search(this.rules.other.nonSpaceChar) >= indent || !nextLine.trim()) { // Dedent if possible
               itemContents += '\n' + nextLineWithoutTabs.slice(indent);
             } else {
               // not enough indentation
@@ -354,7 +354,7 @@ export class _Tokenizer {
               }
 
               // paragraph continuation unless last line was a different block level element
-              if (line.replace(/\t/g, '    ').search(/[^ ]/) >= 4) { // indented code block
+              if (line.replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar) >= 4) { // indented code block
                 break;
               }
               if (fencesBeginRegex.test(line)) {
@@ -384,7 +384,7 @@ export class _Tokenizer {
           // If the previous item ended with a blank line, the list is loose
           if (endsWithBlankLine) {
             list.loose = true;
-          } else if (/\n[ \t]*\n[ \t]*$/.test(raw)) {
+          } else if (this.rules.other.doubleBlankLine.test(raw)) {
             endsWithBlankLine = true;
           }
         }
@@ -393,10 +393,10 @@ export class _Tokenizer {
         let ischecked: boolean | undefined;
         // Check for task list items
         if (this.options.gfm) {
-          istask = /^\[[ xX]\] /.exec(itemContents);
+          istask = this.rules.other.listIsTask.exec(itemContents);
           if (istask) {
             ischecked = istask[0] !== '[ ] ';
-            itemContents = itemContents.replace(/^\[[ xX]\] +/, '');
+            itemContents = itemContents.replace(this.rules.other.listReplaceTask, '');
           }
         }
 
@@ -426,7 +426,7 @@ export class _Tokenizer {
         if (!list.loose) {
           // Check if list should be loose
           const spacers = list.items[i].tokens.filter(t => t.type === 'space');
-          const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => /\n.*\n/.test(t.raw));
+          const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => this.rules.other.anyLine.test(t.raw));
 
           list.loose = hasMultipleLineBreaks;
         }
@@ -460,8 +460,8 @@ export class _Tokenizer {
   def(src: string): Tokens.Def | undefined {
     const cap = this.rules.block.def.exec(src);
     if (cap) {
-      const tag = cap[1].toLowerCase().replace(/\s+/g, ' ');
-      const href = cap[2] ? cap[2].replace(/^<(.*)>$/, '$1').replace(this.rules.inline.anyPunctuation, '$1') : '';
+      const tag = cap[1].toLowerCase().replace(this.rules.other.multipleSpaceGlobal, ' ');
+      const href = cap[2] ? cap[2].replace(this.rules.other.hrefBrackets, '$1').replace(this.rules.inline.anyPunctuation, '$1') : '';
       const title = cap[3] ? cap[3].substring(1, cap[3].length - 1).replace(this.rules.inline.anyPunctuation, '$1') : cap[3];
       return {
         type: 'def',
@@ -479,14 +479,14 @@ export class _Tokenizer {
       return;
     }
 
-    if (!/[:|]/.test(cap[2])) {
+    if (!this.rules.other.tableDelimiter.test(cap[2])) {
       // delimiter row must have a pipe (|) or colon (:) otherwise it is a setext heading
       return;
     }
 
     const headers = splitCells(cap[1]);
-    const aligns = cap[2].replace(/^\||\| *$/g, '').split('|');
-    const rows = cap[3] && cap[3].trim() ? cap[3].replace(/\n[ \t]*$/, '').split('\n') : [];
+    const aligns = cap[2].replace(this.rules.other.tableAlignChars, '').split('|');
+    const rows = cap[3] && cap[3].trim() ? cap[3].replace(this.rules.other.tableRowBlankLine, '').split('\n') : [];
 
     const item: Tokens.Table = {
       type: 'table',
@@ -502,11 +502,11 @@ export class _Tokenizer {
     }
 
     for (const align of aligns) {
-      if (/^ *-+: *$/.test(align)) {
+      if (this.rules.other.tableAlignRight.test(align)) {
         item.align.push('right');
-      } else if (/^ *:-+: *$/.test(align)) {
+      } else if (this.rules.other.tableAlignCenter.test(align)) {
         item.align.push('center');
-      } else if (/^ *:-+ *$/.test(align)) {
+      } else if (this.rules.other.tableAlignLeft.test(align)) {
         item.align.push('left');
       } else {
         item.align.push(null);
@@ -590,14 +590,14 @@ export class _Tokenizer {
   tag(src: string): Tokens.Tag | undefined {
     const cap = this.rules.inline.tag.exec(src);
     if (cap) {
-      if (!this.lexer.state.inLink && /^<a /i.test(cap[0])) {
+      if (!this.lexer.state.inLink && this.rules.other.startATag.test(cap[0])) {
         this.lexer.state.inLink = true;
-      } else if (this.lexer.state.inLink && /^<\/a>/i.test(cap[0])) {
+      } else if (this.lexer.state.inLink && this.rules.other.endATag.test(cap[0])) {
         this.lexer.state.inLink = false;
       }
-      if (!this.lexer.state.inRawBlock && /^<(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+      if (!this.lexer.state.inRawBlock && this.rules.other.startPreScriptTag.test(cap[0])) {
         this.lexer.state.inRawBlock = true;
-      } else if (this.lexer.state.inRawBlock && /^<\/(pre|code|kbd|script)(\s|>)/i.test(cap[0])) {
+      } else if (this.lexer.state.inRawBlock && this.rules.other.endPreScriptTag.test(cap[0])) {
         this.lexer.state.inRawBlock = false;
       }
 
@@ -616,9 +616,9 @@ export class _Tokenizer {
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
       const trimmedUrl = cap[2].trim();
-      if (!this.options.pedantic && /^</.test(trimmedUrl)) {
+      if (!this.options.pedantic && this.rules.other.startAngleBracket.test(trimmedUrl)) {
         // commonmark requires matching angle brackets
-        if (!(/>$/.test(trimmedUrl))) {
+        if (!(this.rules.other.endAngleBracket.test(trimmedUrl))) {
           return;
         }
 
@@ -642,7 +642,7 @@ export class _Tokenizer {
       let title = '';
       if (this.options.pedantic) {
         // split pedantic href and title
-        const link = /^([^'"]*[^\s])\s+(['"])(.*)\2/.exec(href);
+        const link = this.rules.other.pedanticHrefTitle.exec(href);
 
         if (link) {
           href = link[1];
@@ -653,8 +653,8 @@ export class _Tokenizer {
       }
 
       href = href.trim();
-      if (/^</.test(href)) {
-        if (this.options.pedantic && !(/>$/.test(trimmedUrl))) {
+      if (this.rules.other.startAngleBracket.test(href)) {
+        if (this.options.pedantic && !(this.rules.other.endAngleBracket.test(trimmedUrl))) {
           // pedantic allows starting angle bracket without ending angle bracket
           href = href.slice(1);
         } else {
@@ -664,7 +664,7 @@ export class _Tokenizer {
       return outputLink(cap, {
         href: href ? href.replace(this.rules.inline.anyPunctuation, '$1') : href,
         title: title ? title.replace(this.rules.inline.anyPunctuation, '$1') : title,
-      }, cap[0], this.lexer);
+      }, cap[0], this.lexer, this.rules);
     }
   }
 
@@ -672,7 +672,7 @@ export class _Tokenizer {
     let cap;
     if ((cap = this.rules.inline.reflink.exec(src))
       || (cap = this.rules.inline.nolink.exec(src))) {
-      const linkString = (cap[2] || cap[1]).replace(/\s+/g, ' ');
+      const linkString = (cap[2] || cap[1]).replace(this.rules.other.multipleSpaceGlobal, ' ');
       const link = links[linkString.toLowerCase()];
       if (!link) {
         const text = cap[0].charAt(0);
@@ -682,7 +682,7 @@ export class _Tokenizer {
           text,
         };
       }
-      return outputLink(cap, link, cap[0], this.lexer);
+      return outputLink(cap, link, cap[0], this.lexer, this.rules);
     }
   }
 
@@ -691,7 +691,7 @@ export class _Tokenizer {
     if (!match) return;
 
     // _ can't be between two alphanumerics. \p{L}\p{N} includes non-english alphabet/numbers as well
-    if (match[3] && prevChar.match(/[\p{L}\p{N}]/u)) return;
+    if (match[3] && prevChar.match(this.rules.other.unicodeAlphaNumeric)) return;
 
     const nextChar = match[1] || match[2] || '';
 
@@ -759,9 +759,9 @@ export class _Tokenizer {
   codespan(src: string): Tokens.Codespan | undefined {
     const cap = this.rules.inline.code.exec(src);
     if (cap) {
-      let text = cap[2].replace(/\n/g, ' ');
-      const hasNonSpaceChars = /[^ ]/.test(text);
-      const hasSpaceCharsOnBothEnds = /^ /.test(text) && / $/.test(text);
+      let text = cap[2].replace(this.rules.other.newLineCharGlobal, ' ');
+      const hasNonSpaceChars = this.rules.other.nonSpaceChar.test(text);
+      const hasSpaceCharsOnBothEnds = this.rules.other.startingSpaceChar.test(text) && this.rules.other.endingSpaceChar.test(text);
       if (hasNonSpaceChars && hasSpaceCharsOnBothEnds) {
         text = text.substring(1, text.length - 1);
       }
