@@ -75,7 +75,7 @@
     "node-fetch": "^3.3.2",
     "recheck": "^4.4.5",
     "rollup": "^4.21.3",
-    "semantic-release": "^24.1.0",
+    "semantic-release": "^24.1.1",
     "titleize": "^4.0.0",
     "ts-expect": "^1.3.0",
     "tslib": "^2.7.0",
