@@ -583,7 +583,8 @@ export class _Tokenizer {
       return {
         type: 'escape',
         raw: cap[0],
-        text: escape(cap[1]),
+        text: cap[1],
+        escaped: false,
       };
     }
   }

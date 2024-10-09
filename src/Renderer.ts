@@ -206,6 +206,8 @@ export class _Renderer {
   }
 
   text(token: Tokens.Text | Tokens.Escape | Tokens.Tag) : string {
-    return 'tokens' in token && token.tokens ? this.parser.parseInline(token.tokens) : token.text;
+    return 'tokens' in token && token.tokens
+      ? this.parser.parseInline(token.tokens)
+      : ('escaped' in token && !token.escaped ? escape(token.text) : token.text);
   }
 }

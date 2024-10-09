@@ -139,6 +139,7 @@ export namespace Tokens {
     type: 'escape';
     raw: string;
     text: string;
+    escaped: boolean;
   }
 
   export interface Tag {

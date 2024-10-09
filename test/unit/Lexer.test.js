@@ -1214,7 +1214,7 @@ paragraph
         expectInlineTokens({
           md: '\\>',
           tokens: [
-            { type: 'escape', raw: '\\>', text: '&gt;' },
+            { type: 'escape', raw: '\\>', text: '>', escaped: false },
           ],
         });
       });
@@ -1229,10 +1229,10 @@ paragraph
               text: 'strong text\\[',
               tokens: [
                 { type: 'text', raw: 'strong text', text: 'strong text' },
-                { type: 'escape', raw: '\\[', text: '[' },
+                { type: 'escape', raw: '\\[', text: '[', escaped: false },
               ],
             },
-            { type: 'escape', raw: '\\]', text: ']' },
+            { type: 'escape', raw: '\\]', text: ']', escaped: false },
           ],
         });
         expectInlineTokens({
@@ -1244,9 +1244,9 @@ paragraph
               text: 'em\\<pha\\>sis',
               tokens: [
                 { type: 'text', raw: 'em', text: 'em' },
-                { type: 'escape', raw: '\\<', text: '&lt;' },
+                { type: 'escape', raw: '\\<', text: '<', escaped: false },
                 { type: 'text', raw: 'pha', text: 'pha' },
-                { type: 'escape', raw: '\\>', text: '&gt;' },
+                { type: 'escape', raw: '\\>', text: '>', escaped: false },
                 { type: 'text', raw: 'sis', text: 'sis' },
               ],
             },
