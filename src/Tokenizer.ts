@@ -766,11 +766,11 @@ export class _Tokenizer {
       if (hasNonSpaceChars && hasSpaceCharsOnBothEnds) {
         text = text.substring(1, text.length - 1);
       }
-      text = escape(text, true);
       return {
         type: 'codespan',
         raw: cap[0],
         text,
+        escaped: false,
       };
     }
   }

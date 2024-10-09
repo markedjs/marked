@@ -1425,7 +1425,7 @@ paragraph
           expectInlineTokens({
             md: '`code`',
             tokens: [
-              { type: 'codespan', raw: '`code`', text: 'code' },
+              { type: 'codespan', raw: '`code`', text: 'code', escaped: false },
             ],
           });
         });
@@ -1434,7 +1434,7 @@ paragraph
           expectInlineTokens({
             md: '`   `',
             tokens: [
-              { type: 'codespan', raw: '`   `', text: '   ' },
+              { type: 'codespan', raw: '`   `', text: '   ', escaped: false },
             ],
           });
         });
@@ -1443,7 +1443,7 @@ paragraph
           expectInlineTokens({
             md: '` a`',
             tokens: [
-              { type: 'codespan', raw: '` a`', text: ' a' },
+              { type: 'codespan', raw: '` a`', text: ' a', escaped: false },
             ],
           });
         });
@@ -1452,7 +1452,7 @@ paragraph
           expectInlineTokens({
             md: '`a `',
             tokens: [
-              { type: 'codespan', raw: '`a `', text: 'a ' },
+              { type: 'codespan', raw: '`a `', text: 'a ', escaped: false },
             ],
           });
         });
@@ -1461,7 +1461,7 @@ paragraph
           expectInlineTokens({
             md: '` a `',
             tokens: [
-              { type: 'codespan', raw: '` a `', text: 'a' },
+              { type: 'codespan', raw: '` a `', text: 'a', escaped: false },
             ],
           });
         });
@@ -1470,7 +1470,7 @@ paragraph
           expectInlineTokens({
             md: '`\na\n`',
             tokens: [
-              { type: 'codespan', raw: '`\na\n`', text: 'a' },
+              { type: 'codespan', raw: '`\na\n`', text: 'a', escaped: false },
             ],
           });
         });
@@ -1479,7 +1479,7 @@ paragraph
           expectInlineTokens({
             md: '`\ta\t`',
             tokens: [
-              { type: 'codespan', raw: '`\ta\t`', text: '\ta\t' },
+              { type: 'codespan', raw: '`\ta\t`', text: '\ta\t', escaped: false },
             ],
           });
         });
@@ -1488,7 +1488,7 @@ paragraph
           expectInlineTokens({
             md: '`\na\n`',
             tokens: [
-              { type: 'codespan', raw: '`\na\n`', text: 'a' },
+              { type: 'codespan', raw: '`\na\n`', text: 'a', escaped: false },
             ],
           });
         });
@@ -1497,7 +1497,7 @@ paragraph
           expectInlineTokens({
             md: '`  a  `',
             tokens: [
-              { type: 'codespan', raw: '`  a  `', text: ' a ' },
+              { type: 'codespan', raw: '`  a  `', text: ' a ', escaped: false },
             ],
           });
         });
@@ -1506,7 +1506,7 @@ paragraph
           expectInlineTokens({
             md: '`a\nb`',
             tokens: [
-              { type: 'codespan', raw: '`a\nb`', text: 'a b' },
+              { type: 'codespan', raw: '`a\nb`', text: 'a b', escaped: false },
             ],
           });
         });

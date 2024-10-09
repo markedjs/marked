@@ -185,6 +185,7 @@ export namespace Tokens {
     type: 'codespan';
     raw: string;
     text: string;
+    escaped: boolean;
   }
 
   export interface Br {

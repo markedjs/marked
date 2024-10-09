@@ -163,8 +163,8 @@ export class _Renderer {
     return `<em>${this.parser.parseInline(tokens)}</em>`;
   }
 
-  codespan({ text }: Tokens.Codespan): string {
-    return `<code>${text}</code>`;
+  codespan({ text, escaped }: Tokens.Codespan): string {
+    return `<code>${escaped ? text : escape(text, true)}</code>`;
   }
 
   br(token: Tokens.Br): string {
