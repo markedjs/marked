@@ -1275,6 +1275,7 @@ paragraph
               href: 'https://example.com',
               title: null,
               text: 'link',
+              escaped: false,
               tokens: [
                 { type: 'text', raw: 'link', text: 'link' },
               ],
@@ -1293,6 +1294,7 @@ paragraph
               href: 'https://example.com',
               title: 'title',
               text: 'link',
+              escaped: false,
               tokens: [
                 { type: 'text', raw: 'link', text: 'link' },
               ],
@@ -1311,6 +1313,7 @@ paragraph
               text: 'image',
               href: 'https://example.com/image.png',
               title: null,
+              escaped: false,
             },
           ],
         });
@@ -1326,6 +1329,7 @@ paragraph
               text: 'image',
               href: 'https://example.com/image.png',
               title: 'title',
+              escaped: false,
             },
           ],
         });
@@ -1345,6 +1349,7 @@ paragraph
                 href: 'https://example.com',
                 title: 'title',
                 text: 'link',
+                escaped: false,
                 tokens: [{
                   type: 'text',
                   raw: 'link',
@@ -1368,6 +1373,7 @@ paragraph
                 href: 'https://example.com',
                 title: 'title',
                 text: 'link',
+                escaped: false,
                 tokens: [{
                   type: 'text',
                   raw: 'link',
@@ -1561,6 +1567,7 @@ paragraph
                 raw: '<https://example.com>',
                 text: 'https://example.com',
                 href: 'https://example.com',
+                escaped: false,
                 tokens: [
                   { type: 'text', raw: 'https://example.com', text: 'https://example.com' },
                 ],
@@ -1579,6 +1586,7 @@ paragraph
                 raw: '<test@example.com>',
                 text: 'test@example.com',
                 href: 'mailto:test@example.com',
+                escaped: false,
                 tokens: [
                   { type: 'text', raw: 'test@example.com', text: 'test@example.com' },
                 ],
@@ -1596,6 +1604,7 @@ paragraph
                 raw: 'https://example.com',
                 text: 'https://example.com',
                 href: 'https://example.com',
+                escaped: false,
                 tokens: [
                   { type: 'text', raw: 'https://example.com', text: 'https://example.com' },
                 ],
@@ -1614,6 +1623,7 @@ paragraph
                 raw: 'test@example.com',
                 text: 'test@example.com',
                 href: 'mailto:test@example.com',
+                escaped: false,
                 tokens: [
                   { type: 'text', raw: 'test@example.com', text: 'test@example.com' },
                 ],

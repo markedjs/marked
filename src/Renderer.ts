@@ -175,7 +175,7 @@ export class _Renderer {
     return `<del>${this.parser.parseInline(tokens)}</del>`;
   }
 
-  link({ href, title, tokens }: Tokens.Link): string {
+  link({ href, title, tokens, escaped }: Tokens.Link): string {
     const text = this.parser.parseInline(tokens);
     const cleanHref = cleanUrl(href);
     if (cleanHref === null) {
@@ -184,13 +184,17 @@ export class _Renderer {
     href = cleanHref;
     let out = '<a href="' + href + '"';
     if (title) {
-      out += ' title="' + title + '"';
+      out += ' title="' + (escaped === false ? escape(title) : title) + '"';
     }
     out += '>' + text + '</a>';
     return out;
   }
 
-  image({ href, title, text }: Tokens.Image): string {
+  image({ href, title, text, escaped }: Tokens.Image): string {
+    if (escaped === false) {
+      text = escape(text);
+    }
+
     const cleanHref = cleanUrl(href);
     if (cleanHref === null) {
       return text;
@@ -199,7 +203,7 @@ export class _Renderer {
 
     let out = `<img src="${href}" alt="${text}"`;
     if (title) {
-      out += ` title="${title}"`;
+      out += ` title="${escaped === false ? escape(title) : title}"`;
     }
     out += '>';
     return out;

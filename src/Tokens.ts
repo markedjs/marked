@@ -158,6 +158,7 @@ export namespace Tokens {
     title?: string | null;
     text: string;
     tokens: Token[];
+    escaped: boolean;
   }
 
   export interface Image {
@@ -166,6 +167,7 @@ export namespace Tokens {
     href: string;
     title: string | null;
     text: string;
+    escaped: boolean;
   }
 
   export interface Strong {

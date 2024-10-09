@@ -12,7 +12,7 @@ import type { MarkedOptions } from './MarkedOptions.ts';
 
 function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer): Tokens.Link | Tokens.Image {
   const href = link.href;
-  const title = link.title ? escape(link.title) : null;
+  const title = link.title || null;
   const text = cap[1].replace(/\\([\[\]])/g, '$1');
 
   if (cap[0].charAt(0) !== '!') {
@@ -23,6 +23,7 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
       href,
       title,
       text,
+      escaped: false,
       tokens: lexer.inlineTokens(text),
     };
     lexer.state.inLink = false;
@@ -33,7 +34,8 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
     raw,
     href,
     title,
-    text: escape(text),
+    text,
+    escaped: false,
   };
 }
 
@@ -803,23 +805,24 @@ export class _Tokenizer {
     if (cap) {
       let text, href;
       if (cap[2] === '@') {
-        text = escape(cap[1]);
-        href = 'mailto:' + text;
+        text = cap[1];
+        href = 'mailto:' + escape(text);
       } else {
-        text = escape(cap[1]);
-        href = text;
+        text = cap[1];
+        href = escape(text);
       }
 
       return {
         type: 'link',
         raw: cap[0],
         text,
+        escaped: false,
         href,
         tokens: [
           {
             type: 'text',
             raw: text,
-            text,
+            text: escape(text),
           },
         ],
       };
@@ -831,8 +834,8 @@ export class _Tokenizer {
     if (cap = this.rules.inline.url.exec(src)) {
       let text, href;
       if (cap[2] === '@') {
-        text = escape(cap[0]);
-        href = 'mailto:' + text;
+        text = cap[0];
+        href = 'mailto:' + escape(text);
       } else {
         // do extended autolink path validation
         let prevCapZero;
@@ -840,7 +843,7 @@ export class _Tokenizer {
           prevCapZero = cap[0];
           cap[0] = this.rules.inline._backpedal.exec(cap[0])?.[0] ?? '';
         } while (prevCapZero !== cap[0]);
-        text = escape(cap[0]);
+        text = cap[0];
         if (cap[1] === 'www.') {
           href = 'http://' + cap[0];
         } else {
@@ -851,12 +854,13 @@ export class _Tokenizer {
         type: 'link',
         raw: cap[0],
         text,
+        escaped: false,
         href,
         tokens: [
           {
             type: 'text',
-            raw: text,
-            text,
+            raw: escape(text),
+            text: escape(text),
           },
         ],
       };
