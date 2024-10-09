@@ -2,7 +2,6 @@ import { _defaults } from './defaults.ts';
 import {
   rtrim,
   splitCells,
-  escape,
   findClosingBracket,
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
@@ -808,10 +807,10 @@ export class _Tokenizer {
       let text, href;
       if (cap[2] === '@') {
         text = cap[1];
-        href = 'mailto:' + escape(text);
+        href = 'mailto:' + text;
       } else {
         text = cap[1];
-        href = escape(text);
+        href = text;
       }
 
       return {
@@ -838,7 +837,7 @@ export class _Tokenizer {
       let text, href;
       if (cap[2] === '@') {
         text = cap[0];
-        href = 'mailto:' + escape(text);
+        href = 'mailto:' + text;
       } else {
         // do extended autolink path validation
         let prevCapZero;
