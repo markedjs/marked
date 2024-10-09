@@ -575,6 +575,7 @@ export class _Tokenizer {
         raw: cap[0],
         text: cap[0],
         tokens: this.lexer.inline(cap[0]),
+        escaped: true,
       };
     }
   }
@@ -684,6 +685,7 @@ export class _Tokenizer {
           type: 'text',
           raw: text,
           text,
+          escaped: true,
         };
       }
       return outputLink(cap, link, cap[0], this.lexer);
@@ -822,7 +824,8 @@ export class _Tokenizer {
           {
             type: 'text',
             raw: text,
-            text: escape(text),
+            text,
+            escaped: false,
           },
         ],
       };
@@ -859,8 +862,9 @@ export class _Tokenizer {
         tokens: [
           {
             type: 'text',
-            raw: escape(text),
-            text: escape(text),
+            raw: text,
+            text,
+            escaped: false,
           },
         ],
       };
@@ -870,16 +874,12 @@ export class _Tokenizer {
   inlineText(src: string): Tokens.Text | undefined {
     const cap = this.rules.inline.text.exec(src);
     if (cap) {
-      let text;
-      if (this.lexer.state.inRawBlock) {
-        text = cap[0];
-      } else {
-        text = escape(cap[0]);
-      }
+      const escaped = this.lexer.state.inRawBlock;
       return {
         type: 'text',
         raw: cap[0],
-        text,
+        text: cap[0],
+        escaped,
       };
     }
   }

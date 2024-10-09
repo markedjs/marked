@@ -451,6 +451,10 @@ export class _Lexer {
         if (lastToken && lastToken.type === 'text') {
           lastToken.raw += token.raw;
           lastToken.text += token.text;
+
+          if (!token.escaped && 'escaped' in lastToken && lastToken.escaped) {
+            lastToken.escaped = false;
+          }
         } else {
           tokens.push(token);
         }

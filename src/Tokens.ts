@@ -125,6 +125,7 @@ export namespace Tokens {
     raw: string;
     text: string;
     tokens?: Token[];
+    escaped: boolean;
   }
 
   export interface Def {
