@@ -175,7 +175,7 @@ const punctuation = edit(/^((?![*_])[\spunctuation])/, 'u')
   .replace(/punctuation/g, _punctuation).getRegex();
 
 // sequences em should skip over [title](link), `code`, <html>
-const blockSkip = /\[[^[\]]*?\]\([^\(\)]*?\)|`[^`]*?`|<[^<>]*?>/g;
+const blockSkip = /\[[^[\]]*?\]\((?:\\.|[^\\\(\)]|\((?:\\.|[^\\\(\)])*\))*\)|`[^`]*?`|<[^<>]*?>/g;
 
 const emStrongLDelim = edit(/^(?:\*+(?:((?!\*)[punct])|[^\s*]))|^_+(?:((?!_)[punct])|([^\s_]))/, 'u')
   .replace(/punct/g, _punctuation)
