@@ -3,6 +3,7 @@ import {
   cleanUrl,
   escape,
 } from './helpers.ts';
+import { other } from './rules.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 import type { Tokens } from './Tokens.ts';
 import type { _Parser } from './Parser.ts';
@@ -22,9 +23,9 @@ export class _Renderer {
   }
 
   code({ text, lang, escaped }: Tokens.Code): string {
-    const langString = (lang || '').match(/^\S*/)?.[0];
+    const langString = (lang || '').match(other.notSpaceStart)?.[0];
 
-    const code = text.replace(/\n$/, '') + '\n';
+    const code = text.replace(other.endingNewline, '') + '\n';
 
     if (!langString) {
       return '<pre><code>'

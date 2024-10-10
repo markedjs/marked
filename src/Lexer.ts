@@ -86,7 +86,7 @@ export class _Lexer {
    */
   lex(src: string) {
     src = src
-      .replace(/\r\n|\r/g, '\n');
+      .replace(other.carriageReturn, '\n');
 
     this.blockTokens(src, this.tokens);
 
@@ -106,7 +106,7 @@ export class _Lexer {
   blockTokens(src: string, tokens?: TokensList, lastParagraphClipped?: boolean): TokensList;
   blockTokens(src: string, tokens: Token[] = [], lastParagraphClipped = false) {
     if (this.options.pedantic) {
-      src = src.replace(/\t/g, '    ').replace(/^ +$/gm, '');
+      src = src.replace(other.tabCharGlobal, '    ').replace(other.spaceLine, '');
     }
 
     let token: Tokens.Generic | undefined;
