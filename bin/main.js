@@ -28,6 +28,7 @@ export async function main(nodeProcess) {
     const options = {
       cwd: nodeProcess.cwd(),
       env: nodeProcess.env,
+      signal: nodeProcess.signal,
       stdio: 'inherit',
     };
 
@@ -35,11 +36,14 @@ export async function main(nodeProcess) {
     const helpText = await readFile(resolve(__dirname, '../man/marked.1.md'), 'utf8');
 
     await new Promise(res => {
-      spawn('man', [resolve(__dirname, '../man/marked.1')], options)
-        .on('error', () => {
-          console.log(helpText);
-        })
-        .on('close', res);
+      const manProcess = spawn('man', [resolve(__dirname, '../man/marked.1')], options);
+      nodeProcess.on('SIGINT', () => {
+        manProcess.kill('SIGINT');
+      });
+
+      manProcess.on('error', () => {
+        console.log(helpText);
+      }).on('close', res);
     });
   }
 
