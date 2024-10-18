@@ -250,31 +250,6 @@ console.log(marked.parse('# heading 2\n\n## heading 3'));
 <h3 id="heading-3">heading 3</h3>
 ```
 
-If you want to add the walkTokens function everytime they open a file, you can create a new instance of Marked to ensure options and extensions are locally scoped.
-
-```js
-import { Marked } from 'marked';
-const marked = new Marked();
-// Override function
-const walkTokens = (token) => {
-  if (token.type === 'heading') {
-    token.depth += 1;
-  }
-};
-
-marked.use({ walkTokens });
-
-// Run marked
-console.log(marked.parse('# heading 2\n\n## heading 3'));
-```
-
-**Output:**
-
-```html
-<h2 id="heading-2">heading 2</h2>
-<h3 id="heading-3">heading 3</h3>
-```
-
 ***
 
 <h2 id="hooks">Hooks : <code>hooks</code></h2>
