@@ -13,30 +13,7 @@ const marked = new Marked([options, extension, ...]);
 |:--------|:-------|:----------------------------------------------------------------------|
 | options |`object`|The same arguments that can be passed to [`marked.use`](/using_pro#use)|
 
-Another case is, if you want to rerun function everytime they open a file, or you want to make marked.run() non-state, you can create a new instance of Marked to ensure options and extensions are locally scoped.
-
-```js
-import { Marked } from 'marked';
-const marked = new Marked();
-// Override function
-const walkTokens = (token) => {
-  if (token.type === 'heading') {
-    token.depth += 1;
-  }
-};
-
-marked.use({ walkTokens });
-
-// Run marked
-console.log(marked.parse('# heading 2\n\n## heading 3'));
-```
-
-**Output:**
-
-```html
-<h2 id="heading-2">heading 2</h2>
-<h3 id="heading-3">heading 3</h3>
-```
+Be careful: marked.use(...) should not be used in a loop or function. It should only be used directly after new Marked is created or marked is imported.
 
 ## The `parse` function
 
