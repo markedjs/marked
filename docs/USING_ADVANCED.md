@@ -13,6 +13,8 @@ const marked = new Marked([options, extension, ...]);
 |:--------|:-------|:----------------------------------------------------------------------|
 | options |`object`|The same arguments that can be passed to [`marked.use`](/using_pro#use)|
 
+Be careful: marked.use(...) should not be used in a loop or function. It should only be used directly after new Marked is created or marked is imported.
+
 ## The `parse` function
 
 ```js
