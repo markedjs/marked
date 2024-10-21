@@ -35,14 +35,14 @@ describe('Lexer', () => {
             type: 'paragraph',
             raw: 'paragraph 1',
             text: 'paragraph 1',
-            tokens: [{ type: 'text', raw: 'paragraph 1', text: 'paragraph 1' }],
+            tokens: [{ type: 'text', raw: 'paragraph 1', text: 'paragraph 1', escaped: false }],
           },
           { type: 'space', raw: '\n\n' },
           {
             type: 'paragraph',
             raw: 'paragraph 2',
             text: 'paragraph 2',
-            tokens: [{ type: 'text', raw: 'paragraph 2', text: 'paragraph 2' }],
+            tokens: [{ type: 'text', raw: 'paragraph 2', text: 'paragraph 2', escaped: false }],
           },
         ],
       });
@@ -110,56 +110,56 @@ lheading 2
             raw: '# heading 1\n\n',
             depth: 1,
             text: 'heading 1',
-            tokens: [{ type: 'text', raw: 'heading 1', text: 'heading 1' }],
+            tokens: [{ type: 'text', raw: 'heading 1', text: 'heading 1', escaped: false }],
           },
           {
             type: 'heading',
             raw: '## heading 2\n\n',
             depth: 2,
             text: 'heading 2',
-            tokens: [{ type: 'text', raw: 'heading 2', text: 'heading 2' }],
+            tokens: [{ type: 'text', raw: 'heading 2', text: 'heading 2', escaped: false }],
           },
           {
             type: 'heading',
             raw: '### heading 3\n\n',
             depth: 3,
             text: 'heading 3',
-            tokens: [{ type: 'text', raw: 'heading 3', text: 'heading 3' }],
+            tokens: [{ type: 'text', raw: 'heading 3', text: 'heading 3', escaped: false }],
           },
           {
             type: 'heading',
             raw: '#### heading 4\n\n',
             depth: 4,
             text: 'heading 4',
-            tokens: [{ type: 'text', raw: 'heading 4', text: 'heading 4' }],
+            tokens: [{ type: 'text', raw: 'heading 4', text: 'heading 4', escaped: false }],
           },
           {
             type: 'heading',
             raw: '##### heading 5\n\n',
             depth: 5,
             text: 'heading 5',
-            tokens: [{ type: 'text', raw: 'heading 5', text: 'heading 5' }],
+            tokens: [{ type: 'text', raw: 'heading 5', text: 'heading 5', escaped: false }],
           },
           {
             type: 'heading',
             raw: '###### heading 6\n\n',
             depth: 6,
             text: 'heading 6',
-            tokens: [{ type: 'text', raw: 'heading 6', text: 'heading 6' }],
+            tokens: [{ type: 'text', raw: 'heading 6', text: 'heading 6', escaped: false }],
           },
           {
             type: 'heading',
             raw: 'lheading 1\n==========\n\n',
             depth: 1,
             text: 'lheading 1',
-            tokens: [{ type: 'text', raw: 'lheading 1', text: 'lheading 1' }],
+            tokens: [{ type: 'text', raw: 'lheading 1', text: 'lheading 1', escaped: false }],
           },
           {
             type: 'heading',
             raw: 'lheading 2\n----------\n',
             depth: 2,
             text: 'lheading 2',
-            tokens: [{ type: 'text', raw: 'lheading 2', text: 'lheading 2' }],
+            tokens: [{ type: 'text', raw: 'lheading 2', text: 'lheading 2', escaped: false }],
           },
         ],
       });
@@ -172,7 +172,7 @@ lheading 2
           type: 'paragraph',
           raw: '####### heading 7',
           text: '####### heading 7',
-          tokens: [{ type: 'text', raw: '####### heading 7', text: '####### heading 7' }],
+          tokens: [{ type: 'text', raw: '####### heading 7', text: '####### heading 7', escaped: false }],
         }],
       });
     });
@@ -196,13 +196,13 @@ lheading 2
           header: [
             {
               text: 'a',
-              tokens: [{ type: 'text', raw: 'a', text: 'a' }],
+              tokens: [{ type: 'text', raw: 'a', text: 'a', escaped: false }],
               header: true,
               align: null,
             },
             {
               text: 'b',
-              tokens: [{ type: 'text', raw: 'b', text: 'b' }],
+              tokens: [{ type: 'text', raw: 'b', text: 'b', escaped: false }],
               header: true,
               align: null,
             },
@@ -211,13 +211,13 @@ lheading 2
             [
               {
                 text: '1',
-                tokens: [{ type: 'text', raw: '1', text: '1' }],
+                tokens: [{ type: 'text', raw: '1', text: '1', escaped: false }],
                 header: false,
                 align: null,
               },
               {
                 text: '2',
-                tokens: [{ type: 'text', raw: '2', text: '2' }],
+                tokens: [{ type: 'text', raw: '2', text: '2', escaped: false }],
                 header: false,
                 align: null,
               },
@@ -242,7 +242,7 @@ paragraph 1
           type: 'paragraph',
           raw: 'paragraph 1\n',
           text: 'paragraph 1',
-          tokens: [{ type: 'text', raw: 'paragraph 1', text: 'paragraph 1' }],
+          tokens: [{ type: 'text', raw: 'paragraph 1', text: 'paragraph 1', escaped: false }],
         },
         {
           type: 'table',
@@ -251,13 +251,13 @@ paragraph 1
           header: [
             {
               text: 'a',
-              tokens: [{ type: 'text', raw: 'a', text: 'a' }],
+              tokens: [{ type: 'text', raw: 'a', text: 'a', escaped: false }],
               header: true,
               align: null,
             },
             {
               text: 'b',
-              tokens: [{ type: 'text', raw: 'b', text: 'b' }],
+              tokens: [{ type: 'text', raw: 'b', text: 'b', escaped: false }],
               header: true,
               align: null,
             },
@@ -266,13 +266,13 @@ paragraph 1
             [
               {
                 text: '1',
-                tokens: [{ type: 'text', raw: '1', text: '1' }],
+                tokens: [{ type: 'text', raw: '1', text: '1', escaped: false }],
                 header: false,
                 align: null,
               },
               {
                 text: '2',
-                tokens: [{ type: 'text', raw: '2', text: '2' }],
+                tokens: [{ type: 'text', raw: '2', text: '2', escaped: false }],
                 header: false,
                 align: null,
               },
@@ -300,19 +300,19 @@ paragraph 1
           header: [
             {
               text: 'a',
-              tokens: [{ type: 'text', raw: 'a', text: 'a' }],
+              tokens: [{ type: 'text', raw: 'a', text: 'a', escaped: false }],
               header: true,
               align: 'left',
             },
             {
               text: 'b',
-              tokens: [{ type: 'text', raw: 'b', text: 'b' }],
+              tokens: [{ type: 'text', raw: 'b', text: 'b', escaped: false }],
               header: true,
               align: 'center',
             },
             {
               text: 'c',
-              tokens: [{ type: 'text', raw: 'c', text: 'c' }],
+              tokens: [{ type: 'text', raw: 'c', text: 'c', escaped: false }],
               header: true,
               align: 'right',
             },
@@ -321,19 +321,19 @@ paragraph 1
             [
               {
                 text: '1',
-                tokens: [{ type: 'text', raw: '1', text: '1' }],
+                tokens: [{ type: 'text', raw: '1', text: '1', escaped: false }],
                 header: false,
                 align: 'left',
               },
               {
                 text: '2',
-                tokens: [{ type: 'text', raw: '2', text: '2' }],
+                tokens: [{ type: 'text', raw: '2', text: '2', escaped: false }],
                 header: false,
                 align: 'center',
               },
               {
                 text: '3',
-                tokens: [{ type: 'text', raw: '3', text: '3' }],
+                tokens: [{ type: 'text', raw: '3', text: '3', escaped: false }],
                 header: false,
                 align: 'right',
               },
@@ -361,13 +361,13 @@ a | b
             header: [
               {
                 text: 'a',
-                tokens: [{ type: 'text', raw: 'a', text: 'a' }],
+                tokens: [{ type: 'text', raw: 'a', text: 'a', escaped: false }],
                 header: true,
                 align: null,
               },
               {
                 text: 'b',
-                tokens: [{ type: 'text', raw: 'b', text: 'b' }],
+                tokens: [{ type: 'text', raw: 'b', text: 'b', escaped: false }],
                 header: true,
                 align: null,
               },
@@ -376,13 +376,13 @@ a | b
               [
                 {
                   text: '1',
-                  tokens: [{ type: 'text', raw: '1', text: '1' }],
+                  tokens: [{ type: 'text', raw: '1', text: '1', escaped: false }],
                   header: false,
                   align: null,
                 },
                 {
                   text: '2',
-                  tokens: [{ type: 'text', raw: '2', text: '2' }],
+                  tokens: [{ type: 'text', raw: '2', text: '2', escaped: false }],
                   header: false,
                   align: null,
                 },
@@ -418,7 +418,7 @@ a | b
               raw: 'blockquote',
               text: 'blockquote',
               tokens: [
-                { type: 'text', raw: 'blockquote', text: 'blockquote' },
+                { type: 'text', raw: 'blockquote', text: 'blockquote', escaped: false },
               ],
             }],
           },
@@ -439,7 +439,7 @@ a | b
               raw: 'blockquote',
               text: 'blockquote',
               tokens: [
-                { type: 'text', raw: 'blockquote', text: 'blockquote' },
+                { type: 'text', raw: 'blockquote', text: 'blockquote', escaped: false },
               ],
             }],
           },
@@ -475,7 +475,7 @@ a | b
                         raw: 'blockquote',
                         text: 'blockquote',
                         tokens: [
-                          { type: 'text', raw: 'blockquote', text: 'blockquote' },
+                          { type: 'text', raw: 'blockquote', text: 'blockquote', escaped: false },
                         ],
                       },
                     ],
@@ -519,7 +519,7 @@ a | b
                   type: 'text',
                   raw: 'item 1',
                   text: 'item 1',
-                  tokens: [{ type: 'text', raw: 'item 1', text: 'item 1' }],
+                  tokens: [{ type: 'text', raw: 'item 1', text: 'item 1', escaped: false }],
                 }],
               },
               {
@@ -533,7 +533,7 @@ a | b
                   type: 'text',
                   raw: 'item 2',
                   text: 'item 2',
-                  tokens: [{ type: 'text', raw: 'item 2', text: 'item 2' }],
+                  tokens: [{ type: 'text', raw: 'item 2', text: 'item 2', escaped: false }],
                 }],
               },
             ],
@@ -577,6 +577,7 @@ a | b
                         type: 'text',
                         raw: 'item 1',
                         text: 'item 1',
+                        escaped: false,
                       },
                     ],
                   },
@@ -599,6 +600,7 @@ a | b
                         type: 'text',
                         raw: 'item 2',
                         text: 'item 2',
+                        escaped: false,
                       },
                     ],
                   },
@@ -645,6 +647,7 @@ a | b
                         type: 'text',
                         raw: 'item 1',
                         text: 'item 1',
+                        escaped: false,
                       },
                     ],
                   },
@@ -667,6 +670,7 @@ a | b
                         type: 'text',
                         raw: 'item 2',
                         text: 'item 2',
+                        escaped: false,
                       },
                     ],
                   },
@@ -715,6 +719,7 @@ paragraph
                         type: 'text',
                         raw: 'item 1',
                         text: 'item 1',
+                        escaped: false,
                       },
                     ],
                   },
@@ -737,6 +742,7 @@ paragraph
                         type: 'text',
                         raw: 'item 2',
                         text: 'item 2',
+                        escaped: false,
                       },
                     ],
                   },
@@ -757,6 +763,7 @@ paragraph
                 type: 'text',
                 raw: 'paragraph',
                 text: 'paragraph',
+                escaped: false,
               },
             ],
           },
@@ -799,6 +806,7 @@ paragraph
                         type: 'text',
                         raw: 'item 1',
                         text: 'item 1',
+                        escaped: false,
                       },
                     ],
                   },
@@ -821,6 +829,7 @@ paragraph
                         type: 'text',
                         raw: 'item 2',
                         text: 'item 2',
+                        escaped: false,
                       },
                     ],
                   },
@@ -868,6 +877,7 @@ paragraph
                         type: 'text',
                         raw: 'item 1',
                         text: 'item 1',
+                        escaped: false,
                       },
                     ],
                   },
@@ -890,6 +900,7 @@ paragraph
                         type: 'text',
                         raw: 'item 2',
                         text: 'item 2',
+                        escaped: false,
                       },
                     ],
                   },
@@ -939,6 +950,7 @@ paragraph
                         type: 'text',
                         raw: 'item 1',
                         text: 'item 1',
+                        escaped: false,
                       },
                     ],
                   },
@@ -961,6 +973,7 @@ paragraph
                         type: 'text',
                         raw: 'item 2',
                         text: 'item 2',
+                        escaped: false,
                       },
                     ],
                   },
@@ -977,6 +990,7 @@ paragraph
                         type: 'text',
                         raw: 'item 2a',
                         text: 'item 2a',
+                        escaped: false,
                       },
                     ],
                   },
@@ -999,6 +1013,7 @@ paragraph
                         type: 'text',
                         raw: 'item 3',
                         text: 'item 3',
+                        escaped: false,
                       },
                     ],
                   },
@@ -1045,6 +1060,7 @@ paragraph
                         type: 'text',
                         raw: 'item 1',
                         text: 'item 1',
+                        escaped: false,
                       },
                     ],
                   },
@@ -1072,6 +1088,7 @@ paragraph
                                 type: 'text',
                                 raw: 'item 2',
                                 text: 'item 2',
+                                escaped: false,
                               },
                             ],
                           },
@@ -1122,6 +1139,7 @@ paragraph
                         type: 'text',
                         raw: 'item 1',
                         text: 'item 1',
+                        escaped: false,
                       },
                     ],
                   },
@@ -1144,6 +1162,7 @@ paragraph
                         type: 'text',
                         raw: 'item 2',
                         text: 'item 2',
+                        escaped: false,
                       },
                     ],
                   },
@@ -1214,7 +1233,7 @@ paragraph
         expectInlineTokens({
           md: '\\>',
           tokens: [
-            { type: 'escape', raw: '\\>', text: '&gt;' },
+            { type: 'escape', raw: '\\>', text: '>' },
           ],
         });
       });
@@ -1228,7 +1247,7 @@ paragraph
               raw: '**strong text\\[**',
               text: 'strong text\\[',
               tokens: [
-                { type: 'text', raw: 'strong text', text: 'strong text' },
+                { type: 'text', raw: 'strong text', text: 'strong text', escaped: false },
                 { type: 'escape', raw: '\\[', text: '[' },
               ],
             },
@@ -1243,11 +1262,11 @@ paragraph
               raw: '_em\\<pha\\>sis_',
               text: 'em\\<pha\\>sis',
               tokens: [
-                { type: 'text', raw: 'em', text: 'em' },
-                { type: 'escape', raw: '\\<', text: '&lt;' },
-                { type: 'text', raw: 'pha', text: 'pha' },
-                { type: 'escape', raw: '\\>', text: '&gt;' },
-                { type: 'text', raw: 'sis', text: 'sis' },
+                { type: 'text', raw: 'em', text: 'em', escaped: false },
+                { type: 'escape', raw: '\\<', text: '<' },
+                { type: 'text', raw: 'pha', text: 'pha', escaped: false },
+                { type: 'escape', raw: '\\>', text: '>' },
+                { type: 'text', raw: 'sis', text: 'sis', escaped: false },
               ],
             },
           ],
@@ -1259,7 +1278,7 @@ paragraph
           md: '<div>html</div>',
           tokens: [
             { type: 'html', raw: '<div>', inLink: false, inRawBlock: false, block: false, text: '<div>' },
-            { type: 'text', raw: 'html', text: 'html' },
+            { type: 'text', raw: 'html', text: 'html', escaped: false },
             { type: 'html', raw: '</div>', inLink: false, inRawBlock: false, block: false, text: '</div>' },
           ],
         });
@@ -1276,7 +1295,12 @@ paragraph
               title: null,
               text: 'link',
               tokens: [
-                { type: 'text', raw: 'link', text: 'link' },
+                {
+                  type: 'text',
+                  raw: 'link',
+                  text: 'link',
+                  escaped: false,
+                },
               ],
             },
           ],
@@ -1294,7 +1318,12 @@ paragraph
               title: 'title',
               text: 'link',
               tokens: [
-                { type: 'text', raw: 'link', text: 'link' },
+                {
+                  type: 'text',
+                  raw: 'link',
+                  text: 'link',
+                  escaped: false,
+                },
               ],
             },
           ],
@@ -1349,6 +1378,7 @@ paragraph
                   type: 'text',
                   raw: 'link',
                   text: 'link',
+                  escaped: false,
                 }],
               },
             ],
@@ -1372,6 +1402,7 @@ paragraph
                   type: 'text',
                   raw: 'link',
                   text: 'link',
+                  escaped: false,
                 }],
               },
             ],
@@ -1382,7 +1413,11 @@ paragraph
           expectInlineTokens({
             md: '[link]',
             tokens: [
-              { type: 'text', raw: '[link]', text: '[link]' },
+              {
+                type: 'text',
+                raw: '[link]',
+                text: '[link]',
+              },
             ],
           });
         });
@@ -1397,7 +1432,12 @@ paragraph
               raw: '**strong**',
               text: 'strong',
               tokens: [
-                { type: 'text', raw: 'strong', text: 'strong' },
+                {
+                  type: 'text',
+                  raw: 'strong',
+                  text: 'strong',
+                  escaped: false,
+                },
               ],
             },
           ],
@@ -1413,7 +1453,12 @@ paragraph
               raw: '*em*',
               text: 'em',
               tokens: [
-                { type: 'text', raw: 'em', text: 'em' },
+                {
+                  type: 'text',
+                  raw: 'em',
+                  text: 'em',
+                  escaped: false,
+                },
               ],
             },
           ],
@@ -1521,6 +1566,7 @@ paragraph
               raw: 'a',
               text: 'a',
               type: 'text',
+              escaped: false,
             },
             {
               raw: '\n',
@@ -1530,6 +1576,7 @@ paragraph
               raw: 'b',
               text: 'b',
               type: 'text',
+              escaped: false,
             },
           ],
         });
@@ -1544,7 +1591,12 @@ paragraph
               raw: '~~del~~',
               text: 'del',
               tokens: [
-                { type: 'text', raw: 'del', text: 'del' },
+                {
+                  type: 'text',
+                  raw: 'del',
+                  text: 'del',
+                  escaped: false,
+                },
               ],
             },
           ],
@@ -1562,7 +1614,11 @@ paragraph
                 text: 'https://example.com',
                 href: 'https://example.com',
                 tokens: [
-                  { type: 'text', raw: 'https://example.com', text: 'https://example.com' },
+                  {
+                    type: 'text',
+                    raw: 'https://example.com',
+                    text: 'https://example.com',
+                  },
                 ],
               },
             ],
@@ -1580,7 +1636,11 @@ paragraph
                 text: 'test@example.com',
                 href: 'mailto:test@example.com',
                 tokens: [
-                  { type: 'text', raw: 'test@example.com', text: 'test@example.com' },
+                  {
+                    type: 'text',
+                    raw: 'test@example.com',
+                    text: 'test@example.com',
+                  },
                 ],
               },
             ],
@@ -1597,7 +1657,11 @@ paragraph
                 text: 'https://example.com',
                 href: 'https://example.com',
                 tokens: [
-                  { type: 'text', raw: 'https://example.com', text: 'https://example.com' },
+                  {
+                    type: 'text',
+                    raw: 'https://example.com',
+                    text: 'https://example.com',
+                  },
                 ],
               },
             ],
@@ -1615,7 +1679,11 @@ paragraph
                 text: 'test@example.com',
                 href: 'mailto:test@example.com',
                 tokens: [
-                  { type: 'text', raw: 'test@example.com', text: 'test@example.com' },
+                  {
+                    type: 'text',
+                    raw: 'test@example.com',
+                    text: 'test@example.com',
+                  },
                 ],
               },
             ],
@@ -1631,6 +1699,7 @@ paragraph
               type: 'text',
               raw: 'text',
               text: 'text',
+              escaped: false,
             },
           ],
         });

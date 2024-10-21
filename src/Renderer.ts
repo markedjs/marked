@@ -79,13 +79,15 @@ export class _Renderer {
         if (item.tokens.length > 0 && item.tokens[0].type === 'paragraph') {
           item.tokens[0].text = checkbox + ' ' + item.tokens[0].text;
           if (item.tokens[0].tokens && item.tokens[0].tokens.length > 0 && item.tokens[0].tokens[0].type === 'text') {
-            item.tokens[0].tokens[0].text = checkbox + ' ' + item.tokens[0].tokens[0].text;
+            item.tokens[0].tokens[0].text = checkbox + ' ' + escape(item.tokens[0].tokens[0].text);
+            item.tokens[0].tokens[0].escaped = true;
           }
         } else {
           item.tokens.unshift({
             type: 'text',
             raw: checkbox + ' ',
             text: checkbox + ' ',
+            escaped: true,
           });
         }
       } else {
@@ -164,7 +166,7 @@ export class _Renderer {
   }
 
   codespan({ text }: Tokens.Codespan): string {
-    return `<code>${text}</code>`;
+    return `<code>${escape(text, true)}</code>`;
   }
 
   br(token: Tokens.Br): string {
@@ -184,7 +186,7 @@ export class _Renderer {
     href = cleanHref;
     let out = '<a href="' + href + '"';
     if (title) {
-      out += ' title="' + title + '"';
+      out += ' title="' + (escape(title)) + '"';
     }
     out += '>' + text + '</a>';
     return out;
@@ -193,19 +195,21 @@ export class _Renderer {
   image({ href, title, text }: Tokens.Image): string {
     const cleanHref = cleanUrl(href);
     if (cleanHref === null) {
-      return text;
+      return escape(text);
     }
     href = cleanHref;
 
     let out = `<img src="${href}" alt="${text}"`;
     if (title) {
-      out += ` title="${title}"`;
+      out += ` title="${escape(title)}"`;
     }
     out += '>';
     return out;
   }
 
-  text(token: Tokens.Text | Tokens.Escape | Tokens.Tag) : string {
-    return 'tokens' in token && token.tokens ? this.parser.parseInline(token.tokens) : token.text;
+  text(token: Tokens.Text | Tokens.Escape) : string {
+    return 'tokens' in token && token.tokens
+      ? this.parser.parseInline(token.tokens)
+      : ('escaped' in token && token.escaped ? token.text : escape(token.text));
   }
 }

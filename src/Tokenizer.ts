@@ -2,7 +2,6 @@ import { _defaults } from './defaults.ts';
 import {
   rtrim,
   splitCells,
-  escape,
   findClosingBracket,
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
@@ -12,7 +11,7 @@ import type { MarkedOptions } from './MarkedOptions.ts';
 
 function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer): Tokens.Link | Tokens.Image {
   const href = link.href;
-  const title = link.title ? escape(link.title) : null;
+  const title = link.title || null;
   const text = cap[1].replace(/\\([\[\]])/g, '$1');
 
   if (cap[0].charAt(0) !== '!') {
@@ -33,7 +32,7 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
     raw,
     href,
     title,
-    text: escape(text),
+    text,
   };
 }
 
@@ -583,7 +582,7 @@ export class _Tokenizer {
       return {
         type: 'escape',
         raw: cap[0],
-        text: escape(cap[1]),
+        text: cap[1],
       };
     }
   }
@@ -766,7 +765,6 @@ export class _Tokenizer {
       if (hasNonSpaceChars && hasSpaceCharsOnBothEnds) {
         text = text.substring(1, text.length - 1);
       }
-      text = escape(text, true);
       return {
         type: 'codespan',
         raw: cap[0],
@@ -802,10 +800,10 @@ export class _Tokenizer {
     if (cap) {
       let text, href;
       if (cap[2] === '@') {
-        text = escape(cap[1]);
+        text = cap[1];
         href = 'mailto:' + text;
       } else {
-        text = escape(cap[1]);
+        text = cap[1];
         href = text;
       }
 
@@ -830,7 +828,7 @@ export class _Tokenizer {
     if (cap = this.rules.inline.url.exec(src)) {
       let text, href;
       if (cap[2] === '@') {
-        text = escape(cap[0]);
+        text = cap[0];
         href = 'mailto:' + text;
       } else {
         // do extended autolink path validation
@@ -839,7 +837,7 @@ export class _Tokenizer {
           prevCapZero = cap[0];
           cap[0] = this.rules.inline._backpedal.exec(cap[0])?.[0] ?? '';
         } while (prevCapZero !== cap[0]);
-        text = escape(cap[0]);
+        text = cap[0];
         if (cap[1] === 'www.') {
           href = 'http://' + cap[0];
         } else {
@@ -865,16 +863,12 @@ export class _Tokenizer {
   inlineText(src: string): Tokens.Text | undefined {
     const cap = this.rules.inline.text.exec(src);
     if (cap) {
-      let text;
-      if (this.lexer.state.inRawBlock) {
-        text = cap[0];
-      } else {
-        text = escape(cap[0]);
-      }
+      const escaped = this.lexer.state.inRawBlock;
       return {
         type: 'text',
         raw: cap[0],
-        text,
+        text: cap[0],
+        escaped,
       };
     }
   }

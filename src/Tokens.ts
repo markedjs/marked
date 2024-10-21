@@ -125,6 +125,7 @@ export namespace Tokens {
     raw: string;
     text: string;
     tokens?: Token[];
+    escaped?: boolean;
   }
 
   export interface Def {
@@ -142,7 +143,7 @@ export namespace Tokens {
   }
 
   export interface Tag {
-    type: 'text' | 'html';
+    type: 'html';
     raw: string;
     inLink: boolean;
     inRawBlock: boolean;
