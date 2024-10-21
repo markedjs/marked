@@ -22,7 +22,6 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
       href,
       title,
       text,
-      escaped: false,
       tokens: lexer.inlineTokens(text),
     };
     lexer.state.inLink = false;
@@ -34,7 +33,6 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
     href,
     title,
     text,
-    escaped: false,
   };
 }
 
@@ -574,7 +572,6 @@ export class _Tokenizer {
         raw: cap[0],
         text: cap[0],
         tokens: this.lexer.inline(cap[0]),
-        escaped: true,
       };
     }
   }
@@ -586,7 +583,6 @@ export class _Tokenizer {
         type: 'escape',
         raw: cap[0],
         text: cap[1],
-        escaped: false,
       };
     }
   }
@@ -684,7 +680,6 @@ export class _Tokenizer {
           type: 'text',
           raw: text,
           text,
-          escaped: true,
         };
       }
       return outputLink(cap, link, cap[0], this.lexer);
@@ -774,7 +769,6 @@ export class _Tokenizer {
         type: 'codespan',
         raw: cap[0],
         text,
-        escaped: false,
       };
     }
   }
@@ -817,14 +811,12 @@ export class _Tokenizer {
         type: 'link',
         raw: cap[0],
         text,
-        escaped: false,
         href,
         tokens: [
           {
             type: 'text',
             raw: text,
             text,
-            escaped: false,
           },
         ],
       };
@@ -856,14 +848,12 @@ export class _Tokenizer {
         type: 'link',
         raw: cap[0],
         text,
-        escaped: false,
         href,
         tokens: [
           {
             type: 'text',
             raw: text,
             text,
-            escaped: false,
           },
         ],
       };

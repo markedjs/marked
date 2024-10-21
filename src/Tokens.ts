@@ -125,7 +125,7 @@ export namespace Tokens {
     raw: string;
     text: string;
     tokens?: Token[];
-    escaped: boolean;
+    escaped?: boolean;
   }
 
   export interface Def {
@@ -140,11 +140,10 @@ export namespace Tokens {
     type: 'escape';
     raw: string;
     text: string;
-    escaped: boolean;
   }
 
   export interface Tag {
-    type: 'text' | 'html';
+    type: 'html';
     raw: string;
     inLink: boolean;
     inRawBlock: boolean;
@@ -159,7 +158,6 @@ export namespace Tokens {
     title?: string | null;
     text: string;
     tokens: Token[];
-    escaped: boolean;
   }
 
   export interface Image {
@@ -168,7 +166,6 @@ export namespace Tokens {
     href: string;
     title: string | null;
     text: string;
-    escaped: boolean;
   }
 
   export interface Strong {
@@ -189,7 +186,6 @@ export namespace Tokens {
     type: 'codespan';
     raw: string;
     text: string;
-    escaped: boolean;
   }
 
   export interface Br {

@@ -519,7 +519,6 @@ a | b
                   type: 'text',
                   raw: 'item 1',
                   text: 'item 1',
-                  escaped: true,
                   tokens: [{ type: 'text', raw: 'item 1', text: 'item 1', escaped: false }],
                 }],
               },
@@ -534,7 +533,6 @@ a | b
                   type: 'text',
                   raw: 'item 2',
                   text: 'item 2',
-                  escaped: true,
                   tokens: [{ type: 'text', raw: 'item 2', text: 'item 2', escaped: false }],
                 }],
               },
@@ -574,7 +572,6 @@ a | b
                     type: 'text',
                     raw: 'item 1',
                     text: 'item 1',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -598,7 +595,6 @@ a | b
                     type: 'text',
                     raw: 'item 2',
                     text: 'item 2',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -646,7 +642,6 @@ a | b
                     type: 'text',
                     raw: 'item 1',
                     text: 'item 1',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -670,7 +665,6 @@ a | b
                     type: 'text',
                     raw: 'item 2',
                     text: 'item 2',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -720,7 +714,6 @@ paragraph
                     type: 'text',
                     raw: 'item 1',
                     text: 'item 1',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -744,7 +737,6 @@ paragraph
                     type: 'text',
                     raw: 'item 2',
                     text: 'item 2',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -809,7 +801,6 @@ paragraph
                     type: 'text',
                     raw: 'item 1',
                     text: 'item 1',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -833,7 +824,6 @@ paragraph
                     type: 'text',
                     raw: 'item 2',
                     text: 'item 2',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -882,7 +872,6 @@ paragraph
                     type: 'text',
                     raw: 'item 1\n',
                     text: 'item 1',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -906,7 +895,6 @@ paragraph
                     type: 'text',
                     raw: 'item 2',
                     text: 'item 2',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -957,7 +945,6 @@ paragraph
                     type: 'text',
                     raw: 'item 1',
                     text: 'item 1',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -981,7 +968,6 @@ paragraph
                     type: 'text',
                     raw: 'item 2',
                     text: 'item 2',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -999,7 +985,6 @@ paragraph
                     type: 'text',
                     raw: 'item 2a',
                     text: 'item 2a',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -1023,7 +1008,6 @@ paragraph
                     type: 'text',
                     raw: 'item 3',
                     text: 'item 3',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -1071,7 +1055,6 @@ paragraph
                     type: 'text',
                     raw: 'item 1\n',
                     text: 'item 1',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -1100,7 +1083,6 @@ paragraph
                             type: 'text',
                             raw: 'item 2',
                             text: 'item 2',
-                            escaped: true,
                             tokens: [
                               {
                                 type: 'text',
@@ -1152,7 +1134,6 @@ paragraph
                     type: 'text',
                     raw: 'item 1',
                     text: 'item 1',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -1176,7 +1157,6 @@ paragraph
                     type: 'text',
                     raw: 'item 2',
                     text: 'item 2',
-                    escaped: true,
                     tokens: [
                       {
                         type: 'text',
@@ -1253,7 +1233,7 @@ paragraph
         expectInlineTokens({
           md: '\\>',
           tokens: [
-            { type: 'escape', raw: '\\>', text: '>', escaped: false },
+            { type: 'escape', raw: '\\>', text: '>' },
           ],
         });
       });
@@ -1268,10 +1248,10 @@ paragraph
               text: 'strong text\\[',
               tokens: [
                 { type: 'text', raw: 'strong text', text: 'strong text', escaped: false },
-                { type: 'escape', raw: '\\[', text: '[', escaped: false },
+                { type: 'escape', raw: '\\[', text: '[' },
               ],
             },
-            { type: 'escape', raw: '\\]', text: ']', escaped: false },
+            { type: 'escape', raw: '\\]', text: ']' },
           ],
         });
         expectInlineTokens({
@@ -1283,9 +1263,9 @@ paragraph
               text: 'em\\<pha\\>sis',
               tokens: [
                 { type: 'text', raw: 'em', text: 'em', escaped: false },
-                { type: 'escape', raw: '\\<', text: '<', escaped: false },
+                { type: 'escape', raw: '\\<', text: '<' },
                 { type: 'text', raw: 'pha', text: 'pha', escaped: false },
-                { type: 'escape', raw: '\\>', text: '>', escaped: false },
+                { type: 'escape', raw: '\\>', text: '>' },
                 { type: 'text', raw: 'sis', text: 'sis', escaped: false },
               ],
             },
@@ -1314,7 +1294,6 @@ paragraph
               href: 'https://example.com',
               title: null,
               text: 'link',
-              escaped: false,
               tokens: [
                 {
                   type: 'text',
@@ -1338,7 +1317,6 @@ paragraph
               href: 'https://example.com',
               title: 'title',
               text: 'link',
-              escaped: false,
               tokens: [
                 {
                   type: 'text',
@@ -1362,7 +1340,6 @@ paragraph
               text: 'image',
               href: 'https://example.com/image.png',
               title: null,
-              escaped: false,
             },
           ],
         });
@@ -1378,7 +1355,6 @@ paragraph
               text: 'image',
               href: 'https://example.com/image.png',
               title: 'title',
-              escaped: false,
             },
           ],
         });
@@ -1398,7 +1374,6 @@ paragraph
                 href: 'https://example.com',
                 title: 'title',
                 text: 'link',
-                escaped: false,
                 tokens: [{
                   type: 'text',
                   raw: 'link',
@@ -1423,7 +1398,6 @@ paragraph
                 href: 'https://example.com',
                 title: 'title',
                 text: 'link',
-                escaped: false,
                 tokens: [{
                   type: 'text',
                   raw: 'link',
@@ -1443,7 +1417,6 @@ paragraph
                 type: 'text',
                 raw: '[link]',
                 text: '[link]',
-                escaped: false,
               },
             ],
           });
@@ -1497,7 +1470,7 @@ paragraph
           expectInlineTokens({
             md: '`code`',
             tokens: [
-              { type: 'codespan', raw: '`code`', text: 'code', escaped: false },
+              { type: 'codespan', raw: '`code`', text: 'code' },
             ],
           });
         });
@@ -1506,7 +1479,7 @@ paragraph
           expectInlineTokens({
             md: '`   `',
             tokens: [
-              { type: 'codespan', raw: '`   `', text: '   ', escaped: false },
+              { type: 'codespan', raw: '`   `', text: '   ' },
             ],
           });
         });
@@ -1515,7 +1488,7 @@ paragraph
           expectInlineTokens({
             md: '` a`',
             tokens: [
-              { type: 'codespan', raw: '` a`', text: ' a', escaped: false },
+              { type: 'codespan', raw: '` a`', text: ' a' },
             ],
           });
         });
@@ -1524,7 +1497,7 @@ paragraph
           expectInlineTokens({
             md: '`a `',
             tokens: [
-              { type: 'codespan', raw: '`a `', text: 'a ', escaped: false },
+              { type: 'codespan', raw: '`a `', text: 'a ' },
             ],
           });
         });
@@ -1533,7 +1506,7 @@ paragraph
           expectInlineTokens({
             md: '` a `',
             tokens: [
-              { type: 'codespan', raw: '` a `', text: 'a', escaped: false },
+              { type: 'codespan', raw: '` a `', text: 'a' },
             ],
           });
         });
@@ -1542,7 +1515,7 @@ paragraph
           expectInlineTokens({
             md: '`\na\n`',
             tokens: [
-              { type: 'codespan', raw: '`\na\n`', text: 'a', escaped: false },
+              { type: 'codespan', raw: '`\na\n`', text: 'a' },
             ],
           });
         });
@@ -1551,7 +1524,7 @@ paragraph
           expectInlineTokens({
             md: '`\ta\t`',
             tokens: [
-              { type: 'codespan', raw: '`\ta\t`', text: '\ta\t', escaped: false },
+              { type: 'codespan', raw: '`\ta\t`', text: '\ta\t' },
             ],
           });
         });
@@ -1560,7 +1533,7 @@ paragraph
           expectInlineTokens({
             md: '`\na\n`',
             tokens: [
-              { type: 'codespan', raw: '`\na\n`', text: 'a', escaped: false },
+              { type: 'codespan', raw: '`\na\n`', text: 'a' },
             ],
           });
         });
@@ -1569,7 +1542,7 @@ paragraph
           expectInlineTokens({
             md: '`  a  `',
             tokens: [
-              { type: 'codespan', raw: '`  a  `', text: ' a ', escaped: false },
+              { type: 'codespan', raw: '`  a  `', text: ' a ' },
             ],
           });
         });
@@ -1578,7 +1551,7 @@ paragraph
           expectInlineTokens({
             md: '`a\nb`',
             tokens: [
-              { type: 'codespan', raw: '`a\nb`', text: 'a b', escaped: false },
+              { type: 'codespan', raw: '`a\nb`', text: 'a b' },
             ],
           });
         });
@@ -1640,13 +1613,11 @@ paragraph
                 raw: '<https://example.com>',
                 text: 'https://example.com',
                 href: 'https://example.com',
-                escaped: false,
                 tokens: [
                   {
                     type: 'text',
                     raw: 'https://example.com',
                     text: 'https://example.com',
-                    escaped: false,
                   },
                 ],
               },
@@ -1664,13 +1635,11 @@ paragraph
                 raw: '<test@example.com>',
                 text: 'test@example.com',
                 href: 'mailto:test@example.com',
-                escaped: false,
                 tokens: [
                   {
                     type: 'text',
                     raw: 'test@example.com',
                     text: 'test@example.com',
-                    escaped: false,
                   },
                 ],
               },
@@ -1687,13 +1656,11 @@ paragraph
                 raw: 'https://example.com',
                 text: 'https://example.com',
                 href: 'https://example.com',
-                escaped: false,
                 tokens: [
                   {
                     type: 'text',
                     raw: 'https://example.com',
                     text: 'https://example.com',
-                    escaped: false,
                   },
                 ],
               },
@@ -1711,13 +1678,11 @@ paragraph
                 raw: 'test@example.com',
                 text: 'test@example.com',
                 href: 'mailto:test@example.com',
-                escaped: false,
                 tokens: [
                   {
                     type: 'text',
                     raw: 'test@example.com',
                     text: 'test@example.com',
-                    escaped: false,
                   },
                 ],
               },
