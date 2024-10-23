@@ -1,8 +1,8 @@
-import { _Renderer } from './Renderer.ts';
-import { _TextRenderer } from './TextRenderer.ts';
-import { _defaults } from './defaults.ts';
-import type { MarkedToken, Token, Tokens } from './Tokens.ts';
-import type { MarkedOptions } from './MarkedOptions.ts';
+import { _Renderer } from "./Renderer.ts";
+import { _TextRenderer } from "./TextRenderer.ts";
+import { _defaults } from "./defaults.ts";
+import type { Token, Tokens } from "./Tokens.ts";
+import type { MarkedOptions } from "./MarkedOptions.ts";
 
 /**
  * Parsing & Compiling
@@ -40,89 +40,37 @@ export class _Parser {
    * Parse Loop
    */
   parse(tokens: Token[], top = true): string {
-    let out = '';
+    let out = "";
+
+    const renderers: { [key: string]: (token: Token) => string } = {
+      space: (token) => this.renderer.space(token as Tokens.Space),
+      hr: (token) => this.renderer.hr(token as Tokens.Hr),
+      heading: (token) => this.renderer.heading(token as Tokens.Heading),
+      code: (token) => this.renderer.code(token as Tokens.Code),
+      table: (token) => this.renderer.table(token as Tokens.Table),
+      blockquote: (token) =>
+        this.renderer.blockquote(token as Tokens.Blockquote),
+      list: (token) => this.renderer.list(token as Tokens.List),
+      html: (token) => this.renderer.html(token as Tokens.HTML),
+      paragraph: (token) => this.renderer.paragraph(token as Tokens.Paragraph),
+    };
 
     for (let i = 0; i < tokens.length; i++) {
-      const anyToken = tokens[i];
+      const token = tokens[i];
 
-      // Run any renderer extensions
-      if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[anyToken.type]) {
-        const genericToken = anyToken as Tokens.Generic;
-        const ret = this.options.extensions.renderers[genericToken.type].call({ parser: this }, genericToken);
-        if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'html', 'paragraph', 'text'].includes(genericToken.type)) {
-          out += ret || '';
-          continue;
-        }
+      const extensionOutput = this.handleRendererExtensions(token, renderers);
+      if (extensionOutput !== null) {
+        out += extensionOutput;
+        continue;
       }
 
-      const token = anyToken as MarkedToken;
-
-      switch (token.type) {
-        case 'space': {
-          out += this.renderer.space(token);
-          continue;
+      if (token.type === "text") {
+        out += this.handleTextToken(tokens, i, top);
+        while (i + 1 < tokens.length && tokens[i + 1].type === "text") {
+          i++;
         }
-        case 'hr': {
-          out += this.renderer.hr(token);
-          continue;
-        }
-        case 'heading': {
-          out += this.renderer.heading(token);
-          continue;
-        }
-        case 'code': {
-          out += this.renderer.code(token);
-          continue;
-        }
-        case 'table': {
-          out += this.renderer.table(token);
-          continue;
-        }
-        case 'blockquote': {
-          out += this.renderer.blockquote(token);
-          continue;
-        }
-        case 'list': {
-          out += this.renderer.list(token);
-          continue;
-        }
-        case 'html': {
-          out += this.renderer.html(token);
-          continue;
-        }
-        case 'paragraph': {
-          out += this.renderer.paragraph(token);
-          continue;
-        }
-        case 'text': {
-          let textToken = token;
-          let body = this.renderer.text(textToken);
-          while (i + 1 < tokens.length && tokens[i + 1].type === 'text') {
-            textToken = tokens[++i] as Tokens.Text | Tokens.Tag;
-            body += '\n' + this.renderer.text(textToken);
-          }
-          if (top) {
-            out += this.renderer.paragraph({
-              type: 'paragraph',
-              raw: body,
-              text: body,
-              tokens: [{ type: 'text', raw: body, text: body }],
-            });
-          } else {
-            out += body;
-          }
-          continue;
-        }
-
-        default: {
-          const errMsg = 'Token with "' + token.type + '" type was not found.';
-          if (this.options.silent) {
-            console.error(errMsg);
-            return '';
-          } else {
-            throw new Error(errMsg);
-          }
-        }
+      } else {
+        out += this.handleStandardToken(token, renderers);
       }
     }
 
@@ -133,75 +81,111 @@ export class _Parser {
    * Parse Inline Tokens
    */
   parseInline(tokens: Token[], renderer?: _Renderer | _TextRenderer): string {
-    renderer = renderer || this.renderer;
-    let out = '';
+    let out = "";
+
+    const renderers: { [key: string]: (token: Token) => string } = {
+      escape: (token) => this.renderer.text(token as Tokens.Escape),
+      html: (token) => this.renderer.html(token as Tokens.HTML),
+      link: (token) => this.renderer.link(token as Tokens.Link),
+      image: (token) => this.renderer.image(token as Tokens.Image),
+      strong: (token) => this.renderer.strong(token as Tokens.Strong),
+      em: (token) => this.renderer.em(token as Tokens.Em),
+      codespan: (token) => this.renderer.codespan(token as Tokens.Codespan),
+      br: (token) => this.renderer.br(token as Tokens.Br),
+      del: (token) => this.renderer.del(token as Tokens.Del),
+      text: (token) => this.renderer.text(token as Tokens.Text),
+    };
 
     for (let i = 0; i < tokens.length; i++) {
-      const anyToken = tokens[i];
+      const token = tokens[i];
 
-      // Run any renderer extensions
-      if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[anyToken.type]) {
-        const ret = this.options.extensions.renderers[anyToken.type].call({ parser: this }, anyToken);
-        if (ret !== false || !['escape', 'html', 'link', 'image', 'strong', 'em', 'codespan', 'br', 'del', 'text'].includes(anyToken.type)) {
-          out += ret || '';
-          continue;
-        }
+      const extensionOutput = this.handleRendererExtensions(token, renderers);
+      if (extensionOutput !== null) {
+        out += extensionOutput;
+        continue;
       }
 
-      const token = anyToken as MarkedToken;
-
-      switch (token.type) {
-        case 'escape': {
-          out += renderer.text(token);
-          break;
-        }
-        case 'html': {
-          out += renderer.html(token);
-          break;
-        }
-        case 'link': {
-          out += renderer.link(token);
-          break;
-        }
-        case 'image': {
-          out += renderer.image(token);
-          break;
-        }
-        case 'strong': {
-          out += renderer.strong(token);
-          break;
-        }
-        case 'em': {
-          out += renderer.em(token);
-          break;
-        }
-        case 'codespan': {
-          out += renderer.codespan(token);
-          break;
-        }
-        case 'br': {
-          out += renderer.br(token);
-          break;
-        }
-        case 'del': {
-          out += renderer.del(token);
-          break;
-        }
-        case 'text': {
-          out += renderer.text(token);
-          break;
-        }
-        default: {
-          const errMsg = 'Token with "' + token.type + '" type was not found.';
-          if (this.options.silent) {
-            console.error(errMsg);
-            return '';
-          } else {
-            throw new Error(errMsg);
-          }
-        }
+      const renderFunction = renderers[token.type];
+      if (renderFunction) {
+        out += renderFunction(token);
+      } else {
+        out += this.handleUnknownToken(token);
       }
     }
+
     return out;
+  }
+
+  private handleRendererExtensions(
+    token: Token,
+    renderers: { [key: string]: (token: Token) => string }
+  ): string | null {
+    const rendererExtension = this.options.extensions?.renderers?.[token.type];
+    if (rendererExtension) {
+      const ret = rendererExtension.call({ parser: this }, token);
+      if (
+        ret !== false ||
+        !Object.prototype.hasOwnProperty.call(renderers, token.type)
+      ) {
+        return ret || "";
+      }
+    }
+    return null;
+  }
+
+  private handleTextToken(
+    tokens: Token[],
+    startIndex: number,
+    top: boolean
+  ): string {
+    const concatenatedText = this.getConcatenatedText(tokens, startIndex);
+
+    return !top
+      ? concatenatedText
+      : this.renderer.paragraph({
+          type: "paragraph",
+          raw: concatenatedText,
+          text: concatenatedText,
+          tokens: [
+            { type: "text", raw: concatenatedText, text: concatenatedText },
+          ],
+        });
+  }
+
+  private getConcatenatedText(tokens: Token[], startIndex: number): string {
+    let currentIndex = startIndex;
+    let body = this.renderer.text(tokens[currentIndex] as Tokens.Text);
+
+    while (
+      currentIndex + 1 < tokens.length &&
+      tokens[currentIndex + 1].type === "text"
+    ) {
+      currentIndex++;
+      body += "\n" + this.renderer.text(tokens[currentIndex] as Tokens.Text);
+    }
+
+    return body;
+  }
+
+  private handleStandardToken(
+    token: Token,
+    renderers: { [key: string]: (token: Token) => string }
+  ): string {
+    const renderFunction = renderers[token.type];
+    if (renderFunction) {
+      return renderFunction(token);
+    } else {
+      return this.handleUnknownToken(token);
+    }
+  }
+
+  private handleUnknownToken(token: Token): string {
+    const errMsg = `Token with "${token.type}" type was not found.`;
+    if (this.options.silent) {
+      console.error(errMsg);
+      return "";
+    } else {
+      throw new Error(errMsg);
+    }
   }
 }
