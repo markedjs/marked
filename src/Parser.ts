@@ -1,8 +1,8 @@
-import { _Renderer } from "./Renderer.ts";
-import { _TextRenderer } from "./TextRenderer.ts";
-import { _defaults } from "./defaults.ts";
-import type { Token, Tokens } from "./Tokens.ts";
-import type { MarkedOptions } from "./MarkedOptions.ts";
+import { _Renderer } from './Renderer.ts';
+import { _TextRenderer } from './TextRenderer.ts';
+import { _defaults } from './defaults.ts';
+import type { Token, Tokens } from './Tokens.ts';
+import type { MarkedOptions } from './MarkedOptions.ts';
 
 /**
  * Parsing & Compiling
@@ -40,7 +40,7 @@ export class _Parser {
    * Parse Loop
    */
   parse(tokens: Token[], top = true): string {
-    let out = "";
+    let out = '';
 
     const renderers: { [key: string]: (token: Token) => string } = {
       space: (token) => this.renderer.space(token as Tokens.Space),
@@ -64,9 +64,9 @@ export class _Parser {
         continue;
       }
 
-      if (token.type === "text") {
+      if (token.type === 'text') {
         out += this.handleTextToken(tokens, i, top);
-        while (i + 1 < tokens.length && tokens[i + 1].type === "text") {
+        while (i + 1 < tokens.length && tokens[i + 1].type === 'text') {
           i++;
         }
       } else {
@@ -81,7 +81,7 @@ export class _Parser {
    * Parse Inline Tokens
    */
   parseInline(tokens: Token[], renderer?: _Renderer | _TextRenderer): string {
-    let out = "";
+    let out = '';
 
     const renderers: { [key: string]: (token: Token) => string } = {
       escape: (token) => this.renderer.text(token as Tokens.Escape),
@@ -118,16 +118,16 @@ export class _Parser {
 
   private handleRendererExtensions(
     token: Token,
-    renderers: { [key: string]: (token: Token) => string }
+    renderers: { [key: string]: (token: Token) => string },
   ): string | null {
     const rendererExtension = this.options.extensions?.renderers?.[token.type];
     if (rendererExtension) {
       const ret = rendererExtension.call({ parser: this }, token);
       if (
-        ret !== false ||
-        !Object.prototype.hasOwnProperty.call(renderers, token.type)
+        ret !== false
+        || !Object.prototype.hasOwnProperty.call(renderers, token.type)
       ) {
-        return ret || "";
+        return ret || '';
       }
     }
     return null;
@@ -136,20 +136,20 @@ export class _Parser {
   private handleTextToken(
     tokens: Token[],
     startIndex: number,
-    top: boolean
+    top: boolean,
   ): string {
     const concatenatedText = this.getConcatenatedText(tokens, startIndex);
 
     return !top
       ? concatenatedText
       : this.renderer.paragraph({
-          type: "paragraph",
-          raw: concatenatedText,
-          text: concatenatedText,
-          tokens: [
-            { type: "text", raw: concatenatedText, text: concatenatedText },
-          ],
-        });
+        type: 'paragraph',
+        raw: concatenatedText,
+        text: concatenatedText,
+        tokens: [
+          { type: 'text', raw: concatenatedText, text: concatenatedText },
+        ],
+      });
   }
 
   private getConcatenatedText(tokens: Token[], startIndex: number): string {
@@ -157,11 +157,11 @@ export class _Parser {
     let body = this.renderer.text(tokens[currentIndex] as Tokens.Text);
 
     while (
-      currentIndex + 1 < tokens.length &&
-      tokens[currentIndex + 1].type === "text"
+      currentIndex + 1 < tokens.length
+      && tokens[currentIndex + 1].type === 'text'
     ) {
       currentIndex++;
-      body += "\n" + this.renderer.text(tokens[currentIndex] as Tokens.Text);
+      body += '\n' + this.renderer.text(tokens[currentIndex] as Tokens.Text);
     }
 
     return body;
@@ -169,7 +169,7 @@ export class _Parser {
 
   private handleStandardToken(
     token: Token,
-    renderers: { [key: string]: (token: Token) => string }
+    renderers: { [key: string]: (token: Token) => string },
   ): string {
     const renderFunction = renderers[token.type];
     if (renderFunction) {
@@ -180,10 +180,10 @@ export class _Parser {
   }
 
   private handleUnknownToken(token: Token): string {
-    const errMsg = `Token with "${token.type}" type was not found.`;
+    const errMsg = `Token with '${token.type}' type was not found.`;
     if (this.options.silent) {
       console.error(errMsg);
-      return "";
+      return '';
     } else {
       throw new Error(errMsg);
     }
