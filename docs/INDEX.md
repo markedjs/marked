@@ -162,6 +162,7 @@ We actively support the usability of Marked in super-fast markdown transformatio
 | [StrapDown.js](https://naereen.github.io/StrapDown.js/)             | StrapDown.js is an awesome on-the-fly Markdown to HTML text processor.                |
 | [raito](https://raito.arnaud.at/)             | Mini Markdown Wiki/CMS in 8kb of JavaScript.                |
 | [Homebrewery](https://homebrewery.naturalcrit.com/)             | The Homebrewery is a tool for making authentic looking D&D content using Markdown. It is distributed under the terms of the MIT.             |
+| [marked_reader](https://github.com/CNOCTAVE/marked_reader)          | marked_reader is an open source Markdown reader packed by Electron. |
 
 <h2 id="security">Security</h2>
 
