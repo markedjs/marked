@@ -440,6 +440,8 @@ The renderer function has access to the parser in the `this` object, which can b
 <dd>An array of strings that match the names of any token parameters that should be traversed by the <code>walkTokens</code> functions. For instance, if you want to use a second custom parameter to contain child tokens in addition to <code>tokens</code>, it could be listed here. If <code>childTokens</code> is provided, the <code>tokens</code> array will not be walked by default unless it is also included in the <code>childTokens</code> array.</dd>
 </dl>
 
+If you would like to release an extension as an npm package you may use the [Marked Extension Template](https://github.com/markedjs/marked-extension-template) which includes all of the things you need to get started. Feel free to create an issue in that [repo](https://github.com/markedjs/marked-extension-template) if you need help.
+
 **Example:** <a name="custom-extensions-example"></a>Add a custom syntax to generate `<dl>` description lists.
 
 ``` js
