@@ -788,6 +788,10 @@ export class _Tokenizer {
   del(src: string): Tokens.Del | undefined {
     const cap = this.rules.inline.del.exec(src);
     if (cap) {
+      // should not end with unescaped tilde
+      if (cap[2].match(/(?:^|[^\\])(?:\\\\)*~$/)) {
+        return;
+      }
       return {
         type: 'del',
         raw: cap[0],
