@@ -1,8 +1,7 @@
-export const noopTest = { exec: () => null } as unknown as RegExp;
+const noopTest = { exec: () => null } as unknown as RegExp;
 
-export function edit(regex: string | RegExp, opt?: string) {
+function edit(regex: string | RegExp, opt = '') {
   let source = typeof regex === 'string' ? regex : regex.source;
-  opt = opt || '';
   const obj = {
     replace: (name: string | RegExp, val: string | RegExp) => {
       let valSource = typeof val === 'string' ? val : val.source;
@@ -16,9 +15,6 @@ export function edit(regex: string | RegExp, opt?: string) {
   };
   return obj;
 }
-/**
- * Other Rules
- */
 
 export const other = {
   codeRemoveIndent: /^(?: {1,4}| {0,3}\t)/gm,
