@@ -355,12 +355,7 @@ export class _Lexer {
       if (token = this.tokenizer.tag(src)) {
         src = src.substring(token.raw.length);
         lastToken = tokens[tokens.length - 1];
-        if (lastToken && token.type === 'text' && lastToken.type === 'text') {
-          lastToken.raw += token.raw;
-          lastToken.text += token.text;
-        } else {
-          tokens.push(token);
-        }
+        tokens.push(token);
         continue;
       }
 
