@@ -1,10 +1,9 @@
-import fetch from 'node-fetch';
-import { load } from 'cheerio';
-import { Marked } from '../lib/marked.esm.js';
-import { htmlIsEqual } from '@markedjs/testutils';
 import { readdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { load } from 'cheerio';
+import { htmlIsEqual } from '@markedjs/testutils';
+import { Marked } from '../lib/marked.esm.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -18,7 +17,7 @@ async function updateCommonmark(dir, options) {
   try {
     const res = await fetch('https://raw.githubusercontent.com/commonmark/commonmark.js/master/package.json');
     const pkg = await res.json();
-    const version = pkg.version.replace(/^(\d+\.\d+).*$/, '$1');
+    const { version } = pkg;
     const res2 = await fetch(`https://spec.commonmark.org/${version}/spec.json`);
     const json = await res2.json();
     const specs = await Promise.all(json.map(async(spec) => {
