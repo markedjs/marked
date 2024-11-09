@@ -1,6 +1,6 @@
 import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
-import { block, inline } from './rules.ts';
+import { other, block, inline } from './rules.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions, TokenizerExtension } from './MarkedOptions.ts';
 
@@ -36,6 +36,7 @@ export class _Lexer {
     };
 
     const rules = {
+      other,
       block: block.normal,
       inline: inline.normal,
     };
@@ -85,7 +86,7 @@ export class _Lexer {
    */
   lex(src: string) {
     src = src
-      .replace(/\r\n|\r/g, '\n');
+      .replace(other.carriageReturn, '\n');
 
     this.blockTokens(src, this.tokens);
 
@@ -105,7 +106,7 @@ export class _Lexer {
   blockTokens(src: string, tokens?: TokensList, lastParagraphClipped?: boolean): TokensList;
   blockTokens(src: string, tokens: Token[] = [], lastParagraphClipped = false) {
     if (this.options.pedantic) {
-      src = src.replace(/\t/g, '    ').replace(/^ +$/gm, '');
+      src = src.replace(other.tabCharGlobal, '    ').replace(other.spaceLine, '');
     }
 
     let token: Tokens.Generic | undefined;
