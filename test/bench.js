@@ -118,6 +118,13 @@ export async function bench(tests, specs) {
     const percent = ((stats[name].correct / specs.length) * 100).toFixed(2);
     console.log(`${name} completed in ${ms}ms and passed ${percent}%`);
   }
+
+  const percentSlower = ((
+    prettyElapsedTime(stats['esm marked'].elapsed)
+    / prettyElapsedTime(stats.commonmark.elapsed)
+  ) - 1) * 100;
+
+  console.log(`${Math.round(percentSlower)}% slower than commonmark`);
 }
 
 /**
