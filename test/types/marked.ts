@@ -373,3 +373,28 @@ import { inline } from 'marked';
 // Rules is exported
 import type { Rules } from 'marked';
 
+marked.parse('', {
+  async: undefined,
+  breaks: undefined,
+  extensions: undefined,
+  gfm: undefined,
+  hooks: undefined,
+  pedantic: undefined,
+  renderer: undefined,
+  silent: undefined,
+  tokenizer: undefined,
+  walkTokens: undefined,
+});
+
+marked.use({
+  async: undefined,
+  breaks: undefined,
+  extensions: undefined,
+  gfm: undefined,
+  hooks: undefined,
+  pedantic: undefined,
+  renderer: undefined,
+  silent: undefined,
+  tokenizer: undefined,
+  walkTokens: undefined,
+});
