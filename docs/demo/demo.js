@@ -185,7 +185,7 @@ function setOptions(opts) {
   $optionsElem.value = JSON.stringify(
     opts,
     (key, value) => {
-      if (typeof value === 'object' && Object.getPrototypeOf(value) !== Object.prototype) {
+      if (value !== null && typeof value === 'object' && Object.getPrototypeOf(value) !== Object.prototype) {
         return undefined;
       }
       return value;
