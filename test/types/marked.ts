@@ -46,11 +46,6 @@ let options: MarkedOptions = {
 options = marked.getDefaults();
 options = marked.defaults;
 
-function callback(err: Error | null, markdown: string | undefined) {
-  console.log('Callback called!');
-  console.log(markdown);
-}
-
 let myOldMarked: typeof marked = marked.options(options);
 myOldMarked = marked.setOptions(options);
 
@@ -378,3 +373,28 @@ import { inline } from 'marked';
 // Rules is exported
 import type { Rules } from 'marked';
 
+marked.parse('', {
+  async: undefined,
+  breaks: undefined,
+  extensions: undefined,
+  gfm: undefined,
+  hooks: undefined,
+  pedantic: undefined,
+  renderer: undefined,
+  silent: undefined,
+  tokenizer: undefined,
+  walkTokens: undefined,
+});
+
+marked.use({
+  async: undefined,
+  breaks: undefined,
+  extensions: undefined,
+  gfm: undefined,
+  hooks: undefined,
+  pedantic: undefined,
+  renderer: undefined,
+  silent: undefined,
+  tokenizer: undefined,
+  walkTokens: undefined,
+});

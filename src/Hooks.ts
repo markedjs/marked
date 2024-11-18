@@ -6,7 +6,7 @@ import type { Token, TokensList } from './Tokens.ts';
 
 export class _Hooks {
   options: MarkedOptions;
-  block: boolean | undefined;
+  block?: boolean;
 
   constructor(options?: MarkedOptions) {
     this.options = options || _defaults;

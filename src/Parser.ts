@@ -46,7 +46,7 @@ export class _Parser {
       const anyToken = tokens[i];
 
       // Run any renderer extensions
-      if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[anyToken.type]) {
+      if (this.options.extensions?.renderers?.[anyToken.type]) {
         const genericToken = anyToken as Tokens.Generic;
         const ret = this.options.extensions.renderers[genericToken.type].call({ parser: this }, genericToken);
         if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'html', 'paragraph', 'text'].includes(genericToken.type)) {
@@ -132,15 +132,14 @@ export class _Parser {
   /**
    * Parse Inline Tokens
    */
-  parseInline(tokens: Token[], renderer?: _Renderer | _TextRenderer): string {
-    renderer = renderer || this.renderer;
+  parseInline(tokens: Token[], renderer: _Renderer | _TextRenderer = this.renderer): string {
     let out = '';
 
     for (let i = 0; i < tokens.length; i++) {
       const anyToken = tokens[i];
 
       // Run any renderer extensions
-      if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[anyToken.type]) {
+      if (this.options.extensions?.renderers?.[anyToken.type]) {
         const ret = this.options.extensions.renderers[anyToken.type].call({ parser: this }, anyToken);
         if (ret !== false || !['escape', 'html', 'link', 'image', 'strong', 'em', 'codespan', 'br', 'del', 'text'].includes(anyToken.type)) {
           out += ret || '';

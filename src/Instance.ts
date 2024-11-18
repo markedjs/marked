@@ -265,11 +265,11 @@ export class Marked {
     type overloadedParse = {
       (src: string, options: MarkedOptions & { async: true }): Promise<string>;
       (src: string, options: MarkedOptions & { async: false }): string;
-      (src: string, options?: MarkedOptions | undefined | null): string | Promise<string>;
+      (src: string, options?: MarkedOptions | null): string | Promise<string>;
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const parse: overloadedParse = (src: string, options?: MarkedOptions | undefined | null): any => {
+    const parse: overloadedParse = (src: string, options?: MarkedOptions | null): any => {
       const origOpt = { ...options };
       const opt = { ...this.defaults, ...origOpt };
 

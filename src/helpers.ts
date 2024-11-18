@@ -72,7 +72,7 @@ export function splitCells(tableRow: string, count?: number) {
   if (!cells[0].trim()) {
     cells.shift();
   }
-  if (cells.length > 0 && !cells[cells.length - 1].trim()) {
+  if (cells.length > 0 && !cells.at(-1)?.trim()) {
     cells.pop();
   }
 

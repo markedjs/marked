@@ -2,7 +2,7 @@ import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
-import type { MarkedOptions, TokenizerExtension } from './MarkedOptions.ts';
+import type { MarkedOptions } from './MarkedOptions.ts';
 
 /**
  * Block Lexer
@@ -85,8 +85,7 @@ export class _Lexer {
    * Preprocessing
    */
   lex(src: string) {
-    src = src
-      .replace(other.carriageReturn, '\n');
+    src = src.replace(other.carriageReturn, '\n');
 
     this.blockTokens(src, this.tokens);
 
@@ -109,31 +108,28 @@ export class _Lexer {
       src = src.replace(other.tabCharGlobal, '    ').replace(other.spaceLine, '');
     }
 
-    let token: Tokens.Generic | undefined;
-    let lastToken;
-    let cutSrc;
-
     while (src) {
-      if (this.options.extensions
-        && this.options.extensions.block
-        && this.options.extensions.block.some((extTokenizer: TokenizerExtension['tokenizer']) => {
-          if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
-            src = src.substring(token.raw.length);
-            tokens.push(token);
-            return true;
-          }
-          return false;
-        })) {
+      let token: Tokens.Generic | undefined;
+
+      if (this.options.extensions?.block?.some((extTokenizer) => {
+        if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
+          src = src.substring(token.raw.length);
+          tokens.push(token);
+          return true;
+        }
+        return false;
+      })) {
         continue;
       }
 
       // newline
       if (token = this.tokenizer.space(src)) {
         src = src.substring(token.raw.length);
-        if (token.raw.length === 1 && tokens.length > 0) {
+        const lastToken = tokens.at(-1);
+        if (token.raw.length === 1 && lastToken !== undefined) {
           // if there's a single \n as a spacer, it's terminating the last line,
           // so move it there so that we don't get unnecessary paragraph tags
-          tokens[tokens.length - 1].raw += '\n';
+          lastToken.raw += '\n';
         } else {
           tokens.push(token);
         }
@@ -143,12 +139,12 @@ export class _Lexer {
       // code
       if (token = this.tokenizer.code(src)) {
         src = src.substring(token.raw.length);
-        lastToken = tokens[tokens.length - 1];
+        const lastToken = tokens.at(-1);
         // An indented code block cannot interrupt a paragraph.
-        if (lastToken && (lastToken.type === 'paragraph' || lastToken.type === 'text')) {
+        if (lastToken?.type === 'paragraph' || lastToken?.type === 'text') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
-          this.inlineQueue[this.inlineQueue.length - 1].src = lastToken.text;
+          this.inlineQueue.at(-1)!.src = lastToken.text;
         } else {
           tokens.push(token);
         }
@@ -200,11 +196,11 @@ export class _Lexer {
       // def
       if (token = this.tokenizer.def(src)) {
         src = src.substring(token.raw.length);
-        lastToken = tokens[tokens.length - 1];
-        if (lastToken && (lastToken.type === 'paragraph' || lastToken.type === 'text')) {
+        const lastToken = tokens.at(-1);
+        if (lastToken?.type === 'paragraph' || lastToken?.type === 'text') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.raw;
-          this.inlineQueue[this.inlineQueue.length - 1].src = lastToken.text;
+          this.inlineQueue.at(-1)!.src = lastToken.text;
         } else if (!this.tokens.links[token.tag]) {
           this.tokens.links[token.tag] = {
             href: token.href,
@@ -230,30 +226,32 @@ export class _Lexer {
 
       // top-level paragraph
       // prevent paragraph consuming extensions by clipping 'src' to extension start
-      cutSrc = src;
-      if (this.options.extensions && this.options.extensions.startBlock) {
+      let cutSrc = src;
+      if (this.options.extensions?.startBlock) {
         let startIndex = Infinity;
         const tempSrc = src.slice(1);
         let tempStart;
         this.options.extensions.startBlock.forEach((getStartIndex) => {
           tempStart = getStartIndex.call({ lexer: this }, tempSrc);
-          if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
+          if (typeof tempStart === 'number' && tempStart >= 0) {
+            startIndex = Math.min(startIndex, tempStart);
+          }
         });
         if (startIndex < Infinity && startIndex >= 0) {
           cutSrc = src.substring(0, startIndex + 1);
         }
       }
       if (this.state.top && (token = this.tokenizer.paragraph(cutSrc))) {
-        lastToken = tokens[tokens.length - 1];
+        const lastToken = tokens.at(-1);
         if (lastParagraphClipped && lastToken?.type === 'paragraph') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
           this.inlineQueue.pop();
-          this.inlineQueue[this.inlineQueue.length - 1].src = lastToken.text;
+          this.inlineQueue.at(-1)!.src = lastToken.text;
         } else {
           tokens.push(token);
         }
-        lastParagraphClipped = (cutSrc.length !== src.length);
+        lastParagraphClipped = cutSrc.length !== src.length;
         src = src.substring(token.raw.length);
         continue;
       }
@@ -261,12 +259,12 @@ export class _Lexer {
       // text
       if (token = this.tokenizer.text(src)) {
         src = src.substring(token.raw.length);
-        lastToken = tokens[tokens.length - 1];
-        if (lastToken && lastToken.type === 'text') {
+        const lastToken = tokens.at(-1);
+        if (lastToken?.type === 'text') {
           lastToken.raw += '\n' + token.raw;
           lastToken.text += '\n' + token.text;
           this.inlineQueue.pop();
-          this.inlineQueue[this.inlineQueue.length - 1].src = lastToken.text;
+          this.inlineQueue.at(-1)!.src = lastToken.text;
         } else {
           tokens.push(token);
         }
@@ -297,12 +295,9 @@ export class _Lexer {
    * Lexing/Compiling
    */
   inlineTokens(src: string, tokens: Token[] = []): Token[] {
-    let token, lastToken, cutSrc;
-
     // String with links masked to avoid interference with em and strong
     let maskedSrc = src;
-    let match;
-    let keepPrevChar, prevChar;
+    let match: RegExpExecArray | null = null;
 
     // Mask out reflinks
     if (this.tokens.links) {
@@ -310,7 +305,9 @@ export class _Lexer {
       if (links.length > 0) {
         while ((match = this.tokenizer.rules.inline.reflinkSearch.exec(maskedSrc)) != null) {
           if (links.includes(match[0].slice(match[0].lastIndexOf('[') + 1, -1))) {
-            maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
+            maskedSrc = maskedSrc.slice(0, match.index)
+              + '[' + 'a'.repeat(match[0].length - 2) + ']'
+              + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
           }
         }
       }
@@ -325,23 +322,25 @@ export class _Lexer {
       maskedSrc = maskedSrc.slice(0, match.index) + '++' + maskedSrc.slice(this.tokenizer.rules.inline.anyPunctuation.lastIndex);
     }
 
+    let keepPrevChar = false;
+    let prevChar = '';
     while (src) {
       if (!keepPrevChar) {
         prevChar = '';
       }
       keepPrevChar = false;
 
+      let token: Tokens.Generic | undefined;
+
       // extensions
-      if (this.options.extensions
-        && this.options.extensions.inline
-        && this.options.extensions.inline.some((extTokenizer) => {
-          if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
-            src = src.substring(token.raw.length);
-            tokens.push(token);
-            return true;
-          }
-          return false;
-        })) {
+      if (this.options.extensions?.inline?.some((extTokenizer) => {
+        if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
+          src = src.substring(token.raw.length);
+          tokens.push(token);
+          return true;
+        }
+        return false;
+      })) {
         continue;
       }
 
@@ -355,7 +354,6 @@ export class _Lexer {
       // tag
       if (token = this.tokenizer.tag(src)) {
         src = src.substring(token.raw.length);
-        lastToken = tokens[tokens.length - 1];
         tokens.push(token);
         continue;
       }
@@ -370,8 +368,8 @@ export class _Lexer {
       // reflink, nolink
       if (token = this.tokenizer.reflink(src, this.tokens.links)) {
         src = src.substring(token.raw.length);
-        lastToken = tokens[tokens.length - 1];
-        if (lastToken && token.type === 'text' && lastToken.type === 'text') {
+        const lastToken = tokens.at(-1);
+        if (token.type === 'text' && lastToken?.type === 'text') {
           lastToken.raw += token.raw;
           lastToken.text += token.text;
         } else {
@@ -424,14 +422,16 @@ export class _Lexer {
 
       // text
       // prevent inlineText consuming extensions by clipping 'src' to extension start
-      cutSrc = src;
-      if (this.options.extensions && this.options.extensions.startInline) {
+      let cutSrc = src;
+      if (this.options.extensions?.startInline) {
         let startIndex = Infinity;
         const tempSrc = src.slice(1);
         let tempStart;
         this.options.extensions.startInline.forEach((getStartIndex) => {
           tempStart = getStartIndex.call({ lexer: this }, tempSrc);
-          if (typeof tempStart === 'number' && tempStart >= 0) { startIndex = Math.min(startIndex, tempStart); }
+          if (typeof tempStart === 'number' && tempStart >= 0) {
+            startIndex = Math.min(startIndex, tempStart);
+          }
         });
         if (startIndex < Infinity && startIndex >= 0) {
           cutSrc = src.substring(0, startIndex + 1);
@@ -443,8 +443,8 @@ export class _Lexer {
           prevChar = token.raw.slice(-1);
         }
         keepPrevChar = true;
-        lastToken = tokens[tokens.length - 1];
-        if (lastToken && lastToken.type === 'text') {
+        const lastToken = tokens.at(-1);
+        if (lastToken?.type === 'text') {
           lastToken.raw += token.raw;
           lastToken.text += token.text;
         } else {

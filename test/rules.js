@@ -34,7 +34,7 @@ function propsToString(obj) {
     return null;
   }
   if (obj.constructor.name === 'Object') {
-    if (obj.exec && obj.exec.name === 'noopTest') {
+    if (obj.exec?.name === 'noopTest') {
       return null;
     }
     for (const prop in obj) {
@@ -61,7 +61,7 @@ if (process.argv.length > 2) {
         rule = rule[prop];
       }
     }
-    rulesList[rulePath[0]] = rule && rule[rulePath[0]] ? rule[rulePath[0]] : null;
+    rulesList[rulePath[0]] = rule?.[rulePath[0]] ?? null;
   }
 } else {
   rulesObj = rules;

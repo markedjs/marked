@@ -77,7 +77,7 @@ export class _Renderer {
     if (item.task) {
       const checkbox = this.checkbox({ checked: !!item.checked });
       if (item.loose) {
-        if (item.tokens.length > 0 && item.tokens[0].type === 'paragraph') {
+        if (item.tokens[0]?.type === 'paragraph') {
           item.tokens[0].text = checkbox + ' ' + item.tokens[0].text;
           if (item.tokens[0].tokens && item.tokens[0].tokens.length > 0 && item.tokens[0].tokens[0].type === 'text') {
             item.tokens[0].tokens[0].text = checkbox + ' ' + escape(item.tokens[0].tokens[0].text);

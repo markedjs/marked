@@ -198,7 +198,7 @@ export class _Tokenizer {
           break;
         }
 
-        const lastToken = tokens[tokens.length - 1];
+        const lastToken = tokens.at(-1);
 
         if (lastToken?.type === 'code') {
           // blockquote continuation cannot be preceded by a code block
@@ -222,7 +222,7 @@ export class _Tokenizer {
 
           raw = raw.substring(0, raw.length - lastToken.raw.length) + newToken.raw;
           text = text.substring(0, text.length - oldToken.raw.length) + newToken.raw;
-          lines = newText.substring(tokens[tokens.length - 1].raw.length).split('\n');
+          lines = newText.substring(tokens.at(-1)!.raw.length).split('\n');
           continue;
         }
       }
@@ -414,8 +414,11 @@ export class _Tokenizer {
       }
 
       // Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
-      list.items[list.items.length - 1].raw = list.items[list.items.length - 1].raw.trimEnd();
-      list.items[list.items.length - 1].text = list.items[list.items.length - 1].text.trimEnd();
+      const lastItem = list.items.at(-1);
+      if (lastItem) {
+        lastItem.raw = lastItem.raw.trimEnd();
+        lastItem.text = lastItem.text.trimEnd();
+      }
       list.raw = list.raw.trimEnd();
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first
@@ -486,7 +489,7 @@ export class _Tokenizer {
 
     const headers = splitCells(cap[1]);
     const aligns = cap[2].replace(this.rules.other.tableAlignChars, '').split('|');
-    const rows = cap[3] && cap[3].trim() ? cap[3].replace(this.rules.other.tableRowBlankLine, '').split('\n') : [];
+    const rows = cap[3]?.trim() ? cap[3].replace(this.rules.other.tableRowBlankLine, '').split('\n') : [];
 
     const item: Tokens.Table = {
       type: 'table',
