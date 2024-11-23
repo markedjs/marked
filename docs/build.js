@@ -89,7 +89,7 @@ async function build(currentDir, tmpl, testResultsTable) {
       const parsed = parse(filename);
       if (parsed.ext === '.md' && isUppercase(parsed.name)) {
         const mdHtml = markedInstance.parse(
-          html.replace('<!--{{test-results-table}}-->', testResultsTable)
+          html.replace('<!--{{test-results-table}}-->', testResultsTable),
         );
         html = tmpl
           .replace('<!--{{title}}-->', getTitle(parsed.name))
