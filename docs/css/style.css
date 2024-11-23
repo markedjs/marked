@@ -112,6 +112,15 @@ pre code {
     border-radius: 3px;
 }
 
+summary {
+    cursor: pointer;
+    padding: 3px 0px;
+}
+
+summary:hover {
+    color: #0366d6;
+}
+
 .div-copy {
     position: absolute;
     top: 0;
