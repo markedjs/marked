@@ -18,7 +18,7 @@ const outputDir = join(cwd, 'public');
 const templateFile = join(inputDir, '_document.html');
 const isUppercase = str => /[A-Z_]+/.test(str);
 const getTitle = str => str === 'INDEX' ? '' : titleize(str.replace(/_/g, ' ')) + ' - ';
-const convertTestsToTable = (name, tests) => {
+function convertTestsToTable(name, tests) {
   let total = 0;
   let passing = 0;
   let table = '\n| Section | Passing | Percent |\n';
