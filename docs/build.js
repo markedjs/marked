@@ -35,7 +35,7 @@ function convertTestsToTable(name, tests) {
   <summary>${name} (${(passing / total * 100).toFixed()}%)</summary>
   ${table}
 </details>\n`;
-};
+}
 
 const markedInstance = new marked.Marked(markedHighlight((code, language) => {
   if (!language) {
