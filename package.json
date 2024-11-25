@@ -77,7 +77,7 @@
     "semantic-release": "^24.2.0",
     "titleize": "^4.0.0",
     "tslib": "^2.8.1",
-    "typescript": "5.6.3"
+    "typescript": "5.7.2"
   },
   "scripts": {
     "bench": "npm run build && node test/bench.js",
