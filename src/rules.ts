@@ -243,26 +243,30 @@ const br = /^( {2,}|\\)\n(?!\s*$)/;
 const inlineText = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
 
 // list of unicode punctuation marks, plus any missing characters from CommonMark spec
-const _punctuation = /\p{P}\p{S}/u;
-const punctuation = edit(/^((?![*_])[\spunctuation])/, 'u')
-  .replace(/punctuation/g, _punctuation).getRegex();
+const _punctuation = /[\p{P}\p{S}]/u;
+const _punctuationOrSpace = /[\s\p{P}\p{S}]/u;
+const _notPunctuationOrSpace = /[^\s\p{P}\p{S}]/u;
+const punctuation = edit(/^((?![*_])punctSpace)/, 'u')
+  .replace(/punctSpace/g, _punctuationOrSpace).getRegex();
 
 // sequences em should skip over [title](link), `code`, <html>
 const blockSkip = /\[[^[\]]*?\]\((?:\\.|[^\\\(\)]|\((?:\\.|[^\\\(\)])*\))*\)|`[^`]*?`|<[^<>]*?>/g;
 
-const emStrongLDelim = edit(/^(?:\*+(?:((?!\*)[punct])|[^\s*]))|^_+(?:((?!_)[punct])|([^\s_]))/, 'u')
+const emStrongLDelim = edit(/^(?:\*+(?:((?!\*)punct)|[^\s*]))|^_+(?:((?!_)punct)|([^\s_]))/, 'u')
   .replace(/punct/g, _punctuation)
   .getRegex();
 
 const emStrongRDelimAst = edit(
   '^[^_*]*?__[^_*]*?\\*[^_*]*?(?=__)' // Skip orphan inside strong
 + '|[^*]+(?=[^*])' // Consume to delim
-+ '|(?!\\*)[punct](\\*+)(?=[\\s]|$)' // (1) #*** can only be a Right Delimiter
-+ '|[^punct\\s](\\*+)(?!\\*)(?=[punct\\s]|$)' // (2) a***#, a*** can only be a Right Delimiter
-+ '|(?!\\*)[punct\\s](\\*+)(?=[^punct\\s])' // (3) #***a, ***a can only be Left Delimiter
-+ '|[\\s](\\*+)(?!\\*)(?=[punct])' // (4) ***# can only be Left Delimiter
-+ '|(?!\\*)[punct](\\*+)(?!\\*)(?=[punct])' // (5) #***# can be either Left or Right Delimiter
-+ '|[^punct\\s](\\*+)(?=[^punct\\s])', 'gu') // (6) a***a can be either Left or Right Delimiter
++ '|(?!\\*)punct(\\*+)(?=[\\s]|$)' // (1) #*** can only be a Right Delimiter
++ '|notPunctSpace(\\*+)(?!\\*)(?=punctSpace|$)' // (2) a***#, a*** can only be a Right Delimiter
++ '|(?!\\*)punctSpace(\\*+)(?=notPunctSpace)' // (3) #***a, ***a can only be Left Delimiter
++ '|[\\s](\\*+)(?!\\*)(?=punct)' // (4) ***# can only be Left Delimiter
++ '|(?!\\*)punct(\\*+)(?!\\*)(?=punct)' // (5) #***# can be either Left or Right Delimiter
++ '|notPunctSpace(\\*+)(?=notPunctSpace)', 'gu') // (6) a***a can be either Left or Right Delimiter
+  .replace(/notPunctSpace/g, _notPunctuationOrSpace)
+  .replace(/punctSpace/g, _punctuationOrSpace)
   .replace(/punct/g, _punctuation)
   .getRegex();
 
@@ -270,15 +274,17 @@ const emStrongRDelimAst = edit(
 const emStrongRDelimUnd = edit(
   '^[^_*]*?\\*\\*[^_*]*?_[^_*]*?(?=\\*\\*)' // Skip orphan inside strong
 + '|[^_]+(?=[^_])' // Consume to delim
-+ '|(?!_)[punct](_+)(?=[\\s]|$)' // (1) #___ can only be a Right Delimiter
-+ '|[^punct\\s](_+)(?!_)(?=[punct\\s]|$)' // (2) a___#, a___ can only be a Right Delimiter
-+ '|(?!_)[punct\\s](_+)(?=[^punct\\s])' // (3) #___a, ___a can only be Left Delimiter
-+ '|[\\s](_+)(?!_)(?=[punct])' // (4) ___# can only be Left Delimiter
-+ '|(?!_)[punct](_+)(?!_)(?=[punct])', 'gu') // (5) #___# can be either Left or Right Delimiter
++ '|(?!_)punct(_+)(?=[\\s]|$)' // (1) #___ can only be a Right Delimiter
++ '|notPunctSpace(_+)(?!_)(?=punctSpace|$)' // (2) a___#, a___ can only be a Right Delimiter
++ '|(?!_)punctSpace(_+)(?=notPunctSpace)' // (3) #___a, ___a can only be Left Delimiter
++ '|[\\s](_+)(?!_)(?=punct)' // (4) ___# can only be Left Delimiter
++ '|(?!_)punct(_+)(?!_)(?=punct)', 'gu') // (5) #___# can be either Left or Right Delimiter
+  .replace(/notPunctSpace/g, _notPunctuationOrSpace)
+  .replace(/punctSpace/g, _punctuationOrSpace)
   .replace(/punct/g, _punctuation)
   .getRegex();
 
-const anyPunctuation = edit(/\\([punct])/, 'gu')
+const anyPunctuation = edit(/\\(punct)/, 'gu')
   .replace(/punct/g, _punctuation)
   .getRegex();
 
