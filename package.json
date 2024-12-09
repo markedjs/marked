@@ -67,7 +67,7 @@
     "commonmark": "0.31.2",
     "cross-env": "^7.0.3",
     "dts-bundle-generator": "^9.5.1",
-    "eslint": "^9.14.0",
+    "eslint": "^9.16.0",
     "highlight.js": "^11.10.0",
     "markdown-it": "14.1.0",
     "marked-highlight": "^2.2.1",
