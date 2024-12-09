@@ -54,7 +54,7 @@
   ],
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.1",
-    "@markedjs/eslint-config": "^1.0.8",
+    "@markedjs/eslint-config": "^1.0.9",
     "@markedjs/testutils": "14.1.1-0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
