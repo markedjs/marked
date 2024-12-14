@@ -127,6 +127,20 @@ describe('marked unit', () => {
       assert.strictEqual(html, '<p>Not Underlined A</p>\n<u>Underlined B</u>\n<p>Not Underlined C\n:Not Underlined D</p>\n');
     });
 
+    it('should not return list if no items', () => {
+      const noHr = {
+        tokenizer: {
+          hr() {
+            return undefined;
+          },
+        },
+      };
+      marked.use(noHr);
+      const markdown = '- - -';
+      const html = marked.parse(markdown);
+      assert.strictEqual(html, '<p>- - -</p>\n');
+    });
+
     it('should use custom inline tokenizer + renderer extensions', () => {
       const underline = {
         name: 'underline',
