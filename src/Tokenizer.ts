@@ -418,6 +418,9 @@ export class _Tokenizer {
       if (lastItem) {
         lastItem.raw = lastItem.raw.trimEnd();
         lastItem.text = lastItem.text.trimEnd();
+      } else {
+        // not a list since there were no items
+        return;
       }
       list.raw = list.raw.trimEnd();
 
