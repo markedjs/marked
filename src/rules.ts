@@ -249,6 +249,11 @@ const _notPunctuationOrSpace = /[^\s\p{P}\p{S}]/u;
 const punctuation = edit(/^((?![*_])punctSpace)/, 'u')
   .replace(/punctSpace/g, _punctuationOrSpace).getRegex();
 
+// GFM allows ~ inside strong and em for strikethrough
+const _punctuationGfmStrongEm = /(?!~)[\p{P}\p{S}]/u;
+const _punctuationOrSpaceGfmStrongEm = /(?!~)[\s\p{P}\p{S}]/u;
+const _notPunctuationOrSpaceGfmStrongEm = /(?:[^\s\p{P}\p{S}]|~)/u;
+
 // sequences em should skip over [title](link), `code`, <html>
 const blockSkip = /\[[^[\]]*?\]\((?:\\.|[^\\\(\)]|\((?:\\.|[^\\\(\)])*\))*\)|`[^`]*?`|<[^<>]*?>/g;
 
@@ -256,7 +261,7 @@ const emStrongLDelim = edit(/^(?:\*+(?:((?!\*)punct)|[^\s*]))|^_+(?:((?!_)punct)
   .replace(/punct/g, _punctuation)
   .getRegex();
 
-const emStrongRDelimAst = edit(
+const emStrongRDelimAstCore =
   '^[^_*]*?__[^_*]*?\\*[^_*]*?(?=__)' // Skip orphan inside strong
 + '|[^*]+(?=[^*])' // Consume to delim
 + '|(?!\\*)punct(\\*+)(?=[\\s]|$)' // (1) #*** can only be a Right Delimiter
@@ -264,10 +269,18 @@ const emStrongRDelimAst = edit(
 + '|(?!\\*)punctSpace(\\*+)(?=notPunctSpace)' // (3) #***a, ***a can only be Left Delimiter
 + '|[\\s](\\*+)(?!\\*)(?=punct)' // (4) ***# can only be Left Delimiter
 + '|(?!\\*)punct(\\*+)(?!\\*)(?=punct)' // (5) #***# can be either Left or Right Delimiter
-+ '|notPunctSpace(\\*+)(?=notPunctSpace)', 'gu') // (6) a***a can be either Left or Right Delimiter
++ '|notPunctSpace(\\*+)(?=notPunctSpace)'; // (6) a***a can be either Left or Right Delimiter
+
+const emStrongRDelimAst = edit(emStrongRDelimAstCore, 'gu')
   .replace(/notPunctSpace/g, _notPunctuationOrSpace)
   .replace(/punctSpace/g, _punctuationOrSpace)
   .replace(/punct/g, _punctuation)
+  .getRegex();
+
+const emStrongRDelimAstGfm = edit(emStrongRDelimAstCore, 'gu')
+  .replace(/notPunctSpace/g, _notPunctuationOrSpaceGfmStrongEm)
+  .replace(/punctSpace/g, _punctuationOrSpaceGfmStrongEm)
+  .replace(/punct/g, _punctuationGfmStrongEm)
   .getRegex();
 
 // (6) Not allowed for _
@@ -375,7 +388,7 @@ const inlinePedantic: Record<InlineKeys, RegExp> = {
 
 const inlineGfm: Record<InlineKeys, RegExp> = {
   ...inlineNormal,
-  escape: edit(escape).replace('])', '~|])').getRegex(),
+  emStrongRDelimAst: emStrongRDelimAstGfm,
   url: edit(/^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/, 'i')
     .replace('email', /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/)
     .getRegex(),
