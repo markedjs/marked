@@ -257,8 +257,14 @@ const _notPunctuationOrSpaceGfmStrongEm = /(?:[^\s\p{P}\p{S}]|~)/u;
 // sequences em should skip over [title](link), `code`, <html>
 const blockSkip = /\[[^[\]]*?\]\((?:\\.|[^\\\(\)]|\((?:\\.|[^\\\(\)])*\))*\)|`[^`]*?`|<[^<>]*?>/g;
 
-const emStrongLDelim = edit(/^(?:\*+(?:((?!\*)punct)|[^\s*]))|^_+(?:((?!_)punct)|([^\s_]))/, 'u')
+const emStrongLDelimCore = /^(?:\*+(?:((?!\*)punct)|[^\s*]))|^_+(?:((?!_)punct)|([^\s_]))/;
+
+const emStrongLDelim = edit(emStrongLDelimCore, 'u')
   .replace(/punct/g, _punctuation)
+  .getRegex();
+
+const emStrongLDelimGfm = edit(emStrongLDelimCore, 'u')
+  .replace(/punct/g, _punctuationGfmStrongEm)
   .getRegex();
 
 const emStrongRDelimAstCore =
@@ -389,6 +395,7 @@ const inlinePedantic: Record<InlineKeys, RegExp> = {
 const inlineGfm: Record<InlineKeys, RegExp> = {
   ...inlineNormal,
   emStrongRDelimAst: emStrongRDelimAstGfm,
+  emStrongLDelim: emStrongLDelimGfm,
   url: edit(/^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/, 'i')
     .replace('email', /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/)
     .getRegex(),
