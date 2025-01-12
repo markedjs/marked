@@ -20,6 +20,7 @@ export type MarkedToken = (
   | Tokens.Space
   | Tokens.Strong
   | Tokens.Table
+  | Tokens.TableCell
   | Tokens.Tag
   | Tokens.Text
 );
