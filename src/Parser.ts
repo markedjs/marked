@@ -90,6 +90,10 @@ export class _Parser {
           out += this.renderer.html(token);
           continue;
         }
+        case 'strong': {
+          out += this.renderer.strong(token);
+          continue;
+        }
         case 'paragraph': {
           out += this.renderer.paragraph(token);
           continue;
