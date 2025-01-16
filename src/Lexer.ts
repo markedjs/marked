@@ -2,7 +2,7 @@ import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
-import type { MarkedOptions } from './MarkedOptions.ts';
+import type { MarkedOptions, TokenizerPosition } from './MarkedOptions.ts';
 
 /**
  * Block Lexer
@@ -111,14 +111,9 @@ export class _Lexer {
     while (src) {
       let token: Tokens.Generic | undefined;
 
-      if (this.options.extensions?.block?.some((extTokenizer) => {
-        if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
-          src = src.substring(token.raw.length);
-          tokens.push(token);
-          return true;
-        }
-        return false;
-      })) {
+      if (token = this.runExtensions('beforeSpace', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
         continue;
       }
 
@@ -133,6 +128,12 @@ export class _Lexer {
         } else {
           tokens.push(token);
         }
+        continue;
+      }
+
+      if (token = this.runExtensions('beforeCode', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
         continue;
       }
 
@@ -151,8 +152,20 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeFences', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       // fences
       if (token = this.tokenizer.fences(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (token = this.runExtensions('beforeHeading', src, tokens)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -165,8 +178,20 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeHr', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       // hr
       if (token = this.tokenizer.hr(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (token = this.runExtensions('beforeBlockquote', src, tokens)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -179,6 +204,12 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeList', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       // list
       if (token = this.tokenizer.list(src)) {
         src = src.substring(token.raw.length);
@@ -186,8 +217,20 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeHtml', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       // html
       if (token = this.tokenizer.html(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (token = this.runExtensions('beforeDef', src, tokens)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -210,6 +253,12 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeTable', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       // table (gfm)
       if (token = this.tokenizer.table(src)) {
         src = src.substring(token.raw.length);
@@ -217,8 +266,20 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeLheading', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       // lheading
       if (token = this.tokenizer.lheading(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (token = this.runExtensions('beforeParagraph', src, tokens)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -256,6 +317,12 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeBlockText', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       // text
       if (token = this.tokenizer.text(src)) {
         src = src.substring(token.raw.length);
@@ -268,6 +335,12 @@ export class _Lexer {
         } else {
           tokens.push(token);
         }
+        continue;
+      }
+
+      if (token = this.runExtensions('beforeBlockEnd', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
         continue;
       }
 
@@ -333,20 +406,20 @@ export class _Lexer {
 
       let token: Tokens.Generic | undefined;
 
-      // extensions
-      if (this.options.extensions?.inline?.some((extTokenizer) => {
-        if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
-          src = src.substring(token.raw.length);
-          tokens.push(token);
-          return true;
-        }
-        return false;
-      })) {
+      if (token = this.runExtensions('beforeEscape', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
         continue;
       }
 
       // escape
       if (token = this.tokenizer.escape(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (token = this.runExtensions('beforeTag', src, tokens)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -359,8 +432,20 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeLink', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       // link
       if (token = this.tokenizer.link(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (token = this.runExtensions('beforeReflink', src, tokens)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -379,8 +464,20 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeEmStrong', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       // em & strong
       if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (token = this.runExtensions('beforeCodespan', src, tokens)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -393,8 +490,20 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeBr', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       // br
       if (token = this.tokenizer.br(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (token = this.runExtensions('beforeDel', src, tokens)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -407,6 +516,12 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeAutolink', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       // autolink
       if (token = this.tokenizer.autolink(src)) {
         src = src.substring(token.raw.length);
@@ -414,8 +529,20 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeUrl', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       // url (gfm)
       if (!this.state.inLink && (token = this.tokenizer.url(src))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (token = this.runExtensions('beforeInlineText', src, tokens)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -454,6 +581,12 @@ export class _Lexer {
         continue;
       }
 
+      if (token = this.runExtensions('beforeInlineEnd', src, tokens)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
       if (src) {
         const errMsg = 'Infinite loop on byte: ' + src.charCodeAt(0);
         if (this.options.silent) {
@@ -466,5 +599,14 @@ export class _Lexer {
     }
 
     return tokens;
+  }
+
+  private runExtensions(position: TokenizerPosition, src: string, tokens: Token[] = []): Tokens.Generic | undefined {
+    for (const tokenizer of this.options.extensions?.tokenizers?.[position] ?? []) {
+      const token = tokenizer.call({ lexer: this }, src, tokens);
+      if (token && token.raw?.length) {
+        return token;
+      }
+    }
   }
 }
