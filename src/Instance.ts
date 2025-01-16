@@ -6,7 +6,7 @@ import { _Renderer } from './Renderer.ts';
 import { _Tokenizer } from './Tokenizer.ts';
 import { _TextRenderer } from './TextRenderer.ts';
 import { escape } from './helpers.ts';
-import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
+import { tokenizerBlockPositions, tokenizerInlinePositions, type MarkedExtension, type MarkedOptions } from './MarkedOptions.ts';
 import type { Token, Tokens, TokensList } from './Tokens.ts';
 
 export type MaybePromise = void | Promise<void>;
@@ -74,7 +74,7 @@ export class Marked {
   }
 
   use(...args: MarkedExtension[]) {
-    const extensions: MarkedOptions['extensions'] = this.defaults.extensions || { renderers: {}, childTokens: {} };
+    const extensions: MarkedOptions['extensions'] = this.defaults.extensions || { renderers: {}, childTokens: {}, tokenizers: {} };
 
     args.forEach((pack) => {
       // copy options to new object
@@ -105,23 +105,26 @@ export class Marked {
             }
           }
           if ('tokenizer' in ext) { // Tokenizer Extensions
-            if (!ext.level || (ext.level !== 'block' && ext.level !== 'inline')) {
+            if (ext.level && (ext.level !== 'block' && ext.level !== 'inline')) {
               throw new Error("extension level must be 'block' or 'inline'");
             }
-            const extLevel = extensions[ext.level];
-            if (extLevel) {
-              extLevel.unshift(ext.tokenizer);
-            } else {
-              extensions[ext.level] = [ext.tokenizer];
+            if (ext.position && ![...tokenizerBlockPositions, ...tokenizerInlinePositions].includes(ext.position)) {
+              throw new Error(`extension position must be one of '${tokenizerBlockPositions.join("', '")}',  '${tokenizerInlinePositions.join("', '")}'`);
             }
+            if (!ext.level && !ext.position) {
+              throw new Error('extension level or position is required');
+            }
+            const position = ext.position || (ext.level === 'block' ? tokenizerBlockPositions[0] : tokenizerInlinePositions[0]);
+            extensions.tokenizers[position] = extensions.tokenizers[position] || [];
+            extensions.tokenizers[position].unshift(ext.tokenizer);
             if (ext.start) { // Function to check for start of token
-              if (ext.level === 'block') {
+              if (tokenizerBlockPositions.includes(position as typeof tokenizerBlockPositions[number])) {
                 if (extensions.startBlock) {
                   extensions.startBlock.push(ext.start);
                 } else {
                   extensions.startBlock = [ext.start];
                 }
-              } else if (ext.level === 'inline') {
+              } else if (tokenizerInlinePositions.includes(position as typeof tokenizerInlinePositions[number])) {
                 if (extensions.startInline) {
                   extensions.startInline.push(ext.start);
                 } else {

@@ -202,6 +202,46 @@ const tokenizerExtension: TokenizerExtension = {
   childTokens: ['items']
 };
 
+// @ts-expect-error No position or level
+const tokenizerNoPositionLevelExtension: TokenizerExtension = {
+  name: 'name',
+  start: (src: string) => src.match(/name/)?.index,
+  tokenizer(src: string): NameToken | undefined {
+    if (src === 'name') {
+      const token: NameToken = {
+        type: 'name',
+        raw: src,
+        text: src,
+        tokens: this.lexer.inline(src),
+        items: []
+      };
+      this.lexer.inline(token.text, token.items);
+      return token;
+    }
+  },
+  childTokens: ['items']
+};
+
+const tokenizerPositionExtension: TokenizerExtension = {
+  name: 'name',
+  position: 'beforeSpace',
+  start: (src: string) => src.match(/name/)?.index,
+  tokenizer(src: string): NameToken | undefined {
+    if (src === 'name') {
+      const token: NameToken = {
+        type: 'name',
+        raw: src,
+        text: src,
+        tokens: this.lexer.inline(src),
+        items: []
+      };
+      this.lexer.inline(token.text, token.items);
+      return token;
+    }
+  },
+  childTokens: ['items']
+};
+
 const rendererExtension: RendererExtension = {
   name: 'name',
   renderer(t) {

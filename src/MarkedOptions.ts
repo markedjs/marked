@@ -13,13 +13,58 @@ export type TokenizerExtensionFunction = (this: TokenizerThis, src: string, toke
 
 export type TokenizerStartFunction = (this: TokenizerThis, src: string) => number | void;
 
-export interface TokenizerExtension {
+export const tokenizerBlockPositions = [
+  'beforeSpace',
+  'beforeCode',
+  'beforeFences',
+  'beforeHeading',
+  'beforeHr',
+  'beforeBlockquote',
+  'beforeList',
+  'beforeHtml',
+  'beforeDef',
+  'beforeTable',
+  'beforeLheading',
+  'beforeParagraph',
+  'beforeBlockText',
+  'beforeBlockEnd',
+] as const;
+
+export const tokenizerInlinePositions = [
+  'beforeEscape',
+  'beforeTag',
+  'beforeLink',
+  'beforeReflink',
+  'beforeEmStrong',
+  'beforeCodespan',
+  'beforeBr',
+  'beforeDel',
+  'beforeAutolink',
+  'beforeUrl',
+  'beforeInlineText',
+  'beforeInlineEnd',
+] as const;
+
+export type TokenizerPosition = typeof tokenizerBlockPositions[number] | typeof tokenizerInlinePositions[number];
+
+interface TokenizerPositionExtension {
   name: string;
+  position: TokenizerPosition;
+  level?: 'block' | 'inline';
+  start?: TokenizerStartFunction;
+  tokenizer: TokenizerExtensionFunction;
+  childTokens?: string[];
+}
+interface TokenizerLevelExtension {
+  name: string;
+  position?: TokenizerPosition;
   level: 'block' | 'inline';
   start?: TokenizerStartFunction;
   tokenizer: TokenizerExtensionFunction;
   childTokens?: string[];
 }
+
+export type TokenizerExtension = TokenizerPositionExtension | TokenizerLevelExtension;
 
 export interface RendererThis {
   parser: _Parser;
@@ -138,11 +183,12 @@ export interface MarkedOptions extends Omit<MarkedExtension, 'hooks' | 'renderer
     renderers: {
       [name: string]: RendererExtensionFunction;
     };
+    tokenizers: {
+      [k in TokenizerPosition]?: TokenizerExtensionFunction[];
+    };
     childTokens: {
       [name: string]: string[];
     };
-    inline?: TokenizerExtensionFunction[];
-    block?: TokenizerExtensionFunction[];
     startInline?: TokenizerStartFunction[];
     startBlock?: TokenizerStartFunction[];
   };
