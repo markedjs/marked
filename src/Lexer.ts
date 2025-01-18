@@ -601,7 +601,7 @@ export class _Lexer {
     return tokens;
   }
 
-  private runExtensions(position: TokenizerPosition, src: string, tokens: Token[] = []): Tokens.Generic | undefined {
+  private runExtensions(position: TokenizerPosition, src: string, tokens: Token[]): Tokens.Generic | undefined {
     for (const tokenizer of this.options.extensions?.tokenizers?.[position] ?? []) {
       const token = tokenizer.call({ lexer: this }, src, tokens);
       if (token && token.raw?.length) {
