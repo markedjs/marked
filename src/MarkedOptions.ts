@@ -184,6 +184,7 @@ export interface MarkedOptions extends Omit<MarkedExtension, 'hooks' | 'renderer
       [name: string]: RendererExtensionFunction;
     };
     tokenizers: {
+      /* eslint-disable-next-line no-unused-vars */
       [k in TokenizerPosition]?: TokenizerExtensionFunction[];
     };
     childTokens: {
