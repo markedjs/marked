@@ -73,7 +73,7 @@
     "marked-highlight": "^2.2.1",
     "marked-man": "^2.1.0",
     "recheck": "^4.4.5",
-    "rollup": "^4.30.1",
+    "rollup": "^4.31.0",
     "semantic-release": "^24.2.1",
     "titleize": "^4.0.0",
     "tslib": "^2.8.1",
