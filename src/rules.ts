@@ -93,7 +93,7 @@ const lheading = edit(lheadingCore)
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
   .replace(/heading/g, / {0,3}#{1,6}/) // ATX heading can interrupt
   .replace(/html/g, / {0,3}<[^\n>]+>\n/) // block html can interrupt
-  .replace(/\|table/g, '') // table can interrupt
+  .replace(/\|table/g, '') // table not in commonmark
   .getRegex();
 const lheadingGfm = edit(lheadingCore)
   .replace(/bull/g, bullet) // lists can interrupt
