@@ -102,7 +102,7 @@ const lheadingGfm = edit(lheadingCore)
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
   .replace(/heading/g, / {0,3}#{1,6}/) // ATX heading can interrupt
   .replace(/html/g, / {0,3}<[^\n>]+>\n/) // block html can interrupt
-  .replace(/table/g, / {0,3}[\|:\- ]*\|[\|:\- ]*\n/) // table can interrupt
+  .replace(/table/g, / {0,3}\|?(?:[:\- ]*\|)+[\:\- ]*\n/) // table can interrupt
   .getRegex();
 const _paragraph = /^([^\n]+(?:\n(?!hr|heading|lheading|blockquote|fences|list|html|table| +\n)[^\n]+)*)/;
 const blockText = /^[^\n]+/;
