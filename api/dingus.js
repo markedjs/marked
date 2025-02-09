@@ -1,5 +1,5 @@
 import { marked } from '../lib/marked.esm.js';
-import pkg from "../package.json" with { type: "json" };
+import pkg from '../package.json' with { type: 'json' };
 
 const version = pkg.version;
 const name = 'Marked';
