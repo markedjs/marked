@@ -36,7 +36,10 @@
   "publishConfig": {
     "provenance": true
   },
-  "repository": "git://github.com/markedjs/marked.git",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/markedjs/marked.git"
+  },
   "homepage": "https://marked.js.org",
   "bugs": {
     "url": "http://github.com/markedjs/marked/issues"
