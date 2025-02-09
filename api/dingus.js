@@ -1,7 +1,7 @@
 import { marked } from '../lib/marked.esm.js';
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const version = require('../package.json').version;
+import pkg from '../package.json' with { type: 'json' };
+
+const version = pkg.version;
 const name = 'Marked';
 
 export default function dingus(req, res) {
