@@ -77,7 +77,7 @@
     "marked-man": "^2.1.0",
     "recheck": "^4.4.5",
     "rollup": "^4.34.6",
-    "semantic-release": "^24.2.1",
+    "semantic-release": "^24.2.2",
     "titleize": "^4.0.0",
     "tslib": "^2.8.1",
     "typescript": "5.7.3"
