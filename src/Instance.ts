@@ -6,7 +6,7 @@ import { _Renderer } from './Renderer.ts';
 import { _Tokenizer } from './Tokenizer.ts';
 import { _TextRenderer } from './TextRenderer.ts';
 import { escape } from './helpers.ts';
-import { tokenizerBlockPositions, tokenizerInlinePositions, type MarkedExtension, type MarkedOptions } from './MarkedOptions.ts';
+import { tokenizerBlockPositions, tokenizerInlinePositions, tokenPositionMap, type MarkedExtension, type MarkedOptions } from './MarkedOptions.ts';
 import type { Token, Tokens, TokensList } from './Tokens.ts';
 
 export type MaybePromise = void | Promise<void>;
@@ -114,7 +114,7 @@ export class Marked {
             if (!ext.level && !ext.position) {
               throw new Error('extension level or position is required');
             }
-            const position = ext.position || (ext.level === 'block' ? tokenizerBlockPositions[0] : tokenizerInlinePositions[0]);
+            const position = tokenPositionMap[ext.position || (ext.level === 'block' ? tokenizerBlockPositions[0] : tokenizerInlinePositions[0])];
             extensions.tokenizers[position] = extensions.tokenizers[position] || [];
             extensions.tokenizers[position].unshift(ext.tokenizer);
             if (ext.start) { // Function to check for start of token

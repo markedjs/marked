@@ -2,7 +2,7 @@ import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
-import type { MarkedOptions, TokenizerPosition } from './MarkedOptions.ts';
+import { type MarkedOptions, tokenPositionMap } from './MarkedOptions.ts';
 
 /**
  * Block Lexer
@@ -601,7 +601,7 @@ export class _Lexer {
     return tokens;
   }
 
-  private runExtensions(position: TokenizerPosition, src: string, tokens: Token[]): Tokens.Generic | undefined {
+  private runExtensions(position: typeof tokenPositionMap[keyof typeof tokenPositionMap], src: string, tokens: Token[]): Tokens.Generic | undefined {
     for (const tokenizer of this.options.extensions?.tokenizers?.[position] ?? []) {
       const token = tokenizer.call({ lexer: this }, src, tokens);
       if (token && token.raw?.length) {

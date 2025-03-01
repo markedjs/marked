@@ -14,37 +14,119 @@ export type TokenizerExtensionFunction = (this: TokenizerThis, src: string, toke
 export type TokenizerStartFunction = (this: TokenizerThis, src: string) => number | void;
 
 export const tokenizerBlockPositions = [
+  'afterBlockStart',
   'beforeSpace',
+  'afterSpace',
   'beforeCode',
+  'afterCode',
   'beforeFences',
+  'afterFences',
   'beforeHeading',
+  'afterHeading',
   'beforeHr',
+  'afterHr',
   'beforeBlockquote',
+  'afterBlockquote',
   'beforeList',
+  'afterList',
   'beforeHtml',
+  'afterHtml',
   'beforeDef',
+  'afterDef',
   'beforeTable',
+  'afterTable',
   'beforeLheading',
+  'afterLheading',
   'beforeParagraph',
+  'afterParagraph',
   'beforeBlockText',
+  'afterBlockText',
   'beforeBlockEnd',
 ] as const;
 
 export const tokenizerInlinePositions = [
+  'afterInlineStart',
   'beforeEscape',
+  'afterEscape',
   'beforeTag',
+  'afterTag',
   'beforeLink',
+  'afterLink',
   'beforeReflink',
+  'afterReflink',
   'beforeEmStrong',
+  'afterEmStrong',
   'beforeCodespan',
+  'afterCodespan',
   'beforeBr',
+  'afterBr',
   'beforeDel',
+  'afterDel',
   'beforeAutolink',
+  'afterAutolink',
   'beforeUrl',
+  'afterUrl',
   'beforeInlineText',
+  'afterInlineText',
   'beforeInlineEnd',
 ] as const;
 
+export const tokenPositionMap = {
+  'afterBlockStart': 'beforeSpace',
+  'beforeSpace': 'beforeSpace',
+  'afterSpace': 'beforeCode',
+  'beforeCode': 'beforeCode',
+  'afterCode': 'beforeFences',
+  'beforeFences': 'beforeFences',
+  'afterFences': 'beforeHeading',
+  'beforeHeading': 'beforeHeading',
+  'afterHeading': 'beforeHr',
+  'beforeHr': 'beforeHr',
+  'afterHr': 'beforeBlockquote',
+  'beforeBlockquote': 'beforeBlockquote',
+  'afterBlockquote': 'beforeList',
+  'beforeList': 'beforeList',
+  'afterList': 'beforeHtml',
+  'beforeHtml': 'beforeHtml',
+  'afterHtml': 'beforeDef',
+  'beforeDef': 'beforeDef',
+  'afterDef': 'beforeTable',
+  'beforeTable': 'beforeTable',
+  'afterTable': 'beforeLheading',
+  'beforeLheading': 'beforeLheading',
+  'afterLheading': 'beforeParagraph',
+  'beforeParagraph': 'beforeParagraph',
+  'afterParagraph': 'beforeBlockText',
+  'beforeBlockText': 'beforeBlockText',
+  'afterBlockText': 'beforeBlockEnd',
+  'beforeBlockEnd': 'beforeBlockEnd',
+  'afterInlineStart': 'beforeEscape',
+  'beforeEscape': 'beforeEscape',
+  'afterEscape': 'beforeTag',
+  'beforeTag': 'beforeTag',
+  'afterTag': 'beforeLink',
+  'beforeLink': 'beforeLink',
+  'afterLink': 'beforeReflink',
+  'beforeReflink': 'beforeReflink',
+  'afterReflink': 'beforeEmStrong',
+  'beforeEmStrong': 'beforeEmStrong',
+  'afterEmStrong': 'beforeCodespan',
+  'beforeCodespan': 'beforeCodespan',
+  'afterCodespan': 'beforeBr',
+  'beforeBr': 'beforeBr',
+  'afterBr': 'beforeDel',
+  'beforeDel': 'beforeDel',
+  'afterDel': 'beforeAutolink',
+  'beforeAutolink': 'beforeAutolink',
+  'afterAutolink': 'beforeUrl',
+  'beforeUrl': 'beforeUrl',
+  'afterUrl': 'beforeInlineText',
+  'beforeInlineText': 'beforeInlineText',
+  'afterInlineText': 'beforeInlineEnd',
+  'beforeInlineEnd': 'beforeInlineEnd',
+} as const
+
+export type LexerPosition = typeof tokenPositionMap[keyof typeof tokenPositionMap];
 export type TokenizerPosition = typeof tokenizerBlockPositions[number] | typeof tokenizerInlinePositions[number];
 
 interface TokenizerPositionExtension {
@@ -184,8 +266,7 @@ export interface MarkedOptions extends Omit<MarkedExtension, 'hooks' | 'renderer
       [name: string]: RendererExtensionFunction;
     };
     tokenizers: {
-      /* eslint-disable-next-line no-unused-vars */
-      [k in TokenizerPosition]?: TokenizerExtensionFunction[];
+      [k in LexerPosition]?: TokenizerExtensionFunction[];
     };
     childTokens: {
       [name: string]: string[];
