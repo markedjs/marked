@@ -312,14 +312,15 @@ export class _Lexer {
         }
       }
     }
-    // Mask out other blocks
-    while ((match = this.tokenizer.rules.inline.blockSkip.exec(maskedSrc)) != null) {
-      maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
-    }
 
     // Mask out escaped characters
     while ((match = this.tokenizer.rules.inline.anyPunctuation.exec(maskedSrc)) != null) {
       maskedSrc = maskedSrc.slice(0, match.index) + '++' + maskedSrc.slice(this.tokenizer.rules.inline.anyPunctuation.lastIndex);
+    }
+
+    // Mask out other blocks
+    while ((match = this.tokenizer.rules.inline.blockSkip.exec(maskedSrc)) != null) {
+      maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
     }
 
     let keepPrevChar = false;
