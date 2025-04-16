@@ -60,6 +60,7 @@ export class _Lexer {
    */
   static get rules() {
     return {
+      other,
       block,
       inline,
     };
