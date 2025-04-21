@@ -636,6 +636,11 @@ export class _Tokenizer {
       } else {
         // find closing parenthesis
         const lastParenIndex = findClosingBracket(cap[2], '()');
+        if (lastParenIndex === -2) {
+          // more open parens than closed
+          return;
+        }
+
         if (lastParenIndex > -1) {
           const start = cap[0].indexOf('!') === 0 ? 5 : 4;
           const linkLen = start + cap[1].length + lastParenIndex;

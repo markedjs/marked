@@ -3975,8 +3975,7 @@
     "example": 497,
     "start_line": 7666,
     "end_line": 7670,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[link](foo\\(and\\(bar\\))\n",

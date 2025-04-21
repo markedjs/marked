@@ -141,5 +141,9 @@ export function findClosingBracket(str: string, b: string) {
       }
     }
   }
+  if (level > 0) {
+    return -2;
+  }
+
   return -1;
 }
