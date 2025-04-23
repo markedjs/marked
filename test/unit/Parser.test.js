@@ -396,6 +396,12 @@ describe('Parser', () => {
             text: 'image',
             href: 'image.png',
             title: 'title',
+            tokens: [{
+              type: 'text',
+              raw: 'image',
+              text: 'image',
+              escaped: false,
+            }],
           },
         ],
         html: '<img src="image.png" alt="image" title="title">',

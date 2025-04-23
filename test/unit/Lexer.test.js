@@ -1340,6 +1340,12 @@ paragraph
               text: 'image',
               href: 'https://example.com/image.png',
               title: null,
+              tokens: [{
+                type: 'text',
+                raw: 'image',
+                text: 'image',
+                escaped: false,
+              }],
             },
           ],
         });
@@ -1355,6 +1361,12 @@ paragraph
               text: 'image',
               href: 'https://example.com/image.png',
               title: 'title',
+              tokens: [{
+                type: 'text',
+                raw: 'image',
+                text: 'image',
+                escaped: false,
+              }],
             },
           ],
         });
