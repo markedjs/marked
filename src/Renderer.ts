@@ -193,7 +193,8 @@ export class _Renderer {
     return out;
   }
 
-  image({ href, title, text }: Tokens.Image): string {
+  image({ href, title, tokens }: Tokens.Image): string {
+    const text = this.parser.parseInline(tokens, this.parser.textRenderer);
     const cleanHref = cleanUrl(href);
     if (cleanHref === null) {
       return escape(text);
