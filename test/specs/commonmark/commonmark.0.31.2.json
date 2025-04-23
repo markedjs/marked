@@ -4056,8 +4056,7 @@
     "example": 507,
     "start_line": 7776,
     "end_line": 7780,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[link](/url \"title \"and\" title\")\n",
