@@ -18,52 +18,43 @@ const banner = `/**
  */
 `;
 
-await esbuild.build({
-  entryPoints: ['src/marked.ts'],
-  banner: {
-    js: banner,
-  },
+function config(options) {
+  return {
+    entryPoints: ['src/marked.ts'],
+    banner: {
+      js: banner,
+    },
+    sourcemap: true,
+    bundle: true,
+    minify: true,
+    ...(options.format === 'umd'
+      ? {
+        plugins: [umdWrapper({
+          libraryName: 'marked',
+        })],
+      }
+      : {}),
+    ...options,
+  };
+}
+
+await esbuild.build(config({
   format: 'esm',
-  sourcemap: true,
-  bundle: true,
   outfile: 'lib/marked.esm.js',
-});
+}));
 
-await esbuild.build({
-  entryPoints: ['src/marked.ts'],
-  banner: {
-    js: banner,
-  },
+await esbuild.build(config({
   format: 'cjs',
-  sourcemap: true,
-  bundle: true,
   outfile: 'lib/marked.cjs',
-});
+}));
 
-await esbuild.build({
-  entryPoints: ['src/marked.ts'],
-  banner: {
-    js: banner,
-  },
+await esbuild.build(config({
   format: 'umd',
-  sourcemap: true,
-  bundle: true,
   outfile: 'lib/marked.umd.js',
-  plugins: [umdWrapper({
-    libraryName: 'marked',
-  })],
-});
+}));
 
-await esbuild.build({
-  entryPoints: ['src/marked.ts'],
-  banner: {
-    js: banner,
-  },
+await esbuild.build(config({
+  sourcemap: false,
   format: 'umd',
-  bundle: true,
-  minify: true,
   outfile: 'marked.min.js',
-  plugins: [umdWrapper({
-    libraryName: 'marked',
-  })],
-});
+}));
