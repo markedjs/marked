@@ -123,6 +123,7 @@ export namespace Tokens {
     href: string;
     title: string | null;
     text: string;
+    tokens: Token[];
   }
 
   export interface Link {

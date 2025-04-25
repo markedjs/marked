@@ -959,6 +959,7 @@ br
         ['space', ''],
         ['paragraph', '![image](https://example.com/image.jpg)'],
         ['image', '![image](https://example.com/image.jpg)'],
+        ['text', 'image'],
         ['space', ''],
         ['paragraph', '**strong**'],
         ['strong', '**strong**'],

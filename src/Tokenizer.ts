@@ -14,26 +14,17 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
   const title = link.title || null;
   const text = cap[1].replace(rules.other.outputLinkReplace, '$1');
 
-  if (cap[0].charAt(0) !== '!') {
-    lexer.state.inLink = true;
-    const token: Tokens.Link = {
-      type: 'link',
-      raw,
-      href,
-      title,
-      text,
-      tokens: lexer.inlineTokens(text),
-    };
-    lexer.state.inLink = false;
-    return token;
-  }
-  return {
-    type: 'image',
+  lexer.state.inLink = true;
+  const token: Tokens.Link | Tokens.Image = {
+    type: cap[0].charAt(0) === '!' ? 'image' : 'link',
     raw,
     href,
     title,
     text,
+    tokens: lexer.inlineTokens(text),
   };
+  lexer.state.inLink = false;
+  return token;
 }
 
 function indentCodeCompensation(raw: string, text: string, rules: Rules) {
