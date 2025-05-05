@@ -299,6 +299,12 @@ export class _Lexer {
     let maskedSrc = src;
     let match: RegExpExecArray | null = null;
 
+    //Skip inline parsing for fenced code blocks
+  if ((tokens as any)?.isInCodeBlock) {
+    return tokens;
+  }
+
+
     // Mask out reflinks
     if (this.tokens.links) {
       const links = Object.keys(this.tokens.links);
