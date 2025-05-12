@@ -56,7 +56,7 @@
     "html"
   ],
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.17.4",
+    "@arethetypeswrong/cli": "^0.18.1",
     "@markedjs/eslint-config": "^1.0.12",
     "@markedjs/testutils": "14.1.1-0",
     "@rollup/plugin-terser": "^0.4.4",
