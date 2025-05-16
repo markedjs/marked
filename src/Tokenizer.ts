@@ -103,6 +103,7 @@ export class _Tokenizer {
         raw,
         lang: cap[2] ? cap[2].trim().replace(this.rules.inline.anyPunctuation, '$1') : cap[2],
         text,
+        isInCodeBlock: true,  // 👈 Add this line
       };
     }
   }
