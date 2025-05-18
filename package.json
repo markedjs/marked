@@ -97,7 +97,7 @@
     "test:redos": "node test/recheck.js > vuln.js",
     "test:specs:only": "node --test --test-only --test-reporter=spec test/run-spec-tests.js",
     "test:specs": "node --test --test-reporter=spec test/run-spec-tests.js",
-    "test:types": "tsc --project tsconfig-type-test.json && attw -P --exclude-entrypoints ./bin/marked ./marked.min.js",
+    "test:types": "tsc --project tsconfig-type-test.json && attw -P --exclude-entrypoints ./bin/marked ./marked.min.js --profile esm-only",
     "test:umd": "node test/umd-test.js",
     "test:unit:only": "node --test --test-only --test-reporter=spec test/unit/*.test.js",
     "test:unit": "node --test --test-reporter=spec test/unit/*.test.js",
