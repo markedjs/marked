@@ -1,5 +1,5 @@
 /* global marked */
-import '../marked.min.js';
+import '../lib/marked.umd.js';
 import { promises } from 'fs';
 import { join, dirname, parse, format } from 'path';
 import { fileURLToPath } from 'url';
@@ -50,8 +50,8 @@ async function init() {
   await mkdir(outputDir);
   console.log(`Copying file ${join(inputDir, 'LICENSE.md')}`);
   await copyFile(join(cwd, 'LICENSE.md'), join(inputDir, 'LICENSE.md'));
-  console.log(`Copying file ${join(outputDir, 'marked.min.js')}`);
-  await copyFile(join(cwd, 'marked.min.js'), join(outputDir, 'marked.min.js'));
+  console.log(`Copying file ${join(outputDir, 'lib/marked.umd.js')}`);
+  await copyFile(join(cwd, 'lib/marked.umd.js'), join(outputDir, 'lib/marked.umd.js'));
   const tmpl = await readFile(templateFile, 'utf8');
   console.log('Building markdown...');
   const [original, commonmark, gfm] = await getTests([
