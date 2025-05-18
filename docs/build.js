@@ -54,6 +54,9 @@ async function init() {
   console.log(`Copying file ${join(outputDir, 'lib/marked.umd.js')}`);
   await copyFile(join(cwd, 'lib/marked.umd.js'), join(outputDir, 'lib/marked.umd.js'));
   await copyFile(join(cwd, 'lib/marked.umd.js.map'), join(outputDir, 'lib/marked.umd.js.map'));
+  console.log(`Copying file ${join(outputDir, 'lib/marked.esm.js')}`);
+  await copyFile(join(cwd, 'lib/marked.esm.js'), join(outputDir, 'lib/marked.esm.js'));
+  await copyFile(join(cwd, 'lib/marked.esm.js.map'), join(outputDir, 'lib/marked.esm.js.map'));
   const tmpl = await readFile(templateFile, 'utf8');
   console.log('Building markdown...');
   const [original, commonmark, gfm] = await getTests([
