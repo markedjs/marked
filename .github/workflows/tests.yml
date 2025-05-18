@@ -31,6 +31,8 @@ jobs:
         run: npm run test:unit
       - name: Run Spec Tests 👩🏽‍💻
         run: npm run test:specs
+      - name: Run CJS Tests 👩🏽‍💻
+        run: npm run test:cjs
 
   OtherTests:
     runs-on: ubuntu-latest
