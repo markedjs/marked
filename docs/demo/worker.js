@@ -154,6 +154,6 @@ function loadVersion(ver) {
     currentVersion = ver;
   }).catch((err) => {
     console.error(err);
-    throw new Error('Cannot load that version of marked');
+    throw new Error(`Cannot load version v${ver} of marked`);
   });
 }
