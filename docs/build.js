@@ -53,6 +53,7 @@ async function init() {
   await copyFile(join(cwd, 'LICENSE.md'), join(inputDir, 'LICENSE.md'));
   console.log(`Copying file ${join(outputDir, 'lib/marked.umd.js')}`);
   await copyFile(join(cwd, 'lib/marked.umd.js'), join(outputDir, 'lib/marked.umd.js'));
+  await copyFile(join(cwd, 'lib/marked.umd.js.map'), join(outputDir, 'lib/marked.umd.js.map'));
   const tmpl = await readFile(templateFile, 'utf8');
   console.log('Building markdown...');
   const [original, commonmark, gfm] = await getTests([
