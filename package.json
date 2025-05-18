@@ -4,7 +4,7 @@
   "author": "Christopher Jeffrey",
   "version": "15.0.12",
   "type": "module",
-  "main": "./lib/marked.cjs",
+  "main": "./lib/marked.esm.js",
   "module": "./lib/marked.esm.js",
   "browser": "./lib/marked.umd.js",
   "types": "./lib/marked.d.ts",
@@ -15,8 +15,7 @@
   "files": [
     "bin/",
     "lib/",
-    "man/",
-    "marked.min.js"
+    "man/"
   ],
   "exports": {
     ".": {
@@ -26,11 +25,10 @@
       },
       "default": {
         "types": "./lib/marked.d.cts",
-        "default": "./lib/marked.cjs"
+        "default": "./lib/marked.esm.js"
       }
     },
     "./bin/marked": "./bin/marked.js",
-    "./marked.min.js": "./marked.min.js",
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -58,7 +56,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
     "@markedjs/eslint-config": "^1.0.12",
-    "@markedjs/testutils": "14.1.1-0",
+    "@markedjs/testutils": "15.0.11-0",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.3",
@@ -87,7 +85,7 @@
     "build:docs": "npm run build && node docs/build.js",
     "build:esbuild": "node esbuild.config.js",
     "build:man": "marked-man man/marked.1.md > man/marked.1",
-    "build:reset": "git checkout upstream/master lib/marked.cjs lib/marked.umd.js lib/marked.esm.js marked.min.js",
+    "build:reset": "git checkout upstream/master lib/marked.umd.js lib/marked.esm.js",
     "build:types": "tsc && dts-bundle-generator --export-referenced-types --project tsconfig.json -o lib/marked.d.ts src/marked.ts && dts-bundle-generator --export-referenced-types --project tsconfig.json -o lib/marked.d.cts src/marked.ts",
     "lint": "eslint --fix",
     "rules": "node test/rules.js",
@@ -106,6 +104,6 @@
     "test:update": "node test/update-specs.js"
   },
   "engines": {
-    "node": ">= 18"
+    "node": ">= 20"
   }
 }
