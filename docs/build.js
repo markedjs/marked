@@ -48,6 +48,7 @@ async function init() {
   console.log('Cleaning up output directory ' + outputDir);
   await rm(outputDir, { force: true, recursive: true });
   await mkdir(outputDir);
+  await mkdir(join(outputDir, 'lib'));
   console.log(`Copying file ${join(inputDir, 'LICENSE.md')}`);
   await copyFile(join(cwd, 'LICENSE.md'), join(inputDir, 'LICENSE.md'));
   console.log(`Copying file ${join(outputDir, 'lib/marked.umd.js')}`);
