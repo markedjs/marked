@@ -171,7 +171,7 @@ markedWorker.postMessage(markdownString);
 ```js
 // markedWorker.js
 
-importScripts('path/to/marked.min.js');
+importScripts('path/to/marked.umd.js');
 
 onmessage = (e) => {
   const markdownString = e.data

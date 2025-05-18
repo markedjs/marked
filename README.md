@@ -83,7 +83,7 @@ $ marked --help
 </head>
 <body>
   <div id="content"></div>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
   <script>
     document.getElementById('content').innerHTML =
       marked.parse('# Marked in the browser\n\nRendered by **marked**.');
