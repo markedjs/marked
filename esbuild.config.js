@@ -26,7 +26,7 @@ function config(options) {
     },
     sourcemap: true,
     bundle: true,
-    minify: true,
+    minify: false,
     ...(options.format === 'umd'
       ? {
         plugins: [umdWrapper({
@@ -55,6 +55,7 @@ await esbuild.build(config({
 
 await esbuild.build(config({
   sourcemap: false,
+  minify: true,
   format: 'umd',
   outfile: 'marked.min.js',
 }));
