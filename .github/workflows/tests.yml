@@ -12,7 +12,7 @@ jobs:
   UnitTests:
     strategy:
       matrix:
-        # lowest verison here should also be in `engines` field
+        # lowest version here should also be in `engines` field
         node_version: [20, "lts/*", "latest"]
     runs-on: ubuntu-latest
     steps:
