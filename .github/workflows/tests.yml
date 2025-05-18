@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         # lowest verison here should also be in `engines` field
-        node_version: [18, "lts/*", "latest"]
+        node_version: [20, "lts/*", "latest"]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
