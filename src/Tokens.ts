@@ -52,6 +52,7 @@ export namespace Tokens {
     lang?: string;
     text: string;
     escaped?: boolean;
+    isInCodeBlock?: boolean;
   }
 
   export interface Codespan {
