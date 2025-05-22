@@ -2,12 +2,9 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { htmlIsEqual, getTests } from '@markedjs/testutils';
 
-import { marked as cjsMarked } from '../lib/marked.cjs';
-import { marked as esmMarked } from '../lib/marked.esm.js';
+import { marked } from '../lib/marked.esm.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-let marked;
 
 /**
  * Load specs
@@ -32,26 +29,15 @@ export async function runBench(options) {
   const specs = await load();
   const tests = {};
 
-  // Non-GFM, Non-pedantic
-  cjsMarked.setOptions({
+  marked.setOptions({
     gfm: false,
     breaks: false,
     pedantic: false,
   });
   if (options.marked) {
-    cjsMarked.setOptions(options.marked);
+    marked.setOptions(options.marked);
   }
-  tests['cjs marked'] = cjsMarked.parse;
-
-  esmMarked.setOptions({
-    gfm: false,
-    breaks: false,
-    pedantic: false,
-  });
-  if (options.marked) {
-    esmMarked.setOptions(options.marked);
-  }
-  tests['esm marked'] = esmMarked.parse;
+  tests.marked = marked.parse;
 
   try {
     tests.commonmark = await (async() => {
@@ -120,7 +106,7 @@ export async function bench(tests, specs) {
   }
 
   const percentSlower = ((
-    prettyElapsedTime(stats['esm marked'].elapsed)
+    prettyElapsedTime(stats.marked.elapsed)
     / prettyElapsedTime(stats.commonmark.elapsed)
   ) - 1) * 100;
 
@@ -208,8 +194,6 @@ function camelize(text) {
  * Main
  */
 export default async function main(argv) {
-  marked = cjsMarked;
-
   const opt = parseArg(argv);
 
   await runBench(opt);
