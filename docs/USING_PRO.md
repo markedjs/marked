@@ -37,6 +37,8 @@ All options will overwrite those previously set, except for the following option
 
 * The `extensions` option is an array of objects that can contain additional custom `renderer` and `tokenizer` steps that will execute before any of the default parsing logic occurs.
 
+Importantly, ensure that the extensions are only added to `marked` once (ie in the global scope of a regular JavaScript or TypeScript module). If they are added in a function that is called repeatedly, or in the JS for an HTML component in a library such as Svelte, your extensions will be added repeatedly, eventually causing a recursion error. If you cannot prevent the code from being run repeatedly, you should create a [Marked instance](/using_advanced#instance) so that your extensions are stored independently from the global instance Marked provides.
+
 ***
 
 <h2>The Marked Pipeline</h2>
