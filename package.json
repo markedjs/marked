@@ -68,7 +68,7 @@
     "commonmark": "0.31.2",
     "cross-env": "^7.0.3",
     "dts-bundle-generator": "^9.5.1",
-    "esbuild": "^0.25.4",
+    "esbuild": "^0.25.5",
     "esbuild-plugin-umd-wrapper": "^3.0.0",
     "eslint": "^9.28.0",
     "highlight.js": "^11.11.1",
