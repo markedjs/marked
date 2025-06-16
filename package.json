@@ -56,7 +56,7 @@
     "html"
   ],
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.1",
+    "@arethetypeswrong/cli": "^0.18.2",
     "@markedjs/eslint-config": "^1.0.12",
     "@markedjs/testutils": "14.1.1-0",
     "@semantic-release/commit-analyzer": "^13.0.1",
