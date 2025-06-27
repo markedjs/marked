@@ -135,6 +135,7 @@ function loadVersion(ver) {
   } else {
     promise = import(ver + '/lib/marked.esm.js')
       .catch(fetchMarked(ver + '/marked.min.js'))
+      .catch(fetchMarked(ver + '/lib/marked.umd.js'))
       .catch(fetchMarked(ver + '/lib/marked.js'))
       .then((marked) => {
         if (!marked) {
