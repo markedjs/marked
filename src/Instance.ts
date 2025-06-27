@@ -323,7 +323,7 @@ export class Marked {
           html = opt.hooks.postprocess(html) as string;
         }
         return html;
-      } catch (e) {
+      } catch(e) {
         return throwError(e as Error);
       }
     };

@@ -48,7 +48,7 @@ export async function runBench(options) {
         return writer.render(parser.parse(text));
       };
     })();
-  } catch (e) {
+  } catch(e) {
     console.error('Could not bench commonmark. (Error: %s)', e.message);
   }
 
@@ -58,7 +58,7 @@ export async function runBench(options) {
       const md = new MarkdownIt();
       return md.render.bind(md);
     })();
-  } catch (e) {
+  } catch(e) {
     console.error('Could not bench markdown-it. (Error: %s)', e.message);
   }
 

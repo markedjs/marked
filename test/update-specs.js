@@ -31,7 +31,7 @@ async function updateCommonmark(dir, options) {
     }));
     writeFileSync(resolve(dir, `./commonmark.${version}.json`), JSON.stringify(specs, null, 2) + '\n');
     console.log(`Saved CommonMark v${version} specs`);
-  } catch (ex) {
+  } catch(ex) {
     console.log(ex);
   }
 }
@@ -72,7 +72,7 @@ async function updateGfm(dir) {
     }));
     writeFileSync(resolve(dir, `./gfm.${version}.json`), JSON.stringify(specs, null, 2) + '\n');
     console.log(`Saved GFM v${version} specs.`);
-  } catch (ex) {
+  } catch(ex) {
     console.log(ex);
   }
 }
