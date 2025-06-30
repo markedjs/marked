@@ -65,7 +65,7 @@
     "eslint": "^9.30.0",
     "highlight.js": "^11.11.1",
     "markdown-it": "14.1.0",
-    "marked-highlight": "^2.2.1",
+    "marked-highlight": "^2.2.2",
     "marked-man": "^2.1.0",
     "recheck": "^4.5.0",
     "rimraf": "^6.0.1",
