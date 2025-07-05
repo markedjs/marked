@@ -189,8 +189,8 @@ export namespace Tokens {
     align: 'center' | 'left' | 'right' | null;
   }
 
-  export interface TableRow<R = string> {
-    text: R;
+  export interface TableRow<P = string> {
+    text: P;
   }
 
   export interface Tag {

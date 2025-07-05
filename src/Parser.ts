@@ -13,11 +13,11 @@ export class _Parser<P = string, R = string> {
   textRenderer: _TextRenderer<R>;
   constructor(options?: MarkedOptions<P, R>) {
     this.options = options || _defaults;
-    this.options.renderer = this.options.renderer || new _Renderer();
+    this.options.renderer = this.options.renderer || new _Renderer<P, R>();
     this.renderer = this.options.renderer;
     this.renderer.options = this.options;
     this.renderer.parser = this;
-    this.textRenderer = new _TextRenderer();
+    this.textRenderer = new _TextRenderer<R>();
   }
 
   /**

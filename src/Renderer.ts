@@ -119,7 +119,7 @@ export class _Renderer<P = string, R = string> {
     for (let j = 0; j < token.header.length; j++) {
       cell += this.tablecell(token.header[j]);
     }
-    header += this.tablerow({ text: cell });
+    header += this.tablerow({ text: cell as P });
 
     let body = '';
     for (let j = 0; j < token.rows.length; j++) {
@@ -130,7 +130,7 @@ export class _Renderer<P = string, R = string> {
         cell += this.tablecell(row[k]);
       }
 
-      body += this.tablerow({ text: cell });
+      body += this.tablerow({ text: cell as P });
     }
     if (body) body = `<tbody>${body}</tbody>`;
 
@@ -142,7 +142,7 @@ export class _Renderer<P = string, R = string> {
       + '</table>\n' as R;
   }
 
-  tablerow({ text }: Tokens.TableRow): R {
+  tablerow({ text }: Tokens.TableRow<P>): R {
     return `<tr>\n${text}</tr>\n` as R;
   }
 
