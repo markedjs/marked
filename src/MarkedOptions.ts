@@ -21,35 +21,35 @@ export interface TokenizerExtension {
   childTokens?: string[];
 }
 
-export interface RendererThis {
-  parser: _Parser;
+export interface RendererThis<P = string, R = string> {
+  parser: _Parser<P, R>;
 }
 
-export type RendererExtensionFunction = (this: RendererThis, token: Tokens.Generic) => string | false | undefined;
+export type RendererExtensionFunction<P = string, R = string> = (this: RendererThis<P, R>, token: Tokens.Generic) => R | false | undefined;
 
-export interface RendererExtension {
+export interface RendererExtension<P = string, R = string> {
   name: string;
-  renderer: RendererExtensionFunction;
+  renderer: RendererExtensionFunction<P, R>;
 }
 
-export type TokenizerAndRendererExtension = TokenizerExtension | RendererExtension | (TokenizerExtension & RendererExtension);
+export type TokenizerAndRendererExtension<P = string, R = string> = TokenizerExtension | RendererExtension<P, R> | (TokenizerExtension & RendererExtension<P, R>);
 
-type HooksApi = Omit<_Hooks, 'constructor' | 'options' | 'block'>;
-type HooksObject = {
-  [K in keyof HooksApi]?: (this: _Hooks, ...args: Parameters<HooksApi[K]>) => ReturnType<HooksApi[K]> | Promise<ReturnType<HooksApi[K]>>
+type HooksApi<P = string, R = string> = Omit<_Hooks<P, R>, 'constructor' | 'options' | 'block'>;
+type HooksObject<P = string, R = string> = {
+  [K in keyof HooksApi<P, R>]?: (this: _Hooks<P, R>, ...args: Parameters<HooksApi<P, R>[K]>) => ReturnType<HooksApi<P, R>[K]> | Promise<ReturnType<HooksApi<P, R>[K]>>
 };
 
-type RendererApi = Omit<_Renderer, 'constructor' | 'options' | 'parser'>;
-type RendererObject = {
-  [K in keyof RendererApi]?: (this: _Renderer, ...args: Parameters<RendererApi[K]>) => ReturnType<RendererApi[K]> | false
+type RendererApi<P = string, R = string> = Omit<_Renderer<P, R>, 'constructor' | 'options' | 'parser'>;
+type RendererObject<P = string, R = string> = {
+  [K in keyof RendererApi<P, R>]?: (this: _Renderer<P, R>, ...args: Parameters<RendererApi<P, R>[K]>) => ReturnType<RendererApi<P, R>[K]> | false
 };
 
-type TokenizerApi = Omit<_Tokenizer, 'constructor' | 'options' | 'rules' | 'lexer'>;
-type TokenizerObject = {
-  [K in keyof TokenizerApi]?: (this: _Tokenizer, ...args: Parameters<TokenizerApi[K]>) => ReturnType<TokenizerApi[K]> | false
+type TokenizerApi<P = string, R = string> = Omit<_Tokenizer<P, R>, 'constructor' | 'options' | 'rules' | 'lexer'>;
+type TokenizerObject<P = string, R = string> = {
+  [K in keyof TokenizerApi<P, R>]?: (this: _Tokenizer<P, R>, ...args: Parameters<TokenizerApi<P, R>[K]>) => ReturnType<TokenizerApi<P, R>[K]> | false
 };
 
-export interface MarkedExtension {
+export interface MarkedExtension<P = string, R = string> {
   /**
    * True will tell marked to await any walkTokens functions before parsing the tokens and returning an HTML string.
    */
@@ -64,7 +64,7 @@ export interface MarkedExtension {
    * Add tokenizers and renderers to marked
    */
   extensions?:
-    | TokenizerAndRendererExtension[]
+    | TokenizerAndRendererExtension<P, R>[]
     | null;
 
   /**
@@ -80,7 +80,7 @@ export interface MarkedExtension {
    * provideLexer is called to provide a function to tokenize markdown.
    * provideParser is called to provide a function to parse tokens.
    */
-  hooks?: HooksObject | null;
+  hooks?: HooksObject<P, R> | null;
 
   /**
    * Conform to obscure parts of markdown.pl as much as possible. Don't fix any of the original markdown bugs or poor behavior.
@@ -92,7 +92,7 @@ export interface MarkedExtension {
    *
    * An object containing functions to render tokens to HTML.
    */
-  renderer?: RendererObject | null;
+  renderer?: RendererObject<P, R> | null;
 
   /**
    * Shows an HTML error message when rendering fails.
@@ -113,30 +113,30 @@ export interface MarkedExtension {
   walkTokens?: ((token: Token) => void | Promise<void>) | null;
 }
 
-export interface MarkedOptions extends Omit<MarkedExtension, 'hooks' | 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
+export interface MarkedOptions<P = string, R = string> extends Omit<MarkedExtension<P, R>, 'hooks' | 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
   /**
    * Hooks are methods that hook into some part of marked.
    */
-  hooks?: _Hooks | null;
+  hooks?: _Hooks<P, R> | null;
 
   /**
    * Type: object Default: new Renderer()
    *
    * An object containing functions to render tokens to HTML.
    */
-  renderer?: _Renderer | null;
+  renderer?: _Renderer<P, R> | null;
 
   /**
    * The tokenizer defines how to turn markdown text into tokens.
    */
-  tokenizer?: _Tokenizer | null;
+  tokenizer?: _Tokenizer<P, R> | null;
 
   /**
    * Custom extensions
    */
   extensions?: null | {
     renderers: {
-      [name: string]: RendererExtensionFunction;
+      [name: string]: RendererExtensionFunction<P, R>;
     };
     childTokens: {
       [name: string]: string[];

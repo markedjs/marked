@@ -4,11 +4,11 @@ import { _Parser } from './Parser.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 import type { Token, TokensList } from './Tokens.ts';
 
-export class _Hooks {
-  options: MarkedOptions;
+export class _Hooks<P = string, R = string> {
+  options: MarkedOptions<P, R>;
   block?: boolean;
 
-  constructor(options?: MarkedOptions) {
+  constructor(options?: MarkedOptions<P, R>) {
     this.options = options || _defaults;
   }
 
@@ -28,7 +28,7 @@ export class _Hooks {
   /**
    * Process HTML after marked is finished
    */
-  postprocess(html: string) {
+  postprocess(html: P) {
     return html;
   }
 
@@ -50,6 +50,6 @@ export class _Hooks {
    * Provide function to parse tokens
    */
   provideParser() {
-    return this.block ? _Parser.parse : _Parser.parseInline;
+    return this.block ? _Parser.parse<P, R> : _Parser.parseInline<P, R>;
   }
 }

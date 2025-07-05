@@ -11,18 +11,18 @@ import type { _Parser } from './Parser.ts';
 /**
  * Renderer
  */
-export class _Renderer {
-  options: MarkedOptions;
-  parser!: _Parser; // set by the parser
-  constructor(options?: MarkedOptions) {
+export class _Renderer<P = string, R = string> {
+  options: MarkedOptions<P, R>;
+  parser!: _Parser<P, R>; // set by the parser
+  constructor(options?: MarkedOptions<P, R>) {
     this.options = options || _defaults;
   }
 
-  space(token: Tokens.Space): string {
-    return '';
+  space(token: Tokens.Space): R {
+    return '' as R;
   }
 
-  code({ text, lang, escaped }: Tokens.Code): string {
+  code({ text, lang, escaped }: Tokens.Code): R {
     const langString = (lang || '').match(other.notSpaceStart)?.[0];
 
     const code = text.replace(other.endingNewline, '') + '\n';
@@ -30,34 +30,34 @@ export class _Renderer {
     if (!langString) {
       return '<pre><code>'
         + (escaped ? code : escape(code, true))
-        + '</code></pre>\n';
+        + '</code></pre>\n' as R;
     }
 
     return '<pre><code class="language-'
       + escape(langString)
       + '">'
       + (escaped ? code : escape(code, true))
-      + '</code></pre>\n';
+      + '</code></pre>\n' as R;
   }
 
-  blockquote({ tokens }: Tokens.Blockquote): string {
+  blockquote({ tokens }: Tokens.Blockquote): R {
     const body = this.parser.parse(tokens);
-    return `<blockquote>\n${body}</blockquote>\n`;
+    return `<blockquote>\n${body}</blockquote>\n` as R;
   }
 
-  html({ text }: Tokens.HTML | Tokens.Tag) : string {
-    return text;
+  html({ text }: Tokens.HTML | Tokens.Tag): R {
+    return text as R;
   }
 
-  heading({ tokens, depth }: Tokens.Heading): string {
-    return `<h${depth}>${this.parser.parseInline(tokens)}</h${depth}>\n`;
+  heading({ tokens, depth }: Tokens.Heading): R {
+    return `<h${depth}>${this.parser.parseInline(tokens)}</h${depth}>\n` as R;
   }
 
-  hr(token: Tokens.Hr): string {
-    return '<hr>\n';
+  hr(token: Tokens.Hr): R {
+    return '<hr>\n' as R;
   }
 
-  list(token: Tokens.List): string {
+  list(token: Tokens.List): R {
     const ordered = token.ordered;
     const start = token.start;
 
@@ -69,10 +69,10 @@ export class _Renderer {
 
     const type = ordered ? 'ol' : 'ul';
     const startAttr = (ordered && start !== 1) ? (' start="' + start + '"') : '';
-    return '<' + type + startAttr + '>\n' + body + '</' + type + '>\n';
+    return '<' + type + startAttr + '>\n' + body + '</' + type + '>\n' as R;
   }
 
-  listitem(item: Tokens.ListItem): string {
+  listitem(item: Tokens.ListItem): R {
     let itemBody = '';
     if (item.task) {
       const checkbox = this.checkbox({ checked: !!item.checked });
@@ -98,20 +98,20 @@ export class _Renderer {
 
     itemBody += this.parser.parse(item.tokens, !!item.loose);
 
-    return `<li>${itemBody}</li>\n`;
+    return `<li>${itemBody}</li>\n` as R;
   }
 
-  checkbox({ checked }: Tokens.Checkbox): string {
+  checkbox({ checked }: Tokens.Checkbox): R {
     return '<input '
       + (checked ? 'checked="" ' : '')
-      + 'disabled="" type="checkbox">';
+      + 'disabled="" type="checkbox">' as R;
   }
 
-  paragraph({ tokens }: Tokens.Paragraph): string {
-    return `<p>${this.parser.parseInline(tokens)}</p>\n`;
+  paragraph({ tokens }: Tokens.Paragraph): R {
+    return `<p>${this.parser.parseInline(tokens)}</p>\n` as R;
   }
 
-  table(token: Tokens.Table): string {
+  table(token: Tokens.Table): R {
     let header = '';
 
     // header
@@ -139,50 +139,50 @@ export class _Renderer {
       + header
       + '</thead>\n'
       + body
-      + '</table>\n';
+      + '</table>\n' as R;
   }
 
-  tablerow({ text }: Tokens.TableRow): string {
-    return `<tr>\n${text}</tr>\n`;
+  tablerow({ text }: Tokens.TableRow): R {
+    return `<tr>\n${text}</tr>\n` as R;
   }
 
-  tablecell(token: Tokens.TableCell): string {
+  tablecell(token: Tokens.TableCell): R {
     const content = this.parser.parseInline(token.tokens);
     const type = token.header ? 'th' : 'td';
     const tag = token.align
       ? `<${type} align="${token.align}">`
       : `<${type}>`;
-    return tag + content + `</${type}>\n`;
+    return tag + content + `</${type}>\n` as R;
   }
 
   /**
    * span level renderer
    */
-  strong({ tokens }: Tokens.Strong): string {
-    return `<strong>${this.parser.parseInline(tokens)}</strong>`;
+  strong({ tokens }: Tokens.Strong): R {
+    return `<strong>${this.parser.parseInline(tokens)}</strong>` as R;
   }
 
-  em({ tokens }: Tokens.Em): string {
-    return `<em>${this.parser.parseInline(tokens)}</em>`;
+  em({ tokens }: Tokens.Em): R {
+    return `<em>${this.parser.parseInline(tokens)}</em>` as R;
   }
 
-  codespan({ text }: Tokens.Codespan): string {
-    return `<code>${escape(text, true)}</code>`;
+  codespan({ text }: Tokens.Codespan): R {
+    return `<code>${escape(text, true)}</code>` as R;
   }
 
-  br(token: Tokens.Br): string {
-    return '<br>';
+  br(token: Tokens.Br): R {
+    return '<br>' as R;
   }
 
-  del({ tokens }: Tokens.Del): string {
-    return `<del>${this.parser.parseInline(tokens)}</del>`;
+  del({ tokens }: Tokens.Del): R {
+    return `<del>${this.parser.parseInline(tokens)}</del>` as R;
   }
 
-  link({ href, title, tokens }: Tokens.Link): string {
-    const text = this.parser.parseInline(tokens);
+  link({ href, title, tokens }: Tokens.Link): R {
+    const text = this.parser.parseInline(tokens) as string;
     const cleanHref = cleanUrl(href);
     if (cleanHref === null) {
-      return text;
+      return text as R;
     }
     href = cleanHref;
     let out = '<a href="' + href + '"';
@@ -190,16 +190,16 @@ export class _Renderer {
       out += ' title="' + (escape(title)) + '"';
     }
     out += '>' + text + '</a>';
-    return out;
+    return out as R;
   }
 
-  image({ href, title, text, tokens }: Tokens.Image): string {
+  image({ href, title, text, tokens }: Tokens.Image): R {
     if (tokens) {
-      text = this.parser.parseInline(tokens, this.parser.textRenderer);
+      text = this.parser.parseInline(tokens, this.parser.textRenderer) as string;
     }
     const cleanHref = cleanUrl(href);
     if (cleanHref === null) {
-      return escape(text);
+      return escape(text) as R;
     }
     href = cleanHref;
 
@@ -208,12 +208,12 @@ export class _Renderer {
       out += ` title="${escape(title)}"`;
     }
     out += '>';
-    return out;
+    return out as R;
   }
 
-  text(token: Tokens.Text | Tokens.Escape) : string {
+  text(token: Tokens.Text | Tokens.Escape): R {
     return 'tokens' in token && token.tokens
-      ? this.parser.parseInline(token.tokens)
-      : ('escaped' in token && token.escaped ? token.text : escape(token.text));
+      ? this.parser.parseInline(token.tokens) as unknown as R
+      : ('escaped' in token && token.escaped ? token.text as R : escape(token.text) as R);
   }
 }
