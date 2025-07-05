@@ -3,7 +3,7 @@ import type { MarkedOptions } from './MarkedOptions.ts';
 /**
  * Gets the original marked default options.
  */
-export function _getDefaults(): MarkedOptions {
+export function _getDefaults<ParserOutput = string, RendererOutput = string>(): MarkedOptions<ParserOutput, RendererOutput> {
   return {
     async: false,
     breaks: false,
@@ -17,9 +17,9 @@ export function _getDefaults(): MarkedOptions {
     walkTokens: null,
   };
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export let _defaults: MarkedOptions<any, any> = _getDefaults();
 
-export let _defaults = _getDefaults();
-
-export function changeDefaults(newDefaults: MarkedOptions) {
+export function changeDefaults<ParserOutput = string, RendererOutput = string>(newDefaults: MarkedOptions<ParserOutput, RendererOutput>) {
   _defaults = newDefaults;
 }

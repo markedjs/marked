@@ -3,8 +3,8 @@ import { marked } from 'marked';
 
 // other exports
 
-import { Lexer, Parser, Tokenizer, Renderer, TextRenderer } from 'marked';
-import type { Tokens, MarkedExtension, TokenizerAndRendererExtension, Token ,TokenizerExtension, MarkedOptions, TokensList, RendererExtension } from 'marked';
+import { Lexer, Parser, Tokenizer, Renderer, TextRenderer, Marked } from 'marked';
+import type { Tokens, MarkedExtension, TokenizerAndRendererExtension, Token ,TokenizerExtension, MarkedOptions, TokensList, RendererExtension, RendererObject } from 'marked';
 
 const tokenizer = new marked.Tokenizer();
 
@@ -398,3 +398,17 @@ marked.use({
   tokenizer: undefined,
   walkTokens: undefined,
 });
+
+const markedNumber = new Marked<number, number>();
+const rendererNumber = {
+  html() {
+    return 1;
+  }
+};
+function parserNumber(tokens: Token[], options?: MarkedOptions<number, number>){
+    return 1;
+};
+markedNumber.use({ renderer: rendererNumber, hooks: { provideParser() { return parserNumber; } } });
+
+const num: number = await markedNumber.parse('');
+console.log(num);
