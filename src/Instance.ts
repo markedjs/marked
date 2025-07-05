@@ -263,9 +263,9 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
 
   private parseMarkdown(blockType: boolean) {
     type overloadedParse = {
-      (src: string, options: MarkedOptions<ParserOutput, RendererOutput> & { async: true }): Promise<string>;
-      (src: string, options: MarkedOptions<ParserOutput, RendererOutput> & { async: false }): string;
-      (src: string, options?: MarkedOptions<ParserOutput, RendererOutput> | null): string | Promise<string>;
+      (src: string, options: MarkedOptions<ParserOutput, RendererOutput> & { async: true }): Promise<ParserOutput>;
+      (src: string, options: MarkedOptions<ParserOutput, RendererOutput> & { async: false }): ParserOutput;
+      (src: string, options?: MarkedOptions<ParserOutput, RendererOutput> | null): ParserOutput | Promise<ParserOutput>;
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
