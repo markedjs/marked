@@ -7,39 +7,39 @@ import type { MarkedOptions } from './MarkedOptions.ts';
 /**
  * Parsing & Compiling
  */
-export class _Parser<P = string, R = string> {
-  options: MarkedOptions<P, R>;
-  renderer: _Renderer<P, R>;
-  textRenderer: _TextRenderer<R>;
-  constructor(options?: MarkedOptions<P, R>) {
+export class _Parser<ParserOutput = string, RendererOutput = string> {
+  options: MarkedOptions<ParserOutput, RendererOutput>;
+  renderer: _Renderer<ParserOutput, RendererOutput>;
+  textRenderer: _TextRenderer<RendererOutput>;
+  constructor(options?: MarkedOptions<ParserOutput, RendererOutput>) {
     this.options = options || _defaults;
-    this.options.renderer = this.options.renderer || new _Renderer<P, R>();
+    this.options.renderer = this.options.renderer || new _Renderer<ParserOutput, RendererOutput>();
     this.renderer = this.options.renderer;
     this.renderer.options = this.options;
     this.renderer.parser = this;
-    this.textRenderer = new _TextRenderer<R>();
+    this.textRenderer = new _TextRenderer<RendererOutput>();
   }
 
   /**
    * Static Parse Method
    */
-  static parse<P = string, R = string>(tokens: Token[], options?: MarkedOptions<P, R>) {
-    const parser = new _Parser<P, R>(options);
+  static parse<ParserOutput = string, RendererOutput = string>(tokens: Token[], options?: MarkedOptions<ParserOutput, RendererOutput>) {
+    const parser = new _Parser<ParserOutput, RendererOutput>(options);
     return parser.parse(tokens);
   }
 
   /**
    * Static Parse Inline Method
    */
-  static parseInline<P = string, R = string>(tokens: Token[], options?: MarkedOptions<P, R>) {
-    const parser = new _Parser<P, R>(options);
+  static parseInline<ParserOutput = string, RendererOutput = string>(tokens: Token[], options?: MarkedOptions<ParserOutput, RendererOutput>) {
+    const parser = new _Parser<ParserOutput, RendererOutput>(options);
     return parser.parseInline(tokens);
   }
 
   /**
    * Parse Loop
    */
-  parse(tokens: Token[], top = true): P {
+  parse(tokens: Token[], top = true): ParserOutput {
     let out = '';
 
     for (let i = 0; i < tokens.length; i++) {
@@ -118,7 +118,7 @@ export class _Parser<P = string, R = string> {
           const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
             console.error(errMsg);
-            return '' as P;
+            return '' as ParserOutput;
           } else {
             throw new Error(errMsg);
           }
@@ -126,13 +126,13 @@ export class _Parser<P = string, R = string> {
       }
     }
 
-    return out as P;
+    return out as ParserOutput;
   }
 
   /**
    * Parse Inline Tokens
    */
-  parseInline(tokens: Token[], renderer: _Renderer<P, R> | _TextRenderer<R> = this.renderer): P {
+  parseInline(tokens: Token[], renderer: _Renderer<ParserOutput, RendererOutput> | _TextRenderer<RendererOutput> = this.renderer): ParserOutput {
     let out = '';
 
     for (let i = 0; i < tokens.length; i++) {
@@ -194,13 +194,13 @@ export class _Parser<P = string, R = string> {
           const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
             console.error(errMsg);
-            return '' as P;
+            return '' as ParserOutput;
           } else {
             throw new Error(errMsg);
           }
         }
       }
     }
-    return out as P;
+    return out as ParserOutput;
   }
 }

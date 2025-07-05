@@ -21,35 +21,35 @@ export interface TokenizerExtension {
   childTokens?: string[];
 }
 
-export interface RendererThis<P = string, R = string> {
-  parser: _Parser<P, R>;
+export interface RendererThis<ParserOutput = string, RendererOutput = string> {
+  parser: _Parser<ParserOutput, RendererOutput>;
 }
 
-export type RendererExtensionFunction<P = string, R = string> = (this: RendererThis<P, R>, token: Tokens.Generic) => R | false | undefined;
+export type RendererExtensionFunction<ParserOutput = string, RendererOutput = string> = (this: RendererThis<ParserOutput, RendererOutput>, token: Tokens.Generic) => RendererOutput | false | undefined;
 
-export interface RendererExtension<P = string, R = string> {
+export interface RendererExtension<ParserOutput = string, RendererOutput = string> {
   name: string;
-  renderer: RendererExtensionFunction<P, R>;
+  renderer: RendererExtensionFunction<ParserOutput, RendererOutput>;
 }
 
-export type TokenizerAndRendererExtension<P = string, R = string> = TokenizerExtension | RendererExtension<P, R> | (TokenizerExtension & RendererExtension<P, R>);
+export type TokenizerAndRendererExtension<ParserOutput = string, RendererOutput = string> = TokenizerExtension | RendererExtension<ParserOutput, RendererOutput> | (TokenizerExtension & RendererExtension<ParserOutput, RendererOutput>);
 
-type HooksApi<P = string, R = string> = Omit<_Hooks<P, R>, 'constructor' | 'options' | 'block'>;
-type HooksObject<P = string, R = string> = {
-  [K in keyof HooksApi<P, R>]?: (this: _Hooks<P, R>, ...args: Parameters<HooksApi<P, R>[K]>) => ReturnType<HooksApi<P, R>[K]> | Promise<ReturnType<HooksApi<P, R>[K]>>
+type HooksApi<ParserOutput = string, RendererOutput = string> = Omit<_Hooks<ParserOutput, RendererOutput>, 'constructor' | 'options' | 'block'>;
+type HooksObject<ParserOutput = string, RendererOutput = string> = {
+  [K in keyof HooksApi<ParserOutput, RendererOutput>]?: (this: _Hooks<ParserOutput, RendererOutput>, ...args: Parameters<HooksApi<ParserOutput, RendererOutput>[K]>) => ReturnType<HooksApi<ParserOutput, RendererOutput>[K]> | Promise<ReturnType<HooksApi<ParserOutput, RendererOutput>[K]>>
 };
 
-type RendererApi<P = string, R = string> = Omit<_Renderer<P, R>, 'constructor' | 'options' | 'parser'>;
-type RendererObject<P = string, R = string> = {
-  [K in keyof RendererApi<P, R>]?: (this: _Renderer<P, R>, ...args: Parameters<RendererApi<P, R>[K]>) => ReturnType<RendererApi<P, R>[K]> | false
+type RendererApi<ParserOutput = string, RendererOutput = string> = Omit<_Renderer<ParserOutput, RendererOutput>, 'constructor' | 'options' | 'parser'>;
+type RendererObject<ParserOutput = string, RendererOutput = string> = {
+  [K in keyof RendererApi<ParserOutput, RendererOutput>]?: (this: _Renderer<ParserOutput, RendererOutput>, ...args: Parameters<RendererApi<ParserOutput, RendererOutput>[K]>) => ReturnType<RendererApi<ParserOutput, RendererOutput>[K]> | false
 };
 
-type TokenizerApi<P = string, R = string> = Omit<_Tokenizer<P, R>, 'constructor' | 'options' | 'rules' | 'lexer'>;
-type TokenizerObject<P = string, R = string> = {
-  [K in keyof TokenizerApi<P, R>]?: (this: _Tokenizer<P, R>, ...args: Parameters<TokenizerApi<P, R>[K]>) => ReturnType<TokenizerApi<P, R>[K]> | false
+type TokenizerApi<ParserOutput = string, RendererOutput = string> = Omit<_Tokenizer<ParserOutput, RendererOutput>, 'constructor' | 'options' | 'rules' | 'lexer'>;
+type TokenizerObject<ParserOutput = string, RendererOutput = string> = {
+  [K in keyof TokenizerApi<ParserOutput, RendererOutput>]?: (this: _Tokenizer<ParserOutput, RendererOutput>, ...args: Parameters<TokenizerApi<ParserOutput, RendererOutput>[K]>) => ReturnType<TokenizerApi<ParserOutput, RendererOutput>[K]> | false
 };
 
-export interface MarkedExtension<P = string, R = string> {
+export interface MarkedExtension<ParserOutput = string, RendererOutput = string> {
   /**
    * True will tell marked to await any walkTokens functions before parsing the tokens and returning an HTML string.
    */
@@ -64,7 +64,7 @@ export interface MarkedExtension<P = string, R = string> {
    * Add tokenizers and renderers to marked
    */
   extensions?:
-    | TokenizerAndRendererExtension<P, R>[]
+    | TokenizerAndRendererExtension<ParserOutput, RendererOutput>[]
     | null;
 
   /**
@@ -80,7 +80,7 @@ export interface MarkedExtension<P = string, R = string> {
    * provideLexer is called to provide a function to tokenize markdown.
    * provideParser is called to provide a function to parse tokens.
    */
-  hooks?: HooksObject<P, R> | null;
+  hooks?: HooksObject<ParserOutput, RendererOutput> | null;
 
   /**
    * Conform to obscure parts of markdown.pl as much as possible. Don't fix any of the original markdown bugs or poor behavior.
@@ -92,7 +92,7 @@ export interface MarkedExtension<P = string, R = string> {
    *
    * An object containing functions to render tokens to HTML.
    */
-  renderer?: RendererObject<P, R> | null;
+  renderer?: RendererObject<ParserOutput, RendererOutput> | null;
 
   /**
    * Shows an HTML error message when rendering fails.
@@ -113,30 +113,30 @@ export interface MarkedExtension<P = string, R = string> {
   walkTokens?: ((token: Token) => void | Promise<void>) | null;
 }
 
-export interface MarkedOptions<P = string, R = string> extends Omit<MarkedExtension<P, R>, 'hooks' | 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
+export interface MarkedOptions<ParserOutput = string, RendererOutput = string> extends Omit<MarkedExtension<ParserOutput, RendererOutput>, 'hooks' | 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
   /**
    * Hooks are methods that hook into some part of marked.
    */
-  hooks?: _Hooks<P, R> | null;
+  hooks?: _Hooks<ParserOutput, RendererOutput> | null;
 
   /**
    * Type: object Default: new Renderer()
    *
    * An object containing functions to render tokens to HTML.
    */
-  renderer?: _Renderer<P, R> | null;
+  renderer?: _Renderer<ParserOutput, RendererOutput> | null;
 
   /**
    * The tokenizer defines how to turn markdown text into tokens.
    */
-  tokenizer?: _Tokenizer<P, R> | null;
+  tokenizer?: _Tokenizer<ParserOutput, RendererOutput> | null;
 
   /**
    * Custom extensions
    */
   extensions?: null | {
     renderers: {
-      [name: string]: RendererExtensionFunction<P, R>;
+      [name: string]: RendererExtensionFunction<ParserOutput, RendererOutput>;
     };
     childTokens: {
       [name: string]: string[];

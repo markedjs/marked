@@ -14,21 +14,21 @@ export type MaybePromise = void | Promise<void>;
 type UnknownFunction = (...args: unknown[]) => unknown;
 type GenericRendererFunction = (...args: unknown[]) => string | false;
 
-export class Marked<P = string, R = string> {
-  defaults = _getDefaults<P, R>();
+export class Marked<ParserOutput = string, RendererOutput = string> {
+  defaults = _getDefaults<ParserOutput, RendererOutput>();
   options = this.setOptions;
 
   parse = this.parseMarkdown(true);
   parseInline = this.parseMarkdown(false);
 
-  Parser = _Parser<P, R>;
-  Renderer = _Renderer<P, R>;
-  TextRenderer = _TextRenderer<R>;
+  Parser = _Parser<ParserOutput, RendererOutput>;
+  Renderer = _Renderer<ParserOutput, RendererOutput>;
+  TextRenderer = _TextRenderer<RendererOutput>;
   Lexer = _Lexer;
-  Tokenizer = _Tokenizer<P, R>;
-  Hooks = _Hooks<P, R>;
+  Tokenizer = _Tokenizer<ParserOutput, RendererOutput>;
+  Hooks = _Hooks<ParserOutput, RendererOutput>;
 
-  constructor(...args: MarkedExtension<P, R>[]) {
+  constructor(...args: MarkedExtension<ParserOutput, RendererOutput>[]) {
     this.use(...args);
   }
 
@@ -73,12 +73,12 @@ export class Marked<P = string, R = string> {
     return values;
   }
 
-  use(...args: MarkedExtension<P, R>[]) {
-    const extensions: MarkedOptions<P, R>['extensions'] = this.defaults.extensions || { renderers: {}, childTokens: {} };
+  use(...args: MarkedExtension<ParserOutput, RendererOutput>[]) {
+    const extensions: MarkedOptions<ParserOutput, RendererOutput>['extensions'] = this.defaults.extensions || { renderers: {}, childTokens: {} };
 
     args.forEach((pack) => {
       // copy options to new object
-      const opts = { ...pack } as MarkedOptions<P, R>;
+      const opts = { ...pack } as MarkedOptions<ParserOutput, RendererOutput>;
 
       // set async to true if it was set to true before
       opts.async = this.defaults.async || opts.async || false;
@@ -139,7 +139,7 @@ export class Marked<P = string, R = string> {
 
       // ==-- Parse "overwrite" extensions --== //
       if (pack.renderer) {
-        const renderer = this.defaults.renderer || new _Renderer<P, R>(this.defaults);
+        const renderer = this.defaults.renderer || new _Renderer<ParserOutput, RendererOutput>(this.defaults);
         for (const prop in pack.renderer) {
           if (!(prop in renderer)) {
             throw new Error(`renderer '${prop}' does not exist`);
@@ -148,7 +148,7 @@ export class Marked<P = string, R = string> {
             // ignore options property
             continue;
           }
-          const rendererProp = prop as Exclude<keyof _Renderer<P, R>, 'options' | 'parser'>;
+          const rendererProp = prop as Exclude<keyof _Renderer<ParserOutput, RendererOutput>, 'options' | 'parser'>;
           const rendererFunc = pack.renderer[rendererProp] as GenericRendererFunction;
           const prevRenderer = renderer[rendererProp] as GenericRendererFunction;
           // Replace renderer with func to run extension, but fall back if false
@@ -157,13 +157,13 @@ export class Marked<P = string, R = string> {
             if (ret === false) {
               ret = prevRenderer.apply(renderer, args);
             }
-            return (ret || '') as R;
+            return (ret || '') as RendererOutput;
           };
         }
         opts.renderer = renderer;
       }
       if (pack.tokenizer) {
-        const tokenizer = this.defaults.tokenizer || new _Tokenizer<P, R>(this.defaults);
+        const tokenizer = this.defaults.tokenizer || new _Tokenizer<ParserOutput, RendererOutput>(this.defaults);
         for (const prop in pack.tokenizer) {
           if (!(prop in tokenizer)) {
             throw new Error(`tokenizer '${prop}' does not exist`);
@@ -172,7 +172,7 @@ export class Marked<P = string, R = string> {
             // ignore options, rules, and lexer properties
             continue;
           }
-          const tokenizerProp = prop as Exclude<keyof _Tokenizer<P, R>, 'options' | 'rules' | 'lexer'>;
+          const tokenizerProp = prop as Exclude<keyof _Tokenizer<ParserOutput, RendererOutput>, 'options' | 'rules' | 'lexer'>;
           const tokenizerFunc = pack.tokenizer[tokenizerProp] as UnknownFunction;
           const prevTokenizer = tokenizer[tokenizerProp] as UnknownFunction;
           // Replace tokenizer with func to run extension, but fall back if false
@@ -190,7 +190,7 @@ export class Marked<P = string, R = string> {
 
       // ==-- Parse Hooks extensions --== //
       if (pack.hooks) {
-        const hooks = this.defaults.hooks || new _Hooks<P, R>();
+        const hooks = this.defaults.hooks || new _Hooks<ParserOutput, RendererOutput>();
         for (const prop in pack.hooks) {
           if (!(prop in hooks)) {
             throw new Error(`hook '${prop}' does not exist`);
@@ -199,7 +199,7 @@ export class Marked<P = string, R = string> {
             // ignore options and block properties
             continue;
           }
-          const hooksProp = prop as Exclude<keyof _Hooks<P, R>, 'options' | 'block'>;
+          const hooksProp = prop as Exclude<keyof _Hooks<ParserOutput, RendererOutput>, 'options' | 'block'>;
           const hooksFunc = pack.hooks[hooksProp] as UnknownFunction;
           const prevHook = hooks[hooksProp] as UnknownFunction;
           if (_Hooks.passThroughHooks.has(prop)) {
@@ -248,28 +248,28 @@ export class Marked<P = string, R = string> {
     return this;
   }
 
-  setOptions(opt: MarkedOptions<P, R>) {
+  setOptions(opt: MarkedOptions<ParserOutput, RendererOutput>) {
     this.defaults = { ...this.defaults, ...opt };
     return this;
   }
 
-  lexer(src: string, options?: MarkedOptions<P, R>) {
+  lexer(src: string, options?: MarkedOptions<ParserOutput, RendererOutput>) {
     return _Lexer.lex(src, options ?? this.defaults);
   }
 
-  parser(tokens: Token[], options?: MarkedOptions<P, R>) {
-    return _Parser.parse<P, R>(tokens, options ?? this.defaults);
+  parser(tokens: Token[], options?: MarkedOptions<ParserOutput, RendererOutput>) {
+    return _Parser.parse<ParserOutput, RendererOutput>(tokens, options ?? this.defaults);
   }
 
   private parseMarkdown(blockType: boolean) {
     type overloadedParse = {
-      (src: string, options: MarkedOptions<P, R> & { async: true }): Promise<string>;
-      (src: string, options: MarkedOptions<P, R> & { async: false }): string;
-      (src: string, options?: MarkedOptions<P, R> | null): string | Promise<string>;
+      (src: string, options: MarkedOptions<ParserOutput, RendererOutput> & { async: true }): Promise<string>;
+      (src: string, options: MarkedOptions<ParserOutput, RendererOutput> & { async: false }): string;
+      (src: string, options?: MarkedOptions<ParserOutput, RendererOutput> | null): string | Promise<string>;
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const parse: overloadedParse = (src: string, options?: MarkedOptions<P, R> | null): any => {
+    const parse: overloadedParse = (src: string, options?: MarkedOptions<ParserOutput, RendererOutput> | null): any => {
       const origOpt = { ...options };
       const opt = { ...this.defaults, ...origOpt };
 
