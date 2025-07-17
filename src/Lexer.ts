@@ -7,24 +7,24 @@ import type { MarkedOptions } from './MarkedOptions.ts';
 /**
  * Block Lexer
  */
-export class _Lexer {
+export class _Lexer<ParserOutput = string, RendererOutput = string> {
   tokens: TokensList;
-  options: MarkedOptions;
+  options: MarkedOptions<ParserOutput, RendererOutput>;
   state: {
     inLink: boolean;
     inRawBlock: boolean;
     top: boolean;
   };
 
-  private tokenizer: _Tokenizer;
+  private tokenizer: _Tokenizer<ParserOutput, RendererOutput>;
   private inlineQueue: { src: string, tokens: Token[] }[];
 
-  constructor(options?: MarkedOptions) {
+  constructor(options?: MarkedOptions<ParserOutput, RendererOutput>) {
     // TokenList cannot be created in one go
     this.tokens = [] as unknown as TokensList;
     this.tokens.links = Object.create(null);
     this.options = options || _defaults;
-    this.options.tokenizer = this.options.tokenizer || new _Tokenizer();
+    this.options.tokenizer = this.options.tokenizer || new _Tokenizer<ParserOutput, RendererOutput>();
     this.tokenizer = this.options.tokenizer;
     this.tokenizer.options = this.options;
     this.tokenizer.lexer = this;
@@ -68,16 +68,16 @@ export class _Lexer {
   /**
    * Static Lex Method
    */
-  static lex(src: string, options?: MarkedOptions) {
-    const lexer = new _Lexer(options);
+  static lex<ParserOutput = string, RendererOutput = string>(src: string, options?: MarkedOptions<ParserOutput, RendererOutput>) {
+    const lexer = new _Lexer<ParserOutput, RendererOutput>(options);
     return lexer.lex(src);
   }
 
   /**
    * Static Lex Inline Method
    */
-  static lexInline(src: string, options?: MarkedOptions) {
-    const lexer = new _Lexer(options);
+  static lexInline<ParserOutput = string, RendererOutput = string>(src: string, options?: MarkedOptions<ParserOutput, RendererOutput>) {
+    const lexer = new _Lexer<ParserOutput, RendererOutput>(options);
     return lexer.inlineTokens(src);
   }
 

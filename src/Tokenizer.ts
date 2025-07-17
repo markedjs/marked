@@ -58,12 +58,12 @@ function indentCodeCompensation(raw: string, text: string, rules: Rules) {
 /**
  * Tokenizer
  */
-export class _Tokenizer {
-  options: MarkedOptions;
+export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
+  options: MarkedOptions<ParserOutput, RendererOutput>;
   rules!: Rules; // set by the lexer
-  lexer!: _Lexer; // set by the lexer
+  lexer!: _Lexer<ParserOutput, RendererOutput>; // set by the lexer
 
-  constructor(options?: MarkedOptions) {
+  constructor(options?: MarkedOptions<ParserOutput, RendererOutput>) {
     this.options = options || _defaults;
   }
 
