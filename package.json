@@ -56,7 +56,7 @@
     "@semantic-release/github": "^11.0.3",
     "@semantic-release/npm": "^12.0.1",
     "@semantic-release/release-notes-generator": "^14.0.3",
-    "cheerio": "1.1.0",
+    "cheerio": "1.1.2",
     "commonmark": "0.31.2",
     "cross-env": "^7.0.3",
     "dts-bundle-generator": "^9.5.1",
