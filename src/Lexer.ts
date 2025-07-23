@@ -244,7 +244,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       if (this.state.top && (token = this.tokenizer.paragraph(cutSrc))) {
         const lastToken = tokens.at(-1);
         if (lastParagraphClipped && lastToken?.type === 'paragraph') {
-          lastToken.raw += '\n' + token.raw;
+          lastToken.raw += (lastToken.raw.endsWith('\n') ? '' : '\n') + token.raw;
           lastToken.text += '\n' + token.text;
           this.inlineQueue.pop();
           this.inlineQueue.at(-1)!.src = lastToken.text;
@@ -261,7 +261,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
         src = src.substring(token.raw.length);
         const lastToken = tokens.at(-1);
         if (lastToken?.type === 'text') {
-          lastToken.raw += '\n' + token.raw;
+          lastToken.raw += (lastToken.raw.endsWith('\n') ? '' : '\n') + token.raw;
           lastToken.text += '\n' + token.text;
           this.inlineQueue.pop();
           this.inlineQueue.at(-1)!.src = lastToken.text;

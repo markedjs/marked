@@ -1173,6 +1173,43 @@ paragraph
         ],
       });
     });
+
+    it.only('multiline', () => {
+      expectTokens({
+        md: `
+- line 1
+  line 2
+`,
+        tokens: [
+          {
+            type: 'space',
+            raw: '\n',
+          }, {
+            type: 'list',
+            raw: '- line 1\n  line 2\n',
+            ordered: false,
+            start: '',
+            loose: false,
+            items: [
+              {
+                type: 'list_item',
+                raw: '- line 1\n  line 2',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'line 1\nline 2',
+                tokens: [{
+                  type: 'text',
+                  raw: 'line 1\nline 2',
+                  text: 'line 1\nline 2',
+                  tokens: [{ type: 'text', raw: 'line 1\nline 2', text: 'line 1\nline 2', escaped: false }],
+                }],
+              },
+            ],
+          },
+        ],
+      });
+    });
   });
 
   describe('html', () => {
