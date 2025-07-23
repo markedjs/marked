@@ -49,7 +49,7 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
       if (this.options.extensions?.renderers?.[anyToken.type]) {
         const genericToken = anyToken as Tokens.Generic;
         const ret = this.options.extensions.renderers[genericToken.type].call({ parser: this }, genericToken);
-        if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'html', 'paragraph', 'text'].includes(genericToken.type)) {
+        if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'html', 'def', 'paragraph', 'text'].includes(genericToken.type)) {
           out += ret || '';
           continue;
         }
@@ -88,6 +88,10 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
         }
         case 'html': {
           out += this.renderer.html(token);
+          continue;
+        }
+        case 'def': {
+          out += this.renderer.def(token);
           continue;
         }
         case 'paragraph': {
