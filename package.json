@@ -58,7 +58,7 @@
     "@semantic-release/release-notes-generator": "^14.0.3",
     "cheerio": "1.1.2",
     "commonmark": "0.31.2",
-    "cross-env": "^7.0.3",
+    "cross-env": "^10.0.0",
     "dts-bundle-generator": "^9.5.1",
     "esbuild": "^0.25.8",
     "esbuild-plugin-umd-wrapper": "^3.0.0",
