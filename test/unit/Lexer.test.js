@@ -1174,7 +1174,7 @@ paragraph
       });
     });
 
-    it.only('multiline', () => {
+    it('multiline', () => {
       expectTokens({
         md: `
 - line 1
