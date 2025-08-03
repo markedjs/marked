@@ -1209,6 +1209,47 @@ paragraph
           },
         ],
       });
+
+      it('indented code after text', () => {
+        expectTokens({
+          md: `
+- a
+      - b
+`,
+          tokens: [{
+            type: 'space',
+            raw: '\n',
+          },
+          {
+            type: 'list',
+            raw: '- a\n      - b\n',
+            ordered: false,
+            start: '',
+            loose: false,
+            items: [
+              {
+                type: 'list_item',
+                raw: '- a\n      - b',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'a\n    - b',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'a\n    - b',
+                    text: 'a\n- b',
+                    tokens: [
+                      { type: 'text', raw: 'a\n- b', text: 'a\n- b', escaped: false },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          ],
+        });
+      });
     });
   });
 
