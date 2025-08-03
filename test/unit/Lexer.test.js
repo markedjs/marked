@@ -1209,46 +1209,85 @@ paragraph
           },
         ],
       });
+    });
 
-      it('indented code after text', () => {
-        expectTokens({
-          md: `
+    it('indented code after paragraph', () => {
+      expectTokens({
+        md: `
 - a
       - b
 `,
-          tokens: [{
-            type: 'space',
-            raw: '\n',
-          },
+        tokens: [{
+          type: 'space',
+          raw: '\n',
+        },
+        {
+          type: 'list',
+          raw: '- a\n      - b\n',
+          ordered: false,
+          start: '',
+          loose: false,
+          items: [
+            {
+              type: 'list_item',
+              raw: '- a\n      - b',
+              task: false,
+              checked: undefined,
+              loose: false,
+              text: 'a\n    - b',
+              tokens: [
+                {
+                  type: 'text',
+                  raw: 'a\n    - b',
+                  text: 'a\n- b',
+                  tokens: [
+                    { type: 'text', raw: 'a\n- b', text: 'a\n- b', escaped: false },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        ],
+      });
+    });
+
+    it('def after paragraph', () => {
+      expectTokens({
+        md: `
+- hello
+[1]: hello
+`,
+        tokens: [
+          { type: 'space', raw: '\n' },
           {
             type: 'list',
-            raw: '- a\n      - b\n',
+            raw: '- hello\n[1]: hello\n',
             ordered: false,
             start: '',
             loose: false,
             items: [
               {
                 type: 'list_item',
-                raw: '- a\n      - b',
+                raw: '- hello\n[1]: hello',
                 task: false,
                 checked: undefined,
                 loose: false,
-                text: 'a\n    - b',
+                text: 'hello\n[1]: hello',
                 tokens: [
                   {
                     type: 'text',
-                    raw: 'a\n    - b',
-                    text: 'a\n- b',
+                    raw: 'hello\n[1]: hello',
+                    text: 'hello\n[1]: hello',
                     tokens: [
-                      { type: 'text', raw: 'a\n- b', text: 'a\n- b', escaped: false },
+                      { type: 'text', raw: 'hello\n[1]: hello', text: 'hello\n[1]: hello', escaped: false },
                     ],
                   },
                 ],
               },
             ],
           },
-          ],
-        });
+        ],
       });
     });
   });
