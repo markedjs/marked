@@ -49,6 +49,10 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     return text as RendererOutput;
   }
 
+  def(token: Tokens.Def): RendererOutput {
+    return '' as RendererOutput;
+  }
+
   heading({ tokens, depth }: Tokens.Heading): RendererOutput {
     return `<h${depth}>${this.parser.parseInline(tokens)}</h${depth}>\n` as RendererOutput;
   }

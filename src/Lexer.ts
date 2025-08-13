@@ -206,6 +206,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
             href: token.href,
             title: token.title,
           };
+          tokens.push(token);
         }
         continue;
       }
