@@ -1331,6 +1331,15 @@ paragraph
         links: {
           link: { href: 'https://example.com', title: undefined },
         },
+        tokens: [
+          {
+            type: 'def',
+            raw: '[link]: https://example.com',
+            tag: 'link',
+            href: 'https://example.com',
+            title: undefined,
+          },
+        ],
       });
     });
 
@@ -1340,6 +1349,15 @@ paragraph
         links: {
           link: { href: 'https://example.com', title: 'title' },
         },
+        tokens: [
+          {
+            type: 'def',
+            raw: '[link]: https://example.com "title"',
+            tag: 'link',
+            href: 'https://example.com',
+            title: 'title',
+          },
+        ],
       });
     });
   });
