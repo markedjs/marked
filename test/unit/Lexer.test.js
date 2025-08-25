@@ -1173,6 +1173,123 @@ paragraph
         ],
       });
     });
+
+    it('multiline', () => {
+      expectTokens({
+        md: `
+- line 1
+  line 2
+`,
+        tokens: [
+          {
+            type: 'space',
+            raw: '\n',
+          }, {
+            type: 'list',
+            raw: '- line 1\n  line 2\n',
+            ordered: false,
+            start: '',
+            loose: false,
+            items: [
+              {
+                type: 'list_item',
+                raw: '- line 1\n  line 2',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'line 1\nline 2',
+                tokens: [{
+                  type: 'text',
+                  raw: 'line 1\nline 2',
+                  text: 'line 1\nline 2',
+                  tokens: [{ type: 'text', raw: 'line 1\nline 2', text: 'line 1\nline 2', escaped: false }],
+                }],
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    it('indented code after paragraph', () => {
+      expectTokens({
+        md: `
+- a
+      - b
+`,
+        tokens: [{
+          type: 'space',
+          raw: '\n',
+        },
+        {
+          type: 'list',
+          raw: '- a\n      - b\n',
+          ordered: false,
+          start: '',
+          loose: false,
+          items: [
+            {
+              type: 'list_item',
+              raw: '- a\n      - b',
+              task: false,
+              checked: undefined,
+              loose: false,
+              text: 'a\n    - b',
+              tokens: [
+                {
+                  type: 'text',
+                  raw: 'a\n    - b',
+                  text: 'a\n- b',
+                  tokens: [
+                    { type: 'text', raw: 'a\n- b', text: 'a\n- b', escaped: false },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        ],
+      });
+    });
+
+    it('def after paragraph', () => {
+      expectTokens({
+        md: `
+- hello
+[1]: hello
+`,
+        tokens: [
+          { type: 'space', raw: '\n' },
+          {
+            type: 'list',
+            raw: '- hello\n[1]: hello\n',
+            ordered: false,
+            start: '',
+            loose: false,
+            items: [
+              {
+                type: 'list_item',
+                raw: '- hello\n[1]: hello',
+                task: false,
+                checked: undefined,
+                loose: false,
+                text: 'hello\n[1]: hello',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'hello\n[1]: hello',
+                    text: 'hello\n[1]: hello',
+                    tokens: [
+                      { type: 'text', raw: 'hello\n[1]: hello', text: 'hello\n[1]: hello', escaped: false },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+    });
   });
 
   describe('html', () => {
@@ -1214,6 +1331,15 @@ paragraph
         links: {
           link: { href: 'https://example.com', title: undefined },
         },
+        tokens: [
+          {
+            type: 'def',
+            raw: '[link]: https://example.com',
+            tag: 'link',
+            href: 'https://example.com',
+            title: undefined,
+          },
+        ],
       });
     });
 
@@ -1223,6 +1349,15 @@ paragraph
         links: {
           link: { href: 'https://example.com', title: 'title' },
         },
+        tokens: [
+          {
+            type: 'def',
+            raw: '[link]: https://example.com "title"',
+            tag: 'link',
+            href: 'https://example.com',
+            title: 'title',
+          },
+        ],
       });
     });
   });

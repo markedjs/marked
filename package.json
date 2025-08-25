@@ -2,7 +2,7 @@
   "name": "marked",
   "description": "A markdown parser built for speed",
   "author": "Christopher Jeffrey",
-  "version": "16.1.1",
+  "version": "16.2.0",
   "type": "module",
   "main": "./lib/marked.esm.js",
   "module": "./lib/marked.esm.js",
@@ -53,7 +53,7 @@
     "@markedjs/testutils": "15.0.11-0",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^11.0.3",
+    "@semantic-release/github": "^11.0.4",
     "@semantic-release/npm": "^12.0.1",
     "@semantic-release/release-notes-generator": "^14.0.3",
     "cheerio": "1.1.2",
@@ -62,7 +62,7 @@
     "dts-bundle-generator": "^9.5.1",
     "esbuild": "^0.25.8",
     "esbuild-plugin-umd-wrapper": "^3.0.0",
-    "eslint": "^9.32.0",
+    "eslint": "^9.33.0",
     "highlight.js": "^11.11.1",
     "markdown-it": "14.1.0",
     "marked-highlight": "^2.2.2",
@@ -72,7 +72,7 @@
     "semantic-release": "^24.2.7",
     "titleize": "^4.0.0",
     "tslib": "^2.8.1",
-    "typescript": "5.8.3"
+    "typescript": "5.9.2"
   },
   "scripts": {
     "bench": "npm run build && node test/bench.js",
