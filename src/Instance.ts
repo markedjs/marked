@@ -129,6 +129,13 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
                 }
               }
             }
+            if (ext.hooks) { // Hooks used in existing lexers
+              if (extensions.hooks) {
+                extensions.hooks.push(ext.hooks);
+              } else {
+                extensions.hooks = [ext.hooks];
+              }
+            }
           }
           if ('childTokens' in ext && ext.childTokens) { // Child tokens to be visited by walkTokens
             extensions.childTokens[ext.name] = ext.childTokens;

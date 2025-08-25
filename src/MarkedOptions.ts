@@ -12,11 +12,15 @@ export interface TokenizerThis {
 export type TokenizerExtensionFunction = (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
 
 export type TokenizerStartFunction = (this: TokenizerThis, src: string) => number | void;
+export type TokenizerMaskingFunction = (this: TokenizerThis, src: string) => string | undefined;
 
 export interface TokenizerExtension {
   name: string;
   level: 'block' | 'inline';
   start?: TokenizerStartFunction;
+  hooks?: {
+    emStrongMask?: TokenizerMaskingFunction;
+  };
   tokenizer: TokenizerExtensionFunction;
   childTokens?: string[];
 }
@@ -145,6 +149,9 @@ export interface MarkedOptions<ParserOutput = string, RendererOutput = string> e
     block?: TokenizerExtensionFunction[];
     startInline?: TokenizerStartFunction[];
     startBlock?: TokenizerStartFunction[];
+    hooks?: {
+      emStrongMask?: TokenizerMaskingFunction;
+    }[];
   };
 
   /**

@@ -323,6 +323,11 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
     }
 
+    // Mask out blocks from extensions
+    for (const hook of this.options.extensions?.hooks ?? []) {
+      maskedSrc = hook.emStrongMask?.call({ lexer: this }, maskedSrc) ?? maskedSrc;
+    }
+
     let keepPrevChar = false;
     let prevChar = '';
     while (src) {
