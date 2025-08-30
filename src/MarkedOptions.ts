@@ -77,6 +77,7 @@ export interface MarkedExtension<ParserOutput = string, RendererOutput = string>
    * preprocess is called to process markdown before sending it to marked.
    * processAllTokens is called with the TokensList before walkTokens.
    * postprocess is called to process html after marked has finished parsing.
+   * emStrongMask is called to mask contents that should not be interpreted as em/strong delimiters.
    * provideLexer is called to provide a function to tokenize markdown.
    * provideParser is called to provide a function to parse tokens.
    */

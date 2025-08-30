@@ -16,6 +16,7 @@ export class _Hooks<ParserOutput = string, RendererOutput = string> {
     'preprocess',
     'postprocess',
     'processAllTokens',
+    'emStrongMask',
   ]);
 
   /**
@@ -37,6 +38,13 @@ export class _Hooks<ParserOutput = string, RendererOutput = string> {
    */
   processAllTokens(tokens: Token[] | TokensList) {
     return tokens;
+  }
+
+  /**
+   * Mask contents that should not be interpreted as em/strong delimiters
+   */
+  emStrongMask(src: string) {
+    return src;
   }
 
   /**

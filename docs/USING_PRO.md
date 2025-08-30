@@ -263,6 +263,7 @@ Hooks are methods that hook into some part of marked. The following hooks are av
 | `preprocess(markdown: string): string` | Process markdown before sending it to marked. |
 | `postprocess(html: string): string` | Process html after marked has finished parsing. |
 | `processAllTokens(tokens: Token[]): Token[]` | Process all tokens before walk tokens. |
+| `emStrongMask(src: string): string` | Mask part of the content that should not be interpreted as Markdown em/strong delimiters. |
 | `provideLexer(): (src: string, options?: MarkedOptions) => Token[]` | Provide function to tokenize markdown. |
 | `provideParser(): (tokens: Token[], options?: MarkedOptions) => string` | Provide function to parse tokens. |
 
@@ -366,6 +367,27 @@ console.log(marked.parse(`
 
 ```html
 <p><a href="http://example.com">test link</a></p>
+```
+
+**Example:** Mask underline characters inside Mathjax content delimited by `$`
+
+```js
+import { marked } from 'marked';
+
+// Override function
+function emStrongMask(src) {
+  return src.replace(/\$([^$]+)\$/g, (match) => `[${'a'.repeat(match.length - 2)}]`);
+}
+
+marked.use({ hooks: { emStrongMask } });
+
+console.log(marked.parse(`_The formula is $a_ b=c_ d$._`));
+```
+
+**Output:**
+
+```html
+<p><em>The formula is $a_ b=c_ d$.</em></p>
 ```
 
 ***
