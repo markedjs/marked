@@ -325,9 +325,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     }
 
     // Mask out blocks from extensions
-    for (const hook of this.options.extensions?.hooks ?? []) {
-      maskedSrc = hook.emStrongMask?.call({ lexer: this }, maskedSrc) ?? maskedSrc;
-    }
+    maskedSrc = this.options.hooks?.emStrongMask?.call({ lexer: this }, maskedSrc) ?? maskedSrc;
 
     let keepPrevChar = false;
     let prevChar = '';

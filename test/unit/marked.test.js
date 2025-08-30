@@ -171,12 +171,6 @@ describe('marked unit', () => {
         name: 'underline',
         level: 'inline',
         start(src) { return src.indexOf('='); },
-        hooks: {
-          emStrongMask(src) {
-            // Underline takes priority over emphasis in this example, to mask emphasis markers inside underline tags
-            return src.replace(/=([^=]+)=/g, (match) => `[${'a'.repeat(match.length - 2)}]`);
-          },
-        },
         tokenizer(src) {
           const rule = /^=([^=]+)=/;
           const match = rule.exec(src);
@@ -192,7 +186,13 @@ describe('marked unit', () => {
           return `<u>${token.text}</u>`;
         },
       };
-      marked.use({ extensions: [underline] });
+      marked.use({
+        hooks: {
+          // Underline takes priority over emphasis in this example, to mask emphasis markers inside underline tags
+          emStrongMask: (src) => src.replace(/=([^=]+)=/g, (match) => `[${'a'.repeat(match.length - 2)}]`),
+        },
+        extensions: [underline],
+      });
       const html = marked.parse('*Not Underlined =Underlined* with *asterisk= Not Underlined*');
       assert.strictEqual(html, '<p><em>Not Underlined <u>Underlined* with *asterisk</u> Not Underlined</em></p>\n');
     });
