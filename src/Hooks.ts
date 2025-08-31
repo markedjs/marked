@@ -19,6 +19,12 @@ export class _Hooks<ParserOutput = string, RendererOutput = string> {
     'emStrongMask',
   ]);
 
+  static passThroughHooksRespectAsync = new Set([
+    'preprocess',
+    'postprocess',
+    'processAllTokens',
+  ]);
+
   /**
    * Process markdown before marked
    */
