@@ -294,15 +294,14 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
         opt.hooks.block = blockType;
       }
 
-      const lexer = opt.hooks ? opt.hooks.provideLexer() : (blockType ? _Lexer.lex : _Lexer.lexInline);
-      const parser = opt.hooks ? opt.hooks.provideParser() : (blockType ? _Parser.parse : _Parser.parseInline);
-
       if (opt.async) {
         return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
-          .then(src => lexer(src, opt))
+          .then(async src => [src, opt.hooks ? await opt.hooks.provideLexer() : (blockType ? _Lexer.lex : _Lexer.lexInline)] as const)
+          .then(([src, lexer]) => lexer(src, opt))
           .then(tokens => opt.hooks ? opt.hooks.processAllTokens(tokens) : tokens)
           .then(tokens => opt.walkTokens ? Promise.all(this.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
-          .then(tokens => parser(tokens, opt))
+          .then(async tokens => [tokens, opt.hooks ? await opt.hooks.provideParser() : (blockType ? _Parser.parse : _Parser.parseInline)] as const)
+          .then(([tokens, parser]) => parser(tokens, opt))
           .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
           .catch(throwError);
       }
@@ -311,6 +310,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
         if (opt.hooks) {
           src = opt.hooks.preprocess(src) as string;
         }
+        const lexer = opt.hooks ? opt.hooks.provideLexer() : (blockType ? _Lexer.lex : _Lexer.lexInline);
         let tokens = lexer(src, opt);
         if (opt.hooks) {
           tokens = opt.hooks.processAllTokens(tokens);
@@ -318,6 +318,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
         if (opt.walkTokens) {
           this.walkTokens(tokens, opt.walkTokens);
         }
+        const parser = opt.hooks ? opt.hooks.provideParser() : (blockType ? _Parser.parse : _Parser.parseInline);
         let html = parser(tokens, opt);
         if (opt.hooks) {
           html = opt.hooks.postprocess(html);
