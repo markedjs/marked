@@ -217,6 +217,15 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
           } else {
             // @ts-expect-error cannot type hook function dynamically
             hooks[hooksProp] = (...args: unknown[]) => {
+              if (this.defaults.async) {
+                return Promise.resolve(hooksFunc.apply(hooks, args)).then(ret => {
+                  if (ret === false) {
+                    ret = prevHook.apply(hooks, args);
+                  }
+                  return ret;
+                });
+              }
+
               let ret = hooksFunc.apply(hooks, args);
               if (ret === false) {
                 ret = prevHook.apply(hooks, args);
