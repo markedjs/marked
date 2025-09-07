@@ -1086,7 +1086,7 @@ paragraph
       });
     });
 
-    it.only('task', () => {
+    it('task', () => {
       expectTokens({
         md: `
 - [ ] item 1
