@@ -35,6 +35,7 @@ export const other = {
   blockquoteSetextReplace2: /^ {0,3}>[ \t]?/gm,
   listReplaceTabs: /^\t+/,
   listReplaceNesting: /^ {1,4}(?=( {4})*[^ ])/g,
+  listTask: /\[[ xX]\]/,
   listIsTask: /^\[[ xX]\] /,
   listReplaceTask: /^\[[ xX]\] +/,
   anyLine: /\n.*\n/,

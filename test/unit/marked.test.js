@@ -52,7 +52,7 @@ describe('marked unit', () => {
     it('space after loose checkbox', () => {
       const html = marked.parse('- [ ] item 1\n\n- [ ] item 2');
 
-      assert.strictEqual(html, '<ul>\n<li><p><input disabled="" type="checkbox"> \nitem 1</p>\n</li>\n<li><p><input disabled="" type="checkbox"> \nitem 2</p>\n</li>\n</ul>\n');
+      assert.strictEqual(html, '<ul>\n<li><p><input disabled="" type="checkbox"> item 1</p>\n</li>\n<li><p><input disabled="" type="checkbox"> item 2</p>\n</li>\n</ul>\n');
     });
   });
 
