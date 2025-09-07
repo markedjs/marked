@@ -77,36 +77,6 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
   }
 
   listitem(item: Tokens.ListItem): RendererOutput {
-    // let itemBody = '';
-    // if (item.task) {
-    //   const checkbox = this.checkbox({ checked: !!item.checked });
-    //   if (item.loose) {
-    //     if (item.tokens[0]?.type === 'paragraph') {
-    //       item.tokens[0].text = checkbox + ' \n' + item.tokens[0].text;
-    //       if (item.tokens[0].tokens && item.tokens[0].tokens.length > 0 && item.tokens[0].tokens[0].type === 'text') {
-    //         item.tokens[0].tokens[0].text = checkbox + ' \n' + escape(item.tokens[0].tokens[0].text);
-    //         item.tokens[0].tokens[0].escaped = true;
-    //       }
-    //     } else {
-    //       item.tokens.unshift({
-    //         type: 'paragraph',
-    //         raw: checkbox + ' \n',
-    //         text: checkbox + ' \n',
-    //         tokens: [{
-    //           type: 'text',
-    //           raw: checkbox + ' ',
-    //           text: checkbox + ' ',
-    //           escaped: true,
-    //         }],
-    //       });
-    //     }
-    //   } else {
-    //     itemBody += checkbox + ' ';
-    //   }
-    // }
-    //
-    // itemBody += this.parser.parse(item.tokens);
-
     return `<li>${this.parser.parse(item.tokens)}</li>\n` as RendererOutput;
   }
 

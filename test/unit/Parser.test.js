@@ -246,10 +246,6 @@ describe('Parser', () => {
                     },
                     {
                       type: 'text',
-                      text: ' ',
-                    },
-                    {
-                      type: 'text',
                       text: 'item 1',
                       tokens: [{ type: 'text', text: 'item 1' }],
                     },
@@ -262,10 +258,6 @@ describe('Parser', () => {
                     {
                       type: 'checkbox',
                       checked: true,
-                    },
-                    {
-                      type: 'text',
-                      text: ' ',
                     },
                     {
                       type: 'text',

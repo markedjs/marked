@@ -418,7 +418,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         const item = list.items[i];
         item.tokens = this.lexer.blockTokens(item.text, []);
         if (item.task) {
-          const taskRaw = this.rules.other.listTask.exec(item.raw);
+          const taskRaw = this.rules.other.listTaskCheckbox.exec(item.raw);
           if (taskRaw) {
             const checkboxToken = {
               type: 'checkbox',
