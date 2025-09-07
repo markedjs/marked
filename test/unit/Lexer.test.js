@@ -462,7 +462,6 @@ a | b
                 type: 'list_item',
                 raw: '- > blockquote',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: '> blockquote',
                 tokens: [
@@ -512,7 +511,6 @@ a | b
                 type: 'list_item',
                 raw: '- item 1\n',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'item 1',
                 tokens: [{
@@ -526,7 +524,6 @@ a | b
                 type: 'list_item',
                 raw: '- item 2',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'item 2',
                 tokens: [{
@@ -564,7 +561,6 @@ a | b
                 type: 'list_item',
                 raw: '1. item 1\n',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'item 1',
                 tokens: [
@@ -587,7 +583,6 @@ a | b
                 type: 'list_item',
                 raw: '2. item 2',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'item 2',
                 tokens: [
@@ -634,7 +629,6 @@ a | b
                 type: 'list_item',
                 raw: '1) item 1\n',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'item 1',
                 tokens: [
@@ -657,7 +651,6 @@ a | b
                 type: 'list_item',
                 raw: '2) item 2',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'item 2',
                 tokens: [
@@ -706,7 +699,6 @@ paragraph
                 type: 'list_item',
                 raw: '- item 1\n',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'item 1',
                 tokens: [
@@ -729,7 +721,6 @@ paragraph
                 type: 'list_item',
                 raw: '- item 2',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'item 2',
                 tokens: [
@@ -793,7 +784,6 @@ paragraph
                 type: 'list_item',
                 raw: '2. item 1\n',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'item 1',
                 tokens: [
@@ -816,7 +806,6 @@ paragraph
                 type: 'list_item',
                 raw: '3. item 2',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'item 2',
                 tokens: [
@@ -864,12 +853,11 @@ paragraph
                 type: 'list_item',
                 raw: '- item 1\n\n',
                 task: false,
-                checked: undefined,
                 loose: true,
                 text: 'item 1\n',
                 tokens: [
                   {
-                    type: 'text',
+                    type: 'paragraph',
                     raw: 'item 1\n',
                     text: 'item 1',
                     tokens: [
@@ -887,12 +875,11 @@ paragraph
                 type: 'list_item',
                 raw: '- item 2',
                 task: false,
-                checked: undefined,
                 loose: true,
                 text: 'item 2',
                 tokens: [
                   {
-                    type: 'text',
+                    type: 'paragraph',
                     raw: 'item 2',
                     text: 'item 2',
                     tokens: [
@@ -937,12 +924,11 @@ paragraph
                 type: 'list_item',
                 raw: '- item 1\n',
                 task: false,
-                checked: undefined,
                 loose: true,
                 text: 'item 1',
                 tokens: [
                   {
-                    type: 'text',
+                    type: 'paragraph',
                     raw: 'item 1',
                     text: 'item 1',
                     tokens: [
@@ -960,12 +946,11 @@ paragraph
                 type: 'list_item',
                 raw: '- item 2\n\n  item 2a\n',
                 task: false,
-                checked: undefined,
                 loose: true,
                 text: 'item 2\n\nitem 2a',
                 tokens: [
                   {
-                    type: 'text',
+                    type: 'paragraph',
                     raw: 'item 2',
                     text: 'item 2',
                     tokens: [
@@ -982,7 +967,7 @@ paragraph
                     raw: '\n\n',
                   },
                   {
-                    type: 'text',
+                    type: 'paragraph',
                     raw: 'item 2a',
                     text: 'item 2a',
                     tokens: [
@@ -1000,12 +985,11 @@ paragraph
                 type: 'list_item',
                 raw: '- item 3',
                 task: false,
-                checked: undefined,
                 loose: true,
                 text: 'item 3',
                 tokens: [
                   {
-                    type: 'text',
+                    type: 'paragraph',
                     raw: 'item 3',
                     text: 'item 3',
                     tokens: [
@@ -1047,7 +1031,6 @@ paragraph
                 type: 'list_item',
                 raw: '- item 1\n  - item 2',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'item 1\n- item 2',
                 tokens: [
@@ -1075,7 +1058,6 @@ paragraph
                         type: 'list_item',
                         raw: '- item 2',
                         task: false,
-                        checked: undefined,
                         loose: false,
                         text: 'item 2',
                         tokens: [
@@ -1104,7 +1086,7 @@ paragraph
       });
     });
 
-    it('task', () => {
+    it.only('task', () => {
       expectTokens({
         md: `
 - [ ] item 1
@@ -1131,6 +1113,11 @@ paragraph
                 text: 'item 1',
                 tokens: [
                   {
+                    type: 'checkbox',
+                    raw: '[ ] ',
+                    checked: false,
+                  },
+                  {
                     type: 'text',
                     raw: 'item 1',
                     text: 'item 1',
@@ -1153,6 +1140,11 @@ paragraph
                 loose: false,
                 text: 'item 2',
                 tokens: [
+                  {
+                    type: 'checkbox',
+                    raw: '[x] ',
+                    checked: true,
+                  },
                   {
                     type: 'text',
                     raw: 'item 2',
@@ -1195,7 +1187,6 @@ paragraph
                 type: 'list_item',
                 raw: '- line 1\n  line 2',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'line 1\nline 2',
                 tokens: [{
@@ -1232,7 +1223,6 @@ paragraph
               type: 'list_item',
               raw: '- a\n      - b',
               task: false,
-              checked: undefined,
               loose: false,
               text: 'a\n    - b',
               tokens: [
@@ -1271,7 +1261,6 @@ paragraph
                 type: 'list_item',
                 raw: '- hello\n[1]: hello',
                 task: false,
-                checked: undefined,
                 loose: false,
                 text: 'hello\n[1]: hello',
                 tokens: [

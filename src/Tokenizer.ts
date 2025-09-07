@@ -381,12 +381,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         }
 
         let istask: RegExpExecArray | null = null;
-        let ischecked: boolean | undefined;
         // Check for task list items
         if (this.options.gfm) {
           istask = this.rules.other.listIsTask.exec(itemContents);
           if (istask) {
-            ischecked = istask[0] !== '[ ] ';
             itemContents = itemContents.replace(this.rules.other.listReplaceTask, '');
           }
         }
@@ -395,7 +393,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           type: 'list_item',
           raw,
           task: !!istask,
-          checked: ischecked,
           loose: false,
           text: itemContents,
           tokens: [],
@@ -418,7 +415,35 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       // Item child tokens handled here at end because we needed to have the final item to trim it first
       for (let i = 0; i < list.items.length; i++) {
         this.lexer.state.top = false;
-        list.items[i].tokens = this.lexer.blockTokens(list.items[i].text, []);
+        const item = list.items[i];
+        item.tokens = this.lexer.blockTokens(item.text, []);
+        if (item.task) {
+          const taskRaw = this.rules.other.listTask.exec(item.raw);
+          if (taskRaw) {
+            const checkboxToken = {
+              type: 'checkbox',
+              raw: taskRaw[0] + ' ',
+              checked: taskRaw[0] !== '[ ]',
+            };
+            if (checkboxToken) {
+              item.checked = checkboxToken.checked;
+              if (list.loose) {
+                if (item.tokens[0] && ['paragraph', 'text'].includes(item.tokens[0].type) && 'tokens' in item.tokens[0] && item.tokens[0].tokens) {
+                  item.tokens[0].raw = checkboxToken.raw + item.tokens[0].raw;
+                  item.tokens[0].tokens.unshift(checkboxToken);
+                } else {
+                  item.tokens.unshift({
+                    type: 'paragraph',
+                    raw: checkboxToken.raw,
+                    tokens: [checkboxToken],
+                  });
+                }
+              } else {
+                item.tokens.unshift(checkboxToken);
+              }
+            }
+          }
+        }
 
         if (!list.loose) {
           // Check if list should be loose
@@ -433,6 +458,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       if (list.loose) {
         for (let i = 0; i < list.items.length; i++) {
           list.items[i].loose = true;
+          for (const token of list.items[i].tokens) {
+            if (token.type === 'text') {
+              token.type = 'paragraph';
+            }
+          }
         }
       }
 
