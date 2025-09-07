@@ -39,7 +39,7 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
   /**
    * Parse Loop
    */
-  parse(tokens: Token[], top = true): ParserOutput {
+  parse(tokens: Token[]): ParserOutput {
     let out = '';
 
     for (let i = 0; i < tokens.length; i++) {
@@ -86,6 +86,10 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
           out += this.renderer.list(token);
           continue;
         }
+        case 'checkbox': {
+          out += this.renderer.checkbox(token);
+          continue;
+        }
         case 'html': {
           out += this.renderer.html(token);
           continue;
@@ -99,22 +103,7 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
           continue;
         }
         case 'text': {
-          let textToken = token;
-          let body = this.renderer.text(textToken) as string;
-          while (i + 1 < tokens.length && tokens[i + 1].type === 'text') {
-            textToken = tokens[++i] as Tokens.Text;
-            body += ('\n' + this.renderer.text(textToken));
-          }
-          if (top) {
-            out += this.renderer.paragraph({
-              type: 'paragraph',
-              raw: body,
-              text: body,
-              tokens: [{ type: 'text', raw: body, text: body, escaped: true }],
-            });
-          } else {
-            out += body;
-          }
+          out += this.renderer.text(token);
           continue;
         }
 
@@ -169,6 +158,10 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
         case 'image': {
           out += renderer.image(token);
           break;
+        }
+        case 'checkbox': {
+          out += this.renderer.checkbox(token);
+          continue;
         }
         case 'strong': {
           out += renderer.strong(token);
