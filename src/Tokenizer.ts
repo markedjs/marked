@@ -189,7 +189,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           break;
         }
 
-        const lastToken = tokens.at(-1);
+        const lastToken = tokens[tokens.length - 1];
 
         if (lastToken?.type === 'code') {
           // blockquote continuation cannot be preceded by a code block
@@ -213,7 +213,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
           raw = raw.substring(0, raw.length - lastToken.raw.length) + newToken.raw;
           text = text.substring(0, text.length - oldToken.raw.length) + newToken.raw;
-          lines = newText.substring(tokens.at(-1)!.raw.length).split('\n');
+          lines = newText.substring(tokens[tokens.length - 1]!.raw.length).split('\n');
           continue;
         }
       }
@@ -405,7 +405,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       }
 
       // Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
-      const lastItem = list.items.at(-1);
+      const lastItem = list.items[list.items.length - 1];
       if (lastItem) {
         lastItem.raw = lastItem.raw.trimEnd();
         lastItem.text = lastItem.text.trimEnd();
