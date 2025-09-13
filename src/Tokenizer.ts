@@ -420,27 +420,25 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         if (item.task) {
           const taskRaw = this.rules.other.listTaskCheckbox.exec(item.raw);
           if (taskRaw) {
-            const checkboxToken = {
+            const checkboxToken: Tokens.Checkbox = {
               type: 'checkbox',
               raw: taskRaw[0] + ' ',
               checked: taskRaw[0] !== '[ ]',
             };
-            if (checkboxToken) {
-              item.checked = checkboxToken.checked;
-              if (list.loose) {
-                if (item.tokens[0] && ['paragraph', 'text'].includes(item.tokens[0].type) && 'tokens' in item.tokens[0] && item.tokens[0].tokens) {
-                  item.tokens[0].raw = checkboxToken.raw + item.tokens[0].raw;
-                  item.tokens[0].tokens.unshift(checkboxToken);
-                } else {
-                  item.tokens.unshift({
-                    type: 'paragraph',
-                    raw: checkboxToken.raw,
-                    tokens: [checkboxToken],
-                  });
-                }
+            item.checked = checkboxToken.checked;
+            if (list.loose) {
+              if (item.tokens[0] && ['paragraph', 'text'].includes(item.tokens[0].type) && 'tokens' in item.tokens[0] && item.tokens[0].tokens) {
+                item.tokens[0].raw = checkboxToken.raw + item.tokens[0].raw;
+                item.tokens[0].tokens.unshift(checkboxToken);
               } else {
-                item.tokens.unshift(checkboxToken);
+                item.tokens.unshift({
+                  type: 'paragraph',
+                  raw: checkboxToken.raw,
+                  tokens: [checkboxToken],
+                });
               }
+            } else {
+              item.tokens.unshift(checkboxToken);
             }
           }
         }
