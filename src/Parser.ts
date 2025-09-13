@@ -160,7 +160,7 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
           break;
         }
         case 'checkbox': {
-          out += this.renderer.checkbox(token);
+          out += renderer.checkbox(token);
           continue;
         }
         case 'strong': {
