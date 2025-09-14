@@ -166,6 +166,46 @@ describe('marked unit', () => {
       assert.strictEqual(html, '<p>Not Underlined <u>Underlined</u> Not Underlined</p>\n');
     });
 
+    it('should ignore em termination characters when emStrongMask hook is in place', () => {
+      const underline = {
+        name: 'underline',
+        level: 'inline',
+        start(src) { return src.indexOf('='); },
+        tokenizer(src) {
+          const rule = /^=([^=]+)=/;
+          const match = rule.exec(src);
+          if (match) {
+            return {
+              type: 'underline',
+              raw: match[0], // This is the text that you want your token to consume from the source
+              text: match[1].trim(), // You can add additional properties to your tokens to pass along to the renderer
+            };
+          }
+        },
+        renderer(token) {
+          return `<u>${token.text}</u>`;
+        },
+      };
+      marked.use({
+        hooks: {
+          // Underline takes priority over emphasis in this example, to mask emphasis markers inside underline tags
+          emStrongMask: (src) => src.replace(/=([^=]+)=/g, (match) => `[${'a'.repeat(match.length - 2)}]`),
+        },
+        extensions: [underline],
+      });
+      const html = marked.parse('*Not Underlined =Underlined* with *asterisk= Not Underlined*');
+      assert.strictEqual(html, '<p><em>Not Underlined <u>Underlined* with *asterisk</u> Not Underlined</em></p>\n');
+    });
+
+    it('should combine multiple emStrongMask hooks', () => {
+      const maskEqualSign = (src) => src.replace(/=([^=]+)=/g, (match) => `[${'a'.repeat(match.length - 2)}]`);
+      const maskDollarSign = (src) => src.replace(/\$([^$]+)\$/g, (match) => `[${'b'.repeat(match.length - 2)}]`);
+      marked.use({ hooks: { emStrongMask: maskEqualSign } });
+      marked.use({ hooks: { emStrongMask: maskDollarSign } });
+      const html = marked.parse('*Before $dollar * dollar$ =equal * equal= after*');
+      assert.strictEqual(html, '<p><em>Before $dollar * dollar$ =equal * equal= after</em></p>\n');
+    });
+
     it('should handle interacting block and inline extensions', () => {
       const descriptionlist = {
         name: 'descriptionList',
@@ -648,6 +688,38 @@ used extension2 walked</p>
       marked.use({ async: true });
 
       assert.throws(() => marked.parse('test', { async: false }));
+    });
+
+    it('should ignore em termination characters when emStrongMask hook is in place in an async context', async() => {
+      const underline = {
+        name: 'underline',
+        level: 'inline',
+        start(src) { return src.indexOf('='); },
+        tokenizer(src) {
+          const rule = /^=([^=]+)=/;
+          const match = rule.exec(src);
+          if (match) {
+            return {
+              type: 'underline',
+              raw: match[0], // This is the text that you want your token to consume from the source
+              text: match[1].trim(), // You can add additional properties to your tokens to pass along to the renderer
+            };
+          }
+        },
+        renderer(token) {
+          return `<u>${token.text}</u>`;
+        },
+      };
+      marked.use({
+        hooks: {
+          // Underline takes priority over emphasis in this example, to mask emphasis markers inside underline tags
+          emStrongMask: (src) => src.replace(/=([^=]+)=/g, (match) => `[${'a'.repeat(match.length - 2)}]`),
+        },
+        extensions: [underline],
+        async: true,
+      });
+      const html = await marked.parse('*Not Underlined =Underlined* with *asterisk= Not Underlined*');
+      assert.strictEqual(html, '<p><em>Not Underlined <u>Underlined* with *asterisk</u> Not Underlined</em></p>\n');
     });
 
     it('should allow deleting/editing tokens', () => {
