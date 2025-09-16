@@ -60,51 +60,51 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
       switch (token.type) {
         case 'space': {
           out += this.renderer.space(token);
-          continue;
+          break;
         }
         case 'hr': {
           out += this.renderer.hr(token);
-          continue;
+          break;
         }
         case 'heading': {
           out += this.renderer.heading(token);
-          continue;
+          break;
         }
         case 'code': {
           out += this.renderer.code(token);
-          continue;
+          break;
         }
         case 'table': {
           out += this.renderer.table(token);
-          continue;
+          break;
         }
         case 'blockquote': {
           out += this.renderer.blockquote(token);
-          continue;
+          break;
         }
         case 'list': {
           out += this.renderer.list(token);
-          continue;
+          break;
         }
         case 'checkbox': {
           out += this.renderer.checkbox(token);
-          continue;
+          break;
         }
         case 'html': {
           out += this.renderer.html(token);
-          continue;
+          break;
         }
         case 'def': {
           out += this.renderer.def(token);
-          continue;
+          break;
         }
         case 'paragraph': {
           out += this.renderer.paragraph(token);
-          continue;
+          break;
         }
         case 'text': {
           out += this.renderer.text(token);
-          continue;
+          break;
         }
 
         default: {
