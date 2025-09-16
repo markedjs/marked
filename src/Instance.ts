@@ -307,7 +307,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
 
       if (opt.async) {
         return (async() => {
-          const processedSrc = await Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src);
+          const processedSrc = opt.hooks ? await opt.hooks.preprocess(src) : src;
           const lexer = opt.hooks ? await opt.hooks.provideLexer() : (blockType ? _Lexer.lex : _Lexer.lexInline);
           const tokens = await lexer(processedSrc, opt);
           const processedTokens = opt.hooks ? await opt.hooks.processAllTokens(tokens) : tokens;
@@ -316,7 +316,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
           }
           const parser = opt.hooks ? await opt.hooks.provideParser() : (blockType ? _Parser.parse : _Parser.parseInline);
           const html = await parser(processedTokens, opt);
-          return opt.hooks ? opt.hooks.postprocess(html) : html;
+          return opt.hooks ? await opt.hooks.postprocess(html) : html;
         })().catch(throwError);
       }
 
