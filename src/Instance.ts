@@ -206,9 +206,10 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
             // @ts-expect-error cannot type hook function dynamically
             hooks[hooksProp] = (arg: unknown) => {
               if (this.defaults.async && _Hooks.passThroughHooksRespectAsync.has(prop)) {
-                return Promise.resolve(hooksFunc.call(hooks, arg)).then(ret => {
+                return (async() => {
+                  const ret = await hooksFunc.call(hooks, arg);
                   return prevHook.call(hooks, ret);
-                });
+                })();
               }
 
               const ret = hooksFunc.call(hooks, arg);
@@ -217,6 +218,16 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
           } else {
             // @ts-expect-error cannot type hook function dynamically
             hooks[hooksProp] = (...args: unknown[]) => {
+              if (this.defaults.async) {
+                return (async() => {
+                  let ret = await hooksFunc.apply(hooks, args);
+                  if (ret === false) {
+                    ret = await prevHook.apply(hooks, args);
+                  }
+                  return ret;
+                })();
+              }
+
               let ret = hooksFunc.apply(hooks, args);
               if (ret === false) {
                 ret = prevHook.apply(hooks, args);
@@ -294,23 +305,26 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
         opt.hooks.block = blockType;
       }
 
-      const lexer = opt.hooks ? opt.hooks.provideLexer() : (blockType ? _Lexer.lex : _Lexer.lexInline);
-      const parser = opt.hooks ? opt.hooks.provideParser() : (blockType ? _Parser.parse : _Parser.parseInline);
-
       if (opt.async) {
-        return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
-          .then(src => lexer(src, opt))
-          .then(tokens => opt.hooks ? opt.hooks.processAllTokens(tokens) : tokens)
-          .then(tokens => opt.walkTokens ? Promise.all(this.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
-          .then(tokens => parser(tokens, opt))
-          .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
-          .catch(throwError);
+        return (async() => {
+          const processedSrc = opt.hooks ? await opt.hooks.preprocess(src) : src;
+          const lexer = opt.hooks ? await opt.hooks.provideLexer() : (blockType ? _Lexer.lex : _Lexer.lexInline);
+          const tokens = await lexer(processedSrc, opt);
+          const processedTokens = opt.hooks ? await opt.hooks.processAllTokens(tokens) : tokens;
+          if (opt.walkTokens) {
+            await Promise.all(this.walkTokens(processedTokens, opt.walkTokens));
+          }
+          const parser = opt.hooks ? await opt.hooks.provideParser() : (blockType ? _Parser.parse : _Parser.parseInline);
+          const html = await parser(processedTokens, opt);
+          return opt.hooks ? await opt.hooks.postprocess(html) : html;
+        })().catch(throwError);
       }
 
       try {
         if (opt.hooks) {
           src = opt.hooks.preprocess(src) as string;
         }
+        const lexer = opt.hooks ? opt.hooks.provideLexer() : (blockType ? _Lexer.lex : _Lexer.lexInline);
         let tokens = lexer(src, opt);
         if (opt.hooks) {
           tokens = opt.hooks.processAllTokens(tokens);
@@ -318,6 +332,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
         if (opt.walkTokens) {
           this.walkTokens(tokens, opt.walkTokens);
         }
+        const parser = opt.hooks ? opt.hooks.provideParser() : (blockType ? _Parser.parse : _Parser.parseInline);
         let html = parser(tokens, opt);
         if (opt.hooks) {
           html = opt.hooks.postprocess(html);
