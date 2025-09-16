@@ -206,9 +206,10 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
             // @ts-expect-error cannot type hook function dynamically
             hooks[hooksProp] = (arg: unknown) => {
               if (this.defaults.async && _Hooks.passThroughHooksRespectAsync.has(prop)) {
-                return Promise.resolve(hooksFunc.call(hooks, arg)).then(ret => {
+                return (async() => {
+                  const ret = await hooksFunc.call(hooks, arg);
                   return prevHook.call(hooks, ret);
-                });
+                })();
               }
 
               const ret = hooksFunc.call(hooks, arg);
@@ -218,12 +219,13 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
             // @ts-expect-error cannot type hook function dynamically
             hooks[hooksProp] = (...args: unknown[]) => {
               if (this.defaults.async) {
-                return Promise.resolve(hooksFunc.apply(hooks, args)).then(ret => {
+                return (async() => {
+                  let ret = await hooksFunc.apply(hooks, args);
                   if (ret === false) {
-                    ret = prevHook.apply(hooks, args);
+                    ret = await prevHook.apply(hooks, args);
                   }
                   return ret;
-                });
+                })();
               }
 
               let ret = hooksFunc.apply(hooks, args);
@@ -304,15 +306,18 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
       }
 
       if (opt.async) {
-        return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
-          .then(async src => [src, opt.hooks ? await opt.hooks.provideLexer() : (blockType ? _Lexer.lex : _Lexer.lexInline)] as const)
-          .then(([src, lexer]) => lexer(src, opt))
-          .then(tokens => opt.hooks ? opt.hooks.processAllTokens(tokens) : tokens)
-          .then(tokens => opt.walkTokens ? Promise.all(this.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens)
-          .then(async tokens => [tokens, opt.hooks ? await opt.hooks.provideParser() : (blockType ? _Parser.parse : _Parser.parseInline)] as const)
-          .then(([tokens, parser]) => parser(tokens, opt))
-          .then(html => opt.hooks ? opt.hooks.postprocess(html) : html)
-          .catch(throwError);
+        return (async() => {
+          const processedSrc = await Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src);
+          const lexer = opt.hooks ? await opt.hooks.provideLexer() : (blockType ? _Lexer.lex : _Lexer.lexInline);
+          const tokens = await lexer(processedSrc, opt);
+          const processedTokens = opt.hooks ? await opt.hooks.processAllTokens(tokens) : tokens;
+          if (opt.walkTokens) {
+            await Promise.all(this.walkTokens(processedTokens, opt.walkTokens));
+          }
+          const parser = opt.hooks ? await opt.hooks.provideParser() : (blockType ? _Parser.parse : _Parser.parseInline);
+          const html = await parser(processedTokens, opt);
+          return opt.hooks ? opt.hooks.postprocess(html) : html;
+        })().catch(throwError);
       }
 
       try {
