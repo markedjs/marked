@@ -429,11 +429,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
             if (list.loose) {
               if (item.tokens[0] && ['paragraph', 'text'].includes(item.tokens[0].type) && 'tokens' in item.tokens[0] && item.tokens[0].tokens) {
                 item.tokens[0].raw = checkboxToken.raw + item.tokens[0].raw;
+                item.tokens[0].text = checkboxToken.raw + item.tokens[0].text;
                 item.tokens[0].tokens.unshift(checkboxToken);
               } else {
                 item.tokens.unshift({
                   type: 'paragraph',
                   raw: checkboxToken.raw,
+                  text: checkboxToken.raw,
                   tokens: [checkboxToken],
                 });
               }
