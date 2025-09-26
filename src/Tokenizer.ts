@@ -840,7 +840,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           cap[0] = this.rules.inline._backpedal.exec(cap[0])?.[0] ?? '';
         } while (prevCapZero !== cap[0]);
         text = cap[0];
-        if (cap[1] === 'www.') {
+        if (cap[1]?.toLowerCase() === 'www.') {
           href = 'http://' + cap[0];
         } else {
           href = cap[0];

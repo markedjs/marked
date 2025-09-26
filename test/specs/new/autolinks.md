@@ -8,6 +8,10 @@ HTTP://FOO.COM
 
 hTtP://fOo.CoM
 
+www.foo.com
+
+Www.foo.com
+
 ~~hello@email.com~~
 
 **me@example.com**
