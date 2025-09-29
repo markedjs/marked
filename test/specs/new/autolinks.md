@@ -13,3 +13,9 @@ hTtP://fOo.CoM
 **me@example.com**
 
 __test@test.com__
+
+www.example.com
+
+Www.example.com
+
+WWW.example.com
