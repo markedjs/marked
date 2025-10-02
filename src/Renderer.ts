@@ -14,18 +14,9 @@ import type { _Parser } from './Parser.ts';
 export class _Renderer<ParserOutput = string, RendererOutput = string> {
   options: MarkedOptions<ParserOutput, RendererOutput>;
   parser!: _Parser<ParserOutput, RendererOutput>; // set by the parser
-  private usedHeadingIds: Set<string>;
 
   constructor(options?: MarkedOptions<ParserOutput, RendererOutput>) {
     this.options = options || _defaults;
-    this.usedHeadingIds = new Set<string>();
-  }
-
-  /**
-   * Clear the used heading IDs set to prevent memory leaks
-   */
-  clearUsedHeadingIds(): void {
-    this.usedHeadingIds.clear();
   }
 
   space(token: Tokens.Space): RendererOutput {
@@ -63,29 +54,8 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     return '' as RendererOutput;
   }
 
-  /**
-   * Render heading with proper accessibility attributes
-   * Note: Auto-generated IDs are an enhancement beyond CommonMark spec
-   */
   heading({ tokens, depth }: Tokens.Heading): RendererOutput {
-    const content = this.parser.parseInline(tokens) as string;
-    const baseId = content.toLowerCase().replace(/[^\w]+/g, '-').replace(/^-+|-+$/g, '');
-
-    // Generate unique ID
-    let id = baseId;
-    let counter = 1;
-    while (this.usedHeadingIds.has(id)) {
-      id = `${baseId}-${counter}`;
-      counter++;
-    }
-
-    // Only add ID if it's not empty
-    if (id) {
-      this.usedHeadingIds.add(id);
-      return `<h${depth} id="${id}">${content}</h${depth}>\n` as RendererOutput;
-    }
-
-    return `<h${depth}>${content}</h${depth}>\n` as RendererOutput;
+    return `<h${depth}>${this.parser.parseInline(tokens)}</h${depth}>\n` as RendererOutput;
   }
 
   hr(token: Tokens.Hr): RendererOutput {
