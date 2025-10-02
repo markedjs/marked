@@ -21,6 +21,13 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     this.usedHeadingIds = new Set<string>();
   }
 
+  /**
+   * Clear the used heading IDs set to prevent memory leaks
+   */
+  clearUsedHeadingIds(): void {
+    this.usedHeadingIds.clear();
+  }
+
   space(token: Tokens.Space): RendererOutput {
     return '' as RendererOutput;
   }

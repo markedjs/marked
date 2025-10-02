@@ -77,7 +77,22 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     }
   }
 
+  /**
+   * Tokenize code blocks
+   */
   code(src: string): Tokens.Code | undefined {
+    if (typeof src !== 'string') {
+      throw new Error('Invalid input: src must be a string');
+    }
+
+    if (!src.trim()) {
+      return undefined;
+    }
+
+    if (!this.rules) {
+      throw new Error('Tokenizer rules not initialized');
+    }
+
     const cap = this.rules.block.code.exec(src);
     if (cap) {
       const text = cap[0].replace(this.rules.other.codeRemoveIndent, '');
@@ -93,6 +108,18 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   fences(src: string): Tokens.Code | undefined {
+    if (typeof src !== 'string') {
+      throw new Error('Invalid input: src must be a string');
+    }
+
+    if (!src.trim()) {
+      return undefined;
+    }
+
+    if (!this.rules) {
+      throw new Error('Tokenizer rules not initialized');
+    }
+
     const cap = this.rules.block.fences.exec(src);
     if (cap) {
       const raw = cap[0];
@@ -133,6 +160,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     }
   }
 
+  /**
+   * Tokenize horizontal rule
+   */
   hr(src: string): Tokens.Hr | undefined {
     const cap = this.rules.block.hr.exec(src);
     if (cap) {
@@ -470,7 +500,22 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     }
   }
 
+  /**
+   * Tokenize table
+   */
   table(src: string): Tokens.Table | undefined {
+    if (typeof src !== 'string') {
+      throw new Error('Invalid input: src must be a string');
+    }
+
+    if (!src.trim()) {
+      return undefined;
+    }
+
+    if (!this.rules) {
+      throw new Error('Tokenizer rules not initialized');
+    }
+
     const cap = this.rules.block.table.exec(src);
     if (!cap) {
       return;
@@ -546,6 +591,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     }
   }
 
+  /**
+   * Tokenize paragraph
+   */
   paragraph(src: string): Tokens.Paragraph | undefined {
     const cap = this.rules.block.paragraph.exec(src);
     if (cap) {
@@ -641,20 +689,20 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     if (!this.options.pedantic && this.rules.other.startAngleBracket.test(trimmedUrl)) {
       // commonmark requires matching angle brackets
       if (!(this.rules.other.endAngleBracket.test(trimmedUrl))) {
-        throw new Error(`Malformed link: unmatched angle bracket in URL '${trimmedUrl}'`);
+        throw new Error(`Malformed link: unmatched angle bracket in URL '${trimmedUrl}'. Angle brackets must come in pairs.`);
       }
 
       // ending angle bracket cannot be escaped
       const rtrimSlash = rtrim(trimmedUrl.slice(0, -1), '\\');
       if ((trimmedUrl.length - rtrimSlash.length) % 2 === 0) {
-        throw new Error(`Malformed link: improperly escaped angle bracket in URL '${trimmedUrl}'`);
+        throw new Error(`Malformed link: improperly escaped angle bracket in URL '${trimmedUrl}'. Ending angle bracket cannot be escaped.`);
       }
     } else {
       // find closing parenthesis
       const lastParenIndex = findClosingBracket(cap[2], '()');
       if (lastParenIndex === -2) {
         // more open parens than closed
-        throw new Error(`Malformed link: unmatched parentheses in '${cap[2]}'`);
+        throw new Error(`Malformed link: unmatched parentheses in '${cap[2]}'. Check that all opening parentheses have matching closing parentheses.`);
       }
 
       if (lastParenIndex > -1) {
@@ -886,7 +934,22 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     }
   }
 
+  /**
+   * Tokenize inline text
+   */
   inlineText(src: string): Tokens.Text | undefined {
+    if (typeof src !== 'string') {
+      throw new Error('Invalid input: src must be a string');
+    }
+
+    if (!src) {
+      return undefined;
+    }
+
+    if (!this.rules) {
+      throw new Error('Tokenizer rules not initialized');
+    }
+
     const cap = this.rules.inline.text.exec(src);
     if (cap) {
       const escaped = this.lexer.state.inRawBlock;
