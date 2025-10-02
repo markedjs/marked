@@ -573,6 +573,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     }
   }
 
+  /**
+   * Tokenize escape sequences
+   */
   escape(src: string): Tokens.Escape | undefined {
     const cap = this.rules.inline.escape.exec(src);
     if (cap) {
@@ -584,6 +587,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     }
   }
 
+  /**
+   * Tokenize HTML tags
+   */
   tag(src: string): Tokens.Tag | undefined {
     const cap = this.rules.inline.tag.exec(src);
     if (cap) {
@@ -609,65 +615,83 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     }
   }
 
+  /**
+   * Tokenize links and images
+   */
   link(src: string): Tokens.Link | Tokens.Image | undefined {
-    const cap = this.rules.inline.link.exec(src);
-    if (cap) {
-      const trimmedUrl = cap[2].trim();
-      if (!this.options.pedantic && this.rules.other.startAngleBracket.test(trimmedUrl)) {
-        // commonmark requires matching angle brackets
-        if (!(this.rules.other.endAngleBracket.test(trimmedUrl))) {
-          return;
-        }
-
-        // ending angle bracket cannot be escaped
-        const rtrimSlash = rtrim(trimmedUrl.slice(0, -1), '\\');
-        if ((trimmedUrl.length - rtrimSlash.length) % 2 === 0) {
-          return;
-        }
-      } else {
-        // find closing parenthesis
-        const lastParenIndex = findClosingBracket(cap[2], '()');
-        if (lastParenIndex === -2) {
-          // more open parens than closed
-          return;
-        }
-
-        if (lastParenIndex > -1) {
-          const start = cap[0].indexOf('!') === 0 ? 5 : 4;
-          const linkLen = start + cap[1].length + lastParenIndex;
-          cap[2] = cap[2].substring(0, lastParenIndex);
-          cap[0] = cap[0].substring(0, linkLen).trim();
-          cap[3] = '';
-        }
-      }
-      let href = cap[2];
-      let title = '';
-      if (this.options.pedantic) {
-        // split pedantic href and title
-        const link = this.rules.other.pedanticHrefTitle.exec(href);
-
-        if (link) {
-          href = link[1];
-          title = link[3];
-        }
-      } else {
-        title = cap[3] ? cap[3].slice(1, -1) : '';
-      }
-
-      href = href.trim();
-      if (this.rules.other.startAngleBracket.test(href)) {
-        if (this.options.pedantic && !(this.rules.other.endAngleBracket.test(trimmedUrl))) {
-          // pedantic allows starting angle bracket without ending angle bracket
-          href = href.slice(1);
-        } else {
-          href = href.slice(1, -1);
-        }
-      }
-      return outputLink(cap, {
-        href: href ? href.replace(this.rules.inline.anyPunctuation, '$1') : href,
-        title: title ? title.replace(this.rules.inline.anyPunctuation, '$1') : title,
-      }, cap[0], this.lexer, this.rules);
+    // Input validation
+    if (typeof src !== 'string') {
+      throw new Error('Invalid input: src must be a string');
     }
+
+    if (!src.trim()) {
+      return undefined;
+    }
+
+    if (!this.rules) {
+      throw new Error('Tokenizer rules not initialized');
+    }
+
+    const cap = this.rules.inline.link.exec(src);
+    if (!cap) {
+      return undefined;
+    }
+
+    const trimmedUrl = cap[2].trim();
+    if (!this.options.pedantic && this.rules.other.startAngleBracket.test(trimmedUrl)) {
+      // commonmark requires matching angle brackets
+      if (!(this.rules.other.endAngleBracket.test(trimmedUrl))) {
+        throw new Error(`Malformed link: unmatched angle bracket in URL '${trimmedUrl}'`);
+      }
+
+      // ending angle bracket cannot be escaped
+      const rtrimSlash = rtrim(trimmedUrl.slice(0, -1), '\\');
+      if ((trimmedUrl.length - rtrimSlash.length) % 2 === 0) {
+        throw new Error(`Malformed link: improperly escaped angle bracket in URL '${trimmedUrl}'`);
+      }
+    } else {
+      // find closing parenthesis
+      const lastParenIndex = findClosingBracket(cap[2], '()');
+      if (lastParenIndex === -2) {
+        // more open parens than closed
+        throw new Error(`Malformed link: unmatched parentheses in '${cap[2]}'`);
+      }
+
+      if (lastParenIndex > -1) {
+        const start = cap[0].indexOf('!') === 0 ? 5 : 4;
+        const linkLen = start + cap[1].length + lastParenIndex;
+        cap[2] = cap[2].substring(0, lastParenIndex);
+        cap[0] = cap[0].substring(0, linkLen).trim();
+        cap[3] = '';
+      }
+    }
+    let href = cap[2];
+    let title = '';
+    if (this.options.pedantic) {
+      // split pedantic href and title
+      const link = this.rules.other.pedanticHrefTitle.exec(href);
+
+      if (link) {
+        href = link[1];
+        title = link[3];
+      }
+    } else {
+      title = cap[3] ? cap[3].slice(1, -1) : '';
+    }
+
+    href = href.trim();
+    if (this.rules.other.startAngleBracket.test(href)) {
+      if (this.options.pedantic && !(this.rules.other.endAngleBracket.test(trimmedUrl))) {
+        // pedantic allows starting angle bracket without ending angle bracket
+        href = href.slice(1);
+      } else {
+        href = href.slice(1, -1);
+      }
+    }
+    return outputLink(cap, {
+      href: href ? href.replace(this.rules.inline.anyPunctuation, '$1') : href,
+      title: title ? title.replace(this.rules.inline.anyPunctuation, '$1') : title,
+    }, cap[0], this.lexer, this.rules);
   }
 
   reflink(src: string, links: Links): Tokens.Link | Tokens.Image | Tokens.Text | undefined {

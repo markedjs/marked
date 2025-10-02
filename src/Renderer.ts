@@ -53,12 +53,17 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     return '' as RendererOutput;
   }
 
+  /**
+   * Render heading with proper accessibility attributes
+   */
   heading({ tokens, depth }: Tokens.Heading): RendererOutput {
-    return `<h${depth}>${this.parser.parseInline(tokens)}</h${depth}>\n` as RendererOutput;
+    const content = this.parser.parseInline(tokens) as string;
+    const id = content.toLowerCase().replace(/[^\w]+/g, '-').replace(/^-+|-+$/g, '');
+    return `<h${depth} id="${id}">${content}</h${depth}>\n` as RendererOutput;
   }
 
   hr(token: Tokens.Hr): RendererOutput {
-    return '<hr>\n' as RendererOutput;
+    return '<hr aria-hidden="true">\n' as RendererOutput;
   }
 
   list(token: Tokens.List): RendererOutput {
@@ -207,7 +212,9 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     }
     href = cleanHref;
 
-    let out = `<img src="${href}" alt="${text}"`;
+    // Improve accessibility by providing better alt text
+    const altText = text || 'Image';
+    let out = `<img src="${href}" alt="${altText}"`;
     if (title) {
       out += ` title="${escape(title)}"`;
     }
