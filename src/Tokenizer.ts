@@ -285,7 +285,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         } else {
           // Treat tabs as 4 spaces when finding first non-space char so a leading tab
           // isn't considered a non-space and we compute indent correctly.
-          indent = cap[2].replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar); // Find first non-space char
+          indent = line.search(this.rules.other.nonSpaceChar); // Find first non-space char
           indent = indent > 4 ? 1 : indent; // Treat indented code blocks (> 4 spaces) as having only 1 indent
           itemContents = line.slice(indent);
           indent += cap[1].length;
