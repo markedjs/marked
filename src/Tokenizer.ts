@@ -271,8 +271,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         // compute indent and slice the correct number of characters. This keeps
         // behavior consistent with how subsequent lines are normalized.
         const rawLineFirst = cap[2].split('\n', 1)[0];
-        const contentWithoutTabs = rawLineFirst.replace(this.rules.other.tabCharGlobal, '    ');
-        let line = contentWithoutTabs;
+        let line = rawLineFirst.replace(this.rules.other.tabCharGlobal, '    ');
         let nextLine = src.split('\n', 1)[0];
         let blankLine = !line.trim();
 
