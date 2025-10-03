@@ -19,3 +19,5 @@ www.example.com
 Www.example.com
 
 WWW.example.com
+
+(See hTtPS://example.com/fhqwhgads.)
