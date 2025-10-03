@@ -56,6 +56,31 @@ describe('marked unit', () => {
     });
   });
 
+  describe('lists with tabs', () => {
+    it('should treat tabs after list markers the same as spaces', () => {
+      // Simple ordered lists
+      const mdSpaces = '1.  Some Text\n2.  Some Text\n3.  Some Text\n';
+      const mdTabs = '1.\tSome Text\n2.\tSome Text\n3.\tSome Text\n';
+      const htmlSpaces = marked.parse(mdSpaces);
+      const htmlTabs = marked.parse(mdTabs);
+      assert.strictEqual(htmlSpaces, htmlTabs);
+
+      // Ordered lists after a paragraph (text before the list) — reported scenario
+      const mdSpacesPre = 'Paragraph before list\n\n1.  Some Text\n2.  Some Text\n3.  Some Text\n';
+      const mdTabsPre = 'Paragraph before list\n\n1.\tSome Text\n2.\tSome Text\n3.\tSome Text\n';
+      const htmlSpacesPre = marked.parse(mdSpacesPre);
+      const htmlTabsPre = marked.parse(mdTabsPre);
+      assert.strictEqual(htmlSpacesPre, htmlTabsPre);
+
+      // Unordered lists (bullets)
+      const ulSpaces = '-  Some Text\n-  Some Text\n-  Some Text\n';
+      const ulTabs = '-\tSome Text\n-\tSome Text\n-\tSome Text\n';
+      const htmlUlSpaces = marked.parse(ulSpaces);
+      const htmlUlTabs = marked.parse(ulTabs);
+      assert.strictEqual(htmlUlSpaces, htmlUlTabs);
+    });
+  });
+
   describe('parseInline', () => {
     it('should parse inline tokens', () => {
       const md = '**strong** _em_';
