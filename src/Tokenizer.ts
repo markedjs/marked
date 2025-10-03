@@ -397,7 +397,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           }
         }
 
-  list.items.push({
+        list.items.push({
           type: 'list_item',
           raw,
           task: !!istask,
