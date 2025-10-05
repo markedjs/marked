@@ -1,4 +1,4 @@
-import { marked } from './src/marked.ts';
+import { Marked } from './src/marked.ts';
 
 // Test the backtick precedence fix
 console.log('Testing backtick precedence fix:');
@@ -43,6 +43,8 @@ const testCases = [
 
 testCases.forEach(({ input, expected, description }) => {
   try {
+    // Create a fresh instance for each test
+    const marked = new Marked();
     const result = marked.parseInline(input);
     const passed = result === expected;
     console.log(`${passed ? '✓' : '✗'} ${description}`);
@@ -79,6 +81,8 @@ const regressionCases = [
 
 regressionCases.forEach(({ input, expected, description }) => {
   try {
+    // Create a fresh instance for each test
+    const marked = new Marked();
     const result = marked.parseInline(input);
     const passed = result === expected;
     console.log(`${passed ? '✓' : '✗'} ${description}`);
