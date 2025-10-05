@@ -1,44 +1,93 @@
 import { marked } from './src/marked.ts';
 
-// Test that both property names work
-const testExtension = {
-  name: 'test',
-  level: 'inline',
-  start(src) { return src.indexOf('TEST'); },
-  tokenizer(src) {
-    const match = src.match(/^TEST/);
-    if (match) {
-      return {
-        type: 'test',
-        raw: match[0],
-        text: 'TESTED'
-      };
-    }
+// Test the backtick precedence fix
+console.log('Testing backtick precedence fix:');
+
+const testCases = [
+  {
+    input: '**text `**` more**',
+    expected: '<strong>text <code>**</code> more</strong>',
+    description: 'Single backticks with emphasis - code takes precedence'
   },
-  renderer(token) {
-    return `<span class="test">${token.text}</span>`;
+  {
+    input: '**text ``**`` more**',
+    expected: '<strong>text <code>**</code> more</strong>',
+    description: 'Double backticks with emphasis - code takes precedence'
+  },
+  {
+    input: '**text ```**``` more**',
+    expected: '<strong>text <code>**</code> more</strong>',
+    description: 'Triple backticks with emphasis - code takes precedence'
+  },
+  {
+    input: '**text ````**```` more**',
+    expected: '<strong>text <code>**</code> more</strong>',
+    description: 'Quadruple backticks with emphasis - code takes precedence'
+  },
+  {
+    input: '__text ``__`` more__',
+    expected: '<strong>text <code>__</code> more</strong>',
+    description: 'Double backticks with underscore emphasis'
+  },
+  {
+    input: '`**not bold**`',
+    expected: '<code>**not bold**</code>',
+    description: 'Code spans should prevent emphasis processing'
+  },
+  {
+    input: '**start `code` end**',
+    expected: '<strong>start <code>code</code> end</strong>',
+    description: 'Code within emphasis should work'
   }
-};
+];
 
-// Test old property name (should still work)
-console.log('Testing old property name (extensions):');
-try {
-  marked.use({ extensions: [testExtension] });
-  console.log('✓ Old property name works');
-  console.log('Result:', marked.parse('This is TEST content'));
-} catch (e) {
-  console.log('✗ Old property name failed:', e.message);
-}
+testCases.forEach(({ input, expected, description }) => {
+  try {
+    const result = marked.parseInline(input);
+    const passed = result === expected;
+    console.log(`${passed ? '✓' : '✗'} ${description}`);
+    if (!passed) {
+      console.log(`  Input:    ${input}`);
+      console.log(`  Expected: ${expected}`);
+      console.log(`  Got:      ${result}`);
+    }
+  } catch (e) {
+    console.log(`✗ ${description} - Error: ${e.message}`);
+  }
+});
 
-// Reset marked
-marked.setOptions(marked.getDefaults());
+// Test that normal cases still work
+console.log('\nTesting regression cases:');
 
-// Test new property name
-console.log('\nTesting new property name (tokenizerAndRendererExtensions):');
-try {
-  marked.use({ tokenizerAndRendererExtensions: [testExtension] });
-  console.log('✓ New property name works');
-  console.log('Result:', marked.parse('This is TEST content'));
-} catch (e) {
-  console.log('✗ New property name failed:', e.message);
-}
+const regressionCases = [
+  {
+    input: '**bold text**',
+    expected: '<strong>bold text</strong>',
+    description: 'Normal emphasis should still work'
+  },
+  {
+    input: '`code`',
+    expected: '<code>code</code>',
+    description: 'Normal code should still work'
+  },
+  {
+    input: '**bold** and `code`',
+    expected: '<strong>bold</strong> and <code>code</code>',
+    description: 'Separate emphasis and code should work'
+  }
+];
+
+regressionCases.forEach(({ input, expected, description }) => {
+  try {
+    const result = marked.parseInline(input);
+    const passed = result === expected;
+    console.log(`${passed ? '✓' : '✗'} ${description}`);
+    if (!passed) {
+      console.log(`  Input:    ${input}`);
+      console.log(`  Expected: ${expected}`);
+      console.log(`  Got:      ${result}`);
+    }
+  } catch (e) {
+    console.log(`✗ ${description} - Error: ${e.message}`);
+  }
+});
