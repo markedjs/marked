@@ -3,41 +3,23 @@ import assert from 'node:assert';
 import { describe, it } from 'node:test';
 
 describe('Issue #3776: Even-numbered backtick strings have incorrect precedence', () => {
-  it('should prioritize codespans over emphasis for double backticks', () => {
-    const input = '**You might think this should be bold, but it should actually be regular text because codespans have higher priority: ``**``';
-    const html = marked(input);
-    
-    // Should create a codespan containing **, not emphasis
-    assert.ok(html.includes('<code>**</code>'), 'Should contain codespan with **');
-    assert.ok(!html.includes('<strong>'), 'Should not contain strong tags');
-  });
+  const backtickTests = [
+    { name: 'single', ticks: '`' },
+    { name: 'double', ticks: '``' },
+    { name: 'triple', ticks: '```' },
+    { name: 'quadruple', ticks: '````' },
+  ];
 
-  it('should prioritize codespans over emphasis for quadruple backticks', () => {
-    const input = '**You might think this should be bold, but: ````**````';
-    const html = marked(input);
-    
-    // Should create a codespan containing **, not emphasis
-    assert.ok(html.includes('<code>**</code>'), 'Should contain codespan with **');
-    assert.ok(!html.includes('<strong>'), 'Should not contain strong tags');
-  });
+  for (const { name, ticks } of backtickTests) {
+    it(`should prioritize codespans over emphasis for ${name} backticks`, () => {
+      const input = `**You might think this should be bold, but: ${ticks}**${ticks}`;
+      const html = marked(input);
 
-  it('should continue working correctly for single backticks', () => {
-    const input = '**You might think this should be bold, but: `**`';
-    const html = marked(input);
-    
-    // Should create a codespan containing **, not emphasis
-    assert.ok(html.includes('<code>**</code>'), 'Should contain codespan with **');
-    assert.ok(!html.includes('<strong>'), 'Should not contain strong tags');
-  });
-
-  it('should continue working correctly for triple backticks', () => {
-    const input = '**You might think this should be bold, but: ```**```';
-    const html = marked(input);
-    
-    // Should create a codespan containing **, not emphasis
-    assert.ok(html.includes('<code>**</code>'), 'Should contain codespan with **');
-    assert.ok(!html.includes('<strong>'), 'Should not contain strong tags');
-  });
+      // Should create a codespan containing **, not emphasis
+      assert.ok(html.includes('<code>**</code>'), 'Should contain codespan with **');
+      assert.ok(!html.includes('<strong>'), 'Should not contain strong tags');
+    });
+  }
 
   it('should allow emphasis when codespan does not contain emphasis markers', () => {
     const input = '**This should be bold** and `this should be code`';

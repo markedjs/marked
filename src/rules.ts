@@ -249,8 +249,11 @@ const blockPedantic: Record<BlockKeys, RegExp> = {
  * Inline-Level Grammar
  */
 
+// Shared codespan pattern for consistency between inlineCode and blockSkip
+const _codeSpanPattern = '(`+)([^`]|[^`][\\s\\S]*?[^`])\\1(?!`)';
+
 const escape = /^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/;
-const inlineCode = /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/;
+const inlineCode = new RegExp(`^${_codeSpanPattern}`);
 const br = /^( {2,}|\\)\n(?!\s*$)/;
 const inlineText = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
 
@@ -267,7 +270,7 @@ const _punctuationOrSpaceGfmStrongEm = /(?!~)[\s\p{P}\p{S}]/u;
 const _notPunctuationOrSpaceGfmStrongEm = /(?:[^\s\p{P}\p{S}]|~)/u;
 
 // sequences em should skip over [title](link), `code`, <html>
-const blockSkip = /\[[^\[\]]*?\]\((?:\\[\s\S]|[^\\\(\)]|\((?:\\[\s\S]|[^\\\(\)])*\))*\)|(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)|<(?! )[^<>]*?>/g;
+const blockSkip = new RegExp(`\\[[^\\[\\]]*?\\]\\((?:\\\\[\\s\\S]|[^\\\\\\(\\)]|\\((?:\\\\[\\s\\S]|[^\\\\\\(\\)])*\\))*\\)|${_codeSpanPattern}|<(?! )[^<>]*?>`, 'g');
 
 const emStrongLDelimCore = /^(?:\*+(?:((?!\*)punct)|[^\s*]))|^_+(?:((?!_)punct)|([^\s_]))/;
 
