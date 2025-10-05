@@ -383,15 +383,15 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
         continue;
       }
 
-      // code
-      if (token = this.tokenizer.codespan(src)) {
+      // em & strong
+      if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
 
-      // em & strong
-      if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar)) {
+      // code
+      if (token = this.tokenizer.codespan(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
