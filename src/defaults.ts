@@ -8,6 +8,7 @@ export function _getDefaults<ParserOutput = string, RendererOutput = string>(): 
     async: false,
     breaks: false,
     extensions: null,
+    tokenizerAndRendererExtensions: null,
     gfm: true,
     hooks: null,
     pedantic: false,

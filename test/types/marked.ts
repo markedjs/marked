@@ -240,6 +240,11 @@ marked.use({
   extensions: [tokenizerExtension, rendererExtension, tokenizerAndRendererExtension]
 });
 
+// Test new property name
+marked.use({
+  tokenizerAndRendererExtensions: [tokenizerExtension, rendererExtension, tokenizerAndRendererExtension]
+});
+
 const asyncExtension: MarkedExtension = {
   async: true,
   async walkTokens(token) {
