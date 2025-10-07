@@ -327,11 +327,11 @@ const autolink = edit(/^<(scheme:[^\s\x00-\x1f<>]*|email)>/)
 const _inlineComment = edit(_comment).replace('(?:-->|$)', '-->').getRegex();
 const tag = edit(
   '^comment'
-  + '|^</[a-zA-Z][\\w:-]*\\s*>' // self-closing tag
-  + '|^<[a-zA-Z][\\w-]*(?:attribute)*?\\s*/?>' // open tag
-  + '|^<\\?[\\s\\S]*?\\?>' // processing instruction, e.g. <?php ?>
-  + '|^<![a-zA-Z]+\\s[\\s\\S]*?>' // declaration, e.g. <!DOCTYPE html>
-  + '|^<!\\[CDATA\\[[\\s\\S]*?\\]\\]>') // CDATA section
+    + '|^</[a-zA-Z][\\w:-]*\\s*>' // self-closing tag
+    + '|^<[a-zA-Z][\\w-]*(?:attribute)*?\\s*/?>' // open tag
+    + '|^<\\?[\\s\\S]*?\\?>' // processing instruction, e.g. <?php ?>
+    + '|^<![a-zA-Z]+\\s[\\s\\S]*?>' // declaration, e.g. <!DOCTYPE html>
+    + '|^<!\\[CDATA\\[[\\s\\S]*?\\]\\]>') // CDATA section
   .replace('comment', _inlineComment)
   .replace('attribute', /\s+[a-zA-Z:_][\w.:-]*(?:\s*=\s*"[^"]*"|\s*=\s*'[^']*'|\s*=\s*[^\s"'=<>`]+)?/)
   .getRegex();
