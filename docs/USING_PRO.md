@@ -29,13 +29,13 @@ marked.use(extension2);
 marked.use(extension3);
 ```
 
-All options will overwrite those previously set, except for the following options which will be merged with the existing framework and can be used to change or extend the functionality of Marked: `renderer`, `tokenizer`, `hooks`, `walkTokens`, and `extensions`.
+All options will overwrite those previously set, except for the following options which will be merged with the existing framework and can be used to change or extend the functionality of Marked: `renderer`, `tokenizer`, `hooks`, `walkTokens`, and `tokenizerAndRendererExtensions` (or `extensions` for backward compatibility).
 
 * The `renderer`, `tokenizer`, and `hooks` options are objects with functions that will be merged into the built-in `renderer` and `tokenizer` respectively.
 
 * The `walkTokens` option is a function that will be called to post-process every token before rendering.
 
-* The `extensions` option is an array of objects that can contain additional custom `renderer` and `tokenizer` steps that will execute before any of the default parsing logic occurs.
+* The `tokenizerAndRendererExtensions` option (or `extensions` for backward compatibility) is an array of objects that can contain additional custom `renderer` and `tokenizer` steps that will execute before any of the default parsing logic occurs.
 
 Importantly, ensure that the extensions are only added to `marked` once (ie in the global scope of a regular JavaScript or TypeScript module). If they are added in a function that is called repeatedly, or in the JS for an HTML component in a library such as Svelte, your extensions will be added repeatedly, eventually causing a recursion error. If you cannot prevent the code from being run repeatedly, you should create a [Marked instance](/using_advanced#instance) so that your extensions are stored independently from the global instance Marked provides.
 
@@ -52,7 +52,7 @@ Before building your custom extensions, it is important to understand the compon
 4) The `parser` traverses the token tree and feeds each token into the appropriate `renderer`, and concatenates their outputs into the final HTML result.
 5) Each `renderer` receives a token and manipulates its contents to generate a segment of HTML.
 
-Marked provides methods for directly overriding the `renderer` and `tokenizer` for any existing token type, as well as inserting additional custom `renderer` and `tokenizer` functions to handle entirely custom syntax. For example, using `marked.use({renderer})` would modify a renderer, whereas `marked.use({extensions: [{renderer}]})` would add a new renderer. See the [custom extensions example](#custom-extensions-example) for insight on how to execute this.
+Marked provides methods for directly overriding the `renderer` and `tokenizer` for any existing token type, as well as inserting additional custom `renderer` and `tokenizer` functions to handle entirely custom syntax. For example, using `marked.use({renderer})` would modify a renderer, whereas `marked.use({tokenizerAndRendererExtensions: [{renderer}]})` would add a new renderer. See the [custom extensions example](#custom-extensions-example) for insight on how to execute this.
 
 ***
 
@@ -104,7 +104,7 @@ console.log(marked.parse('# heading+'));
 
 ```js
 marked.use({
- extensions: [{
+ tokenizerAndRendererExtensions: [{
     name: 'heading',
     renderer(token) {
       return /* ... */
@@ -392,9 +392,9 @@ console.log(marked.parse(`_The formula is $a_ b=c_ d$._`));
 
 ***
 
-<h2 id="extensions">Custom Extensions : <code>extensions</code></h2>
+<h2 id="extensions">Custom Tokenizer and Renderer Extensions : <code>tokenizerAndRendererExtensions</code></h2>
 
-You may supply an `extensions` array to the `options` object. This array can contain any number of `extension` objects, using the following properties:
+You may supply a `tokenizerAndRendererExtensions` array to the `options` object. This array can contain any number of `extension` objects, using the following properties:
 
 <dl>
 <dt><code><strong>name</strong></code></dt>

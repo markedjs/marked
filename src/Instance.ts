@@ -74,7 +74,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
   }
 
   use(...args: MarkedExtension<ParserOutput, RendererOutput>[]) {
-    const extensions: MarkedOptions<ParserOutput, RendererOutput>['extensions'] = this.defaults.extensions || { renderers: {}, childTokens: {} };
+    const extensions: MarkedOptions<ParserOutput, RendererOutput>['tokenizerAndRendererExtensions'] = this.defaults.tokenizerAndRendererExtensions || this.defaults.extensions || { renderers: {}, childTokens: {} };
 
     args.forEach((pack) => {
       // copy options to new object
@@ -84,8 +84,9 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
       opts.async = this.defaults.async || opts.async || false;
 
       // ==-- Parse "addon" extensions --== //
-      if (pack.extensions) {
-        pack.extensions.forEach((ext) => {
+      const extensionsArray = pack.tokenizerAndRendererExtensions || pack.extensions;
+      if (extensionsArray) {
+        extensionsArray.forEach((ext) => {
           if (!ext.name) {
             throw new Error('extension name required');
           }
@@ -134,6 +135,8 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
             extensions.childTokens[ext.name] = ext.childTokens;
           }
         });
+        opts.tokenizerAndRendererExtensions = extensions;
+        // Also set the deprecated property for backward compatibility
         opts.extensions = extensions;
       }
 

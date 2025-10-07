@@ -73,9 +73,9 @@ console.log(marked.parse(markdownString));
 |smartypants (**removed**)|`boolean` |`false`  |v0.2.9   |Removed in v8.0.0 use [`marked-smartypants`](https://www.npmjs.com/package/marked-smartypants) to use "smart" typographic punctuation for things like quotes and dashes.|
 |xhtml (**removed**)|`boolean` |`false`  |v0.3.2   |Removed in v8.0.0 use [`marked-xhtml`](https://www.npmjs.com/package/marked-xhtml) to emit self-closing HTML tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.|
 
-<h2 id="extensions">Known Extensions</h2>
+<h2 id="extensions">Known MarkedExtensions (Plugins)</h2>
 
-Marked can be extended using [custom extensions](/using_pro#extensions). This is a list of extensions that can be used with `marked.use(extension)`.
+Marked can be extended using [MarkedExtensions (plugins)](/using_pro#extensions). These are complete plugin packages that can be used with `marked.use(extension)`. They are different from [custom tokenizer and renderer extensions](/using_pro#extensions) which are individual tokenizer/renderer pairs that go inside the `tokenizerAndRendererExtensions` array.
 
 <!-- Keep this list ordered alphabetically by name -->
 

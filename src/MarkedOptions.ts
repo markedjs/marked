@@ -63,6 +63,14 @@ export interface MarkedExtension<ParserOutput = string, RendererOutput = string>
   /**
    * Add tokenizers and renderers to marked
    */
+  tokenizerAndRendererExtensions?:
+    | TokenizerAndRendererExtension<ParserOutput, RendererOutput>[]
+    | null;
+
+  /**
+   * Add tokenizers and renderers to marked
+   * @deprecated Use tokenizerAndRendererExtensions instead
+   */
   extensions?:
     | TokenizerAndRendererExtension<ParserOutput, RendererOutput>[]
     | null;
@@ -114,7 +122,7 @@ export interface MarkedExtension<ParserOutput = string, RendererOutput = string>
   walkTokens?: ((token: Token) => void | Promise<void>) | null;
 }
 
-export interface MarkedOptions<ParserOutput = string, RendererOutput = string> extends Omit<MarkedExtension<ParserOutput, RendererOutput>, 'hooks' | 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {
+export interface MarkedOptions<ParserOutput = string, RendererOutput = string> extends Omit<MarkedExtension<ParserOutput, RendererOutput>, 'hooks' | 'renderer' | 'tokenizer' | 'tokenizerAndRendererExtensions' | 'extensions' | 'walkTokens'> {
   /**
    * Hooks are methods that hook into some part of marked.
    */
@@ -133,7 +141,24 @@ export interface MarkedOptions<ParserOutput = string, RendererOutput = string> e
   tokenizer?: _Tokenizer<ParserOutput, RendererOutput> | null;
 
   /**
-   * Custom extensions
+   * Custom tokenizer and renderer extensions
+   */
+  tokenizerAndRendererExtensions?: null | {
+    renderers: {
+      [name: string]: RendererExtensionFunction<ParserOutput, RendererOutput>;
+    };
+    childTokens: {
+      [name: string]: string[];
+    };
+    inline?: TokenizerExtensionFunction[];
+    block?: TokenizerExtensionFunction[];
+    startInline?: TokenizerStartFunction[];
+    startBlock?: TokenizerStartFunction[];
+  };
+
+  /**
+   * Custom tokenizer and renderer extensions
+   * @deprecated Use tokenizerAndRendererExtensions instead
    */
   extensions?: null | {
     renderers: {
