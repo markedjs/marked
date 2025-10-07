@@ -358,6 +358,8 @@ const reflinkSearch = edit('reflink|nolink(?!\\()', 'g')
   .replace('nolink', nolink)
   .getRegex();
 
+const _caseInsensitiveProtocol = /[hH][tT][tT][pP][sS]?|[fF][tT][pP]/;
+
 /**
  * Normal Inline Grammar
  */
@@ -409,13 +411,13 @@ const inlineGfm: Record<InlineKeys, RegExp> = {
   emStrongRDelimAst: emStrongRDelimAstGfm,
   emStrongLDelim: emStrongLDelimGfm,
   url: edit(/^((?:protocol):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/)
-    .replace('protocol', /[fF][tT][pP]|[hH][tT][tT][pP][sS]?/)
+    .replace('protocol', _caseInsensitiveProtocol)
     .replace('email', /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/)
     .getRegex(),
   _backpedal: /(?:[^?!.,:;*_'"~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_'"~)]+(?!$))+/,
   del: /^(~~?)(?=[^\s~])((?:\\[\s\S]|[^\\])*?(?:\\[\s\S]|[^\s~\\]))\1(?=[^~]|$)/,
   text: edit(/^([`~]+|[^`~])(?:(?= {2,}\n)|(?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|protocol:\/\/|www\.|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)))/)
-    .replace('protocol', /[hH][tT][tT][pP][sS]?|[fF][tT][pP]/)
+    .replace('protocol', _caseInsensitiveProtocol)
     .getRegex(),
 };
 
