@@ -267,8 +267,10 @@ const _punctuationOrSpaceGfmStrongEm = /(?!~)[\s\p{P}\p{S}]/u;
 const _notPunctuationOrSpaceGfmStrongEm = /(?:[^\s\p{P}\p{S}]|~)/u;
 
 // sequences em should skip over [title](link), `code`, <html>
+// ReDoS-safe: match backticks, then non-greedy content, then backticks
+// Avoids problematic alternation that caused ReDoS
 const blockSkip = edit(/\[[^\[\]]*?\]\((?:\\[\s\S]|[^\\\(\)]|\((?:\\[\s\S]|[^\\\(\)])*\))*\)|codePattern|<(?! )[^<>]*?>/, 'g')
-  .replace('codePattern', /(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/)
+  .replace('codePattern', /`+[\s\S]*?`+/)
   .getRegex();
 
 const emStrongLDelimCore = /^(?:\*+(?:((?!\*)punct)|[^\s*]))|^_+(?:((?!_)punct)|([^\s_]))/;
