@@ -125,15 +125,15 @@ const _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
 const _comment = /<!--(?:-?>|[\s\S]*?(?:-->|$))/;
 const html = edit(
   '^ {0,3}(?:' // optional indentation
-  + '<(script|pre|style|textarea)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n+|$)' // (1)
-  + '|comment[^\\n]*(\\n+|$)' // (2)
-  + '|<\\?[\\s\\S]*?(?:\\?>\\n*|$)' // (3)
-  + '|<![A-Z][\\s\\S]*?(?:>\\n*|$)' // (4)
-  + '|<!\\[CDATA\\[[\\s\\S]*?(?:\\]\\]>\\n*|$)' // (5)
-  + '|</?(tag)(?: +|\\n|/?>)[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (6)
-  + '|<(?!script|pre|style|textarea)([a-z][\\w-]*)(?:attribute)*? */?>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (7) open tag
-  + '|</(?!script|pre|style|textarea)[a-z][\\w-]*\\s*>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (7) closing tag
-  + ')', 'i')
++ '<(script|pre|style|textarea)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n+|$)' // (1)
++ '|comment[^\\n]*(\\n+|$)' // (2)
++ '|<\\?[\\s\\S]*?(?:\\?>\\n*|$)' // (3)
++ '|<![A-Z][\\s\\S]*?(?:>\\n*|$)' // (4)
++ '|<!\\[CDATA\\[[\\s\\S]*?(?:\\]\\]>\\n*|$)' // (5)
++ '|</?(tag)(?: +|\\n|/?>)[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (6)
++ '|<(?!script|pre|style|textarea)([a-z][\\w-]*)(?:attribute)*? */?>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (7) open tag
++ '|</(?!script|pre|style|textarea)[a-z][\\w-]*\\s*>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (7) closing tag
++ ')', 'i')
   .replace('comment', _comment)
   .replace('tag', _tag)
   .replace('attribute', / +[a-zA-Z:_][\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'| *= *[^\s"'=<>`]+)?/)
@@ -183,8 +183,8 @@ type BlockKeys = keyof typeof blockNormal;
 
 const gfmTable = edit(
   '^ *([^\\n ].*)\\n' // Header
-  + ' {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)' // Align
-  + '(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)') // Cells
++ ' {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)' // Align
++ '(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)') // Cells
   .replace('hr', hr)
   .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
   .replace('blockquote', ' {0,3}>')
@@ -281,13 +281,13 @@ const emStrongLDelimGfm = edit(emStrongLDelimCore, 'u')
 
 const emStrongRDelimAstCore =
   '^[^_*]*?__[^_*]*?\\*[^_*]*?(?=__)' // Skip orphan inside strong
-  + '|[^*]+(?=[^*])' // Consume to delim
-  + '|(?!\\*)punct(\\*+)(?=[\\s]|$)' // (1) #*** can only be a Right Delimiter
-  + '|notPunctSpace(\\*+)(?!\\*)(?=punctSpace|$)' // (2) a***#, a*** can only be a Right Delimiter
-  + '|(?!\\*)punctSpace(\\*+)(?=notPunctSpace)' // (3) #***a, ***a can only be Left Delimiter
-  + '|[\\s](\\*+)(?!\\*)(?=punct)' // (4) ***# can only be Left Delimiter
-  + '|(?!\\*)punct(\\*+)(?!\\*)(?=punct)' // (5) #***# can be either Left or Right Delimiter
-  + '|notPunctSpace(\\*+)(?=notPunctSpace)'; // (6) a***a can be either Left or Right Delimiter
++ '|[^*]+(?=[^*])' // Consume to delim
++ '|(?!\\*)punct(\\*+)(?=[\\s]|$)' // (1) #*** can only be a Right Delimiter
++ '|notPunctSpace(\\*+)(?!\\*)(?=punctSpace|$)' // (2) a***#, a*** can only be a Right Delimiter
++ '|(?!\\*)punctSpace(\\*+)(?=notPunctSpace)' // (3) #***a, ***a can only be Left Delimiter
++ '|[\\s](\\*+)(?!\\*)(?=punct)' // (4) ***# can only be Left Delimiter
++ '|(?!\\*)punct(\\*+)(?!\\*)(?=punct)' // (5) #***# can be either Left or Right Delimiter
++ '|notPunctSpace(\\*+)(?=notPunctSpace)'; // (6) a***a can be either Left or Right Delimiter
 
 const emStrongRDelimAst = edit(emStrongRDelimAstCore, 'gu')
   .replace(/notPunctSpace/g, _notPunctuationOrSpace)
@@ -304,12 +304,12 @@ const emStrongRDelimAstGfm = edit(emStrongRDelimAstCore, 'gu')
 // (6) Not allowed for _
 const emStrongRDelimUnd = edit(
   '^[^_*]*?\\*\\*[^_*]*?_[^_*]*?(?=\\*\\*)' // Skip orphan inside strong
-  + '|[^_]+(?=[^_])' // Consume to delim
-  + '|(?!_)punct(_+)(?=[\\s]|$)' // (1) #___ can only be a Right Delimiter
-  + '|notPunctSpace(_+)(?!_)(?=punctSpace|$)' // (2) a___#, a___ can only be a Right Delimiter
-  + '|(?!_)punctSpace(_+)(?=notPunctSpace)' // (3) #___a, ___a can only be Left Delimiter
-  + '|[\\s](_+)(?!_)(?=punct)' // (4) ___# can only be Left Delimiter
-  + '|(?!_)punct(_+)(?!_)(?=punct)', 'gu') // (5) #___# can be either Left or Right Delimiter
++ '|[^_]+(?=[^_])' // Consume to delim
++ '|(?!_)punct(_+)(?=[\\s]|$)' // (1) #___ can only be a Right Delimiter
++ '|notPunctSpace(_+)(?!_)(?=punctSpace|$)' // (2) a___#, a___ can only be a Right Delimiter
++ '|(?!_)punctSpace(_+)(?=notPunctSpace)' // (3) #___a, ___a can only be Left Delimiter
++ '|[\\s](_+)(?!_)(?=punct)' // (4) ___# can only be Left Delimiter
++ '|(?!_)punct(_+)(?!_)(?=punct)', 'gu') // (5) #___# can be either Left or Right Delimiter
   .replace(/notPunctSpace/g, _notPunctuationOrSpace)
   .replace(/punctSpace/g, _punctuationOrSpace)
   .replace(/punct/g, _punctuation)
@@ -327,11 +327,11 @@ const autolink = edit(/^<(scheme:[^\s\x00-\x1f<>]*|email)>/)
 const _inlineComment = edit(_comment).replace('(?:-->|$)', '-->').getRegex();
 const tag = edit(
   '^comment'
-  + '|^</[a-zA-Z][\\w:-]*\\s*>' // self-closing tag
-  + '|^<[a-zA-Z][\\w-]*(?:attribute)*?\\s*/?>' // open tag
-  + '|^<\\?[\\s\\S]*?\\?>' // processing instruction, e.g. <?php ?>
-  + '|^<![a-zA-Z]+\\s[\\s\\S]*?>' // declaration, e.g. <!DOCTYPE html>
-  + '|^<!\\[CDATA\\[[\\s\\S]*?\\]\\]>') // CDATA section
++ '|^</[a-zA-Z][\\w:-]*\\s*>' // self-closing tag
++ '|^<[a-zA-Z][\\w-]*(?:attribute)*?\\s*/?>' // open tag
++ '|^<\\?[\\s\\S]*?\\?>' // processing instruction, e.g. <?php ?>
++ '|^<![a-zA-Z]+\\s[\\s\\S]*?>' // declaration, e.g. <!DOCTYPE html>
++ '|^<!\\[CDATA\\[[\\s\\S]*?\\]\\]>') // CDATA section
   .replace('comment', _inlineComment)
   .replace('attribute', /\s+[a-zA-Z:_][\w.:-]*(?:\s*=\s*"[^"]*"|\s*=\s*'[^']*'|\s*=\s*[^\s"'=<>`]+)?/)
   .getRegex();
