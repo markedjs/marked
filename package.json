@@ -2,7 +2,7 @@
   "name": "marked",
   "description": "A markdown parser built for speed",
   "author": "Christopher Jeffrey",
-  "version": "16.3.0",
+  "version": "16.4.0",
   "type": "module",
   "main": "./lib/marked.esm.js",
   "module": "./lib/marked.esm.js",
@@ -58,11 +58,11 @@
     "@semantic-release/release-notes-generator": "^14.1.0",
     "cheerio": "1.1.2",
     "commonmark": "0.31.2",
-    "cross-env": "^10.0.0",
+    "cross-env": "^10.1.0",
     "dts-bundle-generator": "^9.5.1",
     "esbuild": "^0.25.10",
     "esbuild-plugin-umd-wrapper": "^3.0.0",
-    "eslint": "^9.36.0",
+    "eslint": "^9.37.0",
     "highlight.js": "^11.11.1",
     "markdown-it": "14.1.0",
     "marked-highlight": "^2.2.2",
@@ -72,7 +72,7 @@
     "semantic-release": "^24.2.9",
     "titleize": "^4.0.0",
     "tslib": "^2.8.1",
-    "typescript": "5.9.2"
+    "typescript": "5.9.3"
   },
   "scripts": {
     "bench": "npm run build && node test/bench.js",
