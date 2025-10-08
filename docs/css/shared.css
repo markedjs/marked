@@ -3,6 +3,13 @@
 	top: 0;
 	border: 0;
 	right: 0;
+	transition: color 0.3s ease;
+}
+
+.github-corner svg {
+	fill: var(--github-corner-fill);
+	color: var(--github-corner-color);
+	transition: fill 0.3s ease, color 0.3s ease;
 }
 
 .github-corner:hover .octo-arm {
