@@ -1,5 +1,9 @@
 // Theme functionality
 function initTheme() {
+  // SVG icon constants for better maintainability
+  const SUN_ICON_SVG = '<circle cx="12" cy="12" r="4"></circle><path d="m12 2 0 2"></path><path d="m12 20 0 2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>';
+  const MOON_ICON_SVG = '<path fill="currentColor" d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>';
+  
   // Get stored theme preference or default to 'auto'
   const storedTheme = localStorage.getItem('theme') || 'auto';
   const html = document.documentElement;
@@ -18,11 +22,6 @@ function initTheme() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
   
-  function getCurrentTheme() {
-    const theme = localStorage.getItem('theme') || 'auto';
-    return theme === 'auto' ? getSystemTheme() : theme;
-  }
-  
   function updateToggleButton(theme) {
     const button = document.getElementById('theme-toggle');
     if (!button) return;
@@ -32,10 +31,10 @@ function initTheme() {
     const text = button.querySelector('.text');
     
     if (currentTheme === 'dark') {
-      icon.innerHTML = '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>';
+      icon.innerHTML = MOON_ICON_SVG;
       text.textContent = 'Light';
     } else {
-      icon.innerHTML = '<circle cx="12" cy="12" r="4"></circle><path d="m12 2 0 2"></path><path d="m12 20 0 2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>';
+      icon.innerHTML = SUN_ICON_SVG;
       text.textContent = 'Dark';
     }
   }

@@ -11,37 +11,50 @@
     --nav-hover: #0366d6;
     --github-corner-fill: #202020;
     --github-corner-color: #fff;
+    
+    /* Dark theme color definitions */
+    --dark-bg-primary: #0d1117;
+    --dark-bg-secondary: #161b22;
+    --dark-text-primary: #e6edf3;
+    --dark-text-secondary: #f0f6fc;
+    --dark-border-color: #30363d;
+    --dark-link-color: #58a6ff;
+    --dark-code-bg: #262c36;
+    --dark-pre-bg: #262c36;
+    --dark-nav-hover: #58a6ff;
+    --dark-github-corner-fill: #f0f6fc;
+    --dark-github-corner-color: #0d1117;
 }
 
 [data-theme="dark"] {
     /* Dark theme variables */
-    --bg-primary: #0d1117;
-    --bg-secondary: #161b22;
-    --text-primary: #e6edf3;
-    --text-secondary: #f0f6fc;
-    --border-color: #30363d;
-    --link-color: #58a6ff;
-    --code-bg: #262c36;
-    --pre-bg: #262c36;
-    --nav-hover: #58a6ff;
-    --github-corner-fill: #f0f6fc;
-    --github-corner-color: #0d1117;
+    --bg-primary: var(--dark-bg-primary);
+    --bg-secondary: var(--dark-bg-secondary);
+    --text-primary: var(--dark-text-primary);
+    --text-secondary: var(--dark-text-secondary);
+    --border-color: var(--dark-border-color);
+    --link-color: var(--dark-link-color);
+    --code-bg: var(--dark-code-bg);
+    --pre-bg: var(--dark-pre-bg);
+    --nav-hover: var(--dark-nav-hover);
+    --github-corner-fill: var(--dark-github-corner-fill);
+    --github-corner-color: var(--dark-github-corner-color);
 }
 
 /* Respect system preference when no explicit theme is set */
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-        --bg-primary: #0d1117;
-        --bg-secondary: #161b22;
-        --text-primary: #e6edf3;
-        --text-secondary: #f0f6fc;
-        --border-color: #30363d;
-        --link-color: #58a6ff;
-        --code-bg: #262c36;
-        --pre-bg: #262c36;
-        --nav-hover: #58a6ff;
-        --github-corner-fill: #f0f6fc;
-        --github-corner-color: #0d1117;
+        --bg-primary: var(--dark-bg-primary);
+        --bg-secondary: var(--dark-bg-secondary);
+        --text-primary: var(--dark-text-primary);
+        --text-secondary: var(--dark-text-secondary);
+        --border-color: var(--dark-border-color);
+        --link-color: var(--dark-link-color);
+        --code-bg: var(--dark-code-bg);
+        --pre-bg: var(--dark-pre-bg);
+        --nav-hover: var(--dark-nav-hover);
+        --github-corner-fill: var(--dark-github-corner-fill);
+        --github-corner-color: var(--dark-github-corner-color);
     }
 }
 
@@ -118,6 +131,12 @@ header {
 }
 
 header h1 { margin: 0; }
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
 /* Dark mode toggle */
 .theme-toggle {
