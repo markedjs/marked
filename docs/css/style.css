@@ -1,9 +1,71 @@
+:root {
+    /* Light theme variables */
+    --bg-primary: #F9F9F9;
+    --bg-secondary: white;
+    --text-primary: #24292e;
+    --text-secondary: #111;
+    --border-color: #ddd;
+    --link-color: #0366d6;
+    --code-bg: #f6f8fa;
+    --pre-bg: #f6f8fa;
+    --nav-hover: #0366d6;
+    --github-corner-fill: #202020;
+    --github-corner-color: #fff;
+    
+    /* Dark theme color definitions */
+    --dark-bg-primary: #0d1117;
+    --dark-bg-secondary: #161b22;
+    --dark-text-primary: #e6edf3;
+    --dark-text-secondary: #f0f6fc;
+    --dark-border-color: #30363d;
+    --dark-link-color: #58a6ff;
+    --dark-code-bg: #262c36;
+    --dark-pre-bg: #262c36;
+    --dark-nav-hover: #58a6ff;
+    --dark-github-corner-fill: #f0f6fc;
+    --dark-github-corner-color: #0d1117;
+}
+
+[data-theme="dark"] {
+    /* Dark theme variables */
+    --bg-primary: var(--dark-bg-primary);
+    --bg-secondary: var(--dark-bg-secondary);
+    --text-primary: var(--dark-text-primary);
+    --text-secondary: var(--dark-text-secondary);
+    --border-color: var(--dark-border-color);
+    --link-color: var(--dark-link-color);
+    --code-bg: var(--dark-code-bg);
+    --pre-bg: var(--dark-pre-bg);
+    --nav-hover: var(--dark-nav-hover);
+    --github-corner-fill: var(--dark-github-corner-fill);
+    --github-corner-color: var(--dark-github-corner-color);
+}
+
+/* Respect system preference when no explicit theme is set */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg-primary: var(--dark-bg-primary);
+        --bg-secondary: var(--dark-bg-secondary);
+        --text-primary: var(--dark-text-primary);
+        --text-secondary: var(--dark-text-secondary);
+        --border-color: var(--dark-border-color);
+        --link-color: var(--dark-link-color);
+        --code-bg: var(--dark-code-bg);
+        --pre-bg: var(--dark-pre-bg);
+        --nav-hover: var(--dark-nav-hover);
+        --github-corner-fill: var(--dark-github-corner-fill);
+        --github-corner-color: var(--dark-github-corner-color);
+    }
+}
+
 body {
     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
     font-size: 16px;
     line-height: 1.5;
     word-wrap: break-word;
-    background: #F9F9F9;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #container {
@@ -13,9 +75,10 @@ body {
 
 #content {
     padding: 5px 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 3px;
-    background: white;
+    background: var(--bg-secondary);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 #content h1:first-child {
@@ -23,10 +86,11 @@ body {
 }
 
 nav {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 3px;
-    background: white;
+    background: var(--bg-secondary);
     margin-right: 10px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 nav > ul {
@@ -52,7 +116,7 @@ nav > ul > li > ul > li {
 }
 
 nav .selected {
-    color: #111;
+    color: var(--text-secondary);
     font-weight: bold;
 }
 
@@ -62,24 +126,64 @@ nav .selected:hover {
 
 header {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline-end: 70px;
 }
 
 header h1 { margin: 0; }
 
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Dark mode toggle */
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.theme-toggle:hover {
+    background-color: var(--code-bg);
+}
+
+.theme-toggle:focus {
+    outline: 2px solid var(--link-color);
+    outline-offset: 2px;
+}
+
+.theme-toggle .icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
 table {
     border-spacing: 0;
     border-collapse: collapse;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
 }
 
 td, th {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     padding: 5px;
 }
 
 a {
-    color: #0366d6;
+    color: var(--link-color);
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 a:hover {
@@ -92,10 +196,11 @@ pre {
     overflow: auto;
     font-size: 85%;
     line-height: 1.45;
-    background-color: #f6f8fa;
+    background-color: var(--pre-bg);
     border-radius: 3px;
     position: relative;
     max-width: 680px;
+    transition: background-color 0.3s ease;
 }
 
 pre code {
@@ -108,8 +213,9 @@ pre code {
     padding: 0.2em 0.4em;
     margin: 0;
     font-size: 85%;
-    background-color: #f6f8fa;
+    background-color: var(--code-bg);
     border-radius: 3px;
+    transition: background-color 0.3s ease;
 }
 
 summary {
@@ -118,7 +224,7 @@ summary {
 }
 
 summary:hover {
-    color: #0366d6;
+    color: var(--nav-hover);
 }
 
 .div-copy {
