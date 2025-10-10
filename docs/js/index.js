@@ -32,10 +32,18 @@ function initTheme() {
     
     if (currentTheme === 'dark') {
       icon.innerHTML = MOON_ICON_SVG;
-      text.textContent = 'Light';
+      if (theme === 'auto') {
+        text.textContent = 'Light (System)';
+      } else {
+        text.textContent = 'Light';
+      }
     } else {
       icon.innerHTML = SUN_ICON_SVG;
-      text.textContent = 'Dark';
+      if (theme === 'auto') {
+        text.textContent = 'Dark (System)';
+      } else {
+        text.textContent = 'Dark';
+      }
     }
   }
   
