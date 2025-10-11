@@ -2,9 +2,11 @@
 
 To champion the single-responsibility and open/closed principles, we have tried to make it relatively painless to extend Marked. If you are looking to add custom functionality, this is the place to start.
 
+> **📖 Extension Types**: Marked.js has two different types of "extensions" that can be confusing. See [Extension Types Documentation](/extension_types) for a clear explanation of **MarkedExtensions** vs **TokenizerAndRendererExtensions**.
+
 <h2 id="use">marked.use()</h2>
 
-`marked.use(extension)` is the recommended way to extend Marked. The `extension` object can contain any [option](/using_advanced#options) available in Marked:
+`marked.use(extension)` is the recommended way to extend Marked. The `extension` parameter is a **MarkedExtension** object that can contain any [option](/using_advanced#options) available in Marked:
 
 
 ```js
@@ -17,16 +19,16 @@ marked.use({
 });
 ```
 
-You can also supply multiple `extension` objects at once.
+You can also supply multiple **MarkedExtension** objects at once.
 
 ```js
-marked.use(myExtension, extension2, extension3);
+marked.use(myMarkedExtension, markedExtension2, markedExtension3);
 
 \\ EQUIVALENT TO:
 
-marked.use(myExtension);
-marked.use(extension2);
-marked.use(extension3);
+marked.use(myMarkedExtension);
+marked.use(markedExtension2);
+marked.use(markedExtension3);
 ```
 
 All options will overwrite those previously set, except for the following options which will be merged with the existing framework and can be used to change or extend the functionality of Marked: `renderer`, `tokenizer`, `hooks`, `walkTokens`, and `extensions`.
@@ -35,7 +37,7 @@ All options will overwrite those previously set, except for the following option
 
 * The `walkTokens` option is a function that will be called to post-process every token before rendering.
 
-* The `extensions` option is an array of objects that can contain additional custom `renderer` and `tokenizer` steps that will execute before any of the default parsing logic occurs.
+* The `extensions` option is an array of **TokenizerAndRendererExtension** objects that can contain additional custom `renderer` and `tokenizer` steps that will execute before any of the default parsing logic occurs.
 
 Importantly, ensure that the extensions are only added to `marked` once (ie in the global scope of a regular JavaScript or TypeScript module). If they are added in a function that is called repeatedly, or in the JS for an HTML component in a library such as Svelte, your extensions will be added repeatedly, eventually causing a recursion error. If you cannot prevent the code from being run repeatedly, you should create a [Marked instance](/using_advanced#instance) so that your extensions are stored independently from the global instance Marked provides.
 
@@ -392,9 +394,54 @@ console.log(marked.parse(`_The formula is $a_ b=c_ d$._`));
 
 ***
 
-<h2 id="extensions">Custom Extensions : <code>extensions</code></h2>
+<h2 id="extension-types-example">Extension Types Example</h2>
 
-You may supply an `extensions` array to the `options` object. This array can contain any number of `extension` objects, using the following properties:
+Here's a clear example showing the difference between **MarkedExtensions** and **TokenizerAndRendererExtensions**:
+
+```js
+// 1. MarkedExtension - Configuration object passed to marked.use()
+const markdownConfig = {
+  gfm: true,
+  breaks: false,
+  pedantic: false
+};
+
+// 2. TokenizerAndRendererExtension - Custom parsing logic
+const customBlockExtension = {
+  name: 'customBlock',
+  level: 'block',
+  start: (src) => src.match(/:::/)?.index,
+  tokenizer(src) {
+    const match = src.match(/^:::\s*(\w+)\s*\n([\s\S]*?)\n:::/);
+    if (match) {
+      return {
+        type: 'customBlock',
+        raw: match[0],
+        name: match[1],
+        content: match[2]
+      };
+    }
+  },
+  renderer(token) {
+    return `<div class="custom-${token.name}">${token.content}</div>`;
+  }
+};
+
+// 3. MarkedExtension containing TokenizerAndRendererExtensions
+const customSyntaxConfig = {
+  extensions: [customBlockExtension] // TokenizerAndRendererExtensions go here
+};
+
+// Usage
+marked.use(markdownConfig);        // MarkedExtension
+marked.use(customSyntaxConfig);    // MarkedExtension with TokenizerAndRendererExtensions
+```
+
+***
+
+<h2 id="extensions">Custom TokenizerAndRendererExtensions : <code>extensions</code></h2>
+
+You may supply an `extensions` array to the `options` object. This array can contain any number of **TokenizerAndRendererExtension** objects, using the following properties:
 
 <dl>
 <dt><code><strong>name</strong></code></dt>
