@@ -2,7 +2,7 @@
 
 To champion the single-responsibility and open/closed principles, we have tried to make it relatively painless to extend Marked. If you are looking to add custom functionality, this is the place to start.
 
-> **📖 Extension Types**: Marked.js has two different types of "extensions" that can be confusing. See [Extension Types Documentation](/extension_types) for a clear explanation of **MarkedExtensions** vs **TokenizerAndRendererExtensions**.
+> **📖 Extension Types**: Marked.js has two different types of "extensions" that can be confusing. See [Extension Types Documentation](/extension_types) for a clear explanation of **MarkedExtensions** vs **SyntaxExtensions**.
 
 <h2 id="use">marked.use()</h2>
 
@@ -37,7 +37,7 @@ All options will overwrite those previously set, except for the following option
 
 * The `walkTokens` option is a function that will be called to post-process every token before rendering.
 
-* The `extensions` option is an array of **TokenizerAndRendererExtension** objects that can contain additional custom `renderer` and `tokenizer` steps that will execute before any of the default parsing logic occurs.
+* The `extensions` option is an array of **SyntaxExtension** objects that can contain additional custom `renderer` and `tokenizer` steps that will execute before any of the default parsing logic occurs.
 
 Importantly, ensure that the extensions are only added to `marked` once (ie in the global scope of a regular JavaScript or TypeScript module). If they are added in a function that is called repeatedly, or in the JS for an HTML component in a library such as Svelte, your extensions will be added repeatedly, eventually causing a recursion error. If you cannot prevent the code from being run repeatedly, you should create a [Marked instance](/using_advanced#instance) so that your extensions are stored independently from the global instance Marked provides.
 
@@ -396,7 +396,7 @@ console.log(marked.parse(`_The formula is $a_ b=c_ d$._`));
 
 <h2 id="extension-types-example">Extension Types Example</h2>
 
-Here's a clear example showing the difference between **MarkedExtensions** and **TokenizerAndRendererExtensions**:
+Here's a clear example showing the difference between **MarkedExtensions** and **SyntaxExtensions**:
 
 ```js
 // 1. MarkedExtension - Configuration object passed to marked.use()
@@ -406,7 +406,7 @@ const markdownConfig = {
   pedantic: false
 };
 
-// 2. TokenizerAndRendererExtension - Custom parsing logic
+// 2. SyntaxExtension - Custom parsing logic
 const customBlockExtension = {
   name: 'customBlock',
   level: 'block',
@@ -427,21 +427,21 @@ const customBlockExtension = {
   }
 };
 
-// 3. MarkedExtension containing TokenizerAndRendererExtensions
+// 3. MarkedExtension containing SyntaxExtensions
 const customSyntaxConfig = {
-  extensions: [customBlockExtension] // TokenizerAndRendererExtensions go here
+  extensions: [customBlockExtension] // SyntaxExtensions go here
 };
 
 // Usage
 marked.use(markdownConfig);        // MarkedExtension
-marked.use(customSyntaxConfig);    // MarkedExtension with TokenizerAndRendererExtensions
+marked.use(customSyntaxConfig);    // MarkedExtension with SyntaxExtensions
 ```
 
 ***
 
-<h2 id="extensions">Custom TokenizerAndRendererExtensions : <code>extensions</code></h2>
+<h2 id="extensions">Custom SyntaxExtensions : <code>extensions</code></h2>
 
-You may supply an `extensions` array to the `options` object. This array can contain any number of **TokenizerAndRendererExtension** objects, using the following properties:
+You may supply an `extensions` array to the `options` object. This array can contain any number of **SyntaxExtension** objects, using the following properties:
 
 <dl>
 <dt><code><strong>name</strong></code></dt>

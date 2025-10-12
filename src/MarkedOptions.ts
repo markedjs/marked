@@ -32,7 +32,7 @@ export interface RendererExtension<ParserOutput = string, RendererOutput = strin
   renderer: RendererExtensionFunction<ParserOutput, RendererOutput>;
 }
 
-export type TokenizerAndRendererExtension<ParserOutput = string, RendererOutput = string> = TokenizerExtension | RendererExtension<ParserOutput, RendererOutput> | (TokenizerExtension & RendererExtension<ParserOutput, RendererOutput>);
+export type SyntaxExtension<ParserOutput = string, RendererOutput = string> = TokenizerExtension | RendererExtension<ParserOutput, RendererOutput> | (TokenizerExtension & RendererExtension<ParserOutput, RendererOutput>);
 
 type HooksApi<ParserOutput = string, RendererOutput = string> = Omit<_Hooks<ParserOutput, RendererOutput>, 'constructor' | 'options' | 'block'>;
 type HooksObject<ParserOutput = string, RendererOutput = string> = {
@@ -64,7 +64,7 @@ export interface MarkedExtension<ParserOutput = string, RendererOutput = string>
    * Add tokenizers and renderers to marked
    */
   extensions?:
-    | TokenizerAndRendererExtension<ParserOutput, RendererOutput>[]
+    | SyntaxExtension<ParserOutput, RendererOutput>[]
     | null;
 
   /**

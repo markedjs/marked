@@ -29,18 +29,18 @@ marked.use({
 });
 
 marked.use({
-  extensions: [/* TokenizerAndRendererExtensions go here */]
+  extensions: [/* SyntaxExtensions go here */]
 });
 ```
 
-### 2. TokenizerAndRendererExtensions (Custom Parsing Logic)
+### 2. SyntaxExtensions (Custom Parsing Logic)
 
-**Type**: `TokenizerAndRendererExtension` interface  
+**Type**: `SyntaxExtension` interface  
 **Usage**: Objects inside the `extensions` array of a MarkedExtension  
 **Purpose**: Define custom tokenizers and renderers for new syntax
 
 ```javascript
-// TokenizerAndRendererExtension example
+// SyntaxExtension example
 const customExtension = {
   name: 'customBlock',
   level: 'block',
@@ -61,9 +61,9 @@ const customExtension = {
   }
 };
 
-// Using the TokenizerAndRendererExtension
+// Using the SyntaxExtension
 marked.use({
-  extensions: [customExtension] // This is a MarkedExtension with TokenizerAndRendererExtensions
+  extensions: [customExtension] // This is a MarkedExtension with SyntaxExtensions
 });
 ```
 
@@ -77,16 +77,16 @@ marked.use({
 - The `extension` parameter is a **MarkedExtension**
 - Can contain any MarkedExtension options including `extensions` array
 
-### 3. `marked.use({ extensions: [TokenizerAndRendererExtensions] })`
+### 3. `marked.use({ extensions: [SyntaxExtensions] })`
 - The outer object is a **MarkedExtension**
-- The `extensions` property contains an array of **TokenizerAndRendererExtensions**
+- The `extensions` property contains an array of **SyntaxExtensions**
 
 ## Clear Terminology
 
 To avoid confusion, we recommend using these prefixes in documentation:
 
 - **MarkedExtension**: Configuration objects for `marked.use()`
-- **TokenizerAndRendererExtension**: Custom parsing logic objects for the `extensions` array
+- **SyntaxExtension**: Custom parsing logic objects for the `extensions` array
 - **Extension Options**: The `extensions` property within a MarkedExtension
 
 ## Examples of Clear Usage
@@ -101,7 +101,7 @@ const markdownConfig = {
   }
 };
 
-// MarkedExtension with TokenizerAndRendererExtensions
+// MarkedExtension with SyntaxExtensions
 const customSyntaxConfig = {
   extensions: [
     {

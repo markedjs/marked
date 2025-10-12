@@ -75,7 +75,7 @@ console.log(marked.parse(markdownString));
 
 <h2 id="extensions">Known MarkedExtensions</h2>
 
-Marked can be extended using [custom TokenizerAndRendererExtensions](/using_pro#extensions). This is a list of **MarkedExtension** packages that can be used with `marked.use(extension)`.
+Marked can be extended using [custom SyntaxExtensions](/using_pro#extensions). This is a list of **MarkedExtension** packages that can be used with `marked.use(extension)`.
 
 <!-- Keep this list ordered alphabetically by name -->
 
