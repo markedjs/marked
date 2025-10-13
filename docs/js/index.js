@@ -30,20 +30,18 @@ function initTheme() {
     const icon = button.querySelector('.icon');
     const text = button.querySelector('.text');
     
-    if (currentTheme === 'dark') {
-      icon.innerHTML = MOON_ICON_SVG;
-      if (theme === 'auto') {
-        text.textContent = 'Light (System)';
-      } else {
-        text.textContent = 'Light';
-      }
-    } else {
+    if (theme === 'auto') {
+      // Auto mode: show 'Dark' (next action is to go to manual dark)
       icon.innerHTML = SUN_ICON_SVG;
-      if (theme === 'auto') {
-        text.textContent = 'Dark (System)';
-      } else {
-        text.textContent = 'Dark';
-      }
+      text.textContent = 'Dark';
+    } else if (theme === 'dark') {
+      // Manual dark mode: show 'Light' (next action is to go to manual light)
+      icon.innerHTML = MOON_ICON_SVG;
+      text.textContent = 'Light';
+    } else {
+      // Manual light mode: show 'System' (next action is to go back to auto)
+      icon.innerHTML = SUN_ICON_SVG;
+      text.textContent = 'System';
     }
   }
   
