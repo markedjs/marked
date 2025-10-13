@@ -50,14 +50,17 @@ function initTheme() {
     let nextTheme;
     
     switch (currentTheme) {
-      case 'light':
+      case 'auto':
         nextTheme = 'dark';
         break;
       case 'dark':
+        nextTheme = 'light';
+        break;
+      case 'light':
         nextTheme = 'auto';
         break;
       default:
-        nextTheme = 'light';
+        nextTheme = 'dark';
     }
     
     setTheme(nextTheme);
