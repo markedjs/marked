@@ -3,11 +3,11 @@ function initTheme() {
   // SVG icon constants for better maintainability
   const SUN_ICON_SVG = '<circle cx="12" cy="12" r="4"></circle><path d="m12 2 0 2"></path><path d="m12 20 0 2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path>';
   const MOON_ICON_SVG = '<path fill="currentColor" d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>';
-  
+
   // Get stored theme preference or default to 'auto'
   const storedTheme = localStorage.getItem('theme') || 'auto';
   const html = document.documentElement;
-  
+
   function setTheme(theme) {
     if (theme === 'auto') {
       html.removeAttribute('data-theme');
@@ -17,19 +17,14 @@ function initTheme() {
     localStorage.setItem('theme', theme);
     updateToggleButton(theme);
   }
-  
-  function getSystemTheme() {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-  
+
   function updateToggleButton(theme) {
     const button = document.getElementById('theme-toggle');
     if (!button) return;
-    
-    const currentTheme = theme === 'auto' ? getSystemTheme() : theme;
+
     const icon = button.querySelector('.icon');
     const text = button.querySelector('.text');
-    
+
     if (theme === 'auto') {
       // Auto mode: show 'Dark' (next action is to go to manual dark)
       icon.innerHTML = SUN_ICON_SVG;
@@ -44,11 +39,11 @@ function initTheme() {
       text.textContent = 'System';
     }
   }
-  
+
   function cycleTheme() {
     const currentTheme = localStorage.getItem('theme') || 'auto';
     let nextTheme;
-    
+
     switch (currentTheme) {
       case 'auto':
         nextTheme = 'dark';
@@ -62,20 +57,20 @@ function initTheme() {
       default:
         nextTheme = 'dark';
     }
-    
+
     setTheme(nextTheme);
   }
-  
+
   // Initialize theme
   setTheme(storedTheme);
-  
+
   // Listen for system theme changes
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (localStorage.getItem('theme') === 'auto') {
       updateToggleButton('auto');
     }
   });
-  
+
   // Add click handler for toggle button
   document.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('theme-toggle');
