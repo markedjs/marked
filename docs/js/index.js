@@ -26,8 +26,9 @@ function initTheme() {
     const text = button.querySelector('.text');
 
     if (theme === 'auto') {
-      // Auto mode: show 'Dark' (next action is to go to manual dark)
-      icon.innerHTML = SUN_ICON_SVG;
+      // Auto mode: show icon based on system preference
+      const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      icon.innerHTML = isDarkMode ? MOON_ICON_SVG : SUN_ICON_SVG;
       text.textContent = 'Dark';
     } else if (theme === 'dark') {
       // Manual dark mode: show 'Light' (next action is to go to manual light)

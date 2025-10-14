@@ -5,6 +5,8 @@
     <title>Marked Demo</title>
     <link rel="stylesheet" href="./demo.css" type="text/css" />
     <link rel="stylesheet" href="../css/shared.css" type="text/css" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" />
+    <link rel="stylesheet" href="../css/hljs-github-dark.css" type="text/css" />
   </head>
 
   <body>
@@ -21,10 +23,18 @@
       <img src="../img/logo-black.svg" height="50px" width="50px" />
     </a>
       <h1>Marked Demo</h1>
-      <div class="other-demos">
-        <a href="https://spec.commonmark.org/dingus/">CommonMark Demo</a>
-        <br />
-        <a href="https://daringfireball.net/projects/markdown/dingus">Daring Fireball (pedantic) Demo</a>
+      <div class="header-content">
+        <div class="other-demos">
+          <a href="https://spec.commonmark.org/dingus/">CommonMark Demo</a>
+          <br />
+          <a href="https://daringfireball.net/projects/markdown/dingus">Daring Fireball (pedantic) Demo</a>
+        </div>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+          </svg>
+          <span class="text">Dark</span>
+        </button>
       </div>
     </header>
 
@@ -76,6 +86,7 @@
         </div>
       </div>
     </div>
+    <script src="../js/index.js"></script>
     <script src="./demo.js" type="module"></script>
   </body>
 
