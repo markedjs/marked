@@ -8,4 +8,10 @@
 
 **This should be bold** and `this should be code`
 
+**start `contains **` end**
+
+**This should be bold ``**`
+
+**This should be bold `**``
+
 **start ``contains **`` end**
