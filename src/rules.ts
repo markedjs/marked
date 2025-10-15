@@ -267,7 +267,7 @@ const _punctuationOrSpaceGfmStrongEm = /(?!~)[\s\p{P}\p{S}]/u;
 const _notPunctuationOrSpaceGfmStrongEm = /(?:[^\s\p{P}\p{S}]|~)/u;
 
 // sequences em should skip over [title](link), `code`, <html>
-const blockSkip = edit(/\[[^\[\]]*?\]\((?:\\[\s\S]|[^\\\(\)]|\((?:\\[\s\S]|[^\\\(\)])*\))*\)|codePattern|<(?! )[^<>]*?>/, 'g')
+const blockSkip = edit(/\[(?:[^\[\]`]|`[^`]*?`)*?\]\((?:\\[\s\S]|[^\\\(\)]|\((?:\\[\s\S]|[^\\\(\)])*\))*\)|codePattern|<(?! )[^<>]*?>/, 'g')
   .replace('codePattern', /(?<!`)(`+)[^`]+\1(?!`)/)
   .getRegex();
 
