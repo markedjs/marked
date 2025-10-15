@@ -17,7 +17,7 @@
 
 ## Demo
 
-Checkout the [demo page](https://marked.js.org/demo/) to see marked in action ⛹️
+Check out the [demo page](https://marked.js.org/demo/) to see Marked in action ⛹️
 
 ## Docs
 
