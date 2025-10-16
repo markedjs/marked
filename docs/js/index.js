@@ -7,6 +7,38 @@ function initTheme() {
   // Get stored theme preference or default to 'auto'
   const storedTheme = localStorage.getItem('theme') || 'auto';
   const html = document.documentElement;
+  const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function applyThemeToIframes(theme) {
+    const effectiveTheme = theme === 'auto'
+      ? (darkModeQuery.matches ? 'dark' : 'light')
+      : theme;
+
+    const iframes = document.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+      try {
+        const iframeDocument = iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
+        if (!iframeDocument || !iframeDocument.documentElement) {
+          return;
+        }
+
+        if (theme === 'auto') {
+          iframeDocument.documentElement.removeAttribute('data-theme');
+        } else {
+          iframeDocument.documentElement.setAttribute('data-theme', theme);
+        }
+
+        if (iframeDocument.documentElement.style) {
+          iframeDocument.documentElement.style.colorScheme = effectiveTheme;
+        }
+      } catch (e) {
+        // Ignore errors, iframe might be from another origin
+      }
+    });
+  }
+
+  // Expose helper for other scripts (e.g., demo page) to reapply theme on iframe load
+  window.__markedApplyThemeToIframes = applyThemeToIframes;
 
   function setTheme(theme) {
     if (theme === 'auto') {
@@ -16,18 +48,8 @@ function initTheme() {
     }
     localStorage.setItem('theme', theme);
     updateToggleButton(theme);
-    
-    // Send theme to all iframes on the page
-    const iframes = document.querySelectorAll('iframe');
-    iframes.forEach(iframe => {
-      try {
-        if (iframe.contentWindow) {
-          iframe.contentWindow.postMessage({ theme: theme }, '*');
-        }
-      } catch (e) {
-        // Ignore errors, iframe might be from another origin
-      }
-    });
+
+    applyThemeToIframes(theme);
   }
 
   function updateToggleButton(theme) {
@@ -78,9 +100,10 @@ function initTheme() {
   setTheme(storedTheme);
 
   // Listen for system theme changes
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  darkModeQuery.addEventListener('change', () => {
     if (localStorage.getItem('theme') === 'auto') {
       updateToggleButton('auto');
+      applyThemeToIframes('auto');
     }
   });
 

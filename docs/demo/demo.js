@@ -135,15 +135,11 @@ function setInitialOutputType() {
 function handleIframeLoad() {
   lastInput = '';
   inputDirty = true;
-  
-  // Sync theme with the iframe when it loads
+
+  // Ensure the preview iframe inherits the current theme
   const theme = localStorage.getItem('theme') || 'auto';
-  try {
-    if ($previewIframe.contentWindow) {
-      $previewIframe.contentWindow.postMessage({ theme: theme }, '*');
-    }
-  } catch (e) {
-    // Ignore errors
+  if (typeof window.__markedApplyThemeToIframes === 'function') {
+    window.__markedApplyThemeToIframes(theme);
   }
 }
 

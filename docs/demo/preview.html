@@ -7,32 +7,14 @@
   <link rel="stylesheet" href="./demo.css" />
   <link rel="stylesheet" href="../css/style.css" />
   <base target="_parent">
-  <script>
-    // Inherit theme from parent page
-    function syncThemeWithParent() {
-      const theme = window.parent.document.documentElement.getAttribute('data-theme');
-      if (theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-      }
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-secondary, #fff);
+      color: var(--text-primary, #24292e);
     }
-    
-    // Initial sync
-    document.addEventListener('DOMContentLoaded', syncThemeWithParent);
-    
-    // Listen for messages from parent to update theme
-    window.addEventListener('message', function(event) {
-      if (event.data && event.data.theme) {
-        const theme = event.data.theme;
-        if (theme === 'auto') {
-          document.documentElement.removeAttribute('data-theme');
-        } else {
-          document.documentElement.setAttribute('data-theme', theme);
-        }
-      }
-    });
-  </script>
+  </style>
 </head>
 <body>
 </body>
