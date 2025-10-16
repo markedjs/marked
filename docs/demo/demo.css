@@ -121,6 +121,11 @@ header h1 {
 	border-color: #67060c;
 }
 
+[data-theme="dark"] {
+	--github-corner-fill: #f0f6fc;
+	--github-corner-color: #0d1117;
+}
+
 [data-theme="dark"] .loadingError {
 	background-color: #3d1014;
 	color: #ff7b72;
@@ -130,6 +135,8 @@ header h1 {
 @media (prefers-color-scheme: dark) {
 	:root:not([data-theme="light"]) {
 		color-scheme: dark;
+		--github-corner-fill: #f0f6fc;
+		--github-corner-color: #0d1117;
 	}
 
 	:root:not([data-theme="light"]) html,

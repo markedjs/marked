@@ -16,6 +16,18 @@ function initTheme() {
     }
     localStorage.setItem('theme', theme);
     updateToggleButton(theme);
+    
+    // Send theme to all iframes on the page
+    const iframes = document.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+      try {
+        if (iframe.contentWindow) {
+          iframe.contentWindow.postMessage({ theme: theme }, '*');
+        }
+      } catch (e) {
+        // Ignore errors, iframe might be from another origin
+      }
+    });
   }
 
   function updateToggleButton(theme) {
