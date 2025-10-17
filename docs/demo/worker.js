@@ -1,3 +1,49 @@
+const tableExtension = {
+  renderer: {
+    table(token) {
+      let header = '';
+
+      // header
+      let cell = '';
+      for (let j = 0; j < token.header.length; j++) {
+        cell += this.tablecell(token.header[j]);
+      }
+      header += this.tablerow({ text: cell });
+
+      let body = '';
+      for (let j = 0; j < token.rows.length; j++) {
+        const row = token.rows[j];
+
+        cell = '';
+        for (let k = 0; k < row.length; k++) {
+          cell += this.tablecell(row[k]);
+        }
+
+        body += this.tablerow({ text: cell });
+      }
+      if (body) body = `<tbody>${body}</tbody>`;
+
+      return '<table class="markdown-table">\n'
+        + '<thead>\n'
+        + header
+        + '</thead>\n'
+        + body
+        + '</table>\n';
+    },
+    tablerow({ text }) {
+      return `<tr class="markdown-table-row">\n${text}</tr>\n`;
+    },
+    tablecell(token) {
+      const content = this.parser.parseInline(token.tokens);
+      const type = token.header ? 'th' : 'td';
+      const tag = token.align
+        ? `<${type} align="${token.align}">`
+        : `<${type}>`;
+      return tag + content + `</${type}>\n`;
+    }
+  }
+};
+
 const versionCache = {};
 let currentVersion;
 
@@ -62,6 +108,10 @@ function parse(e) {
     }
     case 'parse': {
       const marked = versionCache[currentVersion];
+      // Use table extension for local version
+      if (currentVersion === '../') {
+        marked.use(tableExtension);
+      }
       // marked 0.0.1 had tokens array as the second parameter of lexer and no options
       const options = currentVersion.endsWith('@0.0.1') ? [] : mergeOptions(e.data.options);
       const startTime = new Date();
