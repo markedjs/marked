@@ -68,11 +68,11 @@ export const other = {
   notSpaceStart: /^\S*/,
   endingNewline: /\n$/,
   listItemRegex: (bull: string) => new RegExp(`^( {0,3}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`),
-  nextBulletRegex: (indent: number) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))`),
-  hrRegex: (indent: number) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`),
-  fencesBeginRegex: (indent: number) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:\`\`\`|~~~)`),
-  headingBeginRegex: (indent: number) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}#`),
-  htmlBeginRegex: (indent: number) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}<(?:[a-z].*>|!--)`, 'i'),
+  nextBulletRegex: (indent: number) => new RegExp(`^ {0,${indent}}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))`),
+  hrRegex: (indent: number) => new RegExp(`^ {0,${indent}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`),
+  fencesBeginRegex: (indent: number) => new RegExp(`^ {0,${indent}}(?:\`\`\`|~~~)`),
+  headingBeginRegex: (indent: number) => new RegExp(`^ {0,${indent}}#`),
+  htmlBeginRegex: (indent: number) => new RegExp(`^ {0,${indent}}<(?:[a-z].*>|!--)`, 'i'),
 };
 
 /**
@@ -112,7 +112,7 @@ const def = edit(/^ {0,3}\[(label)\]: *(?:\n[ \t]*)?([^<\s][^\s]*|<.*?>)(?:(?: +
   .replace('title', /(?:"(?:\\"?|[^"\\])*"|'[^'\n]*(?:\n[^'\n]+)*\n?'|\([^()]*\))/)
   .getRegex();
 
-const list = edit(/^( {0,3}bull)([ \t][^\n]+?)?(?:\n|$)/)
+const list = edit(/^( {0,4}bull)([ \t][^\n]+?)?(?:\n|$)/)
   .replace(/bull/g, bullet)
   .getRegex();
 
