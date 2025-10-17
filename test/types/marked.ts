@@ -4,7 +4,7 @@ import { marked } from 'marked';
 // other exports
 
 import { Lexer, Parser, Tokenizer, Renderer, TextRenderer, Marked } from 'marked';
-import type { Tokens, MarkedExtension, TokenizerAndRendererExtension, Token ,TokenizerExtension, MarkedOptions, TokensList, RendererExtension, RendererObject } from 'marked';
+import type { Tokens, MarkedExtension, SyntaxExtension, Token ,TokenizerExtension, MarkedOptions, TokensList, RendererExtension, RendererObject } from 'marked';
 
 const tokenizer = new marked.Tokenizer();
 
@@ -215,7 +215,7 @@ const rendererExtension: RendererExtension = {
   }
 };
 
-const tokenizerAndRendererExtension: TokenizerAndRendererExtension = {
+const syntaxExtension: SyntaxExtension = {
   name: 'name',
   level: 'block',
   tokenizer(src: string) {
@@ -237,7 +237,7 @@ const tokenizerAndRendererExtension: TokenizerAndRendererExtension = {
 };
 
 marked.use({
-  extensions: [tokenizerExtension, rendererExtension, tokenizerAndRendererExtension]
+  extensions: [tokenizerExtension, rendererExtension, syntaxExtension]
 });
 
 const asyncExtension: MarkedExtension = {
