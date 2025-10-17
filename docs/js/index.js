@@ -61,7 +61,7 @@ function initTheme() {
 
     if (theme === 'auto') {
       // Auto mode: show icon based on system preference
-      const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDarkMode = darkModeQuery.matches;
       icon.innerHTML = isDarkMode ? MOON_ICON_SVG : SUN_ICON_SVG;
       text.textContent = 'Dark';
     } else if (theme === 'dark') {

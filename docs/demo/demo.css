@@ -90,6 +90,8 @@ header h1 {
 /* Dark mode styles */
 [data-theme="dark"] {
 	color-scheme: dark;
+	--github-corner-fill: #f0f6fc;
+	--github-corner-color: #0d1117;
 }
 
 [data-theme="dark"] html,
@@ -119,11 +121,6 @@ header h1 {
 [data-theme="dark"] .error {
 	background-color: #3d1014;
 	border-color: #67060c;
-}
-
-[data-theme="dark"] {
-	--github-corner-fill: #f0f6fc;
-	--github-corner-color: #0d1117;
 }
 
 [data-theme="dark"] .loadingError {
