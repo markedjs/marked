@@ -43,6 +43,6 @@ export const tableExtension: MarkedExtension = {
         ? `<${type} align="${token.align}">`
         : `<${type}>`;
       return tag + content + `</${type}>\n`;
-    }
-  }
+    },
+  },
 };

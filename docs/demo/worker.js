@@ -40,8 +40,8 @@ const tableExtension = {
         ? `<${type} align="${token.align}">`
         : `<${type}>`;
       return tag + content + `</${type}>\n`;
-    }
-  }
+    },
+  },
 };
 
 const versionCache = {};
