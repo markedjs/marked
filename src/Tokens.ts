@@ -3,6 +3,7 @@
 export type MarkedToken = (
   Tokens.Blockquote
   | Tokens.Br
+  | Tokens.Checkbox
   | Tokens.Code
   | Tokens.Codespan
   | Tokens.Def
@@ -42,6 +43,8 @@ export namespace Tokens {
   }
 
   export interface Checkbox {
+    type: 'checkbox';
+    raw: string;
     checked: boolean;
   }
 
