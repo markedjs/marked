@@ -31,7 +31,7 @@ function initTheme() {
         if (iframeDocument.documentElement.style) {
           iframeDocument.documentElement.style.colorScheme = effectiveTheme;
         }
-      } catch (e) {
+      } catch {
         // Ignore errors, iframe might be from another origin
       }
     });
