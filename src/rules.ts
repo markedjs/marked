@@ -67,12 +67,12 @@ export const other = {
   spaceLine: /^ +$/gm,
   notSpaceStart: /^\S*/,
   endingNewline: /\n$/,
-  listItemRegex: (bull: string) => new RegExp(`^( {0,4}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`),
-  nextBulletRegex: (indent: number) => new RegExp(`^ {0,4}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))`),
-  hrRegex: (indent: number) => new RegExp(`^ {0,4}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`),
-  fencesBeginRegex: (indent: number) => new RegExp(`^ {0,4}(?:\`\`\`|~~~)`),
-  headingBeginRegex: (indent: number) => new RegExp(`^ {0,4}#`),
-  htmlBeginRegex: (indent: number) => new RegExp(`^ {0,4}<(?:[a-z].*>|!--)`, 'i'),
+  listItemRegex: (bull: string) => new RegExp(`^( {0,3}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`),
+  nextBulletRegex: (indent: number) => new RegExp(`^ {0,${indent}}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))`),
+  hrRegex: (indent: number) => new RegExp(`^ {0,${indent}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`),
+  fencesBeginRegex: (indent: number) => new RegExp(`^ {0,${indent}}(?:\`\`\`|~~~)`),
+  headingBeginRegex: (indent: number) => new RegExp(`^ {0,${indent}}#`),
+  htmlBeginRegex: (indent: number) => new RegExp(`^ {0,${indent}}<(?:[a-z].*>|!--)`, 'i'),
 };
 
 /**

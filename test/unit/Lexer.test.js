@@ -1045,15 +1045,15 @@ paragraph
             items: [
               {
                 type: 'list_item',
-                raw: '- item 1\n  - item 2',
+                raw: '- item 1\n',
                 task: false,
                 checked: undefined,
                 loose: false,
-                text: 'item 1\n- item 2',
+                text: 'item 1',
                 tokens: [
                   {
                     type: 'text',
-                    raw: 'item 1\n',
+                    raw: 'item 1',
                     text: 'item 1',
                     tokens: [
                       {
@@ -1064,35 +1064,26 @@ paragraph
                       },
                     ],
                   },
+                ],
+              },
+              {
+                type: 'list_item',
+                raw: '  - item 2\n',
+                task: false,
+                checked: null,
+                loose: false,
+                text: 'item 2',
+                tokens: [
                   {
-                    type: 'list',
-                    raw: '- item 2',
-                    ordered: false,
-                    start: '',
-                    loose: false,
-                    items: [
+                    type: 'text',
+                    raw: 'item 2',
+                    text: 'item 2',
+                    tokens: [
                       {
-                        type: 'list_item',
-                        raw: '- item 2',
-                        task: false,
-                        checked: undefined,
-                        loose: false,
+                        type: 'text',
+                        raw: 'item 2',
                         text: 'item 2',
-                        tokens: [
-                          {
-                            type: 'text',
-                            raw: 'item 2',
-                            text: 'item 2',
-                            tokens: [
-                              {
-                                type: 'text',
-                                raw: 'item 2',
-                                text: 'item 2',
-                                escaped: false,
-                              },
-                            ],
-                          },
-                        ],
+                        escaped: false,
                       },
                     ],
                   },
