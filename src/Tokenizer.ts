@@ -267,7 +267,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         raw = cap[0];
         src = src.substring(raw.length);
 
-        let line = cap[2].split('\n', 1)[0].replace(this.rules.other.listReplaceTabs, (t: string) => ' '.repeat(3 * t.length));
+        // Normalize the first line by replacing tabs with 4 spaces so we can
+        // compute indent and slice the correct number of characters. This keeps
+        // behavior consistent with how subsequent lines are normalized.
+        const rawLineFirst = cap[2].split('\n', 1)[0];
+        let line = rawLineFirst.replace(this.rules.other.tabCharGlobal, '    ');
         let nextLine = src.split('\n', 1)[0];
         let blankLine = !line.trim();
 
@@ -278,7 +282,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         } else if (blankLine) {
           indent = cap[1].length + 1;
         } else {
-          indent = cap[2].search(this.rules.other.nonSpaceChar); // Find first non-space char
+          // Treat tabs as 4 spaces when finding first non-space char so a leading tab
+          // isn't considered a non-space and we compute indent correctly.
+          indent = line.search(this.rules.other.nonSpaceChar); // Find first non-space char
           indent = indent > 4 ? 1 : indent; // Treat indented code blocks (> 4 spaces) as having only 1 indent
           itemContents = line.slice(indent);
           indent += cap[1].length;
