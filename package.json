@@ -54,7 +54,7 @@
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^12.0.0",
-    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/npm": "^13.1.1",
     "@semantic-release/release-notes-generator": "^14.1.0",
     "cheerio": "1.1.2",
     "commonmark": "0.31.2",
