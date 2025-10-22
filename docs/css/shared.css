@@ -7,6 +7,23 @@ a.github-corner {
 	display: block;
 }
 
+/*
+  FIX: Explicitly apply light mode styles ONLY when .dark is NOT present.
+  This prevents the light mode rule from conflicting with the dark mode rule.
+*/
+html:not(.dark) a.github-corner svg {
+	fill: #0d1117 !important; /* Dark triangle */
+	color: #f0f6fc !important; /* White octocat */
+}
+
+/*
+  FIX: Increased specificity for the dark mode rule.
+*/
+html.dark a.github-corner svg {
+	fill: #f0f6fc !important; /* White triangle */
+	color: #0d1117 !important; /* Dark octocat */
+}
+
 a.github-corner:hover .octo-arm {
 	animation: octocat-wave 560ms ease-in-out;
 }

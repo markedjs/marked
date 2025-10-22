@@ -50,6 +50,66 @@ $optionsElem.addEventListener('keydown', handleInput, false);
 
 $clearElem.addEventListener('click', handleClearClick, false);
 
+// --- Theme Toggle Setup ---
+const $themeToggle = document.getElementById('theme-toggle');
+
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.body.classList.add('dark');
+  } else {
+    document.body.classList.remove('dark');
+  }
+}
+
+function getPreferredTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    return savedTheme;
+  }
+  
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return 'dark';
+  }
+  
+  return 'light';
+}
+
+// Apply theme on page load
+const initialTheme = getPreferredTheme();
+applyTheme(initialTheme);
+
+if ($themeToggle) {
+  $themeToggle.addEventListener('click', function() {
+    const currentTheme = document.body.classList.contains('dark') ? 'dark' : 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    applyTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    // Update iframe if it exists
+    try {
+      if ($previewIframe && $previewIframe.contentDocument) {
+        if (newTheme === 'dark') {
+          $previewIframe.contentDocument.documentElement.classList.add('dark');
+        } else {
+          $previewIframe.contentDocument.documentElement.classList.remove('dark');
+        }
+      }
+    } catch (e) {
+      // Ignore cross-origin errors
+    }
+  });
+}
+
+// Listen for system theme changes
+if (window.matchMedia) {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+    if (!localStorage.getItem('theme')) {
+      applyTheme(e.matches ? 'dark' : 'light');
+    }
+  });
+}
+
 Promise.all([
   setInitialQuickref(),
   setInitialOutputType(),
@@ -136,10 +196,18 @@ function handleIframeLoad() {
   lastInput = '';
   inputDirty = true;
 
-  // Ensure the preview iframe inherits the current theme
-  const theme = localStorage.getItem('theme') || 'auto';
-  if (typeof window.__markedApplyThemeToIframes === 'function') {
-    window.__markedApplyThemeToIframes(theme);
+  // Apply current theme to the iframe
+  try {
+    const currentTheme = document.body.classList.contains('dark') ? 'dark' : 'light';
+    if ($previewIframe && $previewIframe.contentDocument) {
+      if (currentTheme === 'dark') {
+        $previewIframe.contentDocument.documentElement.classList.add('dark');
+      } else {
+        $previewIframe.contentDocument.documentElement.classList.remove('dark');
+      }
+    }
+  } catch (e) {
+    // Ignore cross-origin errors
   }
 }
 

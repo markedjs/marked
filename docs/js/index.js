@@ -1,9 +1,56 @@
 document.addEventListener('DOMContentLoaded', function() {
   // --- Theme Toggling ---
   const themeToggle = document.getElementById('theme-toggle');
+  
+  // Function to apply theme
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }
+  
+  // Function to get saved theme or system preference
+  function getPreferredTheme() {
+    // Check localStorage first
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      return savedTheme;
+    }
+    
+    // Check system preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    
+    // Default to light
+    return 'light';
+  }
+  
+  // Apply theme on page load
+  const initialTheme = getPreferredTheme();
+  applyTheme(initialTheme);
+  
+  // Theme toggle click handler
   if (themeToggle) {
     themeToggle.addEventListener('click', function() {
-      document.documentElement.classList.toggle('dark');
+      const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      // Apply and save the new theme
+      applyTheme(newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+  }
+  
+  // Listen for system theme changes
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+      // Only apply system preference if user hasn't manually set a preference
+      if (!localStorage.getItem('theme')) {
+        applyTheme(e.matches ? 'dark' : 'light');
+      }
     });
   }
 

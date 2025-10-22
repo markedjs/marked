@@ -1,11 +1,12 @@
 html, body {
 	margin: 0;
 	padding: 0;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	color: #333;
-	background-color: #fbfbfb;
+	font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #1F2937;
+	background-color: #FFFFFF;
 	height: 100%;
 	overflow: auto;
+	transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 textarea {
@@ -15,47 +16,154 @@ textarea {
 }
 
 header {
-	padding-top: 10px;
+	padding: 16px 24px;
 	display: flex;
 	align-items: center;
-	height: 58px;
-	padding-inline-end: 70px;
+	height: 68px;
+	box-sizing: border-box;
+	border-bottom: 1px solid #E5E7EB;
+	gap: 16px;
+}
+
+header .logo-link {
+	display: flex;
+	align-items: center;
 }
 
 header h1 {
 	margin: 0;
+	font-size: 24px;
+	font-weight: 700;
+	color: inherit;
 }
 
 .other-demos {
-	margin-left: 3em;
-	flex-grow: 1;
+	margin-left: auto;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 14px;
+}
+
+.other-demos a {
+	color: #6B7280;
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+
+.other-demos a:hover {
+	color: #3B82F6;
+}
+
+.other-demos .separator {
+	color: #9CA3AF;
 }
 
 .theme-toggle {
-	margin-left: auto;
+	margin-left: 16px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 16px;
+	border: none;
+	border-radius: 8px;
+	background-color: transparent;
+	color: #6B7280;
+	cursor: pointer;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 500;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.theme-toggle:hover {
+	background-color: #F3F4F6;
+	color: #1F2937;
+}
+
+.theme-toggle .material-icons {
+	font-size: 20px;
+}
+
+.theme-toggle .dark-icon,
+.theme-toggle .dark-text {
+	display: none;
+}
+
+body.dark .theme-toggle .light-icon,
+body.dark .theme-toggle .light-text {
+	display: none;
+}
+
+body.dark .theme-toggle .dark-icon,
+body.dark .theme-toggle .dark-text {
+	display: inline;
 }
 
 .containers {
 	display: flex;
 	height: calc(100vh - 68px);
+	gap: 12px;
+	padding: 12px;
+	box-sizing: border-box;
 }
 
 .container {
 	flex-basis: 50%;
-	padding: 5px;
 	display: flex;
 	flex-direction: column;
 	height: 100%;
 	box-sizing: border-box;
 }
 
+.label {
+	padding: 8px 12px;
+	background-color: #F3F4F6;
+	border: 1px solid #E5E7EB;
+	border-radius: 8px 8px 0 0;
+	font-size: 14px;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.label select,
+.label button {
+	padding: 4px 8px;
+	border-radius: 4px;
+	border: 1px solid #D1D5DB;
+	background-color: #FFFFFF;
+	font-size: 13px;
+	cursor: pointer;
+	transition: border-color 0.2s ease;
+}
+
+.label select:hover,
+.label button:hover {
+	border-color: #3B82F6;
+}
+
+.label a {
+	color: #3B82F6;
+	text-decoration: none;
+}
+
+.label a:hover {
+	text-decoration: underline;
+}
+
 .pane, .inputPane {
-	margin-top: 5px;
-	padding: 0.6em;
-	border: 1px solid #ccc;
+	padding: 12px;
+	border: 1px solid #E5E7EB;
+	border-top: none;
+	border-radius: 0 0 8px 8px;
 	overflow: auto;
 	flex-grow: 1;
 	flex-shrink: 1;
+	background-color: #FFFFFF;
+	color: #1F2937;
+	transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 #preview {
@@ -64,109 +172,110 @@ header h1 {
 
 #preview iframe {
 	flex-grow: 1;
+	border-radius: 0 0 8px 8px;
 }
 
 #main {
 	display: none;
 }
 
+#loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	font-size: 18px;
+	color: #6B7280;
+}
+
 .error {
-	border-color: red;
-	background-color: #FEE
+	border-color: #EF4444 !important;
+	background-color: #FEF2F2 !important;
 }
 
 .loadingError {
-	background-color: #fee;
-	font-weight: bold;
-	color: #f00;
+	background-color: #FEF2F2;
+	font-weight: 600;
+	color: #DC2626;
 	text-align: center;
-	padding: 10px;
+	padding: 16px;
+	border-radius: 8px;
+	margin: 20px;
 }
 
 #responseTime {
-    display: inline-block;
+	display: inline-block;
+	font-weight: 600;
+	color: #3B82F6;
 }
 
 /* Dark mode styles */
-[data-theme="dark"] {
-	color-scheme: dark;
-	--github-corner-fill: #f0f6fc;
-	--github-corner-color: #0d1117;
+body.dark {
+	color: #F9FAFB;
+	background-color: #111827;
 }
 
-[data-theme="dark"] html,
-[data-theme="dark"] body {
-	color: #e6edf3;
-	background-color: #0d1117;
+body.dark header {
+	border-bottom-color: #374151;
 }
 
-[data-theme="dark"] .pane,
-[data-theme="dark"] .inputPane {
-	background-color: #161b22;
-	border-color: #30363d;
-	color: #e6edf3;
+body.dark .other-demos a {
+	color: #9CA3AF;
 }
 
-[data-theme="dark"] .label {
-	color: #e6edf3;
+body.dark .other-demos a:hover {
+	color: #3B82F6;
 }
 
-[data-theme="dark"] select,
-[data-theme="dark"] button:not(.theme-toggle) {
-	background-color: #21262d;
-	color: #e6edf3;
-	border-color: #30363d;
+body.dark .other-demos .separator {
+	color: #6B7280;
 }
 
-[data-theme="dark"] .error {
-	background-color: #3d1014;
-	border-color: #67060c;
+body.dark .theme-toggle {
+	color: #9CA3AF;
 }
 
-[data-theme="dark"] .loadingError {
-	background-color: #3d1014;
-	color: #ff7b72;
+body.dark .theme-toggle:hover {
+	background-color: #1F2937;
+	color: #F9FAFB;
 }
 
-/* Auto mode with system preference */
-@media (prefers-color-scheme: dark) {
-	:root:not([data-theme="light"]) {
-		color-scheme: dark;
-		--github-corner-fill: #f0f6fc;
-		--github-corner-color: #0d1117;
-	}
+body.dark .label {
+	background-color: #1F2937;
+	border-color: #374151;
+	color: #F9FAFB;
+}
 
-	:root:not([data-theme="light"]) html,
-	:root:not([data-theme="light"]) body {
-		color: #e6edf3;
-		background-color: #0d1117;
-	}
+body.dark .label select,
+body.dark .label button {
+	background-color: #111827;
+	color: #F9FAFB;
+	border-color: #374151;
+}
 
-	:root:not([data-theme="light"]) .pane,
-	:root:not([data-theme="light"]) .inputPane {
-		background-color: #161b22;
-		border-color: #30363d;
-		color: #e6edf3;
-	}
+body.dark .label select:hover,
+body.dark .label button:hover {
+	border-color: #3B82F6;
+}
 
-	:root:not([data-theme="light"]) .label {
-		color: #e6edf3;
-	}
+body.dark .pane,
+body.dark .inputPane {
+	background-color: #1F2937;
+	border-color: #374151;
+	color: #F9FAFB;
+}
 
-	:root:not([data-theme="light"]) select,
-	:root:not([data-theme="light"]) button:not(.theme-toggle) {
-		background-color: #21262d;
-		color: #e6edf3;
-		border-color: #30363d;
-	}
+body.dark .error {
+	background-color: #2c1d1d !important;
+	border-color: #F87171 !important;
+	color: #FCA5A5;
+}
 
-	:root:not([data-theme="light"]) .error {
-		background-color: #3d1014;
-		border-color: #67060c;
-	}
+body.dark .loadingError {
+	background-color: #2c1d1d;
+	color: #FCA5A5;
+}
 
-	:root:not([data-theme="light"]) .loadingError {
-		background-color: #3d1014;
-		color: #ff7b72;
-	}
+body.dark #loading {
+	color: #9CA3AF;
 }
