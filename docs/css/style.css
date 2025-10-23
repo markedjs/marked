@@ -106,3 +106,164 @@ pre {
 .prose pre code.hljs {
   background-color: transparent !important;
 }
+
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
+
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+  display: none; /* Hidden on desktop */
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 9998;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: var(--code-bg-color);
+  transform: scale(1.05);
+}
+
+.mobile-menu-toggle:active {
+  transform: scale(0.95);
+}
+
+.dark .mobile-menu-toggle {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile Overlay */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 39;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-overlay.active {
+  opacity: 1;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  /* Show mobile menu button */
+  .mobile-menu-toggle {
+    display: flex;
+  }
+
+  /* Hide sidebar by default on mobile */
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  /* Show sidebar when menu is open */
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Show overlay when menu is open */
+  .mobile-overlay.active {
+    display: block;
+  }
+
+  /* Adjust main content for mobile */
+  .main-content {
+    margin-left: 0 !important;
+    padding: 80px 20px 20px 20px !important;
+    width: 100%;
+  }
+
+  /* Adjust theme toggle button position on mobile */
+  #theme-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9998;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--background-color);
+  }
+
+  .dark #theme-toggle {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Adjust GitHub corner for mobile */
+  .github-corner {
+    display: none;
+  }
+
+  /* Make sidebar full height on mobile */
+  .sidebar {
+    width: 280px;
+    max-width: 85vw;
+  }
+
+  /* Adjust heading sizes for mobile */
+  .main-content h1 {
+    font-size: 2rem !important;
+  }
+
+  /* Adjust prose max-width for mobile */
+  .prose {
+    max-width: 100% !important;
+  }
+
+  /* Make tables scrollable on mobile */
+  .prose table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Adjust code blocks for mobile */
+  .prose pre {
+    font-size: 0.875rem;
+    padding: 1rem;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .main-content {
+    padding: 60px 24px 24px 24px !important;
+  }
+
+  .sidebar {
+    width: 240px;
+  }
+
+  .main-content {
+    margin-left: 240px !important;
+  }
+}
+
+/* Prevent body scroll when mobile menu is open */
+body.mobile-menu-open {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  body.mobile-menu-open {
+    overflow: hidden;
+  }
+}

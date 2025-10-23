@@ -33,3 +33,10 @@ a.github-corner:hover .octo-arm {
 	20%, 60% { transform: rotate(-25deg); }
 	40%, 80% { transform: rotate(10deg); }
 }
+
+/* Mobile: Hide GitHub corner on small screens */
+@media (max-width: 768px) {
+	a.github-corner {
+		display: none;
+	}
+}

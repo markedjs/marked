@@ -76,6 +76,19 @@
   <body
     class="bg-background-light dark:bg-background-dark font-sans text-text-light dark:text-text-dark"
   >
+    <!-- Mobile Menu Toggle Button -->
+    <button
+      id="mobile-menu-toggle"
+      class="mobile-menu-toggle"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+    >
+      <span class="material-icons">menu</span>
+    </button>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="mobile-overlay"></div>
+
     <a
       href="https://github.com/markedjs/marked"
       class="github-corner"
@@ -104,7 +117,7 @@
     <div class="flex min-h-screen">
       <aside
         id="sidebar"
-        class="w-64 fixed top-0 scroll-hidden left-0 h-full border-r border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark z-40"
+        class="sidebar w-64 fixed top-0 scroll-hidden left-0 h-full border-r border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark z-40"
       >
         <div class="flex justify-center items-center mb-12 mt-8 px-8">
           <a href="/" class="flex items-center">
@@ -372,7 +385,7 @@
         </nav>
       </aside>
 
-      <main class="flex-1 ml-64 px-12 py-8">
+      <main class="main-content flex-1 ml-64 px-12 py-8">
         <div class="max-w-5xl mx-auto">
           <div class="flex justify-between items-center mb-16">
             <h1
