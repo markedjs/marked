@@ -3,7 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><!--{{title}}-->Marked Documentation</title>
+    <title><!--{{title}}-->Marked Documentation</title>
+
+    <!-- Prevent dark mode flash by applying theme before first paint -->
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (theme === 'dark' || (!theme && prefersDark)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <link
