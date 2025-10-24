@@ -6,13 +6,53 @@
   <title>marked.js preview</title>
   <link rel="stylesheet" href="./demo.css" />
   <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/hljs-github.css" />
+  <link rel="stylesheet" href="../css/hljs-github-dark.css" />
   <base target="_parent">
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: var(--bg-secondary, #fff);
-      color: var(--text-primary, #24292e);
+      background: #FFFFFF;
+      color: #1F2937;
+      font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    html.dark, html.dark body {
+      background: #1F2937;
+      color: #F9FAFB;
+    }
+
+    /* Ensure links are visible in dark mode */
+    html.dark a {
+      color: #60A5FA;
+    }
+
+    html.dark a:hover {
+      color: #93C5FD;
+    }
+
+    /* Code blocks in dark mode */
+    html.dark pre {
+      background-color: #111827 !important;
+      color: #F9FAFB;
+    }
+
+    html.dark code {
+      background-color: #111827;
+      color: #F9FAFB;
+    }
+
+    /* Tables in dark mode */
+    html.dark table {
+      border-color: #374151;
+    }
+
+    html.dark th,
+    html.dark td {
+      border-color: #374151;
     }
   </style>
 </head>
