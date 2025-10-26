@@ -23,6 +23,8 @@ header {
 	box-sizing: border-box;
 	border-bottom: 1px solid #E5E7EB;
 	gap: 16px;
+	/* Reserve space for GitHub corner so it doesn't overlap the toggle */
+	padding-right: 96px;
 }
 
 header .logo-link {
@@ -74,6 +76,8 @@ header h1 {
 	font-size: 14px;
 	font-weight: 500;
 	transition: background-color 0.2s ease, color 0.2s ease;
+	position: relative;
+	z-index: 1;
 }
 
 .theme-toggle:hover {
@@ -278,4 +282,11 @@ body.dark .loadingError {
 
 body.dark #loading {
 	color: #9CA3AF;
+}
+
+/* Responsive: when GitHub corner is hidden, remove extra right padding */
+@media (max-width: 768px) {
+	header {
+		padding-right: 24px;
+	}
 }

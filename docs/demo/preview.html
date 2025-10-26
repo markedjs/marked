@@ -4,6 +4,22 @@
 <head>
   <meta charset="utf-8">
   <title>marked.js preview</title>
+  <!-- Prevent white flash in iframe: set dark before paint using same key -->
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (theme === 'dark' || (!theme && prefersDark)) {
+          document.documentElement.classList.add('dark');
+          // Ensure body reflects dark once available
+          document.addEventListener('DOMContentLoaded', function () {
+            document.body && document.body.classList.add('dark');
+          });
+        }
+      } catch (e) {}
+    })();
+  </script>
   <link rel="stylesheet" href="./demo.css" />
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="../css/hljs-github.css" />
