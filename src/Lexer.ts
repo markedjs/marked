@@ -321,7 +321,11 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
 
     // Mask out other blocks
     while ((match = this.tokenizer.rules.inline.blockSkip.exec(maskedSrc)) != null) {
-      maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
+      if (match[2]) {
+        maskedSrc = maskedSrc.slice(0, match.indices![2][0]) + '[' + 'a'.repeat(match[2].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
+      } else {
+        maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
+      }
     }
 
     // Mask out blocks from extensions
