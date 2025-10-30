@@ -50,31 +50,111 @@ $optionsElem.addEventListener('keydown', handleInput, false);
 
 $clearElem.addEventListener('click', handleClearClick, false);
 
+// --- Theme Toggle Setup ---
+const $themeToggle = document.getElementById('demo-theme-toggle');
+
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.body.classList.add('dark');
+    // Also set on <html> to keep in sync with prepaint class
+    document.documentElement.classList.add('dark');
+  } else {
+    document.body.classList.remove('dark');
+    document.documentElement.classList.remove('dark');
+  }
+}
+
+function getPreferredTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    return savedTheme;
+  }
+
+  if (window.matchMedia
+    && window.matchMedia('(prefers-color-scheme: dark)').matches
+  ) {
+    return 'dark';
+  }
+
+  return 'light';
+}
+
+// Apply theme on page load
+const initialTheme = getPreferredTheme();
+applyTheme(initialTheme);
+
+// Keep in sync if another script/tab changes the theme key
+window.addEventListener('storage', function(e) {
+  if (e.key === 'theme') {
+    applyTheme(e.newValue || getPreferredTheme());
+  }
+});
+
+if ($themeToggle) {
+  $themeToggle.addEventListener('click', function() {
+    const currentTheme = document.body.classList.contains('dark')
+      ? 'dark'
+      : 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    applyTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+
+    // Update iframe if it exists
+    try {
+      if ($previewIframe && $previewIframe.contentDocument) {
+        if (newTheme === 'dark') {
+          $previewIframe.contentDocument.documentElement.classList.add('dark');
+        } else {
+          $previewIframe.contentDocument.documentElement.classList.remove(
+            'dark',
+          );
+        }
+      }
+    } catch {
+      // Ignore cross-origin errors
+    }
+  });
+}
+
+// Listen for system theme changes
+if (window.matchMedia) {
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', function(e) {
+      if (!localStorage.getItem('theme')) {
+        applyTheme(e.matches ? 'dark' : 'light');
+      }
+    });
+}
+
 Promise.all([
   setInitialQuickref(),
   setInitialOutputType(),
   setInitialText(),
-  setInitialVersion()
-    .then(setInitialOptions),
-]).then(() => {
-  handleInputChange();
-  handleOutputChange();
-  checkForChanges();
-  setScrollPercent(0);
-  $loadingElem.style.display = 'none';
-  $mainElem.style.display = 'block';
-}).catch(() => {
-  $loadingElem.classList.add('loadingError');
-  $loadingElem.textContent = 'Failed to load marked. Refresh the page to try again.';
-});
+  setInitialVersion().then(setInitialOptions),
+])
+  .then(() => {
+    handleInputChange();
+    handleOutputChange();
+    checkForChanges();
+    setScrollPercent(0);
+    $loadingElem.style.display = 'none';
+    $mainElem.style.display = 'block';
+  })
+  .catch(() => {
+    $loadingElem.classList.add('loadingError');
+    $loadingElem.textContent =
+      'Failed to load marked. Refresh the page to try again.';
+  });
 
 function setInitialText() {
   if ('text' in search) {
     $markdownElem.value = search.text;
   } else {
     return fetch('./initial.md')
-      .then(res => res.text())
-      .then(text => {
+      .then((res) => res.text())
+      .then((text) => {
         if ($markdownElem.value === '') {
           $markdownElem.value = text;
         }
@@ -84,16 +164,16 @@ function setInitialText() {
 
 function setInitialQuickref() {
   return fetch('./quickref.md')
-    .then(res => res.text())
-    .then(text => {
+    .then((res) => res.text())
+    .then((text) => {
       document.querySelector('#quickref').value = text;
     });
 }
 
 function setInitialVersion() {
   return fetch('https://data.jsdelivr.com/v1/package/npm/marked')
-    .then(res => res.json())
-    .then(json => {
+    .then((res) => res.json())
+    .then((json) => {
       for (const ver of json.versions) {
         markedVersions[ver] = 'https://cdn.jsdelivr.net/npm/marked@' + ver;
         const opt = document.createElement('option');
@@ -105,7 +185,8 @@ function setInitialVersion() {
       if (location.host === 'marked.js.org') {
         latestVersion = json.tags.latest;
       } else {
-        $markedVerElem.querySelector('option[value="master"]').textContent = 'This Build';
+        $markedVerElem.querySelector('option[value="master"]').textContent =
+          'This Build';
       }
 
       if (search.version && markedVersions[search.version]) {
@@ -136,10 +217,20 @@ function handleIframeLoad() {
   lastInput = '';
   inputDirty = true;
 
-  // Ensure the preview iframe inherits the current theme
-  const theme = localStorage.getItem('theme') || 'auto';
-  if (typeof window.__markedApplyThemeToIframes === 'function') {
-    window.__markedApplyThemeToIframes(theme);
+  // Apply current theme to the iframe
+  try {
+    const currentTheme = document.body.classList.contains('dark')
+      ? 'dark'
+      : 'light';
+    if ($previewIframe && $previewIframe.contentDocument) {
+      if (currentTheme === 'dark') {
+        $previewIframe.contentDocument.documentElement.classList.add('dark');
+      } else {
+        $previewIframe.contentDocument.documentElement.classList.remove('dark');
+      }
+    }
+  } catch {
+    // Ignore cross-origin errors
   }
 }
 
@@ -191,11 +282,16 @@ function setOptions(opts) {
   $optionsElem.value = JSON.stringify(
     opts,
     (key, value) => {
-      if (value !== null && typeof value === 'object' && Object.getPrototypeOf(value) !== Object.prototype) {
+      if (value !== null
+        && typeof value === 'object'
+        && Object.getPrototypeOf(value) !== Object.prototype
+      ) {
         return undefined;
       }
       return value;
-    }, ' ');
+    },
+    ' ',
+  );
 }
 
 function searchToObject() {
@@ -249,12 +345,19 @@ function setScrollPercent(percent) {
 function updateLink() {
   let outputType = '';
   if ($outputTypeElem.value !== 'preview') {
-    outputType = 'outputType=' + $outputTypeElem.value + '&';
+    outputType = 'outputType='
+      + $outputTypeElem.value
+      + '&';
   }
 
-  $permalinkElem.href = '?' + outputType + 'text=' + encodeURIComponent($markdownElem.value)
-      + '&options=' + encodeURIComponent($optionsElem.value)
-      + '&version=' + encodeURIComponent($markedVerElem.value);
+  $permalinkElem.href = '?'
+    + outputType
+    + 'text='
+    + encodeURIComponent($markdownElem.value)
+    + '&options='
+    + encodeURIComponent($optionsElem.value)
+    + '&version='
+    + encodeURIComponent($markedVerElem.value);
   history.replaceState('', document.title, $permalinkElem.href);
 }
 
@@ -302,17 +405,19 @@ function setResponseTime(ms) {
     amount = 'Too Long';
     suffix = '';
   } else if (ms > 1000 * 60) {
-    amount = '>' + Math.floor(ms / (1000 * 60));
+    amount = '>'
+      + Math.floor(ms / (1000 * 60));
     suffix = 'm';
   } else if (ms > 1000) {
-    amount = '>' + Math.floor(ms / 1000);
+    amount = '>'
+      + Math.floor(ms / 1000);
     suffix = 's';
   }
   $responseTimeElem.textContent = amount + suffix;
-  $responseTimeElem.animate([
-    { transform: 'scale(1.2)' },
-    { transform: 'scale(1)' },
-  ], 200);
+  $responseTimeElem.animate(
+    [{ transform: 'scale(1.2)' }, { transform: 'scale(1)' }],
+    200,
+  );
 }
 
 function setParsed(parsed, lexed) {
@@ -378,7 +483,7 @@ function messageWorker(message) {
     markedWorker.working = true;
     workerTimeout(0);
   }
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     message.id = uniqueWorkerMessageId();
     workerPromises[message.id] = resolve;
     markedWorker.postMessage(message);
@@ -396,7 +501,13 @@ function uniqueWorkerMessageId() {
 function workerTimeout(seconds) {
   markedWorker.timeout = setTimeout(() => {
     seconds++;
-    markedWorker.onerror('Marked has taken longer than ' + seconds + ' second' + (seconds > 1 ? 's' : '') + ' to respond...');
+    markedWorker.onerror(
+      'Marked has taken longer than '
+        + seconds
+        + ' second'
+        + (seconds > 1 ? 's' : '')
+        + ' to respond...',
+    );
     workerTimeout(seconds);
   }, 1000);
 }
