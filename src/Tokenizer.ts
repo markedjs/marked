@@ -413,9 +413,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       list.raw = list.raw.trimEnd();
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first
-      for (let i = 0; i < list.items.length; i++) {
+      for (const item of list.items) {
         this.lexer.state.top = false;
-        const item = list.items[i];
         item.tokens = this.lexer.blockTokens(item.text, []);
         if (item.task) {
           const taskRaw = this.rules.other.listTaskCheckbox.exec(item.raw);
@@ -447,7 +446,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
         if (!list.loose) {
           // Check if list should be loose
-          const spacers = list.items[i].tokens.filter(t => t.type === 'space');
+          const spacers = item.tokens.filter(t => t.type === 'space');
           const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => this.rules.other.anyLine.test(t.raw));
 
           list.loose = hasMultipleLineBreaks;
@@ -456,9 +455,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
       // Set all items to loose if list is loose
       if (list.loose) {
-        for (let i = 0; i < list.items.length; i++) {
-          list.items[i].loose = true;
-          for (const token of list.items[i].tokens) {
+        for (const item of list.items) {
+          item.loose = true;
+          for (const token of item.tokens) {
             if (token.type === 'text') {
               token.type = 'paragraph';
             }
