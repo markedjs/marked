@@ -39,7 +39,7 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
   /**
    * Parse Loop
    */
-  parse(tokens: Token[], top = true): ParserOutput {
+  parse(tokens: Token[]): ParserOutput {
     let out = '';
 
     for (let i = 0; i < tokens.length; i++) {
@@ -60,62 +60,51 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
       switch (token.type) {
         case 'space': {
           out += this.renderer.space(token);
-          continue;
+          break;
         }
         case 'hr': {
           out += this.renderer.hr(token);
-          continue;
+          break;
         }
         case 'heading': {
           out += this.renderer.heading(token);
-          continue;
+          break;
         }
         case 'code': {
           out += this.renderer.code(token);
-          continue;
+          break;
         }
         case 'table': {
           out += this.renderer.table(token);
-          continue;
+          break;
         }
         case 'blockquote': {
           out += this.renderer.blockquote(token);
-          continue;
+          break;
         }
         case 'list': {
           out += this.renderer.list(token);
-          continue;
+          break;
+        }
+        case 'checkbox': {
+          out += this.renderer.checkbox(token);
+          break;
         }
         case 'html': {
           out += this.renderer.html(token);
-          continue;
+          break;
         }
         case 'def': {
           out += this.renderer.def(token);
-          continue;
+          break;
         }
         case 'paragraph': {
           out += this.renderer.paragraph(token);
-          continue;
+          break;
         }
         case 'text': {
-          let textToken = token;
-          let body = this.renderer.text(textToken) as string;
-          while (i + 1 < tokens.length && tokens[i + 1].type === 'text') {
-            textToken = tokens[++i] as Tokens.Text;
-            body += ('\n' + this.renderer.text(textToken));
-          }
-          if (top) {
-            out += this.renderer.paragraph({
-              type: 'paragraph',
-              raw: body,
-              text: body,
-              tokens: [{ type: 'text', raw: body, text: body, escaped: true }],
-            });
-          } else {
-            out += body;
-          }
-          continue;
+          out += this.renderer.text(token);
+          break;
         }
 
         default: {
@@ -168,6 +157,10 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
         }
         case 'image': {
           out += renderer.image(token);
+          break;
+        }
+        case 'checkbox': {
+          out += renderer.checkbox(token);
           break;
         }
         case 'strong': {
