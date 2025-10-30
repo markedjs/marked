@@ -103,4 +103,5 @@ or import esm module
 
 ## License
 
-Copyright (c) 2011-2022, Christopher Jeffrey. (MIT License)
+Copyright (c) 2018+, MarkedJS. (MIT License)
+Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
