@@ -2,7 +2,8 @@
 
 /**
  * Marked CLI
- * Copyright (c) 2011-2013, Christopher Jeffrey (MIT License)
+ * Copyright (c) 2018+, MarkedJS. (MIT License)
+ * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
  */
 
 import { main } from './main.js';

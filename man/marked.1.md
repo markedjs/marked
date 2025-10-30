@@ -85,7 +85,8 @@ Please report any bugs to <https://github.com/markedjs/marked>.
 
 ## LICENSE
 
-Copyright (c) 2011-2014, Christopher Jeffrey (MIT License).
+Copyright (c) 2018+, MarkedJS. (MIT License)
+Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
 
 ## SEE ALSO
 

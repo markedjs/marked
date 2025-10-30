@@ -8,7 +8,8 @@ console.log('building version:', version);
 
 const banner = `/**
  * marked v${version} - a markdown parser
- * Copyright (c) 2011-${new Date().getFullYear()}, Christopher Jeffrey. (MIT Licensed)
+ * Copyright (c) 2018-${new Date().getFullYear()}, MarkedJS. (MIT License)
+ * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
  * https://github.com/markedjs/marked
  */
 
