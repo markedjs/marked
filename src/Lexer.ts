@@ -320,8 +320,10 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     }
 
     // Mask out other blocks
+    let offset;
     while ((match = this.tokenizer.rules.inline.blockSkip.exec(maskedSrc)) != null) {
-      maskedSrc = maskedSrc.slice(0, match.index) + '[' + 'a'.repeat(match[0].length - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
+      offset = match[2] ? match[2].length : 0;
+      maskedSrc = maskedSrc.slice(0, match.index + offset) + '[' + 'a'.repeat(match[0].length - offset - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
     }
 
     // Mask out blocks from extensions
