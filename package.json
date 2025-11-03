@@ -68,7 +68,7 @@
     "marked-highlight": "^2.2.2",
     "marked-man": "^2.1.0",
     "recheck": "^4.5.0",
-    "rimraf": "^6.0.1",
+    "rimraf": "^6.1.0",
     "semantic-release": "^25.0.1",
     "titleize": "^4.0.0",
     "tslib": "^2.8.1",
