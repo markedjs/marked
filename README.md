@@ -32,7 +32,7 @@ Also read about:
 
 **Node.js:** Only [current and LTS](https://nodejs.org/en/about/releases/) Node.js versions are supported. End of life Node.js versions may become incompatible with Marked at any point in time.
 
-**Browser:** Not IE11 :)
+**Browser:** [Baseline Widely Available](https://developer.mozilla.org/en-US/docs/Glossary/Baseline/Compatibility)
 
 ## Installation
 
