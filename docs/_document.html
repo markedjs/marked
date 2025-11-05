@@ -9,10 +9,12 @@
     <script>
       (function () {
         try {
-          var theme = localStorage.getItem('theme');
-          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (theme === 'dark' || (!theme && prefersDark)) {
-            document.documentElement.classList.add('dark');
+          var theme = localStorage.getItem("theme");
+          var prefersDark =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches;
+          if (theme === "dark" || (!theme && prefersDark)) {
+            document.documentElement.classList.add("dark");
           }
         } catch (e) {}
       })();
@@ -28,9 +30,9 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="css/style.css" type="text/css" />
-    <link rel="stylesheet" href="css/shared.css" type="text/css" />
-    <link rel="stylesheet" href="css/hljs-github.css" type="text/css" />
+    <link rel="stylesheet" href="/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="/css/shared.css" type="text/css" />
+    <link rel="stylesheet" href="/css/hljs-github.css" type="text/css" />
 
     <script>
       // Tailwind configuration embedded directly
@@ -107,11 +109,7 @@
       class="github-corner"
       aria-label="View source on Github"
     >
-      <svg
-        width="80"
-        height="80"
-        viewBox="0 0 250 250"
-      >
+      <svg width="80" height="80" viewBox="0 0 250 250">
         <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
         <path
           d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
@@ -133,10 +131,10 @@
         class="sidebar w-64 fixed top-0 scroll-hidden left-0 h-full border-r border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark z-40"
       >
         <div class="flex justify-center items-center mb-12 mt-8 px-8">
-          <a href="index.html" class="flex items-center">
+          <a href="/" class="flex items-center">
             <img
               alt="logo"
-              src="img/logo-black.svg"
+              src="/img/logo-black.svg"
               class="bg-gray-100 rounded"
               height="50px"
               width="50px"
@@ -148,7 +146,11 @@
             <h3
               class="font-semibold text-sm mb-3 text-subtle-light dark:text-subtle-dark uppercase tracking-wider"
             >
-              Getting Started
+              <a
+                class="block hover:text-primary dark:hover:text-primary"
+                href="/"
+                >Getting Started</a
+              >
             </h3>
             <ul
               class="space-y-2 text-sm text-subtle-light dark:text-subtle-dark"
@@ -156,42 +158,42 @@
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="index.html#demo"
+                  href="/#demo"
                   >Demo</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="index.html#installation"
+                  href="/#installation"
                   >Installation</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="index.html#usage"
+                  href="/#usage"
                   >Usage</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="index.html#specifications"
+                  href="/#specifications"
                   >Specs</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="index.html#tools"
+                  href="/#tools"
                   >Tools</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="index.html#security"
+                  href="/#security"
                   >Security</a
                 >
               </li>
@@ -201,7 +203,11 @@
             <h3
               class="font-semibold text-sm mb-3 text-subtle-light dark:text-subtle-dark uppercase tracking-wider"
             >
-              Advanced Usage
+              <a
+                class="block hover:text-primary dark:hover:text-primary"
+                href="/using_advanced"
+                >Advanced Usage</a
+              >
             </h3>
             <ul
               class="space-y-2 text-sm text-subtle-light dark:text-subtle-dark"
@@ -209,49 +215,49 @@
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_advanced.html#instance"
+                  href="/using_advanced#instance"
                   >Instance</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_advanced.html#options"
+                  href="/using_advanced#options"
                   >Options</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_advanced.html#extensions"
+                  href="/using_advanced#extensions"
                   >Known Extensions</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_advanced.html#inline"
+                  href="/using_advanced#inline"
                   >Inline Markdown</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_advanced.html#highlight"
+                  href="/using_advanced#highlight"
                   >Highlighting</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_advanced.html#workers"
+                  href="/using_advanced#workers"
                   >Workers</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_advanced.html#cli-extensions"
+                  href="/using_advanced#cli-extensions"
                   >CLI Extensions</a
                 >
               </li>
@@ -261,7 +267,11 @@
             <h3
               class="font-semibold text-sm mb-3 text-subtle-light dark:text-subtle-dark uppercase tracking-wider"
             >
-              Extensibility
+              <a
+                class="block hover:text-primary dark:hover:text-primary"
+                href="/using_pro"
+                >Extensibility</a
+              >
             </h3>
             <ul
               class="space-y-2 text-sm text-subtle-light dark:text-subtle-dark"
@@ -269,63 +279,63 @@
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_pro.html#use"
+                  href="/using_pro#use"
                   >marked.use()</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_pro.html#renderer"
+                  href="/using_pro#renderer"
                   >Renderer</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_pro.html#tokenizer"
+                  href="/using_pro#tokenizer"
                   >Tokenizer</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_pro.html#walk-tokens"
+                  href="/using_pro#walk-tokens"
                   >Walk Tokens</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_pro.html#hooks"
+                  href="/using_pro#hooks"
                   >Hooks</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_pro.html#extensions"
+                  href="/using_pro#extensions"
                   >Custom Extensions</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_pro.html#async"
+                  href="/using_pro#async"
                   >Async Marked</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_pro.html#lexer"
+                  href="/using_pro#lexer"
                   >Lexer</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="using_pro.html#parser"
+                  href="/using_pro#parser"
                   >Parser</a
                 >
               </li>
@@ -335,7 +345,11 @@
             <h3
               class="font-semibold text-sm mb-3 text-subtle-light dark:text-subtle-dark uppercase tracking-wider"
             >
-              Contributing
+              <a
+                class="block hover:text-primary dark:hover:text-primary"
+                href="/contributing"
+                >Contributing</a
+              >
             </h3>
             <ul
               class="space-y-2 text-sm text-subtle-light dark:text-subtle-dark"
@@ -343,21 +357,21 @@
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="contributing.html#design-principles"
+                  href="/contributing#design-principles"
                   >Design Principles</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="contributing.html#priorities"
+                  href="/contributing#priorities"
                   >Priorities</a
                 >
               </li>
               <li>
                 <a
                   class="block hover:text-primary dark:hover:text-primary"
-                  href="contributing.html#test-early-often-and-everything"
+                  href="/contributing#test-early-often-and-everything"
                   >Testing</a
                 >
               </li>
@@ -369,28 +383,28 @@
             <li>
               <a
                 class="block hover:text-primary dark:hover:text-primary"
-                href="code_of_conduct.html"
+                href="/code_of_conduct"
                 >Code of Conduct</a
               >
             </li>
             <li>
               <a
                 class="block hover:text-primary dark:hover:text-primary"
-                href="authors.html"
+                href="/authors"
                 >Authors</a
               >
             </li>
             <li>
               <a
                 class="block hover:text-primary dark:hover:text-primary"
-                href="publishing.html"
+                href="/publishing"
                 >Publishing</a
               >
             </li>
             <li>
               <a
                 class="block hover:text-primary dark:hover:text-primary"
-                href="license.html"
+                href="/license"
                 >License</a
               >
             </li>
@@ -401,9 +415,7 @@
       <main class="main-content flex-1 ml-64 px-12 py-8">
         <div class="max-w-5xl mx-auto">
           <div class="flex justify-between items-center mb-16">
-            <h1
-              class="text-5xl font-bold text-text-light dark:text-text-dark"
-            >
+            <h1 class="text-5xl font-bold text-text-light dark:text-text-dark">
               Marked Documentation
             </h1>
             <button
@@ -430,6 +442,6 @@
       </main>
     </div>
 
-    <script src="js/index.js"></script>
+    <script src="/js/index.js"></script>
   </body>
 </html>

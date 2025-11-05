@@ -5,24 +5,6 @@
     <title>Marked Demo</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Prevent white flash: apply dark mode before first paint -->
-    <script>
-      (function () {
-        try {
-          var theme = localStorage.getItem('theme');
-          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (theme === 'dark' || (!theme && prefersDark)) {
-            // Use html.dark so we can style prepaint while body isn't parsed yet
-            document.documentElement.classList.add('dark');
-          }
-        } catch (e) {}
-      })();
-    </script>
-    <style>
-      /* Minimal prepaint fallback to avoid flash before demo.css loads */
-      html.dark, html.dark body { background-color: #111827; color: #F9FAFB; }
-      @media (prefers-color-scheme: dark) { html { background-color: #111827; } }
-    </style>
     <link rel="stylesheet" href="./demo.css" type="text/css" />
     <link rel="stylesheet" href="../css/shared.css" type="text/css" />
     <link rel="stylesheet" href="../css/style.css" type="text/css" />
@@ -57,7 +39,7 @@
         <span class="separator">·</span>
         <a href="https://daringfireball.net/projects/markdown/dingus">Daring Fireball Demo</a>
       </div>
-      <button id="demo-theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
         <span class="material-icons light-icon">dark_mode</span>
         <span class="text light-text">Dark Mode</span>
         <span class="material-icons dark-icon">light_mode</span>

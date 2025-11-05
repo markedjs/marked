@@ -51,16 +51,13 @@ $optionsElem.addEventListener('keydown', handleInput, false);
 $clearElem.addEventListener('click', handleClearClick, false);
 
 // --- Theme Toggle Setup ---
-const $themeToggle = document.getElementById('demo-theme-toggle');
+const $themeToggle = document.getElementById('theme-toggle');
 
 function applyTheme(theme) {
   if (theme === 'dark') {
     document.body.classList.add('dark');
-    // Also set on <html> to keep in sync with prepaint class
-    document.documentElement.classList.add('dark');
   } else {
     document.body.classList.remove('dark');
-    document.documentElement.classList.remove('dark');
   }
 }
 
@@ -82,13 +79,6 @@ function getPreferredTheme() {
 // Apply theme on page load
 const initialTheme = getPreferredTheme();
 applyTheme(initialTheme);
-
-// Keep in sync if another script/tab changes the theme key
-window.addEventListener('storage', function(e) {
-  if (e.key === 'theme') {
-    applyTheme(e.newValue || getPreferredTheme());
-  }
-});
 
 if ($themeToggle) {
   $themeToggle.addEventListener('click', function() {

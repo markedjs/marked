@@ -113,7 +113,7 @@ pre {
 
 /* Mobile Menu Toggle Button */
 .mobile-menu-toggle {
-  display: none; /* Hidden on desktop */
+  display: none; /* Hidden on desktop by default */
   position: fixed;
   top: 16px;
   left: 16px;
@@ -127,7 +127,6 @@ pre {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  display: flex;
   align-items: center;
   justify-content: center;
 }

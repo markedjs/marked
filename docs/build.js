@@ -125,15 +125,6 @@ async function build(currentDir, tmpl, testResultsTable) {
       await mkdir(dirname(outfile), { recursive: true });
       console.log('Writing file ' + outfile);
       await writeFile(outfile, html, { mode });
-      // For .html files generated from .md, also create clean URL version (slug/index.html)
-      // This preserves backwards compatibility with existing links like /using_pro
-      if (parsed.ext === '.html' && parsed.name !== 'index') {
-        const cleanUrlDir = join(dirname(outfile), parsed.name);
-        const cleanUrlFile = join(cleanUrlDir, 'index.html');
-        await mkdir(cleanUrlDir, { recursive: true });
-        console.log('Writing clean URL file ' + cleanUrlFile);
-        await writeFile(cleanUrlFile, html, { mode });
-      }
     }
   }
 }
