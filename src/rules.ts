@@ -21,6 +21,8 @@ try {
   // eslint-disable-next-line prefer-regex-literals
   return !!new RegExp('(?<=1)(?<!1)');
 } catch {
+  // See browser support here:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Lookbehind_assertion
   return false;
 }
 })();
