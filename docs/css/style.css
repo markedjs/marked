@@ -162,8 +162,8 @@ pre {
   opacity: 1;
 }
 
-/* Mobile Styles */
-@media (max-width: 768px) {
+/* Mobile Styles - Changed breakpoint from 768px to 1024px */
+@media (max-width: 1024px) {
   /* Show mobile menu button */
   .mobile-menu-toggle {
     display: flex;
@@ -241,27 +241,12 @@ pre {
   }
 }
 
-/* Tablet Styles */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .main-content {
-    padding: 60px 24px 24px 24px !important;
-  }
-
-  .sidebar {
-    width: 240px;
-  }
-
-  .main-content {
-    margin-left: 240px !important;
-  }
-}
-
 /* Prevent body scroll when mobile menu is open */
 body.mobile-menu-open {
   overflow: hidden;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   body.mobile-menu-open {
     overflow: hidden;
   }

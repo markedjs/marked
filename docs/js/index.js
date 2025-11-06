@@ -158,8 +158,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebarLinks = sidebar.querySelectorAll('a');
     sidebarLinks.forEach(function(link) {
       link.addEventListener('click', function() {
-        // Only close on mobile
-        if (window.innerWidth <= 768) {
+        // Only close on mobile/tablet (up to 1024px)
+        if (window.innerWidth <= 1024) {
           closeMobileMenu();
         }
       });
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Close mobile menu on window resize to desktop size
   window.addEventListener('resize', function() {
-    if (window.innerWidth > 768) {
+    if (window.innerWidth > 1024) {
       closeMobileMenu();
     }
   });
