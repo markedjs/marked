@@ -1,0 +1,65 @@
+/* Markdown Table Styles */
+.markdown-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.markdown-table th {
+  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 12px 8px;
+  border: none;
+}
+
+.markdown-table td {
+  padding: 12px 8px;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+}
+
+.markdown-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.markdown-table tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.markdown-table tr:hover {
+  background-color: #e3f2fd;
+  transition: background-color 0.2s ease;
+}
+
+.markdown-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .markdown-table {
+    font-size: 12px;
+  }
+
+  .markdown-table th,
+  .markdown-table td {
+    padding: 8px 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .markdown-table {
+    font-size: 11px;
+  }
+
+  .markdown-table th,
+  .markdown-table td {
+    padding: 6px 2px;
+  }
+}
