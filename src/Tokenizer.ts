@@ -381,12 +381,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         }
 
         let istask: RegExpExecArray | null = null;
-        let ischecked: boolean | undefined;
         // Check for task list items
         if (this.options.gfm) {
           istask = this.rules.other.listIsTask.exec(itemContents);
           if (istask) {
-            ischecked = istask[0] !== '[ ] ';
             itemContents = itemContents.replace(this.rules.other.listReplaceTask, '');
           }
         }
@@ -395,7 +393,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           type: 'list_item',
           raw,
           task: !!istask,
-          checked: ischecked,
           loose: false,
           text: itemContents,
           tokens: [],
@@ -416,13 +413,40 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       list.raw = list.raw.trimEnd();
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first
-      for (let i = 0; i < list.items.length; i++) {
+      for (const item of list.items) {
         this.lexer.state.top = false;
-        list.items[i].tokens = this.lexer.blockTokens(list.items[i].text, []);
+        item.tokens = this.lexer.blockTokens(item.text, []);
+        if (item.task) {
+          const taskRaw = this.rules.other.listTaskCheckbox.exec(item.raw);
+          if (taskRaw) {
+            const checkboxToken: Tokens.Checkbox = {
+              type: 'checkbox',
+              raw: taskRaw[0] + ' ',
+              checked: taskRaw[0] !== '[ ]',
+            };
+            item.checked = checkboxToken.checked;
+            if (list.loose) {
+              if (item.tokens[0] && ['paragraph', 'text'].includes(item.tokens[0].type) && 'tokens' in item.tokens[0] && item.tokens[0].tokens) {
+                item.tokens[0].raw = checkboxToken.raw + item.tokens[0].raw;
+                item.tokens[0].text = checkboxToken.raw + item.tokens[0].text;
+                item.tokens[0].tokens.unshift(checkboxToken);
+              } else {
+                item.tokens.unshift({
+                  type: 'paragraph',
+                  raw: checkboxToken.raw,
+                  text: checkboxToken.raw,
+                  tokens: [checkboxToken],
+                });
+              }
+            } else {
+              item.tokens.unshift(checkboxToken);
+            }
+          }
+        }
 
         if (!list.loose) {
           // Check if list should be loose
-          const spacers = list.items[i].tokens.filter(t => t.type === 'space');
+          const spacers = item.tokens.filter(t => t.type === 'space');
           const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => this.rules.other.anyLine.test(t.raw));
 
           list.loose = hasMultipleLineBreaks;
@@ -431,8 +455,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
       // Set all items to loose if list is loose
       if (list.loose) {
-        for (let i = 0; i < list.items.length; i++) {
-          list.items[i].loose = true;
+        for (const item of list.items) {
+          item.loose = true;
+          for (const token of item.tokens) {
+            if (token.type === 'text') {
+              token.type = 'paragraph';
+            }
+          }
         }
       }
 

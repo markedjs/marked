@@ -241,6 +241,10 @@ describe('Parser', () => {
                   checked: false,
                   tokens: [
                     {
+                      type: 'checkbox',
+                      checked: false,
+                    },
+                    {
                       type: 'text',
                       text: 'item 1',
                       tokens: [{ type: 'text', text: 'item 1' }],
@@ -251,6 +255,10 @@ describe('Parser', () => {
                   task: true,
                   checked: true,
                   tokens: [
+                    {
+                      type: 'checkbox',
+                      checked: true,
+                    },
                     {
                       type: 'text',
                       text: 'item 2',
@@ -284,7 +292,7 @@ describe('Parser', () => {
                   loose: true,
                   tokens: [
                     {
-                      type: 'text',
+                      type: 'paragraph',
                       text: 'item 1',
                       tokens: [{ type: 'text', text: 'item 1' }],
                     },
@@ -296,7 +304,7 @@ describe('Parser', () => {
                   loose: true,
                   tokens: [
                     {
-                      type: 'text',
+                      type: 'paragraph',
                       text: 'item 2',
                       tokens: [{ type: 'text', text: 'item 2' }],
                     },
@@ -345,7 +353,7 @@ describe('Parser', () => {
           { type: 'text', text: 'text 1' },
           { type: 'text', text: 'text 2' },
         ],
-        html: '<p>text 1\ntext 2</p>',
+        html: 'text 1text 2',
       });
     });
   });

@@ -48,6 +48,7 @@ export const other = {
   listReplaceNesting: /^ {1,4}(?=( {4})*[^ ])/g,
   listIsTask: /^\[[ xX]\] /,
   listReplaceTask: /^\[[ xX]\] +/,
+  listTaskCheckbox: /\[[ xX]\]/,
   anyLine: /\n.*\n/,
   hrefBrackets: /^<(.*)>$/,
   tableDelimiter: /[:|]/,

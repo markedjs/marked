@@ -93,7 +93,7 @@ class ExtendedRenderer extends marked.Renderer {
   hr = ({ type, raw }: Tokens.Hr): string => super.hr({ type, raw });
   list = ({ type, raw, ordered, start, loose, items }: Tokens.List): string => super.list({ type, raw, ordered, start, loose, items});
   listitem = ({ type, raw, task, checked, loose, text, tokens }: Tokens.ListItem): string => super.listitem({ type, raw, task, checked, loose, text, tokens });
-  checkbox = ({ checked }: Tokens.Checkbox): string => super.checkbox({ checked });
+  checkbox = ({ type, raw, checked }: Tokens.Checkbox): string => super.checkbox({ type, raw, checked });
   paragraph = ({ type, raw, pre, text, tokens }: Tokens.Paragraph): string => super.paragraph({ type, raw, pre, text, tokens });
   table = ({ type, raw, align, header, rows }: Tokens.Table): string => super.table({ type, raw, align, header, rows });
   tablerow = ({ text }: Tokens.TableRow): string => super.tablerow({ text });
