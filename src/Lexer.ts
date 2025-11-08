@@ -16,8 +16,9 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     top: boolean;
   };
 
+  inlineQueue: { src: string, tokens: Token[] }[];
+
   private tokenizer: _Tokenizer<ParserOutput, RendererOutput>;
-  private inlineQueue: { src: string, tokens: Token[] }[];
 
   constructor(options?: MarkedOptions<ParserOutput, RendererOutput>) {
     // TokenList cannot be created in one go
