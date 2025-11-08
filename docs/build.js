@@ -16,9 +16,8 @@ const __dirname = dirname(__filename);
 const inputDir = join(cwd, 'docs');
 const outputDir = join(cwd, 'public');
 const templateFile = join(inputDir, '_document.html');
-const isUppercase = (str) => /[A-Z_]+/.test(str);
-const getTitle = (str) =>
-  str === 'INDEX' ? '' : titleize(str.replace(/_/g, ' ')) + ' - ';
+const isUppercase = str => /[A-Z_]+/.test(str);
+const getTitle = str => str === 'INDEX' ? '' : titleize(str.replace(/_/g, ' ')) + ' - ';
 function convertTestsToTable(name, tests) {
   let total = 0;
   let passing = 0;
@@ -28,24 +27,22 @@ function convertTestsToTable(name, tests) {
     total += value.total;
     passing += value.pass;
     table += ` | ${key}`;
-    table += ` | ${value.pass} of ${value.total}`;
-    table += ` | ${((value.pass / value.total) * 100).toFixed()}%`;
+    table += ` | ${(value.pass)} of ${(value.total)}`;
+    table += ` | ${((value.pass) / value.total * 100).toFixed()}%`;
     table += ' |\n';
   }
   return `\n<details name="markdown-spec">
-  <summary>${name} (${((passing / total) * 100).toFixed()}%)</summary>
+  <summary>${name} (${(passing / total * 100).toFixed()}%)</summary>
   ${table}
 </details>\n`;
 }
 
-const markedInstance = new marked.Marked(
-  markedHighlight((code, language) => {
-    if (!language) {
-      return highlightAuto(code).value;
-    }
-    return highlight(code, { language }).value;
-  }),
-);
+const markedInstance = new marked.Marked(markedHighlight((code, language) => {
+  if (!language) {
+    return highlightAuto(code).value;
+  }
+  return highlight(code, { language }).value;
+}));
 
 async function init() {
   console.log('Cleaning up output directory ' + outputDir);
@@ -55,25 +52,13 @@ async function init() {
   console.log(`Copying file ${join(inputDir, 'LICENSE.md')}`);
   await copyFile(join(cwd, 'LICENSE.md'), join(inputDir, 'LICENSE.md'));
   console.log(`Copying file ${join(outputDir, 'lib/marked.umd.js')}`);
-  await copyFile(
-    join(cwd, 'lib/marked.umd.js'),
-    join(outputDir, 'lib/marked.umd.js'),
-  );
+  await copyFile(join(cwd, 'lib/marked.umd.js'), join(outputDir, 'lib/marked.umd.js'));
   console.log(`Copying file ${join(outputDir, 'lib/marked.umd.js.map')}`);
-  await copyFile(
-    join(cwd, 'lib/marked.umd.js.map'),
-    join(outputDir, 'lib/marked.umd.js.map'),
-  );
+  await copyFile(join(cwd, 'lib/marked.umd.js.map'), join(outputDir, 'lib/marked.umd.js.map'));
   console.log(`Copying file ${join(outputDir, 'lib/marked.esm.js')}`);
-  await copyFile(
-    join(cwd, 'lib/marked.esm.js'),
-    join(outputDir, 'lib/marked.esm.js'),
-  );
+  await copyFile(join(cwd, 'lib/marked.esm.js'), join(outputDir, 'lib/marked.esm.js'));
   console.log(`Copying file ${join(outputDir, 'lib/marked.esm.js.map')}`);
-  await copyFile(
-    join(cwd, 'lib/marked.esm.js.map'),
-    join(outputDir, 'lib/marked.esm.js.map'),
-  );
+  await copyFile(join(cwd, 'lib/marked.esm.js.map'), join(outputDir, 'lib/marked.esm.js.map'));
   const tmpl = await readFile(templateFile, 'utf8');
   console.log('Building markdown...');
   const [original, commonmark, gfm] = await getTests([
