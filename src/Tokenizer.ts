@@ -380,16 +380,16 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           }
         }
 
-        let istask: RegExpExecArray | null = null;
+        let istask = false;
         // Check for task list items
         if (this.options.gfm) {
-          istask = this.rules.other.listIsTask.exec(itemContents);
+          istask = this.rules.other.listIsTask.test(itemContents);
         }
 
         list.items.push({
           type: 'list_item',
           raw,
-          task: !!istask,
+          task: istask,
           loose: false,
           text: itemContents,
           tokens: [],
