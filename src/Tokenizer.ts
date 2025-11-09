@@ -380,16 +380,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           }
         }
 
-        let istask = false;
-        // Check for task list items
-        if (this.options.gfm) {
-          istask = this.rules.other.listIsTask.test(itemContents);
-        }
-
         list.items.push({
           type: 'list_item',
           raw,
-          task: istask,
+          task: !!this.options.gfm && this.rules.other.listIsTask.test(itemContents),
           loose: false,
           text: itemContents,
           tokens: [],
