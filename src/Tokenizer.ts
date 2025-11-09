@@ -408,6 +408,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         this.lexer.state.top = false;
         item.tokens = this.lexer.blockTokens(item.text, []);
         if (item.task) {
+          // Remove checkbox markdown from item tokens
           item.text = item.text.replace(this.rules.other.listReplaceTask, '');
           if (item.tokens[0]?.type === 'text' || item.tokens[0]?.type === 'paragraph') {
             item.tokens[0].raw = item.tokens[0].raw.replace(this.rules.other.listReplaceTask, '');
@@ -419,6 +420,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
               }
             }
           }
+
           const taskRaw = this.rules.other.listTaskCheckbox.exec(item.raw);
           if (taskRaw) {
             const checkboxToken: Tokens.Checkbox = {
