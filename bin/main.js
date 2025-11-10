@@ -153,7 +153,7 @@ export async function main(nodeProcess) {
 
     async function getData() {
       if (!input) {
-        if (files.length <= 2) {
+        if (files.length === 0) {
           if (string) {
             return string;
           }
@@ -161,6 +161,7 @@ export async function main(nodeProcess) {
         }
         input = files.pop();
       }
+      
       return await readFile(input, 'utf8');
     }
 
@@ -183,7 +184,9 @@ export async function main(nodeProcess) {
           throw err;
         }
         // must import esm
-        markedConfig = await import('file:///' + configFile);
+        const normalizedFile = configFile.replace(/\\/g, '/');
+        markedConfig = await import(`file://${normalizedFile}`);
+
       }
 
       if (markedConfig.default) {
