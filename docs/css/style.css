@@ -1,303 +1,253 @@
+/*
+  This file contains custom styles and CSS variables that supplement Tailwind CSS.
+*/
+
+/* Define color scheme variables based on the Tailwind config */
+@layer utilities {
+  .scroll-hidden {
+    overflow-y: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .scroll-hidden::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
+
+/* Improved section spacing */
+.prose h2 {
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+.prose h3 {
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.prose p {
+    margin-bottom: 1.25rem;
+    line-height: 1.75;
+}
+
+.prose ul, .prose ol {
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.prose pre {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
 :root {
-    /* Light theme variables */
-    --bg-primary: #F9F9F9;
-    --bg-secondary: white;
-    --text-primary: #24292e;
-    --text-secondary: #111;
-    --border-color: #ddd;
-    --link-color: #0366d6;
-    --code-bg: #f6f8fa;
-    --pre-bg: #f6f8fa;
-    --nav-hover: #0366d6;
-    --github-corner-fill: #202020;
-    --github-corner-color: #fff;
-    
-    /* Dark theme color definitions */
-    --dark-bg-primary: #0d1117;
-    --dark-bg-secondary: #161b22;
-    --dark-text-primary: #e6edf3;
-    --dark-text-secondary: #f0f6fc;
-    --dark-border-color: #30363d;
-    --dark-link-color: #58a6ff;
-    --dark-code-bg: #262c36;
-    --dark-pre-bg: #262c36;
-    --dark-nav-hover: #58a6ff;
-    --dark-github-corner-fill: #f0f6fc;
-    --dark-github-corner-color: #0d1117;
+    --primary-color: #3B82F6;
+    --background-color: #FFFFFF;
+    --text-color: #1F2937;
+    --subtle-text-color: #6B7280;
+    --border-color: #E5E7EB;
+    --code-bg-color: #F3F4F6;
 }
 
-[data-theme="dark"] {
-    /* Dark theme variables */
-    --bg-primary: var(--dark-bg-primary);
-    --bg-secondary: var(--dark-bg-secondary);
-    --text-primary: var(--dark-text-primary);
-    --text-secondary: var(--dark-text-secondary);
-    --border-color: var(--dark-border-color);
-    --link-color: var(--dark-link-color);
-    --code-bg: var(--dark-code-bg);
-    --pre-bg: var(--dark-pre-bg);
-    --nav-hover: var(--dark-nav-hover);
-    --github-corner-fill: var(--dark-github-corner-fill);
-    --github-corner-color: var(--dark-github-corner-color);
+.dark {
+    --background-color: #111827;
+    --text-color: #F9FAFB;
+    --subtle-text-color: #9CA3AF;
+    --border-color: #374151;
+    --code-bg-color: #1F2937;
 }
 
-/* Respect system preference when no explicit theme is set */
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-        --bg-primary: var(--dark-bg-primary);
-        --bg-secondary: var(--dark-bg-secondary);
-        --text-primary: var(--dark-text-primary);
-        --text-secondary: var(--dark-text-secondary);
-        --border-color: var(--dark-border-color);
-        --link-color: var(--dark-link-color);
-        --code-bg: var(--dark-code-bg);
-        --pre-bg: var(--dark-pre-bg);
-        --nav-hover: var(--dark-nav-hover);
-        --github-corner-fill: var(--dark-github-corner-fill);
-        --github-corner-color: var(--dark-github-corner-color);
-    }
+/* Custom styles for the warning box */
+.alert-warning {
+    background-color: #FEF2F2;
+    border-left: 4px solid #EF4444;
+    color: #B91C1C;
+    padding: 1rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+    margin: 1.5rem 0;
 }
 
-body {
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
-    font-size: 16px;
-    line-height: 1.5;
-    word-wrap: break-word;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
+.dark .alert-warning {
+    background-color: #2c1d1d;
+    border-left-color: #F87171;
+    color: #FCA5A5;
 }
 
-#container {
-    max-width: 900px;
-    margin: auto;
-}
-
-#content {
-    padding: 5px 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 3px;
-    background: var(--bg-secondary);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-#content h1:first-child {
-    margin-top: 0px;
-}
-
-nav {
-    border: 1px solid var(--border-color);
-    border-radius: 3px;
-    background: var(--bg-secondary);
-    margin-right: 10px;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-nav > ul {
-    position: sticky;
-    top: 5px;
-    margin: 10px 0px;
-    padding: 0;
-    list-style-type: none;
-    font-size: 14px;
-}
-
-nav > ul > li {
-    min-width: 125px;
-    padding: 0px 15px;
-}
-
-nav > ul > li > ul {
-    padding-left: 25px;
-}
-
-nav > ul > li > ul > li {
-    font-size: 0.8em;
-}
-
-nav .selected {
-    color: var(--text-secondary);
-    font-weight: bold;
-}
-
-nav .selected:hover {
-    text-decoration: none;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-inline-end: 70px;
-}
-
-header h1 { margin: 0; }
-
-.header-content {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-/* Dark mode toggle */
-.theme-toggle {
-    background: none;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 8px 12px;
-    cursor: pointer;
-    color: var(--text-primary);
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-
-.theme-toggle:hover {
-    background-color: var(--code-bg);
-}
-
-.theme-toggle:focus {
-    outline: 2px solid var(--link-color);
-    outline-offset: 2px;
-}
-
-.theme-toggle .icon {
-    width: 16px;
-    height: 16px;
-    fill: currentColor;
-}
-
-table {
-    border-spacing: 0;
-    border-collapse: collapse;
-    border: 1px solid var(--border-color);
-}
-
-td, th {
-    border: 1px solid var(--border-color);
-    padding: 5px;
-}
-
-a {
-    color: var(--link-color);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-a:hover {
+.alert-warning a {
     text-decoration: underline;
+    font-weight: 500;
 }
+
+/* --- Add this to the end of docs/css/style.css --- */
+/* --- Add this to the end of docs/css/style.css --- */
+
+/* This sets the background color for all code blocks
+  and lets height be dynamic.
+*/
 
 pre {
-    font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
-    padding: 16px;
-    overflow: auto;
-    font-size: 85%;
-    line-height: 1.45;
-    background-color: var(--pre-bg);
-    border-radius: 3px;
-    position: relative;
-    max-width: 680px;
-    transition: background-color 0.3s ease;
+    height: auto;
+    align-items: center;
 }
 
-pre code {
-    max-width: 680px;
-    overflow: auto;
+.prose pre {
+  background-color: #D1D5DB; /* Your light mode bg-gray-300 */
+  color:black;
+}
+
+.dark .prose pre {
+  background-color: #1F2937; /* Your dark mode dark:bg-gray-800 */
+  color: white;
+}
+
+/* This fixes a conflict where the <code> tag
+  itself has a background, hiding the <pre> background.
+*/
+.prose pre code.hljs {
+  background-color: transparent !important;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
+
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+  display: none; /* Hidden on desktop by default */
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 9998;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: var(--code-bg-color);
+  transform: scale(1.05);
+}
+
+.mobile-menu-toggle:active {
+  transform: scale(0.95);
+}
+
+.dark .mobile-menu-toggle {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile Overlay */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 39;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-overlay.active {
+  opacity: 1;
+}
+
+/* Mobile Styles - Changed breakpoint from 768px to 1024px */
+@media (max-width: 1024px) {
+  /* Show mobile menu button */
+  .mobile-menu-toggle {
+    display: flex;
+  }
+
+  /* Hide sidebar by default on mobile */
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  /* Show sidebar when menu is open */
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Show overlay when menu is open */
+  .mobile-overlay.active {
     display: block;
+  }
+
+  /* Adjust main content for mobile */
+  .main-content {
+    margin-left: 0 !important;
+    padding: 80px 20px 20px 20px !important;
+    width: 100%;
+  }
+
+  /* Adjust theme toggle button position on mobile */
+  #theme-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9998;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--background-color);
+  }
+
+  .dark #theme-toggle {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Adjust GitHub corner for mobile */
+  .github-corner {
+    display: none;
+  }
+
+  /* Make sidebar full height on mobile */
+  .sidebar {
+    width: 280px;
+    max-width: 85vw;
+  }
+
+  /* Adjust heading sizes for mobile */
+  .main-content h1 {
+    font-size: 2rem !important;
+  }
+
+  /* Adjust prose max-width for mobile */
+  .prose {
+    max-width: 100% !important;
+  }
+
+  /* Make tables scrollable on mobile */
+  .prose table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Adjust code blocks for mobile */
+  .prose pre {
+    font-size: 0.875rem;
+    padding: 1rem;
+  }
 }
 
-:not(pre) > code {
-    padding: 0.2em 0.4em;
-    margin: 0;
-    font-size: 85%;
-    background-color: var(--code-bg);
-    border-radius: 3px;
-    transition: background-color 0.3s ease;
+/* Prevent body scroll when mobile menu is open */
+body.mobile-menu-open {
+  overflow: hidden;
 }
 
-summary {
-    cursor: pointer;
-    padding: 3px 0px;
-}
-
-summary:hover {
-    color: var(--nav-hover);
-}
-
-.div-copy {
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-.div-copy .icon-copy {
-    opacity: 0;
-    transition: opacity .3s;
-    height: 18px;
-    width: 18px;
-    cursor: pointer;
-    padding: 5px;
-}
-
-.div-copy.active .icon-copy {
-    opacity: 1;
-}
-
-.div-copy .tooltip-copy {
-    position: relative;
-}
-
-.div-copy .tooltip-copy::before {
-    content: "Copied";
-    position: absolute;
-
-    /* vertically center */
-    top: 50%;
-    transform: translateY(-50%);
-
-    /* move to right */
-    right: 100%;
-    margin-right: 5px; /* and add a small left margin */
-
-    /* basic styles */
-    padding: 2px 7px;
-    border-radius: 5px;
-    background: #444;
-    color: #fff;
-    text-align: center;
-
-    opacity: 0; /* hide by default */
-    transition: opacity .3s;
-}
-
-.div-copy.click .tooltip-copy::before {
-    opacity: 1;
-}
-
-.div-copy .tooltip-copy::after {
-    content: "";
-    position: absolute;
-
-    /* position tooltip correctly */
-    right: 100%;
-    margin-right: -5px;
-
-    /* vertically center */
-    top: 50%;
-    transform: translateY(-50%);
-
-    /* the arrow */
-    border-style: solid;
-    border-width: 2px 2px 5px 8px;
-    border-color: transparent transparent transparent #444;
-
-    opacity: 0;
-    transition: opacity .3s;
-}
-
-.div-copy.click .tooltip-copy::after {
-    opacity: 1;
+@media (max-width: 1024px) {
+  body.mobile-menu-open {
+    overflow: hidden;
+  }
 }

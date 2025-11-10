@@ -3,13 +3,24 @@
 
   <head>
     <title>Marked Demo</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./demo.css" type="text/css" />
     <link rel="stylesheet" href="../css/shared.css" type="text/css" />
     <link rel="stylesheet" href="../css/style.css" type="text/css" />
+    <link rel="stylesheet" href="../css/hljs-github.css" type="text/css" />
     <link rel="stylesheet" href="../css/hljs-github-dark.css" type="text/css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
   </head>
 
-  <body>
+  <body class="light">
     <a href="https://github.com/markedjs/marked" class="github-corner" aria-label="View source on Github">
       <svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true">
           <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
@@ -19,28 +30,20 @@
     </a>
 
     <header>
-      <a href="../">
-      <img src="../img/logo-black.svg" height="50px" width="50px" />
-    </a>
+      <a href="../" class="logo-link">
+        <img src="../img/logo-black.svg" height="50px" width="50px" alt="Marked Logo" />
+      </a>
       <h1>Marked Demo</h1>
       <div class="other-demos">
         <a href="https://spec.commonmark.org/dingus/">CommonMark Demo</a>
-        <br />
-        <a href="https://daringfireball.net/projects/markdown/dingus">Daring Fireball (pedantic) Demo</a>
+        <span class="separator">·</span>
+        <a href="https://daringfireball.net/projects/markdown/dingus">Daring Fireball Demo</a>
       </div>
-      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="4"></circle>
-          <path d="m12 2 0 2"></path>
-          <path d="m12 20 0 2"></path>
-          <path d="m4.93 4.93 1.41 1.41"></path>
-          <path d="m17.66 17.66 1.41 1.41"></path>
-          <path d="M2 12h2"></path>
-          <path d="M20 12h2"></path>
-          <path d="m6.34 17.66-1.41 1.41"></path>
-          <path d="m19.07 4.93-1.41 1.41"></path>
-        </svg>
-        <span class="text">Dark</span>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+        <span class="material-icons light-icon">dark_mode</span>
+        <span class="text light-text">Dark Mode</span>
+        <span class="material-icons dark-icon">light_mode</span>
+        <span class="text dark-text">Light Mode</span>
       </button>
     </header>
 

@@ -1,106 +1,447 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="utf-8"/>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><!--{{title}}-->Marked Documentation</title>
+
+    <!-- Prevent dark mode flash by applying theme before first paint -->
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem("theme");
+          var prefersDark =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches;
+          if (theme === "dark" || (!theme && prefersDark)) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="/css/style.css" type="text/css" />
     <link rel="stylesheet" href="/css/shared.css" type="text/css" />
     <link rel="stylesheet" href="/css/hljs-github.css" type="text/css" />
-    <link rel="stylesheet" href="/css/hljs-github-dark.css" type="text/css" />
-</head>
-<body>
-    <a href="https://github.com/markedjs/marked" class="github-corner" aria-label="View source on Github">
-        <svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true">
-            <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
-            <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
-            <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
-        </svg>
+
+    <script>
+      // Tailwind configuration embedded directly
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              "background-light": "#FFFFFF",
+              "background-dark": "#111827",
+              "text-light": "#1F2937",
+              "text-dark": "#F9FAFB",
+              "subtle-light": "#6B7280",
+              "subtle-dark": "#9CA3AF",
+              "border-light": "#E5E7EB",
+              "border-dark": "#374151",
+              "code-bg-light": "#F3F4F6",
+              "code-bg-dark": "#1F2937",
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+            },
+            // Add typography styles for dark mode
+            typography: ({ theme }) => ({
+              dark: {
+                css: {
+                  "--tw-prose-body": theme("colors.gray[300]"),
+                  "--tw-prose-headings": theme("colors.gray[100]"),
+                  "--tw-prose-lead": theme("colors.gray[400]"),
+                  "--tw-prose-links": theme("colors.blue[400]"),
+                  "--tw-prose-bold": theme("colors.white"),
+                  "--tw-prose-counters": theme("colors.gray[400]"),
+                  "--tw-prose-bullets": theme("colors.gray[500]"),
+                  "--tw-prose-hr": theme("colors.gray[700]"),
+                  "--tw-prose-quotes": theme("colors.gray[200]"),
+                  "--tw-prose-quote-borders": theme("colors.gray[600]"),
+                  "--tw-prose-captions": theme("colors.gray[400]"),
+                  "--tw-prose-code": theme("colors.gray[200]"),
+                  "--tw-prose-pre-code": theme("colors.gray[200]"),
+                  "--tw-prose-pre-bg": theme("colors.code-bg-dark"),
+                  "--tw-prose-th-borders": theme("colors.gray[600]"),
+                  "--tw-prose-td-borders": theme("colors.gray[700]"),
+                },
+              },
+            }),
+          },
+        },
+      };
+    </script>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark font-sans text-text-light dark:text-text-dark"
+  >
+    <!-- Mobile Menu Toggle Button -->
+    <button
+      id="mobile-menu-toggle"
+      class="mobile-menu-toggle"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+    >
+      <span class="material-icons">menu</span>
+    </button>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="mobile-overlay"></div>
+
+    <a
+      href="https://github.com/markedjs/marked"
+      class="github-corner"
+      aria-label="View source on Github"
+    >
+      <svg width="80" height="80" viewBox="0 0 250 250">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path
+          d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+          fill="currentColor"
+          style="transform-origin: 130px 106px"
+          class="octo-arm"
+        ></path>
+        <path
+          d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+          fill="currentColor"
+          class="octo-body"
+        ></path>
+      </svg>
     </a>
-    <div id="container">
-        <header>
-            <div class="header-content">
-                <a href="/">
-                    <img alt="logo" src="/img/logo-black.svg" height="50px" width="50px" />
-                </a>
-                <h1>Marked Documentation</h1>
-            </div>
-            <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="4"></circle>
-                    <path d="m12 2 0 2"></path>
-                    <path d="m12 20 0 2"></path>
-                    <path d="m4.93 4.93 1.41 1.41"></path>
-                    <path d="m17.66 17.66 1.41 1.41"></path>
-                    <path d="M2 12h2"></path>
-                    <path d="M20 12h2"></path>
-                    <path d="m6.34 17.66-1.41 1.41"></path>
-                    <path d="m19.07 4.93-1.41 1.41"></path>
-                </svg>
-                <span class="text">Dark</span>
-            </button>
-        </header>
-        <div style="display: flex">
-            <nav>
-                <ul>
-                    <li>
-                        <a href="/">Getting Started</a>
-                        <ul>
-                            <li><a href="/#demo">Demo</a></li>
-                            <li><a href="/#installation">Installation</a></li>
-                            <li><a href="/#usage">Usage</a></li>
-                            <li><a href="/#specifications">Specs</a></li>
-                            <li><a href="/#tools">Tools</a></li>
-                            <li><a href="/#security">Security</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="/using_advanced">Advanced Usage</a>
-                        <ul>
-                            <li><a href="/using_advanced#instance">Instance</a></li>
-                            <li><a href="/using_advanced#options">Options</a></li>
-                            <li><a href="/using_advanced#extensions">Known Extensions</a></li>
-                            <li><a href="/using_advanced#inline">Inline Markdown</a></li>
-                            <li><a href="/using_advanced#highlight">Highlighting</a></li>
-                            <li><a href="/using_advanced#workers">Workers</a></li>
-                            <li><a href="/using_advanced#cli-extensions">CLI Extensions</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="/using_pro">Extensibility</a>
-                        <ul>
-                            <li><a href="/using_pro#use">marked.use()</a></li>
-                            <li><a href="/using_pro#renderer">Renderer</a></li>
-                            <li><a href="/using_pro#tokenizer">Tokenizer</a></li>
-                            <li><a href="/using_pro#walk-tokens">Walk Tokens</a></li>
-                            <li><a href="/using_pro#hooks">Hooks</a></li>
-                            <li><a href="/using_pro#extensions">Custom Extensions</a></li>
-                            <li><a href="/using_pro#async">Async Marked</a></li>
-                            <li><a href="/using_pro#lexer">Lexer</a></li>
-                            <li><a href="/using_pro#parser">Parser</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="/contributing">Contributing</a>
-                        <ul>
-                            <li><a href="/contributing#design-principles">Design Principles</a></li>
-                            <li><a href="/contributing#priorities">Priorities</a></li>
-                            <li><a href="/contributing#test-early-often-and-everything">Testing</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="/code_of_conduct">Code of Conduct</a></li>
-                    <li><a href="/authors">Authors</a></li>
-                    <li>
-                      <a href="/publishing">Publishing</a>
-                      <ul>
-                          <li><a href="/publishing#versioning">Versioning</a></li>
-                      </ul>
-                    </li>
-                    <li><a href="/license">License</a></li>
-                </ul>
-            </nav>
-            <div id="content"><!--{{content}}--></div>
+
+    <div class="flex min-h-screen">
+      <aside
+        id="sidebar"
+        class="sidebar w-64 fixed top-0 scroll-hidden left-0 h-full border-r border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark z-40"
+      >
+        <div class="flex justify-center items-center mb-12 mt-8 px-8">
+          <a href="/" class="flex items-center">
+            <img
+              alt="logo"
+              src="/img/logo-black.svg"
+              class="bg-gray-100 rounded"
+              height="50px"
+              width="50px"
+            />
+          </a>
         </div>
+        <nav class="flex flex-col space-y-6 w-52 pl-4 pt-2">
+          <div>
+            <h3
+              class="font-semibold text-sm mb-3 text-subtle-light dark:text-subtle-dark uppercase tracking-wider"
+            >
+              <a
+                class="block hover:text-primary dark:hover:text-primary"
+                href="/"
+                >Getting Started</a
+              >
+            </h3>
+            <ul
+              class="space-y-2 text-sm text-subtle-light dark:text-subtle-dark"
+            >
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/#demo"
+                  >Demo</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/#installation"
+                  >Installation</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/#usage"
+                  >Usage</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/#specifications"
+                  >Specs</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/#tools"
+                  >Tools</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/#security"
+                  >Security</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3
+              class="font-semibold text-sm mb-3 text-subtle-light dark:text-subtle-dark uppercase tracking-wider"
+            >
+              <a
+                class="block hover:text-primary dark:hover:text-primary"
+                href="/using_advanced"
+                >Advanced Usage</a
+              >
+            </h3>
+            <ul
+              class="space-y-2 text-sm text-subtle-light dark:text-subtle-dark"
+            >
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_advanced#instance"
+                  >Instance</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_advanced#options"
+                  >Options</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_advanced#extensions"
+                  >Known Extensions</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_advanced#inline"
+                  >Inline Markdown</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_advanced#highlight"
+                  >Highlighting</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_advanced#workers"
+                  >Workers</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_advanced#cli-extensions"
+                  >CLI Extensions</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3
+              class="font-semibold text-sm mb-3 text-subtle-light dark:text-subtle-dark uppercase tracking-wider"
+            >
+              <a
+                class="block hover:text-primary dark:hover:text-primary"
+                href="/using_pro"
+                >Extensibility</a
+              >
+            </h3>
+            <ul
+              class="space-y-2 text-sm text-subtle-light dark:text-subtle-dark"
+            >
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_pro#use"
+                  >marked.use()</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_pro#renderer"
+                  >Renderer</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_pro#tokenizer"
+                  >Tokenizer</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_pro#walk-tokens"
+                  >Walk Tokens</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_pro#hooks"
+                  >Hooks</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_pro#extensions"
+                  >Custom Extensions</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_pro#async"
+                  >Async Marked</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_pro#lexer"
+                  >Lexer</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/using_pro#parser"
+                  >Parser</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3
+              class="font-semibold text-sm mb-3 text-subtle-light dark:text-subtle-dark uppercase tracking-wider"
+            >
+              <a
+                class="block hover:text-primary dark:hover:text-primary"
+                href="/contributing"
+                >Contributing</a
+              >
+            </h3>
+            <ul
+              class="space-y-2 text-sm text-subtle-light dark:text-subtle-dark"
+            >
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/contributing#design-principles"
+                  >Design Principles</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/contributing#priorities"
+                  >Priorities</a
+                >
+              </li>
+              <li>
+                <a
+                  class="block hover:text-primary dark:hover:text-primary"
+                  href="/contributing#test-early-often-and-everything"
+                  >Testing</a
+                >
+              </li>
+            </ul>
+          </div>
+          <ul
+            class="space-y-2 text-sm pt-6 border-t border-border-light dark:border-border-dark text-subtle-light dark:text-subtle-dark"
+          >
+            <li>
+              <a
+                class="block hover:text-primary dark:hover:text-primary"
+                href="/code_of_conduct"
+                >Code of Conduct</a
+              >
+            </li>
+            <li>
+              <a
+                class="block hover:text-primary dark:hover:text-primary"
+                href="/authors"
+                >Authors</a
+              >
+            </li>
+            <li>
+              <a
+                class="block hover:text-primary dark:hover:text-primary"
+                href="/publishing"
+                >Publishing</a
+              >
+            </li>
+            <li>
+              <a
+                class="block hover:text-primary dark:hover:text-primary"
+                href="/license"
+                >License</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main class="main-content flex-1 ml-64 px-12 py-8">
+        <div class="max-w-5xl mx-auto">
+          <div class="flex justify-between items-center mb-16">
+            <h1 class="text-5xl font-bold text-text-light dark:text-text-dark">
+              Marked Documentation
+            </h1>
+            <button
+              id="theme-toggle"
+              aria-label="Toggle dark mode"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg text-subtle-light dark:text-subtle-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              <span class="material-icons dark:hidden">dark_mode</span>
+              <span class="dark:hidden text-sm font-medium">Dark Mode</span>
+              <span class="material-icons hidden dark:inline">light_mode</span>
+              <span class="hidden dark:inline text-sm font-medium"
+                >Light Mode</span
+              >
+            </button>
+          </div>
+
+          <article
+            id="content"
+            class="prose prose-lg max-w-none dark:prose-dark"
+          >
+            <!--{{content}}-->
+          </article>
+        </div>
+      </main>
     </div>
+
     <script src="/js/index.js"></script>
-</body>
+  </body>
 </html>
