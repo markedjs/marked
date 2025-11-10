@@ -184,8 +184,8 @@ export async function main(nodeProcess) {
           throw err;
         }
         // must import esm
-        const normalizedFile = configFile.replace(/\\/g, '/');
-        markedConfig = await import(`file://${normalizedFile}`);
+        const { pathToFileURL } = await import('node:url');
+        markedConfig = await import(pathToFileURL(configFile).href);
 
       }
 
