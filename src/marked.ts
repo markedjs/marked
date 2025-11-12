@@ -45,12 +45,12 @@ export function marked(src: string, opt?: MarkedOptions | null): string | Promis
  * @param options Hash of options
  */
 marked.options =
-marked.setOptions = function(options: MarkedOptions) {
-  markedInstance.setOptions(options);
-  marked.defaults = markedInstance.defaults;
-  changeDefaults(marked.defaults);
-  return marked;
-};
+  marked.setOptions = function(options: MarkedOptions) {
+    markedInstance.setOptions(options);
+    marked.defaults = markedInstance.defaults;
+    changeDefaults(marked.defaults);
+    return marked;
+  };
 
 /**
  * Gets the original marked default options.
