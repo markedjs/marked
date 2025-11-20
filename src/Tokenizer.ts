@@ -383,7 +383,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         list.items.push({
           type: 'list_item',
           raw,
-          task: !!this.options.gfm && this.rules.other.listIsTask.test(itemContents),
+          task: this.options.gfm && this.rules.other.listIsTask.test(itemContents),
           loose: false,
           text: itemContents,
           tokens: [],
