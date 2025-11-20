@@ -16,7 +16,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     top: boolean;
   };
 
-  inlineQueue: { src: string, tokens: Token[] }[];
+  public inlineQueue: { src: string, tokens: Token[] }[];
 
   private tokenizer: _Tokenizer<ParserOutput, RendererOutput>;
 
