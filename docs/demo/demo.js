@@ -272,7 +272,7 @@ function handleIframeLoad() {
 
   // Apply current theme to the iframe
   try {
-    const currentTheme = document.body.classList.contains('dark')
+    const currentTheme = document.documentElement.classList.contains('dark')
       ? 'dark'
       : 'light';
     if ($previewIframe && $previewIframe.contentDocument) {
