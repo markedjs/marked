@@ -5,6 +5,48 @@
     <title>Marked Demo</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Prevent dark mode flash by applying theme before first paint -->
+    <script>
+      (function () {
+        try {
+          var STORAGE_KEY = "theme-preference";
+          var LEGACY_KEY = "theme";
+          var stored = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_KEY);
+          var preference = stored === "dark" || stored === "light" || stored === "system" ? stored : "system";
+          var prefersDark =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var shouldUseDark = prefersDark;
+
+          if (preference === "dark") {
+            shouldUseDark = true;
+          } else if (preference === "light") {
+            shouldUseDark = false;
+          }
+
+          if (shouldUseDark) {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }
+
+          document.documentElement.setAttribute("data-theme-preference", preference);
+          document.documentElement.setAttribute(
+            "data-theme",
+            shouldUseDark ? "dark" : "light",
+          );
+
+          localStorage.setItem(STORAGE_KEY, preference);
+          if (preference === "system") {
+            localStorage.removeItem(LEGACY_KEY);
+          } else {
+            localStorage.setItem(LEGACY_KEY, preference);
+          }
+        } catch (e) {}
+      })();
+    </script>
+    
     <link rel="stylesheet" href="./demo.css" type="text/css" />
     <link rel="stylesheet" href="../css/shared.css" type="text/css" />
     <link rel="stylesheet" href="../css/style.css" type="text/css" />
@@ -20,7 +62,7 @@
     />
   </head>
 
-  <body class="light">
+  <body>
     <a href="https://github.com/markedjs/marked" class="github-corner" aria-label="View source on Github">
       <svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true">
           <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
@@ -39,11 +81,9 @@
         <span class="separator">·</span>
         <a href="https://daringfireball.net/projects/markdown/dingus">Daring Fireball Demo</a>
       </div>
-      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-        <span class="material-icons light-icon">dark_mode</span>
-        <span class="text light-text">Dark Mode</span>
-        <span class="material-icons dark-icon">light_mode</span>
-        <span class="text dark-text">Light Mode</span>
+      <button id="theme-toggle" class="theme-toggle" data-theme-mode="system" aria-label="Switch theme">
+        <span class="material-icons" data-theme-icon>brightness_auto</span>
+        <span class="text" data-theme-text>System</span>
       </button>
     </header>
 
