@@ -85,21 +85,6 @@ header h1 {
 	font-size: 20px;
 }
 
-.theme-toggle .dark-icon,
-.theme-toggle .dark-text {
-	display: none;
-}
-
-body.dark .theme-toggle .light-icon,
-body.dark .theme-toggle .light-text {
-	display: none;
-}
-
-body.dark .theme-toggle .dark-icon,
-body.dark .theme-toggle .dark-text {
-	display: inline;
-}
-
 .containers {
 	display: flex;
 	height: calc(100vh - 68px);

@@ -52,70 +52,133 @@ $clearElem.addEventListener('click', handleClearClick, false);
 
 // --- Theme Toggle Setup ---
 const $themeToggle = document.getElementById('theme-toggle');
+const $themeToggleIcon = $themeToggle ? $themeToggle.querySelector('[data-theme-icon]') : null;
+const $themeToggleText = $themeToggle ? $themeToggle.querySelector('[data-theme-text]') : null;
+
+const THEME_STORAGE_KEY = 'theme-preference';
+const LEGACY_STORAGE_KEY = 'theme';
+const THEME_ORDER = ['system', 'light', 'dark'];
+const TOGGLE_UI = {
+  system: { icon: 'brightness_auto', text: 'System' },
+  light: { icon: 'light_mode', text: 'Light' },
+  dark: { icon: 'dark_mode', text: 'Dark' },
+};
 
 function applyTheme(theme) {
   if (theme === 'dark') {
-    document.body.classList.add('dark');
+    document.documentElement.classList.add('dark');
   } else {
-    document.body.classList.remove('dark');
+    document.documentElement.classList.remove('dark');
+  }
+  document.documentElement.setAttribute('data-theme', theme);
+
+  try {
+    if ($previewIframe && $previewIframe.contentDocument) {
+      if (theme === 'dark') {
+        $previewIframe.contentDocument.documentElement.classList.add('dark');
+      } else {
+        $previewIframe.contentDocument.documentElement.classList.remove('dark');
+      }
+    }
+  } catch {
+    // Ignore cross-origin errors
   }
 }
 
-function getPreferredTheme() {
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme) {
-    return savedTheme;
-  }
-
-  if (window.matchMedia
-    && window.matchMedia('(prefers-color-scheme: dark)').matches
-  ) {
+function getSystemTheme() {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     return 'dark';
   }
-
   return 'light';
 }
 
-// Apply theme on page load
-const initialTheme = getPreferredTheme();
-applyTheme(initialTheme);
+function sanitisePreference(value) {
+  return value === 'dark' || value === 'light' || value === 'system' ? value : null;
+}
+
+function readStoredPreference() {
+  try {
+    const stored = sanitisePreference(localStorage.getItem(THEME_STORAGE_KEY));
+    if (stored) {
+      return stored;
+    }
+    return sanitisePreference(localStorage.getItem(LEGACY_STORAGE_KEY));
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredPreference(preference) {
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, preference);
+    if (preference === 'light' || preference === 'dark') {
+      localStorage.setItem(LEGACY_STORAGE_KEY, preference);
+    } else {
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
+    }
+  } catch {
+    // Storage might be unavailable; ignore
+  }
+}
+
+function getEffectiveTheme(preference) {
+  return preference === 'system' ? getSystemTheme() : preference;
+}
+
+function updateToggle(preference) {
+  if (!$themeToggle) {
+    return;
+  }
+  const details = TOGGLE_UI[preference] || TOGGLE_UI.system;
+  if ($themeToggleIcon) {
+    $themeToggleIcon.textContent = details.icon;
+  }
+  if ($themeToggleText) {
+    $themeToggleText.textContent = details.text;
+  }
+  $themeToggle.setAttribute('data-theme-mode', preference);
+  const label = `Switch theme (current: ${details.text})`;
+  $themeToggle.setAttribute('aria-label', label);
+  $themeToggle.title = label;
+}
+
+let currentPreference = readStoredPreference() || 'system';
+
+function applyPreference(preference, persist) {
+  currentPreference = preference;
+  const effectiveTheme = getEffectiveTheme(preference);
+  applyTheme(effectiveTheme);
+  document.documentElement.setAttribute('data-theme-preference', preference);
+  updateToggle(preference);
+  if (persist) {
+    writeStoredPreference(preference);
+  }
+}
+
+applyPreference(currentPreference, true);
 
 if ($themeToggle) {
   $themeToggle.addEventListener('click', function() {
-    const currentTheme = document.body.classList.contains('dark')
-      ? 'dark'
-      : 'light';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-    applyTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-
-    // Update iframe if it exists
-    try {
-      if ($previewIframe && $previewIframe.contentDocument) {
-        if (newTheme === 'dark') {
-          $previewIframe.contentDocument.documentElement.classList.add('dark');
-        } else {
-          $previewIframe.contentDocument.documentElement.classList.remove(
-            'dark',
-          );
-        }
-      }
-    } catch {
-      // Ignore cross-origin errors
-    }
+    const index = THEME_ORDER.indexOf(currentPreference);
+    const nextIndex = index === -1 ? 0 : (index + 1) % THEME_ORDER.length;
+    const nextPreference = THEME_ORDER[nextIndex];
+    applyPreference(nextPreference, true);
   });
 }
 
-// Listen for system theme changes
-if (window.matchMedia) {
-  window
-    .matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', function(e) {
-      if (!localStorage.getItem('theme')) {
-        applyTheme(e.matches ? 'dark' : 'light');
-      }
-    });
+const systemMatcher = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+if (systemMatcher) {
+  const handleSystemChange = function() {
+    if (currentPreference === 'system') {
+      applyPreference('system', false);
+    }
+  };
+
+  if (typeof systemMatcher.addEventListener === 'function') {
+    systemMatcher.addEventListener('change', handleSystemChange);
+  } else if (typeof systemMatcher.addListener === 'function') {
+    systemMatcher.addListener(handleSystemChange);
+  }
 }
 
 Promise.all([
