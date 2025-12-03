@@ -1,8 +1,11 @@
+import emojiRegex from 'emoji-regex';
 import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
+
+const emojiMatcher = emojiRegex();
 
 /**
  * Block Lexer
@@ -329,6 +332,8 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
 
     // Mask out blocks from extensions
     maskedSrc = this.options.hooks?.emStrongMask?.call({ lexer: this }, maskedSrc) ?? maskedSrc;
+
+    maskedSrc = maskedSrc.replace(emojiMatcher, (m) => 'a'.repeat(m.length));
 
     let keepPrevChar = false;
     let prevChar = '';

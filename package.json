@@ -60,6 +60,7 @@
     "commonmark": "0.31.2",
     "cross-env": "^10.1.0",
     "dts-bundle-generator": "^9.5.1",
+    "emoji-regex": "^10.6.0",
     "esbuild": "^0.27.0",
     "esbuild-plugin-umd-wrapper": "^3.0.0",
     "eslint": "^9.39.1",
