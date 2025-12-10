@@ -2,6 +2,9 @@ import { Marked, Renderer, lexer, parseInline, getDefaults, walkTokens, defaults
 import { timeout } from './utils.js';
 import assert from 'node:assert';
 import { describe, it, beforeEach, mock } from 'node:test';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'node:url';
 
 describe('marked unit', () => {
   let marked;
@@ -55,6 +58,15 @@ describe('marked unit', () => {
       assert.strictEqual(html, '<ul>\n<li><p><input disabled="" type="checkbox"> item 1</p>\n</li>\n<li><p><input disabled="" type="checkbox"> item 2</p>\n</li>\n</ul>\n');
     });
   });
+
+  describe('lists with tabs', () => {
+  it('should correctly render markdown from the list_with_tabs fixture', () => {
+    const markdown = fs.readFileSync(mdPath, 'utf8');
+    const html = marked.parse(markdown);
+    assert.ok(html.includes('<ol>') && html.includes('<ul>'), 'Expected list HTML not found');
+  });
+});
+
 
   describe('parseInline', () => {
     it('should parse inline tokens', () => {
