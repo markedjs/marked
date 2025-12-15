@@ -33,7 +33,6 @@ export function marked(src: string, options: MarkedOptions & { async: true }): P
  * @return String of compiled HTML. Will be a Promise of string if async is set to true by any extensions.
  */
 export function marked(src: string, options: MarkedOptions & { async: false }): string;
-export function marked(src: string, options: MarkedOptions & { async: true }): Promise<string>;
 export function marked(src: string, options?: MarkedOptions | null): string | Promise<string>;
 export function marked(src: string, opt?: MarkedOptions | null): string | Promise<string> {
   return markedInstance.parse(src, opt);
