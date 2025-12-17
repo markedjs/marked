@@ -93,7 +93,7 @@ function getSystemTheme() {
 }
 
 function sanitisePreference(value) {
-  return value === 'dark' || value === 'light' || value === 'system' ? value : null;
+  return THEME_ORDER.includes(value) ? value : null;
 }
 
 function readStoredPreference() {
