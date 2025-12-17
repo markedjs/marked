@@ -160,7 +160,7 @@ applyPreference(currentPreference, true);
 if ($themeToggle) {
   $themeToggle.addEventListener('click', function() {
     const index = THEME_ORDER.indexOf(currentPreference);
-    const nextIndex = index === -1 ? 0 : (index + 1) % THEME_ORDER.length;
+    const nextIndex = (index + 1) % THEME_ORDER.length;
     const nextPreference = THEME_ORDER[nextIndex];
     applyPreference(nextPreference, true);
   });
