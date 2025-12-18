@@ -93,7 +93,7 @@ $ marked --help
 ```
 <details>
 
-<summary>Render Full Page as Markdown</summary>
+<summary>Render On-Page Content as Markdown</summary>
 
 ```html
 <!DOCTYPE html>
@@ -108,18 +108,19 @@ $ marked --help
  </head>
 
  <body> 
-  <div id="markdown" class="markdown-body">
+  <textarea id="markdown-source" style="display: none;">
 # Title
 
 Lots of text using **markdown syntax.**
-  </div>
+  </textarea>
+  <div id="content" class="markdown-body"></div>
   
   <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
   <script>
-    const md = document.getElementById("markdown");
+    const source = document.getElementById('markdown-source').value;
     
-    // Parse the markdown formatted data, output as HTML, and render as if markdown.
-    md.innerHTML = marked.parse(md.textContent);
+    // Parse the markdown and render it into the content div.
+    document.getElementById('content').innerHTML = marked.parse(source);
   </script>
  </body>
 </html>
