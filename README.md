@@ -91,6 +91,41 @@ $ marked --help
 </body>
 </html>
 ```
+<details>
+
+<summary>Render Full Page as Markdown</summary>
+
+```html
+<!DOCTYPE html>
+<html>
+ <head>
+   <!-- Suggested stylesheet -->
+   <link rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+   <title>Marked for the full page</title>
+ </head>
+
+ <body> 
+  <div id="markdown" class="markdown-body">
+# Title
+
+Lots of text using **markdown syntax.**
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+  <script>
+    const md = document.getElementById("markdown");
+    
+    // Parse the markdown formatted data, output as HTML, and render as if markdown.
+    md.innerHTML = marked.parse(md.textContent);
+  </script>
+ </body>
+</html>
+```
+</details>
+
 or import esm module
 
 ```html
