@@ -9,12 +9,38 @@
     <script>
       (function () {
         try {
-          var theme = localStorage.getItem("theme");
+          var STORAGE_KEY = "theme-preference";
+          var LEGACY_KEY = "theme";
+          var stored = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_KEY);
+          var preference = stored === "dark" || stored === "light" || stored === "system" ? stored : "system";
           var prefersDark =
             window.matchMedia &&
             window.matchMedia("(prefers-color-scheme: dark)").matches;
-          if (theme === "dark" || (!theme && prefersDark)) {
+          var shouldUseDark = prefersDark;
+
+          if (preference === "dark") {
+            shouldUseDark = true;
+          } else if (preference === "light") {
+            shouldUseDark = false;
+          }
+
+          if (shouldUseDark) {
             document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }
+
+          document.documentElement.setAttribute("data-theme-preference", preference);
+          document.documentElement.setAttribute(
+            "data-theme",
+            shouldUseDark ? "dark" : "light",
+          );
+
+          localStorage.setItem(STORAGE_KEY, preference);
+          if (preference === "system") {
+            localStorage.removeItem(LEGACY_KEY);
+          } else {
+            localStorage.setItem(LEGACY_KEY, preference);
           }
         } catch (e) {}
       })();
@@ -420,15 +446,12 @@
             </h1>
             <button
               id="theme-toggle"
-              aria-label="Toggle dark mode"
+              data-theme-mode="system"
+              aria-label="Switch theme"
               class="flex items-center gap-2 px-4 py-2 rounded-lg text-subtle-light dark:text-subtle-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
-              <span class="material-icons dark:hidden">dark_mode</span>
-              <span class="dark:hidden text-sm font-medium">Dark Mode</span>
-              <span class="material-icons hidden dark:inline">light_mode</span>
-              <span class="hidden dark:inline text-sm font-medium"
-                >Light Mode</span
-              >
+              <span class="material-icons" data-theme-icon>brightness_auto</span>
+              <span class="text-sm font-medium" data-theme-text>System</span>
             </button>
           </div>
 

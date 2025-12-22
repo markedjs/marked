@@ -2,8 +2,8 @@ html, body {
 	margin: 0;
 	padding: 0;
 	font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	color: #1F2937;
-	background-color: #FFFFFF;
+	color: var(--text-color);
+	background-color: var(--background-color);
 	height: 100%;
 	overflow: auto;
 	transition: background-color 0.3s ease, color 0.3s ease;
@@ -21,7 +21,7 @@ header {
 	align-items: center;
 	height: 68px;
 	box-sizing: border-box;
-	border-bottom: 1px solid #E5E7EB;
+	border-bottom: 1px solid var(--border-color);
 	gap: 16px;
 }
 
@@ -45,8 +45,9 @@ header h1 {
 	font-size: 14px;
 }
 
+
 .other-demos a {
-	color: #6B7280;
+	color: var(--subtle-text-color);
 	text-decoration: none;
 	transition: color 0.2s ease;
 }
@@ -56,8 +57,9 @@ header h1 {
 }
 
 .other-demos .separator {
-	color: #9CA3AF;
+	color: var(--subtle-text-color);
 }
+
 
 .theme-toggle {
 	margin-left: 16px;
@@ -68,7 +70,7 @@ header h1 {
 	border: none;
 	border-radius: 8px;
 	background-color: transparent;
-	color: #6B7280;
+	color: var(--subtle-text-color);
 	cursor: pointer;
 	font-family: inherit;
 	font-size: 14px;
@@ -77,27 +79,12 @@ header h1 {
 }
 
 .theme-toggle:hover {
-	background-color: #F3F4F6;
-	color: #1F2937;
+	background-color: var(--code-bg-color);
+	color: var(--text-color);
 }
 
 .theme-toggle .material-icons {
 	font-size: 20px;
-}
-
-.theme-toggle .dark-icon,
-.theme-toggle .dark-text {
-	display: none;
-}
-
-body.dark .theme-toggle .light-icon,
-body.dark .theme-toggle .light-text {
-	display: none;
-}
-
-body.dark .theme-toggle .dark-icon,
-body.dark .theme-toggle .dark-text {
-	display: inline;
 }
 
 .containers {
@@ -116,24 +103,28 @@ body.dark .theme-toggle .dark-text {
 	box-sizing: border-box;
 }
 
+
 .label {
 	padding: 8px 12px;
-	background-color: #F3F4F6;
-	border: 1px solid #E5E7EB;
+	background-color: var(--code-bg-color);
+	border: 1px solid var(--border-color);
 	border-radius: 8px 8px 0 0;
 	font-size: 14px;
 	font-weight: 500;
 	display: flex;
 	align-items: center;
 	gap: 8px;
+	color: var(--text-color);
 }
+
 
 .label select,
 .label button {
 	padding: 4px 8px;
 	border-radius: 4px;
-	border: 1px solid #D1D5DB;
-	background-color: #FFFFFF;
+	border: 1px solid var(--border-color);
+	background-color: var(--background-color);
+	color: var(--text-color);
 	font-size: 13px;
 	cursor: pointer;
 	transition: border-color 0.2s ease;
@@ -153,16 +144,17 @@ body.dark .theme-toggle .dark-text {
 	text-decoration: underline;
 }
 
+
 .pane, .inputPane {
 	padding: 12px;
-	border: 1px solid #E5E7EB;
+	border: 1px solid var(--border-color);
 	border-top: none;
 	border-radius: 0 0 8px 8px;
 	overflow: auto;
 	flex-grow: 1;
 	flex-shrink: 1;
-	background-color: #FFFFFF;
-	color: #1F2937;
+	background-color: var(--background-color);
+	color: var(--text-color);
 	transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -185,7 +177,7 @@ body.dark .theme-toggle .dark-text {
 	justify-content: center;
 	height: 100vh;
 	font-size: 18px;
-	color: #6B7280;
+	color: var(--subtle-text-color);
 }
 
 .error {
@@ -209,73 +201,19 @@ body.dark .theme-toggle .dark-text {
 	color: #3B82F6;
 }
 
-/* Dark mode styles */
-body.dark {
-	color: #F9FAFB;
-	background-color: #111827;
-}
 
-body.dark header {
-	border-bottom-color: #374151;
-}
-
-body.dark .other-demos a {
-	color: #9CA3AF;
-}
-
-body.dark .other-demos a:hover {
-	color: #3B82F6;
-}
-
-body.dark .other-demos .separator {
-	color: #6B7280;
-}
-
-body.dark .theme-toggle {
-	color: #9CA3AF;
-}
-
-body.dark .theme-toggle:hover {
-	background-color: #1F2937;
-	color: #F9FAFB;
-}
-
-body.dark .label {
-	background-color: #1F2937;
-	border-color: #374151;
-	color: #F9FAFB;
-}
-
-body.dark .label select,
-body.dark .label button {
-	background-color: #111827;
-	color: #F9FAFB;
-	border-color: #374151;
-}
-
-body.dark .label select:hover,
-body.dark .label button:hover {
-	border-color: #3B82F6;
-}
-
-body.dark .pane,
-body.dark .inputPane {
-	background-color: #1F2937;
-	border-color: #374151;
-	color: #F9FAFB;
-}
-
-body.dark .error {
+/* Dark mode specific overrides */
+html.dark .error {
 	background-color: #2c1d1d !important;
 	border-color: #F87171 !important;
 	color: #FCA5A5;
 }
 
-body.dark .loadingError {
+html.dark .loadingError {
 	background-color: #2c1d1d;
 	color: #FCA5A5;
 }
 
-body.dark #loading {
+html.dark #loading {
 	color: #9CA3AF;
 }

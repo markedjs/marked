@@ -1,84 +1,122 @@
 document.addEventListener('DOMContentLoaded', function() {
   // --- Theme Toggling ---
   const themeToggle = document.getElementById('theme-toggle');
+  const themeToggleIcon = themeToggle ? themeToggle.querySelector('[data-theme-icon]') : null;
+  const themeToggleText = themeToggle ? themeToggle.querySelector('[data-theme-text]') : null;
 
-  // Function to apply theme
+  const THEME_STORAGE_KEY = 'theme-preference';
+  const LEGACY_STORAGE_KEY = 'theme';
+  const THEME_ORDER = ['system', 'light', 'dark'];
+  const TOGGLE_UI = {
+    system: { icon: 'brightness_auto', text: 'System' },
+    light: { icon: 'light_mode', text: 'Light' },
+    dark: { icon: 'dark_mode', text: 'Dark' },
+  };
+
   function applyTheme(theme) {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
+    document.documentElement.setAttribute('data-theme', theme);
   }
 
-  // Function to get saved theme or system preference
-  function getPreferredTheme() {
-    // Check localStorage first
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      return savedTheme;
-    }
-
-    // Check system preference
+  function getSystemTheme() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       return 'dark';
     }
-
-    // Default to light
     return 'light';
   }
 
-  // Apply theme on page load
-  const initialTheme = getPreferredTheme();
-  applyTheme(initialTheme);
+  function sanitisePreference(value) {
+    return THEME_ORDER.includes(value) ? value : null;
+  }
 
-  // Theme toggle click handler
+  function readStoredPreference() {
+    try {
+      const stored = sanitisePreference(localStorage.getItem(THEME_STORAGE_KEY));
+      if (stored) {
+        return stored;
+      }
+      return sanitisePreference(localStorage.getItem(LEGACY_STORAGE_KEY));
+    } catch {
+      return null;
+    }
+  }
+
+  function writeStoredPreference(preference) {
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, preference);
+      if (preference === 'light' || preference === 'dark') {
+        localStorage.setItem(LEGACY_STORAGE_KEY, preference);
+      } else {
+        localStorage.removeItem(LEGACY_STORAGE_KEY);
+      }
+    } catch {
+      // Storage might be unavailable; ignore
+    }
+  }
+
+  function getEffectiveTheme(preference) {
+    return preference === 'system' ? getSystemTheme() : preference;
+  }
+
+  function updateToggle(preference) {
+    if (!themeToggle) {
+      return;
+    }
+    const details = TOGGLE_UI[preference] || TOGGLE_UI.system;
+    if (themeToggleIcon) {
+      themeToggleIcon.textContent = details.icon;
+    }
+    if (themeToggleText) {
+      themeToggleText.textContent = details.text;
+    }
+    themeToggle.setAttribute('data-theme-mode', preference);
+    const label = `Switch theme (current: ${details.text})`;
+    themeToggle.setAttribute('aria-label', label);
+    themeToggle.title = label;
+  }
+
+  let currentPreference = readStoredPreference() || 'system';
+
+  function applyPreference(preference, persist) {
+    currentPreference = preference;
+    const effectiveTheme = getEffectiveTheme(preference);
+    applyTheme(effectiveTheme);
+    document.documentElement.setAttribute('data-theme-preference', preference);
+    updateToggle(preference);
+    if (persist) {
+      writeStoredPreference(preference);
+    }
+  }
+
+  applyPreference(currentPreference, true);
+
   if (themeToggle) {
     themeToggle.addEventListener('click', function() {
-      const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-      // Apply and save the new theme
-      applyTheme(newTheme);
-      localStorage.setItem('theme', newTheme);
+      const index = THEME_ORDER.indexOf(currentPreference);
+      const nextIndex = index === -1 ? 0 : (index + 1) % THEME_ORDER.length;
+      const nextPreference = THEME_ORDER[nextIndex];
+      applyPreference(nextPreference, true);
     });
   }
 
-  // Listen for system theme changes
-  if (window.matchMedia) {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-      // Only apply system preference if user hasn't manually set a preference
-      if (!localStorage.getItem('theme')) {
-        applyTheme(e.matches ? 'dark' : 'light');
+  const systemMatcher = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  if (systemMatcher) {
+    const handleSystemChange = function() {
+      if (currentPreference === 'system') {
+        applyPreference('system', false);
       }
-    });
+    };
+
+    if (typeof systemMatcher.addEventListener === 'function') {
+      systemMatcher.addEventListener('change', handleSystemChange);
+    } else if (typeof systemMatcher.addListener === 'function') {
+      systemMatcher.addListener(handleSystemChange);
+    }
   }
-
-  // --- Navigation Link Highlighting ---
-  const navLinks = document.querySelectorAll('nav a');
-  const activeClasses = ['text-primary', 'dark:text-primary', 'font-medium'];
-  const inactiveClasses = ['text-subtle-light', 'dark:text-subtle-dark'];
-
-  function hashChange() {
-    // Use location.pathname and location.hash for more accurate matching
-    const currentUrl = window.location.pathname + window.location.hash;
-
-    navLinks.forEach(function(link) {
-      const linkUrl = new URL(link.href);
-      const linkPath = linkUrl.pathname + linkUrl.hash;
-
-      if (linkPath === currentUrl) {
-        link.classList.add(...activeClasses);
-        link.classList.remove(...inactiveClasses);
-      } else {
-        link.classList.remove(...activeClasses);
-        link.classList.add(...inactiveClasses);
-      }
-    });
-  }
-
-  window.addEventListener('hashchange', hashChange);
-  hashChange(); // Run on initial load
 
   // --- Copy-to-Clipboard Button ---
   const allPres = document.querySelectorAll('pre');
