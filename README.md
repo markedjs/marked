@@ -91,42 +91,6 @@ $ marked --help
 </body>
 </html>
 ```
-<details>
-
-<summary>Render On-Page Content as Markdown</summary>
-
-```html
-<!DOCTYPE html>
-<html>
- <head>
-   <!-- Suggested stylesheet -->
-   <link rel="stylesheet" 
-    href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown.min.css"
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-   <title>Marked for the full page</title>
- </head>
-
- <body> 
-  <textarea id="markdown-source" style="display: none;">
-# Title
-
-Lots of text using **markdown syntax.**
-  </textarea>
-  <div id="content" class="markdown-body"></div>
-  
-  <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
-  <script>
-    const source = document.getElementById('markdown-source').value;
-    
-    // Parse the markdown and render it into the content div.
-    document.getElementById('content').innerHTML = marked.parse(source);
-  </script>
- </body>
-</html>
-```
-</details>
-
 or import esm module
 
 ```html

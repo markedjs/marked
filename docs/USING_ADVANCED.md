@@ -111,6 +111,41 @@ Marked can be extended using [custom extensions](/using_pro#extensions). This is
 |[Typograf](https://github.com/laidrivm/marked-typograf)|[`marked-typograf`](https://www.npmjs.com/package/marked-typograf)|Use [typograf](https://www.npmjs.com/package/typograf) as a more powerful and extendable alternative to Smartypants for creating “smart” typographic punctuation, such as quotes and dashes.|
 |[XHTML](https://github.com/markedjs/marked-xhtml)|[`marked-xhtml`](https://www.npmjs.com/package/marked-xhtml)|Emit self-closing HTML tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.|
 
+<h2 id="browser">Browser</h2>
+
+Marked can render on-page content as markdown in the browser.
+
+```html
+<!DOCTYPE html>
+<html>
+ <head>
+   <!-- Suggested stylesheet -->
+   <link rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+   <title>Marked for the full page</title>
+ </head>
+
+ <body> 
+  <textarea id="markdown-source" style="display: none;">
+# Title
+
+Lots of text using **markdown syntax.**
+  </textarea>
+  <div id="content" class="markdown-body"></div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+  <script>
+    const source = document.getElementById('markdown-source').value;
+    
+    // Parse the markdown and render it into the content div.
+    document.getElementById('content').innerHTML = marked.parse(source);
+  </script>
+ </body>
+</html>
+```
+
 <h2 id="inline">Inline Markdown</h2>
 
 You can parse inline markdown by running markdown through `marked.parseInline`.
