@@ -114,6 +114,7 @@ Marked can be extended using [custom extensions](/using_pro#extensions). This is
 <h2 id="user-examples">User Examples</h2>
 
 <details>
+
 <summary>Marked can render on-page content as markdown in the browser.</summary>
 
 ```html
@@ -145,6 +146,9 @@ Lots of text using **markdown syntax.**
   </script>
  </body>
 </html>
+```
+</details>
+
 <h2 id="inline">Inline Markdown</h2>
 
 You can parse inline markdown by running markdown through `marked.parseInline`.
