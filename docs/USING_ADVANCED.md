@@ -111,9 +111,10 @@ Marked can be extended using [custom extensions](/using_pro#extensions). This is
 |[Typograf](https://github.com/laidrivm/marked-typograf)|[`marked-typograf`](https://www.npmjs.com/package/marked-typograf)|Use [typograf](https://www.npmjs.com/package/typograf) as a more powerful and extendable alternative to Smartypants for creating “smart” typographic punctuation, such as quotes and dashes.|
 |[XHTML](https://github.com/markedjs/marked-xhtml)|[`marked-xhtml`](https://www.npmjs.com/package/marked-xhtml)|Emit self-closing HTML tags for void elements (&lt;br/&gt;, &lt;img/&gt;, etc.) with a "/" as required by XHTML.|
 
-<h2 id="browser">Browser</h2>
+<h2 id="user-examples">User Examples</h2>
 
-Marked can render on-page content as markdown in the browser.
+<details>
+<summary>Marked can render on-page content as markdown in the browser.</summary>
 
 ```html
 <!DOCTYPE html>
@@ -144,8 +145,6 @@ Lots of text using **markdown syntax.**
   </script>
  </body>
 </html>
-```
-
 <h2 id="inline">Inline Markdown</h2>
 
 You can parse inline markdown by running markdown through `marked.parseInline`.
