@@ -50,7 +50,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
     "@markedjs/eslint-config": "^1.0.14",
-    "@markedjs/testutils": "15.0.11-0",
+    "@markedjs/testutils": "17.0.1-2",
     "@semantic-release/commit-analyzer": "^13.0.1",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^12.0.2",
