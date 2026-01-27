@@ -56,8 +56,10 @@ jobs:
 
   Release:
     permissions:
-      contents: write
-      id-token: write
+      contents: write # to be able to publish a GitHub release
+      # issues: write # to be able to comment on released issues
+      # pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for trusted publishing and npm provenance
     needs: [UnitTests, OtherTests]
     if: |
       github.ref == 'refs/heads/master' &&
@@ -75,7 +77,6 @@ jobs:
       - name: Build 🗜️
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           export SEMANTIC_RELEASE_NEXT_VERSION=$(npx semantic-release --no-ci --dry-run | grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+')
           echo "Next Version: $SEMANTIC_RELEASE_NEXT_VERSION"
@@ -88,5 +89,4 @@ jobs:
       - name: Release 🎉
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
