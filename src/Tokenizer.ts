@@ -827,7 +827,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     if (!nextChar || !prevChar || this.rules.inline.punctuation.exec(prevChar)) {
       // unicode Regex counts emoji as 1 char; spread into array for proper count
       const lLength = [...match[0]].length - 1;
-      let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
+      let rDelim, rLength, delimTotal = lLength;
 
       const endReg = this.rules.inline.delRDelim;
       endReg.lastIndex = 0;
@@ -847,11 +847,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         if (match[3] || match[4]) { // found another Left Delim
           delimTotal += rLength;
           continue;
-        } else if (match[5] || match[6]) { // either Left or Right Delim
-          if (lLength % 3 && !((lLength + rLength) % 3)) {
-            midDelimTotal += rLength;
-            continue; // CommonMark Emphasis Rules 9-10
-          }
         }
 
         delimTotal -= rLength;
@@ -859,14 +854,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         if (delimTotal > 0) continue; // Haven't found enough closing delimiters
 
         // Remove extra characters
-        rLength = Math.min(rLength, rLength + delimTotal + midDelimTotal);
+        rLength = Math.min(rLength, rLength + delimTotal);
         // char length can be >1 for unicode characters
         const lastCharLength = [...match[0]][0].length;
         const raw = src.slice(0, lLength + match.index + lastCharLength + rLength);
 
         // Create del token - only single ~ or double ~~ supported
-        // Since we only support ~~ for del, we use 2 for both slicing positions
-        const text = raw.slice(lLength === 1 ? 1 : 2, lLength === 1 ? -1 : -2);
+        const text = raw.slice(lLength, -lLength);
         return {
           type: 'del',
           raw,
