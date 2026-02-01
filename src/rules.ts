@@ -278,6 +278,11 @@ const _punctuationGfmStrongEm = /(?!~)[\p{P}\p{S}]/u;
 const _punctuationOrSpaceGfmStrongEm = /(?!~)[\s\p{P}\p{S}]/u;
 const _notPunctuationOrSpaceGfmStrongEm = /(?:[^\s\p{P}\p{S}]|~)/u;
 
+// GFM allows * and _ inside strikethrough
+const _punctuationGfmDel = /(?![*_])[\p{P}\p{S}]/u;
+const _punctuationOrSpaceGfmDel = /(?![*_])[\s\p{P}\p{S}]/u;
+const _notPunctuationOrSpaceGfmDel = /(?:[^\s\p{P}\p{S}]|[*_])/u;
+
 // sequences em should skip over [title](link), `code`, <html>
 const blockSkip = edit(/link|precode-code|html/, 'g')
   .replace('link', /\[(?:[^\[\]`]|(?<a>`+)[^`]+\k<a>(?!`))*?\]\((?:\\[\s\S]|[^\\\(\)]|\((?:\\[\s\S]|[^\\\(\)])*\))*\)/)
@@ -330,6 +335,27 @@ const emStrongRDelimUnd = edit(
   .replace(/notPunctSpace/g, _notPunctuationOrSpace)
   .replace(/punctSpace/g, _punctuationOrSpace)
   .replace(/punct/g, _punctuation)
+  .getRegex();
+
+// Tilde left delimiter for strikethrough (similar to emStrongLDelim for asterisk)
+const delLDelim = edit(/^~~?(?:((?!~)punct)|[^\s~])/, 'u')
+  .replace(/punct/g, _punctuationGfmDel)
+  .getRegex();
+
+// Tilde delimiter patterns for strikethrough (similar to asterisk)
+const delRDelimCore =
+  '^[^~]+(?=[^~])' // Consume to delim
++ '|(?!~)punct(~~?)(?=[\\s]|$)' // (1) #~~ can only be a Right Delimiter
++ '|notPunctSpace(~~?)(?!~)(?=punctSpace|$)' // (2) a~~#, a~~ can only be a Right Delimiter
++ '|(?!~)punctSpace(~~?)(?=notPunctSpace)' // (3) #~~a, ~~a can only be Left Delimiter
++ '|[\\s](~~?)(?!~)(?=punct)' // (4) ~~# can only be Left Delimiter
++ '|(?!~)punct(~~?)(?!~)(?=punct)' // (5) #~~# can be either Left or Right Delimiter
++ '|notPunctSpace(~~?)(?=notPunctSpace)'; // (6) a~~a can be either Left or Right Delimiter
+
+const delRDelim = edit(delRDelimCore, 'gu')
+  .replace(/notPunctSpace/g, _notPunctuationOrSpaceGfmDel)
+  .replace(/punctSpace/g, _punctuationOrSpaceGfmDel)
+  .replace(/punct/g, _punctuationGfmDel)
   .getRegex();
 
 const anyPunctuation = edit(/\\(punct)/, 'gu')
@@ -389,6 +415,8 @@ const inlineNormal = {
   br,
   code: inlineCode,
   del: noopTest,
+  delLDelim: noopTest,
+  delRDelim: noopTest,
   emStrongLDelim,
   emStrongRDelimAst,
   emStrongRDelimUnd,
@@ -427,6 +455,8 @@ const inlineGfm: Record<InlineKeys, RegExp> = {
   ...inlineNormal,
   emStrongRDelimAst: emStrongRDelimAstGfm,
   emStrongLDelim: emStrongLDelimGfm,
+  delLDelim,
+  delRDelim,
   url: edit(/^((?:protocol):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/)
     .replace('protocol', _caseInsensitiveProtocol)
     .replace('email', /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/)
