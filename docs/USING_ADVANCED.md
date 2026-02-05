@@ -101,6 +101,7 @@ Marked can be extended using [custom extensions](/using_pro#extensions). This is
 |[Katex Code](https://github.com/UziTech/marked-katex-extension)|[`marked-katex-extension`](https://www.npmjs.com/package/marked-katex-extension)|Render [katex](https://katex.org/) code|
 |[LinkifyIt](https://github.com/UziTech/marked-linkify-it)|[`marked-linkify-it`](https://www.npmjs.com/package/marked-linkify-it)|Use [linkify-it](https://github.com/markdown-it/linkify-it) for urls|
 |[Mangle](https://github.com/markedjs/marked-mangle)|[`marked-mangle`](https://www.npmjs.com/package/marked-mangle)|Mangle mailto links with HTML character references|
+|[Marked Responsive Images](https://github.com/ELowry/MarkedResponsiveImages)|[`marked-responsive-images`](https://www.npmjs.com/package/marked-responsive-images)|Generate responsive (`srcset`) images based on structured filenames.|
 |[Misskey-flavored Markdown](https://akkoma.dev/sfr/marked-mfm)|[`marked-mfm`](https://www.npmjs.com/package/marked-mfm)|Custom extension for [Misskey-flavored Markdown](https://github.com/misskey-dev/mfm.js/blob/develop/docs/syntax.md).|
 |[More Lists](https://github.com/jasny/marked-more-lists)|[`marked-more-lists`](https://www.npmjs.com/package/marked-more-lists)|Support for alphabetical and roman numeral ordered lists|
 |[Plaintify](https://github.com/bent10/marked-extensions/tree/main/packages/plaintify)|[`marked-plaintify`](https://www.npmjs.com/package/marked-plaintify)|Converts Markdown to Plaintext|
