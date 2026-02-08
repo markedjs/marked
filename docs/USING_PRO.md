@@ -2,6 +2,31 @@
 
 To champion the single-responsibility and open/closed principles, we have tried to make it relatively painless to extend Marked. If you are looking to add custom functionality, this is the place to start.
 
+<h2 id="terminology">Terminology Note</h2>
+
+Before diving in, it's important to understand the terminology used in this documentation:
+
+| Term | TypeScript Type | Description |
+|------|----------------|-------------|
+| **Marked Extension** | `MarkedExtension` | The configuration object passed to `marked.use()`. Can contain options, hooks, renderer overrides, tokenizer overrides, and custom extensions. |
+| **Custom Extension** | `TokenizerAndRendererExtension` | Objects within the `extensions` array that define custom tokenizers and renderers for new syntax. |
+
+In other words, a **Marked Extension** is the top-level plugin configuration, while **Custom Extensions** are the individual tokenizer/renderer definitions for custom syntax within that configuration.
+
+```js
+// Marked Extension (MarkedExtension)
+marked.use({
+  gfm: true,
+  breaks: false,
+  renderer: { /* renderer overrides */ },
+  tokenizer: { /* tokenizer overrides */ },
+  // Custom Extensions (TokenizerAndRendererExtension[])
+  extensions: [
+    { name: 'myCustomSyntax', level: 'block', tokenizer: fn, renderer: fn }
+  ]
+});
+```
+
 <h2 id="use">marked.use()</h2>
 
 `marked.use(extension)` is the recommended way to extend Marked. The `extension` object can contain any [option](/using_advanced#options) available in Marked:
