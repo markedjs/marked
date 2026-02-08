@@ -818,15 +818,56 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     }
   }
 
-  del(src: string): Tokens.Del | undefined {
-    const cap = this.rules.inline.del.exec(src);
-    if (cap) {
-      return {
-        type: 'del',
-        raw: cap[0],
-        text: cap[2],
-        tokens: this.lexer.inlineTokens(cap[2]),
-      };
+  del(src: string, maskedSrc: string, prevChar = ''): Tokens.Del | undefined {
+    let match = this.rules.inline.delLDelim.exec(src);
+    if (!match) return;
+
+    const nextChar = match[1] || '';
+
+    if (!nextChar || !prevChar || this.rules.inline.punctuation.exec(prevChar)) {
+      // unicode Regex counts emoji as 1 char; spread into array for proper count
+      const lLength = [...match[0]].length - 1;
+      let rDelim, rLength, delimTotal = lLength;
+
+      const endReg = this.rules.inline.delRDelim;
+      endReg.lastIndex = 0;
+
+      // Clip maskedSrc to same section of string as src
+      maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
+
+      while ((match = endReg.exec(maskedSrc)) != null) {
+        rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
+
+        if (!rDelim) continue;
+
+        rLength = [...rDelim].length;
+
+        if (rLength !== lLength) continue;
+
+        if (match[3] || match[4]) { // found another Left Delim
+          delimTotal += rLength;
+          continue;
+        }
+
+        delimTotal -= rLength;
+
+        if (delimTotal > 0) continue; // Haven't found enough closing delimiters
+
+        // Remove extra characters
+        rLength = Math.min(rLength, rLength + delimTotal);
+        // char length can be >1 for unicode characters
+        const lastCharLength = [...match[0]][0].length;
+        const raw = src.slice(0, lLength + match.index + lastCharLength + rLength);
+
+        // Create del token - only single ~ or double ~~ supported
+        const text = raw.slice(lLength, -lLength);
+        return {
+          type: 'del',
+          raw,
+          text,
+          tokens: this.lexer.inlineTokens(text),
+        };
+      }
     }
   }
 
