@@ -3,6 +3,7 @@ import {
   rtrim,
   splitCells,
   findClosingBracket,
+  expandTabs,
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
 import type { _Lexer } from './Lexer.ts';
@@ -267,7 +268,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         raw = cap[0];
         src = src.substring(raw.length);
 
-        let line = cap[2].split('\n', 1)[0];
+        let line = expandTabs(cap[2].split('\n', 1)[0], cap[1].length);
         let nextLine = src.split('\n', 1)[0];
         let blankLine = !line.trim();
 
@@ -278,22 +279,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         } else if (blankLine) {
           indent = cap[1].length + 1;
         } else {
-          const cap1Length = cap[1].length;
-          let expanded = '';
-          let col = cap1Length;
-          for (let i = 0; i < line.length; i++) {
-            const char = line[i];
-            if (char === '\t') {
-              const added = 4 - (col % 4);
-              expanded += ' '.repeat(added);
-              col += added;
-            } else {
-              expanded += char;
-              col++;
-            }
-          }
-          line = expanded;
-
           indent = line.search(this.rules.other.nonSpaceChar); // Find first non-space char
           indent = indent > 4 ? 1 : indent; // Treat indented code blocks (> 4 spaces) as having only 1 indent
           itemContents = line.slice(indent);
