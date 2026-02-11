@@ -408,7 +408,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       }
 
       // del (gfm)
-      if (token = this.tokenizer.del(src)) {
+      if (token = this.tokenizer.del(src, maskedSrc, prevChar)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
