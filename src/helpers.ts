@@ -147,3 +147,20 @@ export function findClosingBracket(str: string, b: string) {
 
   return -1;
 }
+
+export function expandTabs(line: string, indent = 0) {
+  let col = indent;
+  let expanded = '';
+  for (const char of line) {
+    if (char === '\t') {
+      const added = 4 - (col % 4);
+      expanded += ' '.repeat(added);
+      col += added;
+    } else {
+      expanded += char;
+      col++;
+    }
+  }
+
+  return expanded;
+}

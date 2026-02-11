@@ -44,7 +44,6 @@ export const other = {
   blockquoteStart: /^ {0,3}>/,
   blockquoteSetextReplace: /\n {0,3}((?:=+|-+) *)(?=\n|$)/g,
   blockquoteSetextReplace2: /^ {0,3}>[ \t]?/gm,
-  listReplaceTabs: /^\t+/,
   listReplaceNesting: /^ {1,4}(?=( {4})*[^ ])/g,
   listIsTask: /^\[[ xX]\] +\S/,
   listReplaceTask: /^\[[ xX]\] +/,
@@ -159,7 +158,7 @@ const paragraph = edit(_paragraph)
   .replace('|table', '')
   .replace('blockquote', ' {0,3}>')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n')
-  .replace('list', ' {0,3}(?:[*+-]|1[.)]) ') // only lists starting from 1 can interrupt
+  .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]') // only lists starting from 1 can interrupt
   .replace('html', '</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)')
   .replace('tag', _tag) // pars can be interrupted by type (6) html blocks
   .getRegex();
@@ -203,7 +202,7 @@ const gfmTable = edit(
   .replace('blockquote', ' {0,3}>')
   .replace('code', '(?: {4}| {0,3}\t)[^\\n]')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n')
-  .replace('list', ' {0,3}(?:[*+-]|1[.)]) ') // only lists starting from 1 can interrupt
+  .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]') // only lists starting from 1 can interrupt
   .replace('html', '</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)')
   .replace('tag', _tag) // tables can be interrupted by type (6) html blocks
   .getRegex();
@@ -219,7 +218,7 @@ const blockGfm: Record<BlockKeys, RegExp> = {
     .replace('table', gfmTable) // interrupt paragraphs with table
     .replace('blockquote', ' {0,3}>')
     .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n')
-    .replace('list', ' {0,3}(?:[*+-]|1[.)]) ') // only lists starting from 1 can interrupt
+    .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]') // only lists starting from 1 can interrupt
     .replace('html', '</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)')
     .replace('tag', _tag) // pars can be interrupted by type (6) html blocks
     .getRegex(),
