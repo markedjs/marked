@@ -27,3 +27,5 @@ test ~~💁 test~~ test
 ~~t💁t~~ test
 
 ~1 😁~2
+
+~~🏴‍☠️~~ test
