@@ -182,7 +182,7 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     }
     href = cleanHref;
 
-    let out = `<img src="${href}" alt="${text}"`;
+    let out = `<img src="${href}" alt="${escape(text)}"`;
     if (title) {
       out += ` title="${escape(title)}"`;
     }
