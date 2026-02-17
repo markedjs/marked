@@ -1,7 +1,7 @@
 import { _defaults } from './defaults.ts';
 import {
   cleanUrl,
-  escape,
+  escapeHtmlEntities,
 } from './helpers.ts';
 import { other } from './rules.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
@@ -29,14 +29,14 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
 
     if (!langString) {
       return '<pre><code>'
-        + (escaped ? code : escape(code, true))
+        + (escaped ? code : escapeHtmlEntities(code, true))
         + '</code></pre>\n' as RendererOutput;
     }
 
     return '<pre><code class="language-'
-      + escape(langString)
+      + escapeHtmlEntities(langString)
       + '">'
-      + (escaped ? code : escape(code, true))
+      + (escaped ? code : escapeHtmlEntities(code, true))
       + '</code></pre>\n' as RendererOutput;
   }
 
@@ -146,7 +146,7 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
   }
 
   codespan({ text }: Tokens.Codespan): RendererOutput {
-    return `<code>${escape(text, true)}</code>` as RendererOutput;
+    return `<code>${escapeHtmlEntities(text, true)}</code>` as RendererOutput;
   }
 
   br(token: Tokens.Br): RendererOutput {
@@ -166,7 +166,7 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     href = cleanHref;
     let out = '<a href="' + href + '"';
     if (title) {
-      out += ' title="' + (escape(title)) + '"';
+      out += ' title="' + (escapeHtmlEntities(title)) + '"';
     }
     out += '>' + text + '</a>';
     return out as RendererOutput;
@@ -178,13 +178,13 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     }
     const cleanHref = cleanUrl(href);
     if (cleanHref === null) {
-      return escape(text) as RendererOutput;
+      return escapeHtmlEntities(text) as RendererOutput;
     }
     href = cleanHref;
 
     let out = `<img src="${href}" alt="${escape(text)}"`;
     if (title) {
-      out += ` title="${escape(title)}"`;
+      out += ` title="${escapeHtmlEntities(title)}"`;
     }
     out += '>';
     return out as RendererOutput;
@@ -193,6 +193,6 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
   text(token: Tokens.Text | Tokens.Escape): RendererOutput {
     return 'tokens' in token && token.tokens
       ? this.parser.parseInline(token.tokens) as unknown as RendererOutput
-      : ('escaped' in token && token.escaped ? token.text as RendererOutput : escape(token.text) as RendererOutput);
+      : ('escaped' in token && token.escaped ? token.text as RendererOutput : escapeHtmlEntities(token.text) as RendererOutput);
   }
 }

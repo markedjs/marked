@@ -5,7 +5,7 @@ import { _Hooks } from './Hooks.ts';
 import { _Renderer } from './Renderer.ts';
 import { _Tokenizer } from './Tokenizer.ts';
 import { _TextRenderer } from './TextRenderer.ts';
-import { escape } from './helpers.ts';
+import { escapeHtmlEntities } from './helpers.ts';
 import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
 import type { Token, Tokens, TokensList } from './Tokens.ts';
 
@@ -352,7 +352,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
 
       if (silent) {
         const msg = '<p>An error occurred:</p><pre>'
-          + escape(e.message + '', true)
+          + escapeHtmlEntities(e.message + '', true)
           + '</pre>';
         if (async) {
           return Promise.resolve(msg);
