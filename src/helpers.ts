@@ -12,7 +12,7 @@ const escapeReplacements: { [index: string]: string } = {
 };
 const getEscapeReplacement = (ch: string) => escapeReplacements[ch];
 
-export function escape(html: string, encode?: boolean) {
+export function escapeHtmlEntities(html: string, encode?: boolean) {
   if (encode) {
     if (other.escapeTest.test(html)) {
       return html.replace(other.escapeReplace, getEscapeReplacement);
@@ -24,20 +24,6 @@ export function escape(html: string, encode?: boolean) {
   }
 
   return html;
-}
-
-export function unescape(html: string) {
-  // explicitly match decimal, hex, and named HTML entities
-  return html.replace(other.unescapeTest, (_, n) => {
-    n = n.toLowerCase();
-    if (n === 'colon') return ':';
-    if (n.charAt(0) === '#') {
-      return n.charAt(1) === 'x'
-        ? String.fromCharCode(parseInt(n.substring(2), 16))
-        : String.fromCharCode(+n.substring(1));
-    }
-    return '';
-  });
 }
 
 export function cleanUrl(href: string) {
