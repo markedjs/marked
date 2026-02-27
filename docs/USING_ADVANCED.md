@@ -81,6 +81,7 @@ Marked can be extended using [custom extensions](/using_pro#extensions). This is
 
 |Name|Package Name|Description|
 |:---|:-----------|:----------|
+|[ABCjs](https://www.npmjs.com/package/marked-abc)|[`abcjs`](https://www.npmjs.com/package/marked-abc)|[ABCjs](https://www.abcjs.net/) sheet music rendering|
 |[Admonition](https://www.npmjs.com/package/marked-admonition-extension)|[`marked-admonition-extension`](https://www.npmjs.com/package/marked-admonition-extension)| Admonition extension |
 |[Alert](https://github.com/bent10/marked-extensions/tree/main/packages/alert)|[`marked-alert`](https://www.npmjs.com/package/marked-alert)|Enables [GFM alerts](https://github.com/orgs/community/discussions/16925)|
 |[Base URL](https://github.com/markedjs/marked-base-url)|[`marked-base-url`](https://www.npmjs.com/package/marked-base-url)|Prefix relative urls with a base URL|
