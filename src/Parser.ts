@@ -40,6 +40,7 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
    * Parse Loop
    */
   parse(tokens: Token[]): ParserOutput {
+    this.renderer.parser = this;
     let out = '';
 
     for (let i = 0; i < tokens.length; i++) {
@@ -126,6 +127,7 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
    * Parse Inline Tokens
    */
   parseInline(tokens: Token[], renderer: _Renderer<ParserOutput, RendererOutput> | _TextRenderer<RendererOutput> = this.renderer): ParserOutput {
+    this.renderer.parser = this;
     let out = '';
 
     for (let i = 0; i < tokens.length; i++) {

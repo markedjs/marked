@@ -1842,4 +1842,27 @@ paragraph
       });
     });
   });
+
+  describe('multiple instances', () => {
+    it('should produce identical tokens when multiple Lexer instances lex the same input (issue #3854)', () => {
+      // Create the first instance and lex — this may mutate shared _defaults.tokenizer.lexer
+      const lexer1 = new Lexer();
+      const tokensA = lexer1.lex('Test');
+
+      // Create a second instance after the first — previously tokensB.tokens would be empty
+      // because lexer1's constructor overwrote _defaults.tokenizer.lexer to point to lexer1
+      const lexer2 = new Lexer();
+      const tokensB = lexer2.lex('Test');
+
+      assert.deepEqual(tokensA, tokensB);
+    });
+
+    it('should produce identical tokens using static lex and instance lex (issue #3854)', () => {
+      const lexer = new Lexer();
+      const tokensA = Lexer.lex('Test');
+      const tokensB = lexer.lex('Test');
+
+      assert.deepEqual(tokensA, tokensB);
+    });
+  });
 });
