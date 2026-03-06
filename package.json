@@ -88,7 +88,7 @@
     "test:cjs": "node test/cjs-test.cjs",
     "test:lint": "eslint",
     "test:only": "npm run build && npm run test:specs:only && npm run test:unit:only",
-    "test:redos": "node test/recheck.js > vuln.js",
+    "test:redos": "node test/recheck.ts > vuln.js",
     "test:specs:only": "node --test --test-only --test-reporter=spec test/run-spec-tests.js",
     "test:specs": "node --test --test-reporter=spec test/run-spec-tests.js",
     "test:types": "tsc --project tsconfig-type-test.json && attw -P --entrypoints . --profile esm-only",

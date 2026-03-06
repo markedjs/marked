@@ -1,8 +1,12 @@
 import { block, inline, other } from '../src/rules.ts';
 import { check } from 'recheck';
 
-function checkRegexp(obj, name) {
-  return Promise.all(Object.keys(obj).map(async(prop) => {
+interface RegexpObj {
+  [k: string]: RegExp | string | ((arg: number) => RegExp | string) | ((arg: string) => RegExp | string) | RegexpObj;
+}
+
+async function checkRegexp(obj: RegexpObj, name: string) {
+  await Promise.all(Object.keys(obj).map(async(prop: string) => {
     const item = obj[prop];
     const itemName = `${name}.${prop}`;
     let source = '';
@@ -23,14 +27,16 @@ function checkRegexp(obj, name) {
     const recheckObj = await check(source, flags);
     try {
       console.log(`// ${itemName}: /${recheckObj.source}/${recheckObj.flags}`);
-      if (recheckObj.status !== 'safe') {
-        if (recheckObj?.attack?.pattern) {
+      switch (recheckObj.status) {
+        case 'safe':
+          console.log('// safe');
+          break;
+        case 'vulnerable':
           console.log(`// marked(${recheckObj.attack.pattern}, { pedantic: ${pedantic ? 'true' : 'false'}, gfm: ${gfm ? 'true' : 'false'} });`);
-        } else {
-          console.log('// error:', recheckObj?.error ?? recheckObj);
-        }
-      } else {
-        console.log('// safe');
+          break;
+        default:
+          console.log('// error:', recheckObj.error);
+          break;
       }
     } catch(e) {
       console.log(recheckObj);
