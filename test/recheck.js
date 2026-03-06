@@ -1,7 +1,6 @@
-import { Lexer } from '../lib/marked.esm.js';
+import { block, inline, other } from '../src/rules.ts';
 import { check } from 'recheck';
 
-const { inline, block } = Lexer.rules;
 function checkRegexp(obj, name) {
   return Promise.all(Object.keys(obj).map(async(prop) => {
     const item = obj[prop];
@@ -13,15 +12,29 @@ function checkRegexp(obj, name) {
       flags = item.flags;
     } else if (typeof item === 'string') {
       source = item;
+    } else if (typeof item === 'function') {
+      // TODO: skip functions for now
+      return;
     } else {
       return checkRegexp(item, itemName);
     }
     const gfm = itemName.includes('.gfm.');
     const pedantic = itemName.includes('.pedantic.');
     const recheckObj = await check(source, flags);
-    if (recheckObj.status !== 'safe') {
+    try {
       console.log(`// ${itemName}: /${recheckObj.source}/${recheckObj.flags}`);
-      console.log(`// marked(${recheckObj.attack.pattern}, { pedantic: ${pedantic ? 'true' : 'false'}, gfm: ${gfm ? 'true' : 'false'} });`);
+      if (recheckObj.status !== 'safe') {
+        if (recheckObj?.attack?.pattern) {
+          console.log(`// marked(${recheckObj.attack.pattern}, { pedantic: ${pedantic ? 'true' : 'false'}, gfm: ${gfm ? 'true' : 'false'} });`);
+        } else {
+          console.log('// error:', recheckObj?.error ?? recheckObj);
+        }
+      } else {
+        console.log('// safe');
+      }
+    } catch(e) {
+      console.log(recheckObj);
+      throw e;
     }
   }));
 }
@@ -35,6 +48,7 @@ const start = Date.now();
 await Promise.all([
   checkRegexp(inline, 'inline'),
   checkRegexp(block, 'block'),
+  checkRegexp(other, 'other'),
 ]);
 
 console.log(`
