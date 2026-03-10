@@ -871,7 +871,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         // Prevents e.g. `~125 GeV, while the top quark is **~173 GeV**` from matching as strikethrough,
         // since the closing ~ fails GFM right-flanking delimiter rules.
         // See https://github.github.com/gfm/#emphasis-and-strong-emphasis
-        if (lLength === 1 && raw.length < src.length && /[0-9a-zA-Z]/.test(src[raw.length])) continue;
+        if (lLength === 1 && raw.length < src.length && this.rules.other.unicodeAlphaNumeric.test(src[raw.length])) continue;
 
         return {
           type: 'del',
