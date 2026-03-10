@@ -866,6 +866,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
         // Create del token - only single ~ or double ~~ supported
         const text = raw.slice(lLength, -lLength);
+
+        // For single ~, skip if closing ~ is followed by an alphanumeric character.
+        // Prevents e.g. `~125 GeV, while the top quark is **~173 GeV**` from matching as strikethrough,
+        // since the closing ~ fails GFM right-flanking delimiter rules.
+        // See https://github.github.com/gfm/#emphasis-and-strong-emphasis
+        if (lLength === 1 && raw.length < src.length && /[0-9a-zA-Z]/.test(src[raw.length])) continue;
+
         return {
           type: 'del',
           raw,
