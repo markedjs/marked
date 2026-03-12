@@ -735,7 +735,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
     const nextChar = match[1] || match[2] || '';
 
-    const cnPuncFlag = /[（《【“‘]/.test(nextChar); // check Chinese start punctuations
+    const cnPuncFlag = /[（《【“‘「『]/.test(nextChar); // check Chinese start punctuations
     if (!nextChar || !prevChar || this.rules.inline.punctuation.exec(prevChar) || cnPuncFlag) {
       // unicode Regex counts emoji as 1 char; spread into array for proper count (used multiple times below)
       const lLength = [...match[0]].length - 1;
