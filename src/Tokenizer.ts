@@ -757,10 +757,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           if (!cnPuncEnd) continue; // skip single * in __abc*abc__
 
           // very hacky, I'm not know why, but it works
-          if (startChar.repeat(lLength) !== maskedSrc.substring(cnPos+1, cnPos+lLength+1)) continue;
+          if (startChar.repeat(lLength) !== maskedSrc.substring(cnPos + 1, cnPos + lLength + 1)) continue;
 
           match.index += match[0].length;
-          match[0] += maskedSrc[cnPos];
           rLength = lLength;
         } else {
           rLength = [...rDelim].length;
