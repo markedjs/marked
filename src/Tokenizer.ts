@@ -735,7 +735,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
     const nextChar = match[1] || match[2] || '';
 
-    if (!nextChar || !prevChar || this.rules.inline.punctuation.exec(prevChar)) {
+    const cnPuncFlag = this.rules.inline.punctuation.exec(nextChar);
+    if (!nextChar || !prevChar || this.rules.inline.punctuation.exec(prevChar) || cnPuncFlag) {
       // unicode Regex counts emoji as 1 char; spread into array for proper count (used multiple times below)
       const lLength = [...match[0]].length - 1;
       let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
@@ -753,7 +754,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
         rLength = [...rDelim].length;
 
-        if (match[3] || match[4]) { // found another Left Delim
+        if ((match[3] || match[4]) && !cnPuncFlag) { // found another Left Delim
           delimTotal += rLength;
           continue;
         } else if (match[5] || match[6]) { // either Left or Right Delim
