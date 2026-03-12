@@ -741,7 +741,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       const lLength = [...match[0]].length - 1;
       let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
 
-      const endReg = match[0][0] === '*' ? this.rules.inline.emStrongRDelimAst : this.rules.inline.emStrongRDelimUnd;
+      const startChar = match[0][0];
+      const endReg = startChar === '*' ? this.rules.inline.emStrongRDelimAst : this.rules.inline.emStrongRDelimUnd;
       endReg.lastIndex = 0;
 
       // Clip maskedSrc to same section of string as src (move to lexer?)
@@ -750,11 +751,22 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       while ((match = endReg.exec(maskedSrc)) != null) {
         rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
-        if (!rDelim) continue; // skip single * in __abc*abc__
+        const cnPos = match.index+match[0].length;
+        const cnPuncEnd = /[）》】”’」』]/.test(maskedSrc[cnPos]); // check Chinese end punctuations
+        if (!rDelim) {
+          if (!cnPuncEnd) continue; // skip single * in __abc*abc__
 
-        rLength = [...rDelim].length;
+          // very hacky, I'm not know why, but it works
+          if (startChar.repeat(lLength) !== maskedSrc.substring(cnPos+1, cnPos+lLength+1)) continue;
 
-        if ((match[3] || match[4]) && !cnPuncFlag) { // found another Left Delim
+          match.index += match[0].length;
+          match[0] += maskedSrc[cnPos];
+          rLength = lLength;
+        } else {
+          rLength = [...rDelim].length;
+        }
+
+        if (match[3] || match[4]) { // found another Left Delim
           delimTotal += rLength;
           continue;
         } else if (match[5] || match[6]) { // either Left or Right Delim
