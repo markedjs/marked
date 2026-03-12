@@ -751,7 +751,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       while ((match = endReg.exec(maskedSrc)) != null) {
         rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
-        const cnPos = match.index+match[0].length;
+        const cnPos = match.index + match[0].length;
         const cnPuncEnd = /[）》】”’」』]/.test(maskedSrc[cnPos]); // check Chinese end punctuations
         if (!rDelim) {
           if (!cnPuncEnd) continue; // skip single * in __abc*abc__
