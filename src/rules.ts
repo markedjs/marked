@@ -290,7 +290,7 @@ const blockSkip = edit(/link|precode-code|html/, 'g')
   .replace('html', /<(?! )[^<>]*?>/)
   .getRegex();
 
-const emStrongLDelimCore = /^(?:\*+(?:((?!\*)punct)|[^\s*]))|^_+(?:((?!_)punct)|([^\s_]))/;
+const emStrongLDelimCore = /^(?:\*+(?:((?!\*)punct)|([^\s*]))?)|^_+(?:((?!_)punct)|([^\s_]))?/;
 
 const emStrongLDelim = edit(emStrongLDelimCore, 'u')
   .replace(/punct/g, _punctuation)
