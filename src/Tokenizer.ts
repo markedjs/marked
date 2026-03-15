@@ -866,7 +866,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
         // Create del token - only single ~ or double ~~ supported
         const text = raw.slice(lLength, -lLength);
-
         return {
           type: 'del',
           raw,
