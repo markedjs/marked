@@ -277,11 +277,6 @@ const _punctuationGfmStrongEm = /(?!~)[\p{P}\p{S}]/u;
 const _punctuationOrSpaceGfmStrongEm = /(?!~)[\s\p{P}\p{S}]/u;
 const _notPunctuationOrSpaceGfmStrongEm = /(?:[^\s\p{P}\p{S}]|~)/u;
 
-// GFM allows * and _ inside strikethrough
-const _punctuationGfmDel = /(?![*_])[\p{P}\p{S}]/u;
-const _punctuationOrSpaceGfmDel = /(?![*_])[\s\p{P}\p{S}]/u;
-const _notPunctuationOrSpaceGfmDel = /(?:[^\s\p{P}\p{S}]|[*_])/u;
-
 // sequences em should skip over [title](link), `code`, <html>
 const blockSkip = edit(/link|precode-code|html/, 'g')
   .replace('link', /\[(?:[^\[\]`]|(?<a>`+)[^`]+\k<a>(?!`))*?\]\((?:\\[\s\S]|[^\\\(\)]|\((?:\\[\s\S]|[^\\\(\)])*\))*\)/)
@@ -338,7 +333,7 @@ const emStrongRDelimUnd = edit(
 
 // Tilde left delimiter for strikethrough (similar to emStrongLDelim for asterisk)
 const delLDelim = edit(/^~~?(?:((?!~)punct)|[^\s~])/, 'u')
-  .replace(/punct/g, _punctuationGfmDel)
+  .replace(/punct/g, _punctuation)
   .getRegex();
 
 // Tilde delimiter patterns for strikethrough (similar to asterisk)
@@ -352,9 +347,9 @@ const delRDelimCore =
 + '|notPunctSpace(~~?)(?=notPunctSpace)'; // (6) a~~a can be either Left or Right Delimiter
 
 const delRDelim = edit(delRDelimCore, 'gu')
-  .replace(/notPunctSpace/g, _notPunctuationOrSpaceGfmDel)
-  .replace(/punctSpace/g, _punctuationOrSpaceGfmDel)
-  .replace(/punct/g, _punctuationGfmDel)
+  .replace(/notPunctSpace/g, _notPunctuationOrSpace)
+  .replace(/punctSpace/g, _punctuationOrSpace)
+  .replace(/punct/g, _punctuation)
   .getRegex();
 
 const anyPunctuation = edit(/\\(punct)/, 'gu')
