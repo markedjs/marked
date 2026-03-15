@@ -867,16 +867,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         // Create del token - only single ~ or double ~~ supported
         const text = raw.slice(lLength, -lLength);
 
-        // For single ~, skip if closing ~ is not right-flanking per GFM rules:
-        // the closing ~ must be preceded by a non-whitespace, non-punctuation char (alphanumeric)
-        // to be right-flanking. If followed by alphanumeric but NOT preceded by alphanumeric,
-        // it fails the right-flanking delimiter test.
-        // See https://github.github.com/gfm/#emphasis-and-strong-emphasis
-        if (lLength === 1
-          && raw.length < src.length
-          && this.rules.other.unicodeAlphaNumeric.test(src[raw.length])
-          && !this.rules.other.unicodeAlphaNumeric.test(src[raw.length - 2])) continue;
-
         return {
           type: 'del',
           raw,
