@@ -574,12 +574,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   lheading(src: string): Tokens.Heading | undefined {
     const cap = this.rules.block.lheading.exec(src);
     if (cap) {
+      const text = cap[1].trim();
       return {
         type: 'heading',
         raw: cap[0],
         depth: cap[2].charAt(0) === '=' ? 1 : 2,
-        text: cap[1],
-        tokens: this.lexer.inline(cap[1]),
+        text,
+        tokens: this.lexer.inline(text),
       };
     }
   }

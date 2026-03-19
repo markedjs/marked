@@ -165,6 +165,19 @@ lheading 2
       });
     });
 
+    it('lheading should trim trailing whitespace from text', () => {
+      expectTokens({
+        md: 'heading with trailing spaces   \n==============================',
+        tokens: [{
+          type: 'heading',
+          raw: 'heading with trailing spaces   \n==============================',
+          depth: 1,
+          text: 'heading with trailing spaces',
+          tokens: [{ type: 'text', raw: 'heading with trailing spaces', text: 'heading with trailing spaces', escaped: false }],
+        }],
+      });
+    });
+
     it('should not be heading if depth > 6', () => {
       expectTokens({
         md: '####### heading 7',
