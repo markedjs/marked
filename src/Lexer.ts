@@ -105,6 +105,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
   blockTokens(src: string, tokens?: Token[], lastParagraphClipped?: boolean): Token[];
   blockTokens(src: string, tokens?: TokensList, lastParagraphClipped?: boolean): TokensList;
   blockTokens(src: string, tokens: Token[] = [], lastParagraphClipped = false) {
+    this.tokenizer.lexer = this;
     if (this.options.pedantic) {
       src = src.replace(other.tabCharGlobal, '    ').replace(other.spaceLine, '');
     }
@@ -297,6 +298,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
    * Lexing/Compiling
    */
   inlineTokens(src: string, tokens: Token[] = []): Token[] {
+    this.tokenizer.lexer = this;
     // String with links masked to avoid interference with em and strong
     let maskedSrc = src;
     let match: RegExpExecArray | null = null;
