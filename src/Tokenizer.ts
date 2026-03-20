@@ -730,11 +730,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   emStrong(src: string, maskedSrc: string, prevChar = ''): Tokens.Em | Tokens.Strong | undefined {
     let match = this.rules.inline.emStrongLDelim.exec(src);
     if (!match) return;
+    if (!match[1] && !match[2] && !match[3] && !match[4]) return;
 
     // _ can't be between two alphanumerics. \p{L}\p{N} includes non-english alphabet/numbers as well
-    if (match[3] && prevChar.match(this.rules.other.unicodeAlphaNumeric)) return;
+    if (match[4] && prevChar.match(this.rules.other.unicodeAlphaNumeric)) return;
 
-    const nextChar = match[1] || match[2] || '';
+    const nextChar = match[1] || match[3] || '';
 
     if (!nextChar || !prevChar || this.rules.inline.punctuation.exec(prevChar)) {
       // unicode Regex counts emoji as 1 char; spread into array for proper count (used multiple times below)
