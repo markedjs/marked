@@ -189,6 +189,80 @@ lheading 2
         }],
       });
     });
+
+    it('should strip trailing hashes with preceding space', () => {
+      expectTokens({
+        md: '## heading ##',
+        tokens: [{
+          type: 'heading',
+          raw: '## heading ##',
+          depth: 2,
+          text: 'heading',
+          tokens: [{ type: 'text', raw: 'heading', text: 'heading', escaped: false }],
+        }],
+      });
+    });
+
+    it('should not strip trailing hashes without preceding space', () => {
+      expectTokens({
+        md: '## heading##',
+        tokens: [{
+          type: 'heading',
+          raw: '## heading##',
+          depth: 2,
+          text: 'heading##',
+          tokens: [{ type: 'text', raw: 'heading##', text: 'heading##', escaped: false }],
+        }],
+      });
+    });
+
+    it('should tokenize inline content inside heading', () => {
+      expectTokens({
+        md: '## **bold** and _em_',
+        tokens: [{
+          type: 'heading',
+          raw: '## **bold** and _em_',
+          depth: 2,
+          text: '**bold** and _em_',
+          tokens: [
+            {
+              type: 'strong',
+              raw: '**bold**',
+              text: 'bold',
+              tokens: [{ type: 'text', raw: 'bold', text: 'bold', escaped: false }],
+            },
+            { type: 'text', raw: ' and ', text: ' and ', escaped: false },
+            {
+              type: 'em',
+              raw: '_em_',
+              text: 'em',
+              tokens: [{ type: 'text', raw: 'em', text: 'em', escaped: false }],
+            },
+          ],
+        }],
+      });
+    });
+
+    it('heading immediately followed by paragraph without blank line', () => {
+      expectTokens({
+        md: '# heading\nparagraph',
+        tokens: [
+          {
+            type: 'heading',
+            raw: '# heading\n',
+            depth: 1,
+            text: 'heading',
+            tokens: [{ type: 'text', raw: 'heading', text: 'heading', escaped: false }],
+          },
+          {
+            type: 'paragraph',
+            raw: 'paragraph',
+            text: 'paragraph',
+            tokens: [{ type: 'text', raw: 'paragraph', text: 'paragraph', escaped: false }],
+          },
+        ],
+      });
+    });
   });
 
   describe('table', () => {
