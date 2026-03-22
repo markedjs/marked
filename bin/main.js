@@ -10,6 +10,7 @@ import { promises } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
 import { marked } from '../lib/marked.esm.js';
 
 const { access, readFile, writeFile } = promises;
@@ -183,7 +184,7 @@ export async function main(nodeProcess) {
           throw err;
         }
         // must import esm
-        markedConfig = await import('file:///' + configFile);
+        markedConfig = await import(pathToFileURL(configFile).href);
       }
 
       if (markedConfig.default) {
