@@ -152,11 +152,11 @@ export async function main(nodeProcess) {
     }
 
     async function getData() {
+      if (string) {
+        return string;
+      }
       if (!input) {
-        if (files.length <= 2) {
-          if (string) {
-            return string;
-          }
+        if (files.length === 0) {
           return await getStdin();
         }
         input = files.pop();
