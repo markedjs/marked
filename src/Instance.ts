@@ -302,6 +302,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
 
       if (opt.hooks) {
         opt.hooks.options = opt;
+        opt.hooks.block = blockType;
       }
 
       if (opt.async) {
