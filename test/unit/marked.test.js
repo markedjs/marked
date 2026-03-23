@@ -1006,6 +1006,7 @@ br
         ['space', ''],
         ['heading', '# heading'],
         ['text', 'heading'],
+        ['space', ''],
         ['code', '```code```'],
         ['space', ''],
         ['table', '| a | b ||---|---|| 1 | 2 || 3 | 4 |'],
