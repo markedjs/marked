@@ -748,7 +748,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       // Clip maskedSrc to same section of string as src (move to lexer?)
       maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
 
-      while ((match = endReg.exec(maskedSrc)) != null) {
+      while ((match = endReg.exec(maskedSrc)) !== null) {
         rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
         if (!rDelim) continue; // skip single * in __abc*abc__
@@ -842,7 +842,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       // Clip maskedSrc to same section of string as src
       maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
 
-      while ((match = endReg.exec(maskedSrc)) != null) {
+      while ((match = endReg.exec(maskedSrc)) !== null) {
         rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
         if (!rDelim) continue;
