@@ -91,6 +91,11 @@ describe('bin/marked', () => {
       stdout: '<p>line1<br>line2</p>',
     }));
 
+    it('config path with hash', testInput({
+      args: ['--config', fixturePath('bin-config#hash.js'), '-s', 'line1\nline2'],
+      stdout: '<p>line1<br>line2</p>',
+    }));
+
     it('config not found', testInput({
       args: ['--config', fixturePath('does-not-exist.js'), '-s', 'line1\nline2'],
       stderr: `Cannot load config file '${fixturePath('does-not-exist.js')}'`,
