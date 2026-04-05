@@ -99,6 +99,11 @@ describe('bin/marked', () => {
   });
 
   describe('input', () => {
+    it('input file positional', testInput({
+      args: [fixturePath('bin-input.md')],
+      stdout: '<h1>file</h1>',
+    }));
+
     it('input file not found', testInput({
       args: [fixturePath('does-not-exist.md')],
       stderr: `marked: ${fixturePath('does-not-exist.md')}: No such file or directory`,
