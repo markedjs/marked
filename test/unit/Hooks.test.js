@@ -324,4 +324,198 @@ describe('Hooks', () => {
     const html = await marked.parse('text');
     assert.strictEqual(html.trim(), 'test parser');
   });
+
+  it('should not have race condition when parse and parseInline are called concurrently with async hooks', async() => {
+    marked.use({
+      async: true,
+      hooks: {
+        async preprocess(markdown) {
+          await timeout();
+          return markdown;
+        },
+      },
+    });
+    const [blockHtml, inlineHtml] = await Promise.all([
+      marked.parse('**text**'),
+      marked.parseInline('**text**'),
+    ]);
+    assert.strictEqual(blockHtml.trim(), '<p><strong>text</strong></p>');
+    assert.strictEqual(inlineHtml.trim(), '<strong>text</strong>');
+  });
+
+  it('should not have race condition with multiple concurrent parse calls', async() => {
+    marked.use({
+      async: true,
+      hooks: {
+        async preprocess(markdown) {
+          await timeout();
+          return markdown;
+        },
+      },
+    });
+    const [html1, html2, html3] = await Promise.all([
+      marked.parse('**bold**'),
+      marked.parseInline('**bold**'),
+      marked.parse('*italic*'),
+    ]);
+    assert.strictEqual(html1.trim(), '<p><strong>bold</strong></p>');
+    assert.strictEqual(html2.trim(), '<strong>bold</strong>');
+    assert.strictEqual(html3.trim(), '<p><em>italic</em></p>');
+  });
+
+  it('should pass block=true to provideLexer when called from parse', () => {
+    let receivedBlock;
+    marked.use({
+      hooks: {
+        provideLexer(block) {
+          receivedBlock = block;
+          return () => [];
+        },
+      },
+    });
+    marked.parse('text');
+    assert.strictEqual(receivedBlock, true);
+  });
+
+  it('should pass block=false to provideLexer when called from parseInline', () => {
+    let receivedBlock;
+    marked.use({
+      hooks: {
+        provideLexer(block) {
+          receivedBlock = block;
+          return () => [];
+        },
+      },
+    });
+    marked.parseInline('text');
+    assert.strictEqual(receivedBlock, false);
+  });
+
+  it('should pass correct block to provideLexer for concurrent async parse and parseInline', async() => {
+    const receivedBlocks = [];
+    marked.use({
+      async: true,
+      hooks: {
+        async preprocess(markdown) {
+          await timeout();
+          return markdown;
+        },
+        provideLexer(block) {
+          receivedBlocks.push(block);
+          return () => [];
+        },
+      },
+    });
+    await Promise.all([
+      marked.parse('text'),
+      marked.parseInline('text'),
+    ]);
+    assert.deepStrictEqual(receivedBlocks.slice().sort(), [false, true]);
+  });
+
+  it('should pass block=true to provideParser when called from parse', () => {
+    let receivedBlock;
+    marked.use({
+      hooks: {
+        provideParser(block) {
+          receivedBlock = block;
+          return () => '';
+        },
+      },
+    });
+    marked.parse('text');
+    assert.strictEqual(receivedBlock, true);
+  });
+
+  it('should pass block=false to provideParser when called from parseInline', () => {
+    let receivedBlock;
+    marked.use({
+      hooks: {
+        provideParser(block) {
+          receivedBlock = block;
+          return () => '';
+        },
+      },
+    });
+    marked.parseInline('text');
+    assert.strictEqual(receivedBlock, false);
+  });
+
+  it('should pass correct block to provideParser for concurrent async parse and parseInline', async() => {
+    const receivedBlocks = [];
+    marked.use({
+      async: true,
+      hooks: {
+        async preprocess(markdown) {
+          await timeout();
+          return markdown;
+        },
+        provideParser(block) {
+          receivedBlocks.push(block);
+          return () => '';
+        },
+      },
+    });
+    await Promise.all([
+      marked.parse('text'),
+      marked.parseInline('text'),
+    ]);
+    assert.deepStrictEqual(receivedBlocks.slice().sort(), [false, true]);
+  });
+
+  it('should maintain this.block backwards compatibility in provideLexer for parse', () => {
+    let blockFromThis;
+    marked.use({
+      hooks: {
+        provideLexer() {
+          blockFromThis = this.block;
+          return () => [];
+        },
+      },
+    });
+    marked.parse('text');
+    assert.strictEqual(blockFromThis, true);
+  });
+
+  it('should maintain this.block backwards compatibility in provideLexer for parseInline', () => {
+    let blockFromThis;
+    marked.use({
+      hooks: {
+        provideLexer() {
+          blockFromThis = this.block;
+          return () => [];
+        },
+      },
+    });
+    marked.parseInline('text');
+    assert.strictEqual(blockFromThis, false);
+  });
+
+  it('should maintain this.block backwards compatibility in provideParser for parse', () => {
+    let blockFromThis;
+    marked.use({
+      hooks: {
+        provideParser() {
+          blockFromThis = this.block;
+          return () => '';
+        },
+      },
+    });
+    marked.parse('text');
+    assert.strictEqual(blockFromThis, true);
+  });
+
+  it('should maintain this.block backwards compatibility in provideParser for parseInline', () => {
+    let blockFromThis;
+    marked.use({
+      hooks: {
+        provideParser() {
+          blockFromThis = this.block;
+          return () => '';
+        },
+      },
+    });
+    marked.parseInline('text');
+    assert.strictEqual(blockFromThis, false);
+  });
 });

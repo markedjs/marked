@@ -308,13 +308,13 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
       if (opt.async) {
         return (async() => {
           const processedSrc = opt.hooks ? await opt.hooks.preprocess(src) : src;
-          const lexer = opt.hooks ? await opt.hooks.provideLexer() : (blockType ? _Lexer.lex : _Lexer.lexInline);
+          const lexer = opt.hooks ? await opt.hooks.provideLexer(blockType) : (blockType ? _Lexer.lex : _Lexer.lexInline);
           const tokens = await lexer(processedSrc, opt);
           const processedTokens = opt.hooks ? await opt.hooks.processAllTokens(tokens) : tokens;
           if (opt.walkTokens) {
             await Promise.all(this.walkTokens(processedTokens, opt.walkTokens));
           }
-          const parser = opt.hooks ? await opt.hooks.provideParser() : (blockType ? _Parser.parse : _Parser.parseInline);
+          const parser = opt.hooks ? await opt.hooks.provideParser(blockType) : (blockType ? _Parser.parse : _Parser.parseInline);
           const html = await parser(processedTokens, opt);
           return opt.hooks ? await opt.hooks.postprocess(html) : html;
         })().catch(throwError);
@@ -324,7 +324,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
         if (opt.hooks) {
           src = opt.hooks.preprocess(src) as string;
         }
-        const lexer = opt.hooks ? opt.hooks.provideLexer() : (blockType ? _Lexer.lex : _Lexer.lexInline);
+        const lexer = opt.hooks ? opt.hooks.provideLexer(blockType) : (blockType ? _Lexer.lex : _Lexer.lexInline);
         let tokens = lexer(src, opt);
         if (opt.hooks) {
           tokens = opt.hooks.processAllTokens(tokens);
@@ -332,7 +332,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
         if (opt.walkTokens) {
           this.walkTokens(tokens, opt.walkTokens);
         }
-        const parser = opt.hooks ? opt.hooks.provideParser() : (blockType ? _Parser.parse : _Parser.parseInline);
+        const parser = opt.hooks ? opt.hooks.provideParser(blockType) : (blockType ? _Parser.parse : _Parser.parseInline);
         let html = parser(tokens, opt);
         if (opt.hooks) {
           html = opt.hooks.postprocess(html);
