@@ -92,12 +92,12 @@ export function rtrim(str: string, c: string | RegExp) {
   }
 
   if (c instanceof RegExp) {
-    let reversedStr = '';
-    for (let i = l - 1; i >= 0; i--) {
-      reversedStr += str[i];
+    const reversedStr = [...str].reverse().join('');
+    const match = c.exec(reversedStr);
+    if (match && match.index === 0) {
+      return str.slice(0, l - match[0].length);
     }
-    const newLength = reversedStr.replace(c, '').length;
-    return str.slice(0, newLength);
+    return str;
   }
 
   let suffLen = 0;
