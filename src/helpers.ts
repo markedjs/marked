@@ -80,26 +80,30 @@ export function splitCells(tableRow: string, count?: number) {
 /**
  * Remove trailing 'c's. Equivalent to str.replace(/c*$/, '').
  * /c*$/ is vulnerable to REDOS.
+ * If c is a RegExp, it will be checked against the reverse of the string
  *
  * @param str
  * @param c
- * @param invert Remove suffix of non-c chars instead. Default falsey.
  */
-export function rtrim(str: string, c: string, invert?: boolean) {
+export function rtrim(str: string, c: string | RegExp) {
   const l = str.length;
   if (l === 0) {
     return '';
   }
 
-  // Length of suffix matching the invert condition.
-  let suffLen = 0;
+  if (c instanceof RegExp) {
+    let reversedStr = '';
+    for (let i = l - 1; i >= 0; i--) {
+      reversedStr += str[i];
+    }
+    const newLength = reversedStr.replace(c, '').length;
+    return str.slice(0, newLength);
+  }
 
-  // Step left until we fail to match the invert condition.
+  let suffLen = 0;
   while (suffLen < l) {
     const currChar = str.charAt(l - suffLen - 1);
-    if (currChar === c && !invert) {
-      suffLen++;
-    } else if (currChar !== c && invert) {
+    if (currChar === c) {
       suffLen++;
     } else {
       break;
