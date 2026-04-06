@@ -84,7 +84,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       const text = cap[0].replace(this.rules.other.codeRemoveIndent, '');
       return {
         type: 'code',
-        raw: cap[0],
+        raw: rtrim(cap[0], '\n'),
         codeBlockStyle: 'indented',
         text: !this.options.pedantic
           ? rtrim(text, '\n')
@@ -484,7 +484,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       const token: Tokens.HTML = {
         type: 'html',
         block: true,
-        raw: cap[0],
+        raw: rtrim(cap[0], '\n'),
         pre: cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style',
         text: cap[0],
       };
