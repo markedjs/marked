@@ -59,28 +59,12 @@ describe('Lexer', () => {
       });
     });
 
-    it('indented code with trailing blank line containing 4 spaces', () => {
+    it('indented code with trailing blank lines', () => {
       expectTokens({
-        md: '    code\n    \n\nnext',
+        md: '    code\n     \n\t\t\n \t\n\nnext',
         tokens: [
           { type: 'code', raw: '    code', text: 'code', codeBlockStyle: 'indented' },
-          { type: 'space', raw: '\n    \n\n' },
-          {
-            type: 'paragraph',
-            raw: 'next',
-            text: 'next',
-            tokens: [{ type: 'text', raw: 'next', text: 'next', escaped: false }],
-          },
-        ],
-      });
-    });
-
-    it('indented code with trailing blank line containing 5 spaces', () => {
-      expectTokens({
-        md: '    code\n     \n\nnext',
-        tokens: [
-          { type: 'code', raw: '    code\n     ', text: 'code\n ', codeBlockStyle: 'indented' },
-          { type: 'space', raw: '\n\n' },
+          { type: 'space', raw: '\n     \n\t\t\n \t\n\n' },
           {
             type: 'paragraph',
             raw: 'next',
