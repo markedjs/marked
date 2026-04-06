@@ -94,7 +94,7 @@ export function rtrim(str: string, c: string | RegExp) {
   if (c instanceof RegExp) {
     const reversedStr = [...str].reverse().join('');
     const match = c.exec(reversedStr);
-    if (match && match.index === 0) {
+    if (match) {
       return str.slice(0, l - match[0].length);
     }
     return str;
