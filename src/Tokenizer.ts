@@ -84,10 +84,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       const text = cap[0].replace(this.rules.other.codeRemoveIndent, '');
       return {
         type: 'code',
-        raw: rtrim(cap[0], this.rules.other.reverseBlankLines),
+        raw: rtrim(cap[0], ['\n', '\t', ' ']),
         codeBlockStyle: 'indented',
         text: !this.options.pedantic
-          ? rtrim(text, this.rules.other.reverseBlankLines)
+          ? rtrim(text, ['\n', '\t', ' '])
           : text,
       };
     }

@@ -29,7 +29,6 @@ try {
 
 export const other = {
   codeRemoveIndent: /^(?: {1,4}| {0,3}\t)/gm,
-  reverseBlankLines: /^(?:[^\S\n]*\n)*/,
   outputLinkReplace: /\\([\[\]])/g,
   indentCodeCompensation: /^(\s+)(?:```)/,
   beginningSpace: /^\s+/,

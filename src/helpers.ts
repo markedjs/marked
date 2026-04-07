@@ -85,25 +85,20 @@ export function splitCells(tableRow: string, count?: number) {
  * @param str
  * @param c
  */
-export function rtrim(str: string, c: string | RegExp) {
+export function rtrim(str: string, c: string | string[]) {
   const l = str.length;
   if (l === 0) {
     return '';
   }
 
-  if (c instanceof RegExp) {
-    const reversedStr = [...str].reverse().join('');
-    const match = c.exec(reversedStr);
-    if (match) {
-      return str.slice(0, l - match[0].length);
-    }
-    return str;
+  if (typeof c === 'string') {
+    c = [c];
   }
 
   let suffLen = 0;
   while (suffLen < l) {
     const currChar = str.charAt(l - suffLen - 1);
-    if (currChar === c) {
+    if (c.includes(currChar)) {
       suffLen++;
     } else {
       break;
