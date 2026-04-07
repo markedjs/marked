@@ -115,6 +115,11 @@ export function trimTrailingBlankLines(str: string) {
   while (end >= 0 && !lines[end].trim()) {
     end--;
   }
+  if (lines.length - end <= 2) {
+    // we want to keep single trailing blank lines
+    return str;
+  }
+
   return lines.slice(0, end + 1).join('\n');
 }
 

@@ -483,12 +483,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   html(src: string): Tokens.HTML | undefined {
     const cap = this.rules.block.html.exec(src);
     if (cap) {
+      const raw = trimTrailingBlankLines(cap[0]);
       const token: Tokens.HTML = {
         type: 'html',
         block: true,
-        raw: rtrim(cap[0], '\n'),
+        raw,
         pre: cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style',
-        text: cap[0],
+        text: raw,
       };
       return token;
     }

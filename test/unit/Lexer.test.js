@@ -1442,6 +1442,31 @@ paragraph
         ],
       });
     });
+
+    it('html with trailing blank lines', () => {
+      expectTokens({
+        md: '<div>\n  html\n</div>\n \n\t\n\nnext',
+        tokens: [
+          {
+            type: 'html',
+            raw: '<div>\n  html\n</div>',
+            pre: false,
+            block: true,
+            text: '<div>\n  html\n</div>',
+          },
+          {
+            type: 'space',
+            raw: '\n \n\t\n\n',
+          },
+          {
+            type: 'paragraph',
+            raw: 'next',
+            text: 'next',
+            tokens: [{ type: 'text', raw: 'next', text: 'next', escaped: false }],
+          },
+        ],
+      });
+    });
   });
 
   describe('def', () => {
