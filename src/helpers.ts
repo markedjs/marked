@@ -109,6 +109,20 @@ export function rtrim(str: string, c: string, invert?: boolean) {
   return str.slice(0, l - suffLen);
 }
 
+export function trimTrailingBlankLines(str: string) {
+  const lines = str.split('\n');
+  let end = lines.length - 1;
+  while (end >= 0 && !lines[end].trim()) {
+    end--;
+  }
+  if (lines.length - end <= 2) {
+    // we want to keep single trailing blank lines
+    return str;
+  }
+
+  return lines.slice(0, end + 1).join('\n');
+}
+
 export function findClosingBracket(str: string, b: string) {
   if (str.indexOf(b[1]) === -1) {
     return -1;

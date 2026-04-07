@@ -59,6 +59,22 @@ describe('Lexer', () => {
       });
     });
 
+    it('indented code with trailing blank lines', () => {
+      expectTokens({
+        md: '    code\n     \n\t\t\n \t\n\nnext',
+        tokens: [
+          { type: 'code', raw: '    code', text: 'code', codeBlockStyle: 'indented' },
+          { type: 'space', raw: '\n     \n\t\t\n \t\n\n' },
+          {
+            type: 'paragraph',
+            raw: 'next',
+            text: 'next',
+            tokens: [{ type: 'text', raw: 'next', text: 'next', escaped: false }],
+          },
+        ],
+      });
+    });
+
     it('fenced code', () => {
       expectTokens({
         md: '```\ncode\n```',
@@ -1422,6 +1438,31 @@ paragraph
             pre: true,
             block: true,
             text: '<pre>html</pre>',
+          },
+        ],
+      });
+    });
+
+    it('html with trailing blank lines', () => {
+      expectTokens({
+        md: '<div>\n  html\n</div>\n \n\t\n\nnext',
+        tokens: [
+          {
+            type: 'html',
+            raw: '<div>\n  html\n</div>',
+            pre: false,
+            block: true,
+            text: '<div>\n  html\n</div>',
+          },
+          {
+            type: 'space',
+            raw: '\n \n\t\n\n',
+          },
+          {
+            type: 'paragraph',
+            raw: 'next',
+            text: 'next',
+            tokens: [{ type: 'text', raw: 'next', text: 'next', escaped: false }],
           },
         ],
       });

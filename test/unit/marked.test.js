@@ -1027,6 +1027,7 @@ br
         ['text', 'list'],
         ['space', ''],
         ['html', '<div>html</div>'],
+        ['space', ''],
         ['paragraph', '[link](https://example.com)'],
         ['link', '[link](https://example.com)'],
         ['text', 'link'],
