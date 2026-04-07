@@ -80,25 +80,26 @@ export function splitCells(tableRow: string, count?: number) {
 /**
  * Remove trailing 'c's. Equivalent to str.replace(/c*$/, '').
  * /c*$/ is vulnerable to REDOS.
- * If c is a RegExp, it will be checked against the reverse of the string
  *
  * @param str
  * @param c
+ * @param invert Remove suffix of non-c chars instead. Default falsey.
  */
-export function rtrim(str: string, c: string | string[]) {
+export function rtrim(str: string, c: string, invert?: boolean) {
   const l = str.length;
   if (l === 0) {
     return '';
   }
 
-  if (typeof c === 'string') {
-    c = [c];
-  }
-
+  // Length of suffix matching the invert condition.
   let suffLen = 0;
+
+  // Step left until we fail to match the invert condition.
   while (suffLen < l) {
     const currChar = str.charAt(l - suffLen - 1);
-    if (c.includes(currChar)) {
+    if (currChar === c && !invert) {
+      suffLen++;
+    } else if (currChar !== c && invert) {
       suffLen++;
     } else {
       break;
@@ -106,6 +107,15 @@ export function rtrim(str: string, c: string | string[]) {
   }
 
   return str.slice(0, l - suffLen);
+}
+
+export function trimTrailingBlankLines(str: string) {
+  const lines = str.split('\n');
+  let end = lines.length - 1;
+  while (end >= 0 && !lines[end].trim()) {
+    end--;
+  }
+  return lines.slice(0, end + 1).join('\n');
 }
 
 export function findClosingBracket(str: string, b: string) {

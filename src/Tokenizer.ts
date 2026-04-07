@@ -4,6 +4,7 @@ import {
   splitCells,
   findClosingBracket,
   expandTabs,
+  trimTrailingBlankLines,
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
 import type { _Lexer } from './Lexer.ts';
@@ -81,14 +82,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   code(src: string): Tokens.Code | undefined {
     const cap = this.rules.block.code.exec(src);
     if (cap) {
-      const text = cap[0].replace(this.rules.other.codeRemoveIndent, '');
+      const raw = this.options.pedantic
+        ? cap[0]
+        : trimTrailingBlankLines(cap[0]);
+      const text = raw.replace(this.rules.other.codeRemoveIndent, '');
       return {
         type: 'code',
-        raw: rtrim(cap[0], ['\n', '\t', ' ']),
+        raw,
         codeBlockStyle: 'indented',
-        text: !this.options.pedantic
-          ? rtrim(text, ['\n', '\t', ' '])
-          : text,
+        text,
       };
     }
   }
