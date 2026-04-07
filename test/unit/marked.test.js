@@ -1016,6 +1016,7 @@ br
         ['text', '2'],
         ['text', '3'],
         ['text', '4'],
+        ['space', ''],
         ['blockquote', '> blockquote'],
         ['paragraph', 'blockquote'],
         ['text', 'blockquote'],

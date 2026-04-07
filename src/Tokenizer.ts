@@ -525,7 +525,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
     const item: Tokens.Table = {
       type: 'table',
-      raw: cap[0],
+      raw: rtrim(cap[0], '\n'),
       header: [],
       align: [],
       rows: [],
