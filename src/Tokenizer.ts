@@ -126,7 +126,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
       return {
         type: 'heading',
-        raw: cap[0],
+        raw: rtrim(cap[0], '\n'),
         depth: cap[1].length,
         text,
         tokens: this.lexer.inline(text),
@@ -501,7 +501,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       return {
         type: 'def',
         tag,
-        raw: cap[0],
+        raw: rtrim(cap[0], '\n'),
         href,
         title,
       };
@@ -577,7 +577,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       const text = cap[1].trim();
       return {
         type: 'heading',
-        raw: cap[0],
+        raw: rtrim(cap[0], '\n'),
         depth: cap[2].charAt(0) === '=' ? 1 : 2,
         text,
         tokens: this.lexer.inline(text),
