@@ -19,7 +19,6 @@ function edit(regex: string | RegExp, opt = '') {
 // use a default variable to ensure the regex is evaluated on client an not removed by minifiers
 const supportsLookbehind = ((a = '') => {
 try {
-  // eslint-disable-next-line prefer-regex-literals
   return !!new RegExp('(?<=1)(?<!1)' + a);
 } catch {
   // See browser support here:
