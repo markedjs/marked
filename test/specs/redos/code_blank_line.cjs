@@ -1,4 +1,4 @@
 module.exports = {
-  markdown: '\x09\x0b\n',
+  markdown: '\t\v\n',
   html: '<pre><code>\x0b</code></pre>',
 };
