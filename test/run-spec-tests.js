@@ -47,4 +47,5 @@ runTests({
 runTests({
   tests: redosTests,
   parse,
+  defaultMarkedOptions: { silent: false },
 });

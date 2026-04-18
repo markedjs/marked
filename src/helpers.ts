@@ -112,7 +112,7 @@ export function rtrim(str: string, c: string, invert?: boolean) {
 export function trimTrailingBlankLines(str: string) {
   const lines = str.split('\n');
   let end = lines.length - 1;
-  while (end >= 0 && !lines[end].trim()) {
+  while (end >= 0 && other.blankLine.test(lines[end])) {
     end--;
   }
   if (lines.length - end <= 2) {
