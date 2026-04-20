@@ -50,7 +50,7 @@ async function init() {
   await mkdir(outputDir);
   await mkdir(join(outputDir, 'lib'));
   console.log(`Copying file ${join(inputDir, 'LICENSE.md')}`);
-  await copyFile(join(cwd, 'LICENSE.md'), join(inputDir, 'LICENSE.md'));
+  await copyFile(join(cwd, 'LICENSE'), join(inputDir, 'LICENSE.md'));
   console.log(`Copying file ${join(outputDir, 'lib/marked.umd.js')}`);
   await copyFile(join(cwd, 'lib/marked.umd.js'), join(outputDir, 'lib/marked.umd.js'));
   console.log(`Copying file ${join(outputDir, 'lib/marked.umd.js.map')}`);
