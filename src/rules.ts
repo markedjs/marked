@@ -2,15 +2,20 @@ const noopTest = { exec: () => null } as unknown as RegExp;
 
 function edit(regex: string | RegExp, opt = '') {
   let source = typeof regex === 'string' ? regex : regex.source;
+  let cachedRegex: RegExp | null = null;
   const obj = {
     replace: (name: string | RegExp, val: string | RegExp) => {
       let valSource = typeof val === 'string' ? val : val.source;
       valSource = valSource.replace(other.caret, '$1');
       source = source.replace(name, valSource);
+      cachedRegex = null;
       return obj;
     },
     getRegex: () => {
-      return new RegExp(source, opt);
+      if (cachedRegex === null) {
+        cachedRegex = new RegExp(source, opt);
+      }
+      return cachedRegex;
     },
   };
   return obj;
@@ -77,13 +82,83 @@ export const other = {
   spaceLine: /^ +$/gm,
   notSpaceStart: /^\S*/,
   endingNewline: /\n$/,
-  listItemRegex: (bull: string) => new RegExp(`^( {0,3}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`),
-  nextBulletRegex: (indent: number) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))`),
-  hrRegex: (indent: number) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`),
-  fencesBeginRegex: (indent: number) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:\`\`\`|~~~)`),
-  headingBeginRegex: (indent: number) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}#`),
-  htmlBeginRegex: (indent: number) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}<(?:[a-z].*>|!--)`, 'i'),
-  blockquoteBeginRegex: (indent: number) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}>`),
+  listItemRegex: (() => {
+    const cache = new Map<string, RegExp>();
+    return (bull: string) => {
+      let regex = cache.get(bull);
+      if (!regex) {
+        regex = new RegExp(`^( {0,3}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`);
+        cache.set(bull, regex);
+      }
+      return regex;
+    };
+  })(),
+  nextBulletRegex: (() => {
+    const cache = new Map<number, RegExp>();
+    return (indent: number) => {
+      let regex = cache.get(indent);
+      if (!regex) {
+        regex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))`);
+        cache.set(indent, regex);
+      }
+      return regex;
+    };
+  })(),
+  hrRegex: (() => {
+    const cache = new Map<number, RegExp>();
+    return (indent: number) => {
+      let regex = cache.get(indent);
+      if (!regex) {
+        regex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`);
+        cache.set(indent, regex);
+      }
+      return regex;
+    };
+  })(),
+  fencesBeginRegex: (() => {
+    const cache = new Map<number, RegExp>();
+    return (indent: number) => {
+      let regex = cache.get(indent);
+      if (!regex) {
+        regex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:\`\`\`|~~~)`);
+        cache.set(indent, regex);
+      }
+      return regex;
+    };
+  })(),
+  headingBeginRegex: (() => {
+    const cache = new Map<number, RegExp>();
+    return (indent: number) => {
+      let regex = cache.get(indent);
+      if (!regex) {
+        regex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}#`);
+        cache.set(indent, regex);
+      }
+      return regex;
+    };
+  })(),
+  htmlBeginRegex: (() => {
+    const cache = new Map<number, RegExp>();
+    return (indent: number) => {
+      let regex = cache.get(indent);
+      if (!regex) {
+        regex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}<(?:[a-z].*>|!--)`, 'i');
+        cache.set(indent, regex);
+      }
+      return regex;
+    };
+  })(),
+  blockquoteBeginRegex: (() => {
+    const cache = new Map<number, RegExp>();
+    return (indent: number) => {
+      let regex = cache.get(indent);
+      if (!regex) {
+        regex = new RegExp(`^ {0,${Math.min(3, indent - 1)}}>`);
+        cache.set(indent, regex);
+      }
+      return regex;
+    };
+  })(),
 };
 
 /**
