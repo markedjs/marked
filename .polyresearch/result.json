@@ -1,0 +1,6 @@
+{
+  "observation": "improved",
+  "metric": 324.53,
+  "baseline": 319.02,
+  "summary": "Caching tokenizer and rules references in local variables within the blockTokens() and inlineTokens() hot loops reduced property lookups overhead. This eliminated repeated this.tokenizer and this.tokenizer.rules accesses on every iteration, improving throughput by ~1.7%."
+}
