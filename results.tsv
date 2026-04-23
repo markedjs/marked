@@ -1,1 +1,2 @@
 thesis	attempt	metric	baseline	status	summary
+#1	thesis/1-optimize-regex-compilation-in-rules-ts	318.8800	304.0000	accepted	Caching compiled regex patterns in rules.ts improved performance by ~4.9%. Added caching to the edit() function's getRegex() method and to dynamic regex functions in the 'other' object.
