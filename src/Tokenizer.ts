@@ -221,6 +221,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         }
       }
 
+      // Skip empty blockquotes (only whitespace content)
+      if (!text.trim()) {
+        return;
+      }
+
       return {
         type: 'blockquote',
         raw,
