@@ -1297,6 +1297,45 @@ paragraph
       });
     });
 
+    it('does not parse setext heading text as a task checkbox', () => {
+      expectTokens({
+        md: '- [x] title\n  ---',
+        tokens: [
+          {
+            type: 'list',
+            raw: '- [x] title\n  ---',
+            ordered: false,
+            start: '',
+            loose: false,
+            items: [
+              {
+                type: 'list_item',
+                raw: '- [x] title\n  ---',
+                task: false,
+                loose: false,
+                text: '[x] title\n---',
+                tokens: [
+                  {
+                    type: 'heading',
+                    raw: '[x] title\n---',
+                    depth: 2,
+                    text: '[x] title',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: '[x] title',
+                        text: '[x] title',
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+    });
+
     it('multiline', () => {
       expectTokens({
         md: `

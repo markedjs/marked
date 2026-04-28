@@ -54,6 +54,12 @@ describe('marked unit', () => {
 
       assert.strictEqual(html, '<ul>\n<li><p><input disabled="" type="checkbox"> item 1</p>\n</li>\n<li><p><input disabled="" type="checkbox"> item 2</p>\n</li>\n</ul>\n');
     });
+
+    it('does not parse setext heading text as a task checkbox', () => {
+      const html = marked.parse('- [x] title\n  ---');
+
+      assert.strictEqual(html, '<ul>\n<li><h2>[x] title</h2>\n</li>\n</ul>\n');
+    });
   });
 
   describe('parseInline', () => {
