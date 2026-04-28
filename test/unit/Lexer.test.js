@@ -1336,6 +1336,84 @@ paragraph
       });
     });
 
+    it('keeps setext heading task candidates loose when separated by blank lines', () => {
+      expectTokens({
+        md: '- [x] title\n  ---\n\n  body\n- second',
+        tokens: [
+          {
+            type: 'list',
+            raw: '- [x] title\n  ---\n\n  body\n- second',
+            ordered: false,
+            start: '',
+            loose: true,
+            items: [
+              {
+                type: 'list_item',
+                raw: '- [x] title\n  ---\n\n  body\n',
+                task: false,
+                loose: true,
+                text: '[x] title\n---\n\nbody',
+                tokens: [
+                  {
+                    type: 'heading',
+                    raw: '[x] title\n---',
+                    depth: 2,
+                    text: '[x] title',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: '[x] title',
+                        text: '[x] title',
+                      },
+                    ],
+                  },
+                  {
+                    type: 'space',
+                    raw: '\n\n',
+                  },
+                  {
+                    type: 'paragraph',
+                    raw: 'body',
+                    text: 'body',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'body',
+                        text: 'body',
+                        escaped: false,
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                type: 'list_item',
+                raw: '- second',
+                task: false,
+                loose: true,
+                text: 'second',
+                tokens: [
+                  {
+                    type: 'paragraph',
+                    raw: 'second',
+                    text: 'second',
+                    tokens: [
+                      {
+                        type: 'text',
+                        raw: 'second',
+                        text: 'second',
+                        escaped: false,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+    });
+
     it('multiline', () => {
       expectTokens({
         md: `
