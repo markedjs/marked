@@ -415,16 +415,19 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         this.lexer.state.top = false;
         item.tokens = this.lexer.blockTokens(item.text, []);
         if (item.task) {
+          if (item.tokens[0]?.type !== 'text' && item.tokens[0]?.type !== 'paragraph') {
+            item.task = false;
+            continue;
+          }
+
           // Remove checkbox markdown from item tokens
           item.text = item.text.replace(this.rules.other.listReplaceTask, '');
-          if (item.tokens[0]?.type === 'text' || item.tokens[0]?.type === 'paragraph') {
-            item.tokens[0].raw = item.tokens[0].raw.replace(this.rules.other.listReplaceTask, '');
-            item.tokens[0].text = item.tokens[0].text.replace(this.rules.other.listReplaceTask, '');
-            for (let i = this.lexer.inlineQueue.length - 1; i >= 0; i--) {
-              if (this.rules.other.listIsTask.test(this.lexer.inlineQueue[i].src)) {
-                this.lexer.inlineQueue[i].src = this.lexer.inlineQueue[i].src.replace(this.rules.other.listReplaceTask, '');
-                break;
-              }
+          item.tokens[0].raw = item.tokens[0].raw.replace(this.rules.other.listReplaceTask, '');
+          item.tokens[0].text = item.tokens[0].text.replace(this.rules.other.listReplaceTask, '');
+          for (let i = this.lexer.inlineQueue.length - 1; i >= 0; i--) {
+            if (this.rules.other.listIsTask.test(this.lexer.inlineQueue[i].src)) {
+              this.lexer.inlineQueue[i].src = this.lexer.inlineQueue[i].src.replace(this.rules.other.listReplaceTask, '');
+              break;
             }
           }
 
