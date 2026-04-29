@@ -36,23 +36,69 @@ export function cleanUrl(href: string) {
 }
 
 export function splitCells(tableRow: string, count?: number) {
-  // ensure that every cell-delimiting pipe has a space
-  // before it to distinguish it from an escaped pipe
-  const row = tableRow.replace(other.findPipe, (match, offset, str) => {
-      let escaped = false;
-      let curr = offset;
-      while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
-      if (escaped) {
-        // odd number of slashes means | is escaped
-        // so we leave it alone
-        return '|';
-      } else {
-        // add space before unescaped |
-        return ' |';
+  const cells: string[] = [];
+  let currentCell = '';
+  let inCode = false;
+  let codeTickCount = 0;
+  let escaped = false;
+
+  for (let i = 0; i < tableRow.length; i++) {
+    const char = tableRow[i];
+
+    if (escaped) {
+      // Handle escaped character
+      currentCell += char;
+      escaped = false;
+    } else if (char === '\\') {
+      // Start of escape sequence
+      currentCell += char;
+      escaped = true;
+    } else if (char === '`' && !inCode) {
+      // Start of code span - count backticks
+      let tickCount = 1;
+      while (i + tickCount < tableRow.length && tableRow[i + tickCount] === '`') {
+        tickCount++;
       }
-    }),
-    cells = row.split(other.splitPipe);
-  let i = 0;
+      codeTickCount = tickCount;
+      inCode = true;
+      currentCell += tableRow.slice(i, i + tickCount);
+      i += tickCount - 1;
+    } else if (char === '`' && inCode) {
+      // Check for code span end - match backtick count
+      let tickCount = 1;
+      while (i + tickCount < tableRow.length && tableRow[i + tickCount] === '`') {
+        tickCount++;
+      }
+
+      // Only end code span if backtick count matches and not escaped
+      if (tickCount === codeTickCount) {
+        // Check if this backtick sequence is not escaped
+        let isEscaped = false;
+        let j = i - 1;
+        while (j >= 0 && tableRow[j] === '\\') {
+          isEscaped = !isEscaped;
+          j--;
+        }
+
+        if (!isEscaped) {
+          inCode = false;
+        }
+      }
+
+      currentCell += tableRow.slice(i, i + tickCount);
+      i += tickCount - 1;
+    } else if (char === '|' && !inCode) {
+      // Cell delimiter (only if not in code span)
+      cells.push(currentCell);
+      currentCell = '';
+    } else {
+      // Regular character
+      currentCell += char;
+    }
+  }
+
+  // Add the last cell
+  cells.push(currentCell);
 
   // First/last cell in a row cannot be empty if it has no leading/trailing pipe
   if (!cells[0].trim()) {
@@ -70,7 +116,7 @@ export function splitCells(tableRow: string, count?: number) {
     }
   }
 
-  for (; i < cells.length; i++) {
+  for (let i = 0; i < cells.length; i++) {
     // leading or trailing whitespace is ignored per the gfm spec
     cells[i] = cells[i].trim().replace(other.slashPipe, '|');
   }

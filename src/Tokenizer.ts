@@ -535,7 +535,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     };
 
     if (headers.length !== aligns.length) {
-      // header and align columns must be equal, rows can be different.
+      // header and align columns must be equal
       return;
     }
 
@@ -561,6 +561,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     }
 
     for (const row of rows) {
+      const cells = splitCells(row);
+      if (cells.length > headers.length) {
+        // row columns cannot exceed header columns
+        return;
+      }
       item.rows.push(splitCells(row, item.header.length).map((cell, i) => {
         return {
           text: cell,
