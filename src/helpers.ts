@@ -36,23 +36,45 @@ export function cleanUrl(href: string) {
 }
 
 export function splitCells(tableRow: string, count?: number) {
-  // ensure that every cell-delimiting pipe has a space
-  // before it to distinguish it from an escaped pipe
-  const row = tableRow.replace(other.findPipe, (match, offset, str) => {
-      let escaped = false;
-      let curr = offset;
-      while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
-      if (escaped) {
-        // odd number of slashes means | is escaped
-        // so we leave it alone
-        return '|';
-      } else {
-        // add space before unescaped |
-        return ' |';
+  const cells: string[] = [];
+  let currentCell = '';
+  let codeSpan = 0;
+
+  for (let i = 0; i < tableRow.length; i++) {
+    const char = tableRow[i];
+
+    if (char === '`') {
+      let tickCount = 1;
+      while (tableRow[i + tickCount] === '`') {
+        tickCount++;
       }
-    }),
-    cells = row.split(other.splitPipe);
-  let i = 0;
+
+      if (!codeSpan) {
+        codeSpan = tickCount;
+      } else if (tickCount === codeSpan) {
+        codeSpan = 0;
+      }
+
+      currentCell += tableRow.slice(i, i + tickCount);
+      i += tickCount - 1;
+    } else if (char === '|' && !codeSpan) {
+      let escaped = false;
+      let curr = i;
+      while (--curr >= 0 && tableRow[curr] === '\\') escaped = !escaped;
+
+      if (escaped) {
+        currentCell += char;
+        continue;
+      }
+
+      cells.push(currentCell);
+      currentCell = '';
+    } else {
+      currentCell += char;
+    }
+  }
+
+  cells.push(currentCell);
 
   // First/last cell in a row cannot be empty if it has no leading/trailing pipe
   if (!cells[0].trim()) {
@@ -70,7 +92,7 @@ export function splitCells(tableRow: string, count?: number) {
     }
   }
 
-  for (; i < cells.length; i++) {
+  for (let i = 0; i < cells.length; i++) {
     // leading or trailing whitespace is ignored per the gfm spec
     cells[i] = cells[i].trim().replace(other.slashPipe, '|');
   }
