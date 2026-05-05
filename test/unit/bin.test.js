@@ -120,5 +120,11 @@ describe('bin/marked', () => {
       stderr: `marked: ${fixturePath('does-not-exist.md')}: No such file or directory`,
       code: 1,
     }));
+
+    it('reads from stdin when no files are provided', testInput({
+      args: [],
+      stdin: '# test\n',
+      stdout: '<h1>test</h1>',
+    }));
   });
 });
