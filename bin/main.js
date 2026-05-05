@@ -156,13 +156,13 @@ export async function main(nodeProcess) {
       if (string) {
         return string;
       }
-      if (!input) {
-        if (files.length === 0) {
-          return await getStdin();
-        }
-        input = files.pop();
+      if (input) {
+        return await readFile(input, 'utf8');
       }
-      return await readFile(input, 'utf8');
+      if (files.length > 0) {
+        return await readFile(files.pop(), 'utf8');
+      }
+      return await getStdin();
     }
 
     function resolveFile(file) {
@@ -271,7 +271,7 @@ export async function main(nodeProcess) {
   }
 
   try {
-    await start(nodeProcess.argv.slice());
+    await start(nodeProcess.argv.slice(2));
     nodeProcess.exit(0);
   } catch(err) {
     if (err.code === 'ENOENT') {
