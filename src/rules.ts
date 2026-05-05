@@ -311,6 +311,20 @@ const emStrongRDelimAst = edit(emStrongRDelimAstCore, 'gu')
   .replace(/punct/g, _punctuation)
   .getRegex();
 
+const emStrongRDelimAstPedantic = edit(
+  '^[^_*]*?__[^_*]*?\\*[^_*]*?(?=__)' // Skip orphan inside strong
++ '|[^*]+(?=[^*])' // Consume to delim
++ '|(?!\\*)punct(\\*+)(?=[\\s]|$)' // (1) #*** can only be a Right Delimiter
++ '|notPunctSpace(\\*+)(?!\\*)(?=punctSpace|$)' // (2) a***#, a*** can only be a Right Delimiter
++ '|(?!\\*)[\\s](\\*+)(?=notPunctSpace)' // (3) ***a can only be Left Delimiter
++ '|[\\s](\\*+)(?!\\*)(?=punct)' // (4) ***# can only be Left Delimiter
++ '|(?!\\*)punct(\\*+)(?!\\*)(?=punct)' // (5) #***# can be either Left or Right Delimiter
++ '|(?:(?!\\*)punct|notPunctSpace)(\\*+)(?!\\*)(?=notPunctSpace)', 'gu') // (6) #***a and a***a can be either Left or Right Delimiter
+  .replace(/notPunctSpace/g, _notPunctuationOrSpace)
+  .replace(/punctSpace/g, _punctuationOrSpace)
+  .replace(/punct/g, _punctuation)
+  .getRegex();
+
 const emStrongRDelimAstGfm = edit(emStrongRDelimAstCore, 'gu')
   .replace(/notPunctSpace/g, _notPunctuationOrSpaceGfmStrongEm)
   .replace(/punctSpace/g, _punctuationOrSpaceGfmStrongEm)
@@ -433,6 +447,7 @@ type InlineKeys = keyof typeof inlineNormal;
 
 const inlinePedantic: Record<InlineKeys, RegExp> = {
   ...inlineNormal,
+  emStrongRDelimAst: emStrongRDelimAstPedantic,
   link: edit(/^!?\[(label)\]\((.*?)\)/)
     .replace('label', _inlineLabel)
     .getRegex(),
