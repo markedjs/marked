@@ -3,8 +3,8 @@ const noopTest = { exec: () => null } as unknown as RegExp;
 function cachedIndentRegex(createRegex: (indent: number) => RegExp) {
   const cache: RegExp[] = [];
   return (indent: number) => {
-    const cappedIndent = Math.min(3, indent - 1);
-    const cacheIndex = cappedIndent + 1;
+    const cappedIndent = Math.max(0, Math.min(3, indent - 1));
+    const cacheIndex = cappedIndent;
     let regex = cache[cacheIndex];
     if (!regex) {
       regex = createRegex(cappedIndent);
