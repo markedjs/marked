@@ -26,6 +26,26 @@ function expectInlineTokens({ md, options, tokens, links = {} }) {
 }
 
 describe('Lexer', () => {
+  describe('rules', () => {
+    it('should create indentation regexes for zero indent', () => {
+      const {
+        nextBulletRegex,
+        hrRegex,
+        fencesBeginRegex,
+        headingBeginRegex,
+        htmlBeginRegex,
+        blockquoteBeginRegex,
+      } = new Lexer().tokenizer.rules.other;
+
+      assert.ok(nextBulletRegex(0).test('- item\n'));
+      assert.ok(hrRegex(0).test('---\n'));
+      assert.ok(fencesBeginRegex(0).test('```'));
+      assert.ok(headingBeginRegex(0).test('# heading'));
+      assert.ok(htmlBeginRegex(0).test('<div>'));
+      assert.ok(blockquoteBeginRegex(0).test('> quote'));
+    });
+  });
+
   describe('paragraph', () => {
     it('space between paragraphs', () => {
       expectTokens({
