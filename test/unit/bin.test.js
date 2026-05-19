@@ -1,11 +1,12 @@
 import { main } from '../../bin/main.js';
 import { htmlIsEqual } from '@markedjs/testutils';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
+import { exec } from 'node:child_process';
+import { promisify } from 'node:util';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const execAsync = promisify(exec);
 
 function createMocks() {
   const mocks = {
@@ -64,7 +65,26 @@ function testInput({ args = [], stdin = '', stdinError = '', stdout = '', stderr
 }
 
 function fixturePath(filePath) {
-  return resolve(__dirname, './fixtures', filePath);
+  return resolve(import.meta.dirname, './fixtures', filePath);
+}
+
+function execMarked({ args = '', stdin = '', stdout = '', stderr = '' }) {
+  const execPath = resolve(import.meta.dirname, '../../bin/marked');
+  return async() => {
+    let command = '';
+
+    if (stdin) {
+      command += `node -e "process.stdout.write('${stdin}')" | `;
+    }
+    command += `node ${execPath}`;
+    if (args) {
+      command += ` ${args}`;
+    }
+    const res = await execAsync(command);
+
+    assert.ok(await htmlIsEqual(res.stdout, stdout));
+    assert.strictEqual(res.stderr, stderr);
+  };
 }
 
 describe('bin/marked', () => {
@@ -120,5 +140,37 @@ describe('bin/marked', () => {
       stderr: `marked: ${fixturePath('does-not-exist.md')}: No such file or directory`,
       code: 1,
     }));
+
+    it('reads from stdin when no files are provided', testInput({
+      stdin: '# test\n',
+      stdout: '<h1>test</h1>',
+    }));
   });
+});
+
+describe('exec', () => {
+  it('stdin', execMarked({
+    stdin: '# test',
+    stdout: '<h1>test</h1>',
+  }));
+
+  it('string', execMarked({
+    args: '-s "# test"',
+    stdout: '<h1>test</h1>',
+  }));
+
+  it('input', execMarked({
+    args: `-i ${fixturePath('bin-input.md')}`,
+    stdout: '<h1>file</h1>',
+  }));
+
+  it('input file positional', execMarked({
+    args: fixturePath('bin-input.md'),
+    stdout: '<h1>file</h1>',
+  }));
+
+  it('input last file positional', execMarked({
+    args: `${fixturePath('does-not-exist.md')} ${fixturePath('bin-input.md')}`,
+    stdout: '<h1>file</h1>',
+  }));
 });
