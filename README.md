@@ -72,6 +72,14 @@ $ cat hello.html
 $ marked --help
 ```
 
+**Node.js**
+
+```js
+import { marked } from 'marked';
+const html = marked.parse('# Marked in Node.js');
+console.log(html);
+```
+
 **Browser**
 
 ```html
