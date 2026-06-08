@@ -23,6 +23,8 @@ header {
 	box-sizing: border-box;
 	border-bottom: 1px solid var(--border-color);
 	gap: 16px;
+	overflow-x: auto;
+	overflow-y: hidden;
 }
 
 header .logo-link {
@@ -94,16 +96,18 @@ header h1 {
 	font-size: 20px;
 }
 
-@media screen {
-	
-}
-
 .containers {
 	display: flex;
 	height: calc(100vh - 68px);
 	gap: 12px;
 	padding: 12px;
 	box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+	.containers {
+		flex-direction: column;
+	}
 }
 
 .container {
@@ -126,6 +130,8 @@ header h1 {
 	align-items: center;
 	gap: 8px;
 	color: var(--text-color);
+	overflow-x: auto;
+	overflow-y: hidden;
 }
 
 
