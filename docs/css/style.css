@@ -162,6 +162,10 @@ pre {
   opacity: 1;
 }
 
+#theme-toggle:not(.demo) {
+  margin-right: 40px;
+}
+
 /* Mobile Styles - Changed breakpoint from 768px to 1024px */
 @media (max-width: 1024px) {
   /* Show mobile menu button */
@@ -193,16 +197,17 @@ pre {
   }
 
   /* Adjust theme toggle button position on mobile */
-  #theme-toggle {
+  #theme-toggle:not(.demo) {
     position: fixed;
+    margin-right: 0;
     top: 16px;
-    right: 16px;
+    right: 80px;
     z-index: 9998;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     background-color: var(--background-color);
   }
 
-  .dark #theme-toggle {
+  .dark #theme-toggle:not(.demo) {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
@@ -238,6 +243,13 @@ pre {
   .prose pre {
     font-size: 0.875rem;
     padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* When github corner is invisible */
+  #theme-toggle:not(.demo) {
+    right: 16px;
   }
 }
 
