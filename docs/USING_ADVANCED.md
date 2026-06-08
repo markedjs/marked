@@ -77,6 +77,34 @@ console.log(marked.parse(markdownString));
 
 Marked can be extended using [custom extensions](/using_pro#extensions). This is a list of extensions that can be used with `marked.use(extension)`.
 
+<!-- Extension search box -->
+
+<div id="extension-search-container" class="relative my-6 max-w-lg">
+  <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-subtle-light dark:text-subtle-dark">
+    <span class="material-icons text-xl">search</span>
+  </span>
+  <input
+    type="text"
+    id="extension-search"
+    placeholder="Search extensions by name, package, or description..."
+    class="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-800/50 border border-border-light dark:border-border-dark rounded-xl text-text-light dark:text-text-dark placeholder-subtle-light dark:placeholder-subtle-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 shadow-sm"
+  />
+  <button
+    id="extension-search-clear"
+    type="button"
+    class="absolute inset-y-0 right-0 flex items-center pr-3 text-subtle-light dark:text-subtle-dark hover:text-text-light dark:hover:text-text-dark hidden"
+    aria-label="Clear search"
+  >
+    <span class="material-icons text-lg">close</span>
+  </button>
+</div>
+
+<div id="no-extensions-msg" class="hidden p-8 text-center bg-gray-50 dark:bg-gray-800/30 border border-dashed border-border-light dark:border-border-dark rounded-xl my-6">
+  <span class="material-icons text-4xl text-subtle-light dark:text-subtle-dark mb-2">search_off</span>
+  <p class="text-text-light dark:text-text-dark font-medium">No extensions found</p>
+  <p class="text-sm text-subtle-light dark:text-subtle-dark mt-1">Try adjusting your keywords or search term.</p>
+</div>
+
 <!-- Keep this list ordered alphabetically by name -->
 
 |Name|Package Name|Description|
@@ -102,11 +130,11 @@ Marked can be extended using [custom extensions](/using_pro#extensions). This is
 |[Katex Code](https://github.com/UziTech/marked-katex-extension)|[`marked-katex-extension`](https://www.npmjs.com/package/marked-katex-extension)|Render [katex](https://katex.org/) code|
 |[LinkifyIt](https://github.com/UziTech/marked-linkify-it)|[`marked-linkify-it`](https://www.npmjs.com/package/marked-linkify-it)|Use [linkify-it](https://github.com/markdown-it/linkify-it) for urls|
 |[Mangle](https://github.com/markedjs/marked-mangle)|[`marked-mangle`](https://www.npmjs.com/package/marked-mangle)|Mangle mailto links with HTML character references|
-|[Marked Responsive Images](https://github.com/ELowry/MarkedResponsiveImages)|[`marked-responsive-images`](https://www.npmjs.com/package/marked-responsive-images)|Generate responsive (`srcset`) images based on structured filenames|
 |[Math](https://github.com/webc-site/math/tree/main/plugin/marked)|[`@webc.site/math-marked`](https://www.npmjs.com/package/@webc.site/math-marked)|Ultra-lightweight native MathML math rendering extension|
 |[Misskey-flavored Markdown](https://akkoma.dev/sfr/marked-mfm)|[`marked-mfm`](https://www.npmjs.com/package/marked-mfm)|Custom extension for [Misskey-flavored Markdown](https://github.com/misskey-dev/mfm.js/blob/develop/docs/syntax.md)|
 |[More Lists](https://github.com/jasny/marked-more-lists)|[`marked-more-lists`](https://www.npmjs.com/package/marked-more-lists)|Support for alphabetical and roman numeral ordered lists|
 |[Plaintify](https://github.com/bent10/marked-extensions/tree/main/packages/plaintify)|[`marked-plaintify`](https://www.npmjs.com/package/marked-plaintify)|Converts Markdown to Plaintext|
+|[Responsive Images](https://github.com/ELowry/MarkedResponsiveImages)|[`marked-responsive-images`](https://www.npmjs.com/package/marked-responsive-images)|Generate responsive (`srcset`) images based on structured filenames|
 |[Shiki](https://github.com/bent10/marked-extensions/tree/main/packages/shiki)|[`marked-shiki`](https://www.npmjs.com/package/marked-shiki)|Integrating [Shiki](https://shiki.style/) syntax highlighting|
 |[Sequential Hooks](https://github.com/bent10/marked-extensions/tree/main/packages/sequential-hooks)|[`marked-sequential-hooks`](https://www.npmjs.com/package/marked-sequential-hooks)|Enables the sequential preprocessing and post-processing within [sequential hooks](https://github.com/bent10/marked-extensions#sequential-hooks)|
 |[Smartypants](https://github.com/markedjs/marked-smartypants)|[`marked-smartypants`](https://www.npmjs.com/package/marked-smartypants)|Use [smartypants](https://www.npmjs.com/package/smartypants) to use "smart" typographic punctuation for things like quotes and dashes|

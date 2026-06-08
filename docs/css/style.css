@@ -228,7 +228,7 @@ pre {
   }
 
   /* Make tables scrollable on mobile */
-  .prose table {
+  .prose table:not(.hidden) {
     display: block;
     overflow-x: auto;
     white-space: nowrap;

@@ -210,4 +210,59 @@ document.addEventListener('DOMContentLoaded', function() {
       closeMobileMenu();
     }
   });
+
+  // --- Known Extensions Search ---
+  const searchInput = document.getElementById('extension-search');
+  if (searchInput) {
+    const noResultsMsg = document.getElementById('no-extensions-msg');
+    const clearButton = document.getElementById('extension-search-clear');
+    const extensionsHeading = document.getElementById('extensions');
+    let table = null;
+
+    if (extensionsHeading) {
+      let sibling = extensionsHeading.nextElementSibling;
+      while (sibling) {
+        if (sibling.tagName === 'TABLE') {
+          table = sibling;
+          break;
+        }
+        sibling = sibling.nextElementSibling;
+      }
+    }
+
+    if (table) {
+      const tableRows = table.querySelectorAll('tbody tr');
+
+      function filterExtensions() {
+        const query = searchInput.value.toLowerCase().trim();
+        let hasRows = false;
+
+        clearButton.classList.toggle('hidden', !query);
+
+        for (const row of tableRows) {
+          const cells = row.querySelectorAll('td');
+
+          const name = cells[0]?.textContent?.toLowerCase() ?? '';
+          const packageName = cells[1]?.textContent?.toLowerCase() ?? '';
+          const description = cells[2]?.textContent?.toLowerCase() ?? '';
+
+          const includesQuery = name.includes(query) || packageName.includes(query) || description.includes(query)
+          row.classList.toggle('hidden', !includesQuery);
+          hasRows = hasRows || includesQuery;
+        }
+
+        // Toggle table display and "no results" message based on matches
+        table.classList.toggle('hidden', !hasRows);
+        noResultsMsg.classList.toggle('hidden', hasRows);
+      }
+
+      searchInput.addEventListener('input', filterExtensions);
+
+      clearButton.addEventListener('click', function() {
+        searchInput.value = '';
+        filterExtensions();
+        searchInput.focus();
+      });
+    }
+  }
 });
