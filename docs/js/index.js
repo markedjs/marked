@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
           const packageName = cells[1]?.textContent?.toLowerCase() ?? '';
           const description = cells[2]?.textContent?.toLowerCase() ?? '';
 
-          const includesQuery = name.includes(query) || packageName.includes(query) || description.includes(query)
+          const includesQuery = name.includes(query) || packageName.includes(query) || description.includes(query);
           row.classList.toggle('hidden', !includesQuery);
           hasRows = hasRows || includesQuery;
         }
