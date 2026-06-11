@@ -256,13 +256,28 @@ document.addEventListener('DOMContentLoaded', function() {
         noResultsMsg.classList.toggle('hidden', hasRows);
       }
 
-      searchInput.addEventListener('input', filterExtensions);
+      const debouncedFilter = debounce(filterExtensions, 200);
+
+      searchInput.addEventListener('input', debouncedFilter);
 
       clearButton.addEventListener('click', function() {
         searchInput.value = '';
+        debouncedFilter.cancel();
         filterExtensions();
         searchInput.focus();
       });
     }
   }
 });
+
+function debounce(func, wait) {
+  let timeout;
+  const debounced = (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(args), wait);
+  };
+  debounced.cancel = () => {
+    clearTimeout(timeout);
+  };
+  return debounced;
+}
