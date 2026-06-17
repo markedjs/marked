@@ -4331,8 +4331,7 @@
     "example": 540,
     "start_line": 8129,
     "end_line": 8135,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[Foo\n  bar]: /url\n\n[Baz][Foo bar]\n",
