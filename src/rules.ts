@@ -163,20 +163,25 @@ const html = edit(
   .replace('attribute', / +[a-zA-Z:_][\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'| *= *[^\s"'=<>`]+)?/)
   .getRegex();
 
-const paragraph = edit(_paragraph)
+const createParagraph = (listInterrupt: RegExp) => edit(_paragraph)
   .replace('hr', hr)
   .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
   .replace('|lheading', '') // setext headings don't interrupt commonmark paragraphs
   .replace('|table', '')
   .replace('blockquote', ' {0,3}>')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n')
-  .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]+[^ \\t\\n]') // only non-empty lists starting from 1 can interrupt
+  .replace('list', listInterrupt)
   .replace('html', '</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)')
   .replace('tag', _tag) // pars can be interrupted by type (6) html blocks
   .getRegex();
 
+// only non-empty lists starting from 1 can interrupt paragraphs
+const paragraph = createParagraph(/ {0,3}(?:[*+-]|1[.)])[ \t]+[^ \t\n]/);
+// blockquotes can be interrupted by lists starting from any number
+const blockquoteParagraph = createParagraph(/ {0,3}(?:[*+-]|\d{1,9}[.)])[ \t]+[^ \t\n]/);
+
 const blockquote = edit(/^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/)
-  .replace('paragraph', paragraph)
+  .replace('paragraph', blockquoteParagraph)
   .getRegex();
 
 /**
