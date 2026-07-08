@@ -948,7 +948,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   inlineText(src: string): Tokens.Text | undefined {
-    const cap = this.rules.inline.text.exec(src);
+    const cap = this.options.gfm && !this.options.pedantic
+      ? /^(`+(?=~)|~+(?=`))/.exec(src) ?? this.rules.inline.text.exec(src)
+      : this.rules.inline.text.exec(src);
     if (cap) {
       const escaped = this.lexer.state.inRawBlock;
       return {
