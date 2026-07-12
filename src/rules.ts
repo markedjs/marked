@@ -149,11 +149,11 @@ const _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
 const _comment = /<!--(?:-?>|[\s\S]*?(?:-->|$))/;
 const html = edit(
   '^ {0,3}(?:' // optional indentation
-+ '<(script|pre|style|textarea)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n+|$)' // (1)
++ '<(script|pre|style|textarea)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n*|$)' // (1)
 + '|comment[^\\n]*(\\n+|$)' // (2)
-+ '|<\\?[\\s\\S]*?(?:\\?>[^\\n]*\\n+|$)' // (3)
-+ '|<![A-Z][\\s\\S]*?(?:>[^\\n]*\\n+|$)' // (4)
-+ '|<!\\[CDATA\\[[\\s\\S]*?(?:\\]\\]>[^\\n]*\\n+|$)' // (5)
++ '|<\\?[\\s\\S]*?(?:\\?>[^\\n]*\\n*|$)' // (3)
++ '|<![A-Z][\\s\\S]*?(?:>[^\\n]*\\n*|$)' // (4)
++ '|<!\\[CDATA\\[[\\s\\S]*?(?:\\]\\]>[^\\n]*\\n*|$)' // (5)
 + '|</?(tag)(?: +|\\n|/?>)[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (6)
 + '|<(?!script|pre|style|textarea)([a-z][\\w-]*)(?:attribute)*? */?>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (7) open tag
 + '|</(?!script|pre|style|textarea)[a-z][\\w-]*\\s*>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (7) closing tag
