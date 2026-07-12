@@ -115,7 +115,7 @@ const lheading = edit(lheadingCore)
   .replace(/blockCode/g, /(?: {4}| {0,3}\t)/) // indented code blocks can interrupt
   .replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/) // fenced code blocks can interrupt
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
-  .replace(/heading/g, / {0,3}#{1,6}/) // ATX heading can interrupt
+  .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
   .replace(/html/g, / {0,3}<[^\n>]+>\n/) // block html can interrupt
   .replace(/\|table/g, '') // table not in commonmark
   .getRegex();
@@ -124,7 +124,7 @@ const lheadingGfm = edit(lheadingCore)
   .replace(/blockCode/g, /(?: {4}| {0,3}\t)/) // indented code blocks can interrupt
   .replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/) // fenced code blocks can interrupt
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
-  .replace(/heading/g, / {0,3}#{1,6}/) // ATX heading can interrupt
+  .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
   .replace(/html/g, / {0,3}<[^\n>]+>\n/) // block html can interrupt
   .replace(/table/g, / {0,3}\|?(?:[:\- ]*\|)+[\:\- ]*\n/) // table can interrupt
   .getRegex();
