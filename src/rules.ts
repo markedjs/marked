@@ -177,8 +177,10 @@ const createParagraph = (listInterrupt: RegExp) => edit(_paragraph)
 
 // only non-empty lists starting from 1 can interrupt paragraphs
 const paragraph = createParagraph(/ {0,3}(?:[*+-]|1[.)])[ \t]+[^ \t\n]/);
-// blockquotes can be interrupted by lists starting from any number
-const blockquoteParagraph = createParagraph(/ {0,3}(?:[*+-]|\d{1,9}[.)])[ \t]+[^ \t\n]/);
+// inside a blockquote a bare list marker (any number) starts a sibling list,
+// so it must not be lazily continued as paragraph text (unlike a top level
+// paragraph, where an empty list cannot interrupt)
+const blockquoteParagraph = createParagraph(/ {0,3}(?:[*+-]|\d{1,9}[.)])(?:[ \t]|\n|$)/);
 
 const blockquote = edit(/^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/)
   .replace('paragraph', blockquoteParagraph)
