@@ -304,33 +304,26 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     this.tokenizer.lexer = this;
     // String with links masked to avoid interference with em and strong
     let maskedSrc = src;
-    let match: RegExpExecArray | null = null;
 
     // Mask out reflinks
     if (this.tokens.links) {
       const links = Object.keys(this.tokens.links);
       if (links.length > 0) {
-        while ((match = this.tokenizer.rules.inline.reflinkSearch.exec(maskedSrc)) !== null) {
-          if (links.includes(match[0].slice(match[0].lastIndexOf('[') + 1, -1))) {
-            maskedSrc = maskedSrc.slice(0, match.index)
-              + '[' + 'a'.repeat(match[0].length - 2) + ']'
-              + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
-          }
-        }
+        maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.reflinkSearch, match0 =>
+          links.includes(match0.slice(match0.lastIndexOf('[') + 1, -1))
+            ? '[' + 'a'.repeat(match0.length - 2) + ']'
+            : match0);
       }
     }
 
     // Mask out escaped characters
-    while ((match = this.tokenizer.rules.inline.anyPunctuation.exec(maskedSrc)) !== null) {
-      maskedSrc = maskedSrc.slice(0, match.index) + '++' + maskedSrc.slice(this.tokenizer.rules.inline.anyPunctuation.lastIndex);
-    }
+    maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.anyPunctuation, '++');
 
     // Mask out other blocks
-    let offset;
-    while ((match = this.tokenizer.rules.inline.blockSkip.exec(maskedSrc)) !== null) {
-      offset = match[2] ? match[2].length : 0;
-      maskedSrc = maskedSrc.slice(0, match.index + offset) + '[' + 'a'.repeat(match[0].length - offset - 2) + ']' + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
-    }
+    maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.blockSkip, (match0, _link, context) => {
+      const offset = context ? context.length : 0;
+      return match0.slice(0, offset) + '[' + 'a'.repeat(match0.length - offset - 2) + ']';
+    });
 
     // Mask out blocks from extensions
     maskedSrc = this.options.hooks?.emStrongMask?.call({ lexer: this }, maskedSrc) ?? maskedSrc;
