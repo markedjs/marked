@@ -396,6 +396,32 @@ describe('marked unit', () => {
       assert.strictEqual(html, '<h1>extension1 RENDERER EXTENSION</h1>\n<pre><code>extension2 TOKENIZER EXTENSION\n</code></pre>\n');
     });
 
+    it('should fall back to the default checkbox renderer if the extension returns false', () => {
+      marked.use({
+        extensions: [{
+          name: 'checkbox',
+          renderer(token) {
+            return token.checked ? false : '<span class="todo"></span> ';
+          },
+        }],
+      });
+      const html = marked.parse('- [x] one\n- [ ] two\n');
+      assert.strictEqual(html, '<ul>\n<li><input checked="" disabled="" type="checkbox"> one</li>\n<li><span class="todo"></span> two</li>\n</ul>\n');
+    });
+
+    it('should fall back to the default checkbox renderer in a loose list if the extension returns false', () => {
+      marked.use({
+        extensions: [{
+          name: 'checkbox',
+          renderer() {
+            return false;
+          },
+        }],
+      });
+      const html = marked.parse('- [x] one\n\n- [ ] two\n');
+      assert.strictEqual(html, '<ul>\n<li><p><input checked="" disabled="" type="checkbox"> one</p>\n</li>\n<li><p><input disabled="" type="checkbox"> two</p>\n</li>\n</ul>\n');
+    });
+
     it('should walk only specified child tokens', () => {
       const walkableDescription = {
         extensions: [{
