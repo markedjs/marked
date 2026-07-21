@@ -285,12 +285,11 @@ const _notPunctuationOrSpace = /[^\s\p{P}\p{S}]/u;
 const punctuation = edit(/^((?![*_])punctSpace)/, 'u')
   .replace(/punctSpace/g, _punctuationOrSpace).getRegex();
 
-/** Quote chars for pedantic rule 6 lookbehind; includes both straight and curly forms. */
-const closeQuoteClass = '["\u201c\u201d\u2018\u2019\']';
-/** Quote chars excluded from pedantic left-delim captured punct so `**"` / `**'` yields an empty nextChar. */
-const openQuoteClass = '["\'\u2018\u2019\u201c]';
-/** When lookbehind is supported, pedantic rule 6 does not match immediately after a quote (e.g. `"**` in `**"A"**`). */
-const closeQuoteLookbehind = supportsLookbehind ? `(?<!${closeQuoteClass})` : '';
+/**
+ * Opening punct/quotes excluded from pedantic LDelim nextChar so
+ * `aa**"A"**bb` / `aa**(A)**bb` can start strong (Pi + Ps + ASCII straight quotes).
+ */
+const _openQuote = /[\p{Pi}\p{Ps}"']/u;
 
 // GFM allows ~ inside strong and em for strikethrough
 const _punctuationGfmStrongEm = /(?!~)[\p{P}\p{S}]/u;
@@ -315,11 +314,11 @@ const emStrongLDelimGfm = edit(emStrongLDelimCore, 'u')
   .replace(/punct/g, _punctuationGfmStrongEm)
   .getRegex();
 
-// Pedantic: do not treat a quote as left-delim punct (pairs with pedantic emStrongRDelim rule 6).
+// Pedantic: do not treat opening punct/quotes as left-delim punct (e.g. **( / **").
 const emStrongLDelimPedanticCore = /^(?:\*+(?:((?!\*)(?!openQuote)punct)|([^\s*]))?)|^_+(?:((?!_)(?!openQuote)punct)|([^\s_]))?/;
 
 const emStrongLDelimPedantic = edit(emStrongLDelimPedanticCore, 'u')
-  .replace(/openQuote/g, openQuoteClass)
+  .replace(/openQuote/g, _openQuote)
   .replace(/punct/g, _punctuation)
   .getRegex();
 
@@ -354,10 +353,9 @@ const emStrongRDelimAstPedanticCore =
 + '|(?!\\*)[\\s](\\*+)(?=notPunctSpace)' // (3) ***a can only be Left Delimiter (whitespace required; not #***a)
 + '|[\\s](\\*+)(?!\\*)(?=punct)' // (4) ***# can only be Left Delimiter
 + '|(?!\\*)punct(\\*+)(?!\\*)(?=punct)' // (5) #***# can be either Left or Right Delimiter
-+ '|closeQuoteLookbehind(?:(?!\\*)punct|notPunctSpace)(\\*+)(?!\\*)(?=notPunctSpace)'; // (6) a***a, #***a, and :** (e.g. **foo:**bar)
++ '|(?:(?!\\*)punct|notPunctSpace)(\\*+)(?!\\*)(?=notPunctSpace)'; // (6) a***a, #***a, and :** (e.g. **foo:**bar)
 
 const emStrongRDelimAstPedantic = edit(emStrongRDelimAstPedanticCore, 'gu')
-  .replace(/closeQuoteLookbehind/g, closeQuoteLookbehind)
   .replace(/notPunctSpace/g, _notPunctuationOrSpace)
   .replace(/punctSpace/g, _punctuationOrSpace)
   .replace(/punct/g, _punctuation)
@@ -386,10 +384,9 @@ const emStrongRDelimUndPedanticCore =
 + '|(?!_)[\\s](_+)(?=notPunctSpace)' // (3) ___a can only be Left Delimiter (whitespace required; not #___a)
 + '|[\\s](_+)(?!_)(?=punct)' // (4) ___# can only be Left Delimiter
 + '|(?!_)punct(_+)(?!_)(?=punct)' // (5) #___# can be either Left or Right Delimiter
-+ '|closeQuoteLookbehind(?:(?!_)punct|notPunctSpace)(_+)(?!_)(?=notPunctSpace)'; // (6) a___a, #___a, and :__ (e.g. _foo:_bar)
++ '|(?:(?!_)punct|notPunctSpace)(_+)(?!_)(?=notPunctSpace)'; // (6) a___a, #___a, and :__ (e.g. _foo:_bar)
 
 const emStrongRDelimUndPedantic = edit(emStrongRDelimUndPedanticCore, 'gu')
-  .replace(/closeQuoteLookbehind/g, closeQuoteLookbehind)
   .replace(/notPunctSpace/g, _notPunctuationOrSpace)
   .replace(/punctSpace/g, _punctuationOrSpace)
   .replace(/punct/g, _punctuation)
