@@ -746,7 +746,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       const lLength = [...match[0]].length - 1;
       let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
 
-      const endReg = match[0][0] === '*' ? this.rules.inline.emStrongRDelimAst : this.rules.inline.emStrongRDelimUnd;
+      const delimChar = match[0][0];
+      // A mid-run opener (for example the second star of an unmatched `**`) must
+      // only pair with a delimiter that can only close, otherwise it steals the
+      // opener of a later span (`**a*b*c` must be `**a<em>b</em>c`).
+      const midRun = prevChar === delimChar;
+      const endReg = delimChar === '*' ? this.rules.inline.emStrongRDelimAst : this.rules.inline.emStrongRDelimUnd;
       endReg.lastIndex = 0;
 
       // Clip maskedSrc to same section of string as src (move to lexer?)
@@ -766,6 +771,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           if (lLength % 3 && !((lLength + rLength) % 3)) {
             midDelimTotal += rLength;
             continue; // CommonMark Emphasis Rules 9-10
+          }
+          if (midRun) {
+            // A mid-run opener cannot close against an ambiguous delimiter that
+            // can also open; that delimiter opens its own emphasis span instead.
+            break;
           }
         }
 
