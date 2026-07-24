@@ -50,7 +50,7 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
       if (this.options.extensions?.renderers?.[anyToken.type]) {
         const genericToken = anyToken as Tokens.Generic;
         const ret = this.options.extensions.renderers[genericToken.type].call({ parser: this }, genericToken);
-        if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'html', 'def', 'paragraph', 'text'].includes(genericToken.type)) {
+        if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'checkbox', 'html', 'def', 'paragraph', 'text'].includes(genericToken.type)) {
           out += ret || '';
           continue;
         }
@@ -136,7 +136,7 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
       // Run any renderer extensions
       if (this.options.extensions?.renderers?.[anyToken.type]) {
         const ret = this.options.extensions.renderers[anyToken.type].call({ parser: this }, anyToken);
-        if (ret !== false || !['escape', 'html', 'link', 'image', 'strong', 'em', 'codespan', 'br', 'del', 'text'].includes(anyToken.type)) {
+        if (ret !== false || !['escape', 'html', 'link', 'image', 'checkbox', 'strong', 'em', 'codespan', 'br', 'del', 'text'].includes(anyToken.type)) {
           out += ret || '';
           continue;
         }
