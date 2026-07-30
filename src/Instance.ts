@@ -73,6 +73,16 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
     return values;
   }
 
+  /**
+   * Registers extensions with this Marked instance.
+   *
+   * The `renderer`, `tokenizer`, and `hooks` objects may each contain only the
+   * methods that should be overridden. Their methods are merged with built-in
+   * behavior and extensions registered by earlier calls.
+   *
+   * Use this method when supplying only some hook methods. In contrast, hooks
+   * passed in per-call parse or lexer options must be a complete Hooks instance.
+   */
   use(...args: MarkedExtension<ParserOutput, RendererOutput>[]) {
     const extensions: MarkedOptions<ParserOutput, RendererOutput>['extensions'] = this.defaults.extensions || { renderers: {}, childTokens: {} };
 

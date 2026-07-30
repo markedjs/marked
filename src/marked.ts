@@ -39,6 +39,20 @@ export function marked(src: string, opt?: MarkedOptions | null): string | Promis
   return markedInstance.parse(src, opt);
 }
 
+export declare namespace marked {
+  /**
+   * Registers extensions with the default Marked instance.
+   *
+   * The `renderer`, `tokenizer`, and `hooks` objects may each contain only the
+   * methods that should be overridden. Their methods are merged with built-in
+   * behavior and extensions registered by earlier calls.
+   *
+   * Use this function when supplying only some hook methods. In contrast, hooks
+   * passed in per-call parse or lexer options must be a complete Hooks instance.
+   */
+  let use: (...args: MarkedExtension[]) => typeof marked;
+}
+
 /**
  * Sets the default options.
  *
@@ -60,15 +74,26 @@ marked.getDefaults = _getDefaults;
 marked.defaults = _defaults;
 
 /**
- * Use Extension
+ * Registers extensions with the default Marked instance.
+ *
+ * The `renderer`, `tokenizer`, and `hooks` objects may each contain only the
+ * methods that should be overridden. Their methods are merged with built-in
+ * behavior and extensions registered by earlier calls.
+ *
+ * Use this function when supplying only some hook methods. In contrast, hooks
+ * passed in per-call parse or lexer options must be a complete Hooks instance.
+ *
+ * @param args Extensions to register
+ * @return The `marked` function
  */
-
-marked.use = function(...args: MarkedExtension[]) {
+function useExtension(...args: MarkedExtension[]) {
   markedInstance.use(...args);
   marked.defaults = markedInstance.defaults;
   changeDefaults(marked.defaults);
   return marked;
-};
+}
+
+marked.use = useExtension;
 
 /**
  * Run callback for every token
@@ -102,7 +127,6 @@ marked.parse = marked;
 
 export const options = marked.options;
 export const setOptions = marked.setOptions;
-export const use = marked.use;
 export const walkTokens = marked.walkTokens;
 export const parseInline = marked.parseInline;
 export const parse = marked;
@@ -116,5 +140,6 @@ export { _Renderer as Renderer } from './Renderer.ts';
 export { _TextRenderer as TextRenderer } from './TextRenderer.ts';
 export { _Hooks as Hooks } from './Hooks.ts';
 export { Marked } from './Instance.ts';
+export { useExtension as use };
 export type * from './MarkedOptions.ts';
 export type * from './Tokens.ts';
