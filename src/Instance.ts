@@ -18,7 +18,20 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
   defaults = _getDefaults<ParserOutput, RendererOutput>();
   options = this.setOptions;
 
+  /**
+   * Compiles markdown to HTML.
+   *
+   * To configure hooks, a renderer, or a tokenizer, create a separate `Marked`
+   * instance and use `Marked#use` instead of passing them on each call.
+   */
   parse = this.parseMarkdown(true);
+
+  /**
+   * Compiles inline markdown to HTML.
+   *
+   * To configure hooks, a renderer, or a tokenizer, create a separate `Marked`
+   * instance and use `Marked#use` instead of passing them on each call.
+   */
   parseInline = this.parseMarkdown(false);
 
   Parser = _Parser<ParserOutput, RendererOutput>;
@@ -80,8 +93,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
    * methods that should be overridden. Their methods are merged with built-in
    * behavior and extensions registered by earlier calls.
    *
-   * Use this method when supplying only some hook methods. In contrast, hooks
-   * passed in per-call parse or lexer options must be a complete Hooks instance.
+   * Use this method when supplying only some hook methods.
    */
   use(...args: MarkedExtension<ParserOutput, RendererOutput>[]) {
     const extensions: MarkedOptions<ParserOutput, RendererOutput>['extensions'] = this.defaults.extensions || { renderers: {}, childTokens: {} };

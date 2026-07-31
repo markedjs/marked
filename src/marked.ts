@@ -19,6 +19,9 @@ const markedInstance = new Marked();
 /**
  * Compiles markdown to HTML asynchronously.
  *
+ * To configure hooks, a renderer, or a tokenizer, create a `Marked` instance
+ * and use `Marked#use` instead of passing them as options on each call.
+ *
  * @param src String of markdown source to be compiled
  * @param options Hash of options, having async: true
  * @return Promise of string of compiled HTML
@@ -27,6 +30,9 @@ export function marked(src: string, options: MarkedOptions & { async: true }): P
 
 /**
  * Compiles markdown to HTML.
+ *
+ * To configure hooks, a renderer, or a tokenizer, create a `Marked` instance
+ * and use `Marked#use` instead of passing them as options on each call.
  *
  * @param src String of markdown source to be compiled
  * @param options Optional hash of options
@@ -41,14 +47,21 @@ export function marked(src: string, opt?: MarkedOptions | null): string | Promis
 
 export declare namespace marked {
   /**
+   * Compiles inline markdown to HTML.
+   *
+   * To configure hooks, a renderer, or a tokenizer, create a `Marked` instance
+   * and use `Marked#use` instead of passing them as options on each call.
+   */
+  let parseInline: typeof markedInstance.parseInline;
+
+  /**
    * Registers extensions with the default Marked instance.
    *
    * The `renderer`, `tokenizer`, and `hooks` objects may each contain only the
    * methods that should be overridden. Their methods are merged with built-in
    * behavior and extensions registered by earlier calls.
    *
-   * Use this function when supplying only some hook methods. In contrast, hooks
-   * passed in per-call parse or lexer options must be a complete Hooks instance.
+   * Use this function when supplying only some hook methods.
    */
   let use: (...args: MarkedExtension[]) => typeof marked;
 }
@@ -80,8 +93,7 @@ marked.defaults = _defaults;
  * methods that should be overridden. Their methods are merged with built-in
  * behavior and extensions registered by earlier calls.
  *
- * Use this function when supplying only some hook methods. In contrast, hooks
- * passed in per-call parse or lexer options must be a complete Hooks instance.
+ * Use this function when supplying only some hook methods.
  *
  * @param args Extensions to register
  * @return The `marked` function
@@ -106,6 +118,9 @@ marked.walkTokens = function(tokens: Token[] | TokensList, callback: (token: Tok
 /**
  * Compiles markdown to HTML without enclosing `p` tag.
  *
+ * To configure hooks, a renderer, or a tokenizer, create a `Marked` instance
+ * and use `Marked#use` instead of passing them as options on each call.
+ *
  * @param src String of markdown source to be compiled
  * @param options Hash of options
  * @return String of compiled HTML
@@ -128,6 +143,12 @@ marked.parse = marked;
 export const options = marked.options;
 export const setOptions = marked.setOptions;
 export const walkTokens = marked.walkTokens;
+/**
+ * Compiles inline markdown to HTML.
+ *
+ * To configure hooks, a renderer, or a tokenizer, create a `Marked` instance
+ * and use `Marked#use` instead of passing them as options on each call.
+ */
 export const parseInline = marked.parseInline;
 export const parse = marked;
 export const parser = _Parser.parse;
