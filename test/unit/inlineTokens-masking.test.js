@@ -34,9 +34,13 @@ describe('inlineTokens masking scaling', () => {
     const t1 = parseSeconds(footnoteShape(2000));
     const t2 = parseSeconds(footnoteShape(4000));
     // pre-fix this ratio is ~5+ (exponent > 2); linear growth is ~2.
+    // Assert on the growth ratio directly (epsilon floor avoids divide-by-zero)
+    // so the check stays sensitive on fast runners instead of falling back to
+    // an absolute-time bound that can mask superlinear behavior.
+    const ratio = t2 / Math.max(t1, 1e-4);
     assert.ok(
-      t2 < Math.max(t1 * 3.5, 0.5),
-      `superlinear growth suspected: ${t1.toFixed(3)}s -> ${t2.toFixed(3)}s`,
+      ratio < 3.5,
+      `superlinear growth suspected: ${t1.toFixed(3)}s -> ${t2.toFixed(3)}s (ratio ${ratio.toFixed(2)})`,
     );
   });
 
