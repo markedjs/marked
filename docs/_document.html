@@ -167,6 +167,17 @@
             />
           </a>
         </div>
+        <div class="flex justify-center px-4 mb-6">
+          <button
+            id="theme-toggle"
+            data-theme-mode="system"
+            aria-label="Switch theme"
+            class="flex items-center gap-2 px-4 py-2 rounded-lg text-subtle-light dark:text-subtle-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-border-light dark:border-border-dark"
+          >
+            <span class="material-icons" data-theme-icon>brightness_auto</span>
+            <span class="text-sm font-medium" data-theme-text>System</span>
+          </button>
+        </div>
         <nav class="flex flex-col space-y-6 w-52 pl-4 pt-2">
           <div>
             <h3
@@ -451,15 +462,6 @@
             <h1 class="text-5xl font-bold text-text-light dark:text-text-dark">
               Marked Documentation
             </h1>
-            <button
-              id="theme-toggle"
-              data-theme-mode="system"
-              aria-label="Switch theme"
-              class="flex items-center gap-2 px-4 py-2 rounded-lg text-subtle-light dark:text-subtle-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              <span class="material-icons" data-theme-icon>brightness_auto</span>
-              <span class="text-sm font-medium" data-theme-text>System</span>
-            </button>
           </div>
 
           <article
