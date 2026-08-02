@@ -306,11 +306,11 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     let maskedSrc = src;
 
     // Mask out reflinks
-    if (this.tokens.links) {
-      const links = Object.keys(this.tokens.links);
-      if (links.length > 0) {
+    if (this.tokens.links && src.includes('[')) {
+      const links = new Set(Object.keys(this.tokens.links));
+      if (links.size > 0) {
         maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.reflinkSearch, match0 =>
-          links.includes(match0.slice(match0.lastIndexOf('[') + 1, -1))
+          links.has(match0.slice(match0.lastIndexOf('[') + 1, -1))
             ? '[' + 'a'.repeat(match0.length - 2) + ']'
             : match0);
       }
