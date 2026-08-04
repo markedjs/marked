@@ -292,6 +292,12 @@ const _notPunctuationOrSpace = /[^\s\p{P}\p{S}]/u;
 const punctuation = edit(/^((?![*_])punctSpace)/, 'u')
   .replace(/punctSpace/g, _punctuationOrSpace).getRegex();
 
+/**
+ * Opening punct/quotes excluded from pedantic LDelim nextChar so
+ * `aa**"A"**bb` / `aa**(A)**bb` can start strong (Pi + Ps + ASCII straight quotes).
+ */
+const _openQuote = /[\p{Pi}\p{Ps}"']/u;
+
 // GFM allows ~ inside strong and em for strikethrough
 const _punctuationGfmStrongEm = /(?!~)[\p{P}\p{S}]/u;
 const _punctuationOrSpaceGfmStrongEm = /(?!~)[\s\p{P}\p{S}]/u;
@@ -313,6 +319,14 @@ const emStrongLDelim = edit(emStrongLDelimCore, 'u')
 
 const emStrongLDelimGfm = edit(emStrongLDelimCore, 'u')
   .replace(/punct/g, _punctuationGfmStrongEm)
+  .getRegex();
+
+// Pedantic: do not treat opening punct/quotes as left-delim punct (e.g. **( / **").
+const emStrongLDelimPedanticCore = /^(?:\*+(?:((?!\*)(?!openQuote)punct)|([^\s*]))?)|^_+(?:((?!_)(?!openQuote)punct)|([^\s_]))?/;
+
+const emStrongLDelimPedantic = edit(emStrongLDelimPedanticCore, 'u')
+  .replace(/openQuote/g, _openQuote)
+  .replace(/punct/g, _punctuation)
   .getRegex();
 
 const emStrongRDelimAstCore =
@@ -337,7 +351,24 @@ const emStrongRDelimAstGfm = edit(emStrongRDelimAstCore, 'gu')
   .replace(/punct/g, _punctuationGfmStrongEm)
   .getRegex();
 
-// (6) Not allowed for _
+// Pedantic: rule 3 requires whitespace before left delim; rule 6 allows punct before close (e.g. `:**bar`).
+const emStrongRDelimAstPedanticCore =
+  '^[^_*]*?__[^_*]*?\\*[^_*]*?(?=__)' // Skip orphan inside strong
++ '|[^*]+(?=[^*])' // Consume to delim
++ '|(?!\\*)punct(\\*+)(?=[\\s]|$)' // (1) #*** can only be a Right Delimiter
++ '|notPunctSpace(\\*+)(?!\\*)(?=punctSpace|$)' // (2) a***#, a*** can only be a Right Delimiter
++ '|(?!\\*)[\\s](\\*+)(?=notPunctSpace)' // (3) ***a can only be Left Delimiter (whitespace required; not #***a)
++ '|[\\s](\\*+)(?!\\*)(?=punct)' // (4) ***# can only be Left Delimiter
++ '|(?!\\*)punct(\\*+)(?!\\*)(?=punct)' // (5) #***# can be either Left or Right Delimiter
++ '|(?:(?!\\*)punct|notPunctSpace)(\\*+)(?!\\*)(?=notPunctSpace)'; // (6) a***a, #***a, and :** (e.g. **foo:**bar)
+
+const emStrongRDelimAstPedantic = edit(emStrongRDelimAstPedanticCore, 'gu')
+  .replace(/notPunctSpace/g, _notPunctuationOrSpace)
+  .replace(/punctSpace/g, _punctuationOrSpace)
+  .replace(/punct/g, _punctuation)
+  .getRegex();
+
+// Normal: no rule 6 for _ (a___a cannot close as emphasis).
 const emStrongRDelimUnd = edit(
   '^[^_*]*?\\*\\*[^_*]*?_[^_*]*?(?=\\*\\*)' // Skip orphan inside strong
 + '|[^_]+(?=[^_])' // Consume to delim
@@ -346,6 +377,23 @@ const emStrongRDelimUnd = edit(
 + '|(?!_)punctSpace(_+)(?=notPunctSpace)' // (3) #___a, ___a can only be Left Delimiter
 + '|[\\s](_+)(?!_)(?=punct)' // (4) ___# can only be Left Delimiter
 + '|(?!_)punct(_+)(?!_)(?=punct)', 'gu') // (5) #___# can be either Left or Right Delimiter
+  .replace(/notPunctSpace/g, _notPunctuationOrSpace)
+  .replace(/punctSpace/g, _punctuationOrSpace)
+  .replace(/punct/g, _punctuation)
+  .getRegex();
+
+// Pedantic: same rule 3/6 adjustments as emStrongRDelimAstPedantic (e.g. `_foo:_bar`).
+const emStrongRDelimUndPedanticCore =
+  '^[^_*]*?\\*\\*[^_*]*?_[^_*]*?(?=\\*\\*)' // Skip orphan inside strong
++ '|[^_]+(?=[^_])' // Consume to delim
++ '|(?!_)punct(_+)(?=[\\s]|$)' // (1) #___ can only be a Right Delimiter
++ '|notPunctSpace(_+)(?!_)(?=punctSpace|$)' // (2) a___#, a___ can only be a Right Delimiter
++ '|(?!_)[\\s](_+)(?=notPunctSpace)' // (3) ___a can only be Left Delimiter (whitespace required; not #___a)
++ '|[\\s](_+)(?!_)(?=punct)' // (4) ___# can only be Left Delimiter
++ '|(?!_)punct(_+)(?!_)(?=punct)' // (5) #___# can be either Left or Right Delimiter
++ '|(?:(?!_)punct|notPunctSpace)(_+)(?!_)(?=notPunctSpace)'; // (6) a___a, #___a, and :__ (e.g. _foo:_bar)
+
+const emStrongRDelimUndPedantic = edit(emStrongRDelimUndPedanticCore, 'gu')
   .replace(/notPunctSpace/g, _notPunctuationOrSpace)
   .replace(/punctSpace/g, _punctuationOrSpace)
   .replace(/punct/g, _punctuation)
@@ -453,6 +501,9 @@ type InlineKeys = keyof typeof inlineNormal;
 
 const inlinePedantic: Record<InlineKeys, RegExp> = {
   ...inlineNormal,
+  emStrongLDelim: emStrongLDelimPedantic,
+  emStrongRDelimAst: emStrongRDelimAstPedantic,
+  emStrongRDelimUnd: emStrongRDelimUndPedantic,
   link: edit(/^!?\[(label)\]\((.*?)\)/)
     .replace('label', _inlineLabel)
     .getRegex(),
