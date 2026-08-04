@@ -85,6 +85,10 @@ header h1 {
   .theme-toggle {
     margin-right: 0;
   }
+  
+  a.github-corner {
+	display: none !important;
+  }
 }
 
 .theme-toggle:hover {
