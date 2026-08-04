@@ -19,6 +19,9 @@ const markedInstance = new Marked();
 /**
  * Compiles markdown to HTML asynchronously.
  *
+ * To configure hooks, a renderer, or a tokenizer, create a `Marked` instance
+ * and use `Marked#use` instead of passing them as options on each call.
+ *
  * @param src String of markdown source to be compiled
  * @param options Hash of options, having async: true
  * @return Promise of string of compiled HTML
@@ -27,6 +30,9 @@ export function marked(src: string, options: MarkedOptions & { async: true }): P
 
 /**
  * Compiles markdown to HTML.
+ *
+ * To configure hooks, a renderer, or a tokenizer, create a `Marked` instance
+ * and use `Marked#use` instead of passing them as options on each call.
  *
  * @param src String of markdown source to be compiled
  * @param options Optional hash of options
@@ -37,6 +43,27 @@ export function marked(src: string, options: MarkedOptions & { async: true }): P
 export function marked(src: string, options?: MarkedOptions | null): string | Promise<string>;
 export function marked(src: string, opt?: MarkedOptions | null): string | Promise<string> {
   return markedInstance.parse(src, opt);
+}
+
+export declare namespace marked {
+  /**
+   * Compiles inline markdown to HTML.
+   *
+   * To configure hooks, a renderer, or a tokenizer, create a `Marked` instance
+   * and use `Marked#use` instead of passing them as options on each call.
+   */
+  let parseInline: typeof markedInstance.parseInline;
+
+  /**
+   * Registers extensions with the default Marked instance.
+   *
+   * The `renderer`, `tokenizer`, and `hooks` objects may each contain only the
+   * methods that should be overridden. Their methods are merged with built-in
+   * behavior and extensions registered by earlier calls.
+   *
+   * Use this function when supplying only some hook methods.
+   */
+  let use: (...args: MarkedExtension[]) => typeof marked;
 }
 
 /**
@@ -60,15 +87,25 @@ marked.getDefaults = _getDefaults;
 marked.defaults = _defaults;
 
 /**
- * Use Extension
+ * Registers extensions with the default Marked instance.
+ *
+ * The `renderer`, `tokenizer`, and `hooks` objects may each contain only the
+ * methods that should be overridden. Their methods are merged with built-in
+ * behavior and extensions registered by earlier calls.
+ *
+ * Use this function when supplying only some hook methods.
+ *
+ * @param args Extensions to register
+ * @return The `marked` function
  */
-
-marked.use = function(...args: MarkedExtension[]) {
+function useExtension(...args: MarkedExtension[]) {
   markedInstance.use(...args);
   marked.defaults = markedInstance.defaults;
   changeDefaults(marked.defaults);
   return marked;
-};
+}
+
+marked.use = useExtension;
 
 /**
  * Run callback for every token
@@ -80,6 +117,9 @@ marked.walkTokens = function(tokens: Token[] | TokensList, callback: (token: Tok
 
 /**
  * Compiles markdown to HTML without enclosing `p` tag.
+ *
+ * To configure hooks, a renderer, or a tokenizer, create a `Marked` instance
+ * and use `Marked#use` instead of passing them as options on each call.
  *
  * @param src String of markdown source to be compiled
  * @param options Hash of options
@@ -102,8 +142,13 @@ marked.parse = marked;
 
 export const options = marked.options;
 export const setOptions = marked.setOptions;
-export const use = marked.use;
 export const walkTokens = marked.walkTokens;
+/**
+ * Compiles inline markdown to HTML.
+ *
+ * To configure hooks, a renderer, or a tokenizer, create a `Marked` instance
+ * and use `Marked#use` instead of passing them as options on each call.
+ */
 export const parseInline = marked.parseInline;
 export const parse = marked;
 export const parser = _Parser.parse;
@@ -116,5 +161,6 @@ export { _Renderer as Renderer } from './Renderer.ts';
 export { _TextRenderer as TextRenderer } from './TextRenderer.ts';
 export { _Hooks as Hooks } from './Hooks.ts';
 export { Marked } from './Instance.ts';
+export { useExtension as use };
 export type * from './MarkedOptions.ts';
 export type * from './Tokens.ts';
