@@ -307,13 +307,10 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
 
     // Mask out reflinks
     if (this.tokens.links && src.includes('[')) {
-      const links = new Set(Object.keys(this.tokens.links));
-      if (links.size > 0) {
-        maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.reflinkSearch, match0 =>
-          links.has(match0.slice(match0.lastIndexOf('[') + 1, -1))
-            ? '[' + 'a'.repeat(match0.length - 2) + ']'
-            : match0);
-      }
+      maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.reflinkSearch, match0 =>
+        Object.hasOwn(this.tokens.links, match0.slice(match0.lastIndexOf('[') + 1, -1))
+          ? '[' + 'a'.repeat(match0.length - 2) + ']'
+          : match0);
     }
 
     // Mask out escaped characters
