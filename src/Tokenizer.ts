@@ -416,9 +416,22 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       list.raw = list.raw.trimEnd();
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first
+      // First pass: tokenize items and finalize list.loose from spacers before placing checkboxes
       for (const item of list.items) {
         this.lexer.state.top = false;
         item.tokens = this.lexer.blockTokens(item.text, []);
+
+        if (!list.loose) {
+          // Check if list should be loose
+          const spacers = item.tokens.filter(t => t.type === 'space');
+          const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => this.rules.other.anyLine.test(t.raw));
+
+          list.loose = hasMultipleLineBreaks;
+        }
+      }
+
+      // Second pass: place task checkboxes using the final list.loose
+      for (const item of list.items) {
         const itemToken = item.tokens[0];
         if (item.task && (itemToken?.type === 'text' || itemToken?.type === 'paragraph')) {
           // Remove checkbox markdown from item tokens
@@ -459,14 +472,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           }
         } else if (item.task) {
           item.task = false;
-        }
-
-        if (!list.loose) {
-          // Check if list should be loose
-          const spacers = item.tokens.filter(t => t.type === 'space');
-          const hasMultipleLineBreaks = spacers.length > 0 && spacers.some(t => this.rules.other.anyLine.test(t.raw));
-
-          list.loose = hasMultipleLineBreaks;
         }
       }
 
