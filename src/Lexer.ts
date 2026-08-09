@@ -1,7 +1,7 @@
 import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
-import type { Token, TokensList, Tokens } from './Tokens.ts';
+import type { Links, Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
 /**
@@ -19,7 +19,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
   public inlineQueue: { src: string, tokens: Token[] }[];
 
   private tokenizer: _Tokenizer<ParserOutput, RendererOutput>;
-
+  private linksForInline: Links | null = null;
   constructor(options?: MarkedOptions<ParserOutput, RendererOutput>) {
     // TokenList cannot be created in one go
     this.tokens = [] as unknown as TokensList;
@@ -90,9 +90,16 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
 
     this.blockTokens(src, this.tokens);
 
-    for (let i = 0; i < this.inlineQueue.length; i++) {
-      const next = this.inlineQueue[i];
-      this.inlineTokens(next.src, next.tokens);
+    if (Object.keys(this.tokens.links).length > 0) {
+      this.linksForInline = this.tokens.links;
+    }
+    try {
+      for (let i = 0; i < this.inlineQueue.length; i++) {
+        const next = this.inlineQueue[i];
+        this.inlineTokens(next.src, next.tokens);
+      }
+    } finally {
+      this.linksForInline = null;
     }
     this.inlineQueue = [];
 
@@ -307,12 +314,20 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
 
     // Mask out reflinks
     if (this.tokens.links) {
-      const links = Object.keys(this.tokens.links);
-      if (links.length > 0) {
+      const linksForInline = this.linksForInline;
+      if (linksForInline) {
         maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.reflinkSearch, match0 =>
-          links.includes(match0.slice(match0.lastIndexOf('[') + 1, -1))
+          Object.hasOwn(linksForInline, match0.slice(match0.lastIndexOf('[') + 1, -1))
             ? '[' + 'a'.repeat(match0.length - 2) + ']'
             : match0);
+      } else {
+        const links = Object.keys(this.tokens.links);
+        if (links.length > 0) {
+          maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.reflinkSearch, match0 =>
+            links.includes(match0.slice(match0.lastIndexOf('[') + 1, -1))
+              ? '[' + 'a'.repeat(match0.length - 2) + ']'
+              : match0);
+        }
       }
     }
 
