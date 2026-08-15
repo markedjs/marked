@@ -157,18 +157,24 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     return `<del>${this.parser.parseInline(tokens)}</del>` as RendererOutput;
   }
 
-  link({ href, title, tokens }: Tokens.Link): RendererOutput {
-    const text = this.parser.parseInline(tokens) as string;
+  link({ href, title, text, tokens, autolink }: Tokens.Link): RendererOutput {
+    // Character references are not resolved inside an autolink, so its
+    // destination and text are literal and every `&` has to be escaped.
+    // Elsewhere the destination still holds the source text, which is already
+    // valid in an attribute.
+    const parsedText = autolink
+      ? escapeHtmlEntities(text, true)
+      : this.parser.parseInline(tokens) as string;
     const cleanHref = cleanUrl(href);
     if (cleanHref === null) {
-      return text as RendererOutput;
+      return parsedText as RendererOutput;
     }
-    href = cleanHref;
+    href = autolink ? escapeHtmlEntities(cleanHref, true) : cleanHref;
     let out = '<a href="' + href + '"';
     if (title) {
       out += ' title="' + (escapeHtmlEntities(title)) + '"';
     }
-    out += '>' + text + '</a>';
+    out += '>' + parsedText + '</a>';
     return out as RendererOutput;
   }
 
