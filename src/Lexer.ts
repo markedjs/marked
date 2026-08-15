@@ -13,6 +13,8 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
   state: {
     inLink: boolean;
     inRawBlock: boolean;
+    /** a link was produced in the inline run currently being scanned */
+    linkEmitted: boolean;
     top: boolean;
   };
 
@@ -33,6 +35,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     this.state = {
       inLink: false,
       inRawBlock: false,
+      linkEmitted: false,
       top: true,
     };
 
