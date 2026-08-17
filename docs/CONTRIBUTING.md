@@ -6,7 +6,7 @@
 - [ ] Be sure to run `npm install` or `npm update`.
 - [ ] Create a branch.
 - [ ] Update code in `src` folder. (`lib` folder is for auto compiled code)
-- [ ] Run `npm run test:all`, fix any broken things (for linting, you can run `npm run lint` to have the linter fix them for you).
+- [ ] Run `npm test`, fix any broken things (for linting, you can run `npm run lint` to have the linter fix them for you).
 - [ ] Run `npm run build:reset` to remove changes to compiled files.
 - [ ] Submit a Pull Request.
 
