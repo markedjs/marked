@@ -38,6 +38,27 @@ describe('marked unit', () => {
       );
     });
 
+    it('should escape an ampersand that cannot start a reference', () => {
+      assert.strictEqual(
+        marked.parse('[example](http://example.com?foo=1&bar=2)').trim(),
+        '<p><a href="http://example.com?foo=1&amp;bar=2">example</a></p>',
+      );
+    });
+
+    it('should escape an ampersand in an image source', () => {
+      assert.strictEqual(
+        marked.parse('![i](http://example.com?foo=1&bar=2)').trim(),
+        '<p><img src="http://example.com?foo=1&amp;bar=2" alt="i"></p>',
+      );
+    });
+
+    it('should leave a reference in an inline destination alone', () => {
+      assert.strictEqual(
+        marked.parse('[t](http://example.com?a=1&lt;2)').trim(),
+        '<p><a href="http://example.com?a=1&lt;2">t</a></p>',
+      );
+    });
+
     it('should match the CommonMark autolink example', () => {
       // https://spec.commonmark.org/0.31.2/#example-595
       assert.strictEqual(
