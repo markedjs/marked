@@ -63,7 +63,7 @@
     "esbuild": "^0.28.1",
     "esbuild-plugin-umd-wrapper": "^3.0.0",
     "eslint": "^10.8.0",
-    "highlight.js": "^11.11.1",
+    "highlight.js": "^11.12.0",
     "markdown-it": "15.0.0",
     "marked-highlight": "^2.2.4",
     "marked-man": "^2.1.1",
