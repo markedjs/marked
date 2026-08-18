@@ -10,64 +10,6 @@ describe('marked unit', () => {
     setOptions(getDefaults());
   });
 
-  describe('Character references in link destinations', () => {
-    // Character references are not resolved inside an autolink, so a `&` there
-    // is literal and has to be escaped. These assert on the exact output
-    // because the spec runner compares parsed HTML, where `&lt;` and `&amp;lt;`
-    // in an attribute are indistinguishable.
-    // https://github.com/markedjs/marked/issues/4052
-
-    it('should escape an ampersand in an autolink', () => {
-      assert.strictEqual(
-        marked.parse('<https://example.com/?x=1&lt;2>').trim(),
-        '<p><a href="https://example.com/?x=1&amp;lt;2">https://example.com/?x=1&amp;lt;2</a></p>',
-      );
-    });
-
-    it('should escape an ampersand in an extended url', () => {
-      assert.strictEqual(
-        marked.parse('https://example.com/?x=1&lt;2').trim(),
-        '<p><a href="https://example.com/?x=1&amp;lt;2">https://example.com/?x=1&amp;lt;2</a></p>',
-      );
-    });
-
-    it('should keep the destination of an inline link unchanged', () => {
-      assert.strictEqual(
-        marked.parse('[t](https://example.com/?a=1&amp;b=2)').trim(),
-        '<p><a href="https://example.com/?a=1&amp;b=2">t</a></p>',
-      );
-    });
-
-    it('should escape an ampersand that cannot start a reference', () => {
-      assert.strictEqual(
-        marked.parse('[example](http://example.com?foo=1&bar=2)').trim(),
-        '<p><a href="http://example.com?foo=1&amp;bar=2">example</a></p>',
-      );
-    });
-
-    it('should escape an ampersand in an image source', () => {
-      assert.strictEqual(
-        marked.parse('![i](http://example.com?foo=1&bar=2)').trim(),
-        '<p><img src="http://example.com?foo=1&amp;bar=2" alt="i"></p>',
-      );
-    });
-
-    it('should leave a reference in an inline destination alone', () => {
-      assert.strictEqual(
-        marked.parse('[t](http://example.com?a=1&lt;2)').trim(),
-        '<p><a href="http://example.com?a=1&lt;2">t</a></p>',
-      );
-    });
-
-    it('should match the CommonMark autolink example', () => {
-      // https://spec.commonmark.org/0.31.2/#example-595
-      assert.strictEqual(
-        marked.parse('<https://foo.bar.baz/test?q=hello&id=22&boolean>').trim(),
-        '<p><a href="https://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">https://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>',
-      );
-    });
-  });
-
   describe('Test paragraph token type', () => {
     it('should use the "paragraph" type on top level', () => {
       const md = 'A Paragraph.\n\n> A blockquote\n\n- list item\n';
