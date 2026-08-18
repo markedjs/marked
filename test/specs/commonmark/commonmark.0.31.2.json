@@ -4269,8 +4269,7 @@
     "example": 533,
     "start_line": 8053,
     "end_line": 8059,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "*[foo*][ref]\n\n[ref]: /uri\n",
