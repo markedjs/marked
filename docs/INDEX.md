@@ -3,10 +3,11 @@ Marked is
 1. built for speed.<sup>*</sup>
 2. a low-level markdown compiler for parsing markdown without caching or blocking for long periods of time.<sup>**</sup>
 3. light-weight while implementing all markdown features from the supported flavors & specifications.<sup>***</sup>
-4. available as a command line interface (CLI) and running in client- or server-side JavaScript projects.
+4. easily adaptable with [custom extensions](https://marked.js.org/using_advanced#extensions).
+5. available as a command line interface (CLI) and running in client- or server-side JavaScript projects.
 
 <p><small><sup>*</sup> Still working on metrics for comparative analysis and definition.</small><br>
-<small><sup>**</sup> As few dependencies as possible.</small><br>
+<small><sup>**</sup> Only dev dependencies.</small><br>
 <small><sup>***</sup> Strict compliance could result in slower processing when running comparative benchmarking.</small></p>
 
 
