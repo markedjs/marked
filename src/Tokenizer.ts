@@ -11,22 +11,42 @@ import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens, Token } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
-function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer, rules: Rules): Tokens.Link | Tokens.Image {
+function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer, rules: Rules): Tokens.Link | Tokens.Image | undefined {
   const href = link.href;
   const title = link.title || null;
   const text = cap[1].replace(rules.other.outputLinkReplace, '$1');
+  const isImage = cap[0].charAt(0) === '!';
 
   lexer.state.inLink = true;
-  const token: Tokens.Link | Tokens.Image = {
-    type: cap[0].charAt(0) === '!' ? 'image' : 'link',
+  const outerLinkEmitted = lexer.state.linkEmitted;
+  const outerInRawBlock = lexer.state.inRawBlock;
+  lexer.state.linkEmitted = false;
+  const tokens = lexer.inlineTokens(text);
+  const textHasLink = lexer.state.linkEmitted;
+  lexer.state.linkEmitted = outerLinkEmitted;
+  lexer.state.inLink = false;
+
+  if (!isImage) {
+    // CommonMark: "Links may not contain other links, at any level of nesting."
+    // Bail so the caller falls through to text and the inner link is the one kept.
+    // Images are exempt: their text is flattened into an alt attribute.
+    if (textHasLink) {
+      // these tokens are discarded, so undo the raw-block state they opened;
+      // leaving it set would suppress escaping for the text that is re-scanned
+      lexer.state.inRawBlock = outerInRawBlock;
+      return;
+    }
+    lexer.state.linkEmitted = true;
+  }
+
+  return {
+    type: isImage ? 'image' : 'link',
     raw,
     href,
     title,
     text,
-    tokens: lexer.inlineTokens(text),
+    tokens,
   };
-  lexer.state.inLink = false;
-  return token;
 }
 
 function indentCodeCompensation(raw: string, text: string, rules: Rules) {

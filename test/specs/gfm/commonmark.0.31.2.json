@@ -4145,8 +4145,7 @@
     "example": 518,
     "start_line": 7886,
     "end_line": 7890,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[foo *[bar [baz](/uri)](/uri)*](/uri)\n",
@@ -4154,8 +4153,7 @@
     "example": 519,
     "start_line": 7893,
     "end_line": 7897,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "![[[foo](uri1)](uri2)](uri3)\n",
@@ -4263,8 +4261,7 @@
     "example": 532,
     "start_line": 8044,
     "end_line": 8050,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[foo *bar [baz][ref]*][ref]\n\n[ref]: /uri\n",

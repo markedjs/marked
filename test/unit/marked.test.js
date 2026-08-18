@@ -58,6 +58,19 @@ describe('marked unit', () => {
     });
   });
 
+  describe('link in link text', () => {
+    // the spec fixtures cover the nesting itself, but the differ they run through
+    // normalizes entities, so this one needs an exact-string assertion
+    it('should still escape text before a raw block opener in a rejected link', () => {
+      // the rejected link text is tokenized once and thrown away; that pass must
+      // not leave `inRawBlock` set, or the re-scan emits this text unescaped
+      assert.strictEqual(
+        marked.parse('[a & b <pre> [x](/uri)](/uri)').trim(),
+        '<p>[a &amp; b <pre> <a href="/uri">x</a>](/uri)</p>',
+      );
+    });
+  });
+
   describe('use extension', () => {
     it('should use custom block tokenizer + renderer extensions', () => {
       const underline = {
