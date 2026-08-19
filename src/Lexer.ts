@@ -309,15 +309,10 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     let maskedSrc = src;
 
     // Mask out reflinks
-    if (this.tokens.links) {
-      const links = Object.keys(this.tokens.links);
-      if (links.length > 0) {
-        maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.reflinkSearch, match0 =>
-          links.includes(match0.slice(match0.lastIndexOf('[') + 1, -1))
-            ? '[' + 'a'.repeat(match0.length - 2) + ']'
-            : match0);
-      }
-    }
+    maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.reflinkSearch, match0 =>
+      Object.hasOwn(this.tokens.links, match0.slice(match0.lastIndexOf('[') + 1, -1))
+        ? '[' + 'a'.repeat(match0.length - 2) + ']'
+        : match0);
 
     // Mask out escaped characters.
     // Every mask must keep the length it replaces: emStrong and del line
