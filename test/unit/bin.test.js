@@ -146,6 +146,14 @@ describe('bin/marked', () => {
       stdout: '<h1>test</h1>',
     }));
   });
+
+  describe('options', () => {
+    it('reports an unknown long option', testInput({
+      args: ['--does-not-exist'],
+      stderr: 'marked: unknown option \'--does-not-exist\'',
+      code: 1,
+    }));
+  });
 });
 
 describe('exec', () => {

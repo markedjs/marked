@@ -134,7 +134,7 @@ export async function main(nodeProcess) {
           if (arg.indexOf('--') === 0) {
             opt = camelize(arg.replace(/^--(no-)?/, ''));
             if (!(opt in marked.defaults)) {
-              continue;
+              throw Error(`marked: unknown option '${arg}'`);
             }
             if (arg.indexOf('--no-') === 0) {
               options[opt] = typeof marked.defaults[opt] !== 'boolean'
