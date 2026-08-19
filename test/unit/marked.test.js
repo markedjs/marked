@@ -56,6 +56,12 @@ describe('marked unit', () => {
 
       assert.strictEqual(html, '# header\n\n<em>em</em>');
     });
+
+    it('should return empty string for empty input', () => {
+      const html = parseInline('');
+
+      assert.strictEqual(html, '');
+    });
   });
 
   describe('link in link text', () => {
