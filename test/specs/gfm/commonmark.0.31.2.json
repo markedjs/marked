@@ -4096,8 +4096,7 @@
     "example": 512,
     "start_line": 7840,
     "end_line": 7844,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[link] bar](/uri)\n",
@@ -4161,8 +4160,7 @@
     "example": 520,
     "start_line": 7900,
     "end_line": 7904,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "*[foo*](/uri)\n",
@@ -4228,8 +4226,7 @@
     "example": 528,
     "start_line": 8004,
     "end_line": 8010,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[link \\[bar][ref]\n\n[ref]: /uri\n",
