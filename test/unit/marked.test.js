@@ -1122,4 +1122,34 @@ br
       assert.strictEqual(html.trim(), '<p><em>text</em></p>');
     });
   });
+
+    describe('HTML entity escaping in link hrefs', () => {
+      it('should escape & in autolink hrefs (CommonMark example 595)', () => {
+        const result = marked.parse('<https://foo.bar.baz/test?q=hello&id=22&boolean>');
+        assert.strictEqual(
+          result.trim(),
+          '<p><a href="https://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">https://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>',
+        );
+      });
+
+      it('should decode &amp; in inline link hrefs and re-escape on output', () => {
+        const result = marked.parse('[t](https://example.com/?a=1&amp;b=2)');
+        assert.ok(result.includes('href="https://example.com/?a=1&amp;b=2"'));
+      });
+
+      it('should escape & in plain autolink URLs', () => {
+        const result = marked.parse('<https://example.com/?a=1&b=2>');
+        assert.ok(result.includes('href="https://example.com/?a=1&amp;b=2"'));
+      });
+
+      it('should escape &lt; in autolink hrefs', () => {
+        const result = marked.parse('<https://example.com/?x=1&lt;2>');
+        assert.ok(result.includes('href="https://example.com/?x=1&amp;lt;2"'));
+      });
+
+      it('should escape & in image src attributes', () => {
+        const result = marked.parse('![img](https://example.com/?a=1&b=2)');
+        assert.ok(result.includes('src="https://example.com/?a=1&amp;b=2"'));
+      });
+    });
 });

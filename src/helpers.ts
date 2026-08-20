@@ -26,6 +26,28 @@ export function escapeHtmlEntities(html: string, encode?: boolean) {
   return html;
 }
 
+/**
+ * Decode HTML character entities (e.g. &amp; -> &, &lt; -> <).
+ * Used for inline link destinations where CommonMark requires
+ * entity decoding before output escaping.
+ */
+export function decodeHtmlEntities(html: string): string {
+  return html
+    .replace(/&(?:#x([0-9a-fA-F]+)|#(\d+)|(\w+));/g, (_, hex, dec, named) => {
+      if (hex) return String.fromCodePoint(parseInt(hex, 16));
+      if (dec) return String.fromCodePoint(parseInt(dec, 10));
+      switch (named) {
+        case 'amp': return '&';
+        case 'lt': return '<';
+        case 'gt': return '>';
+        case 'quot': return '"';
+        case 'apos': return "'";
+        case '#39': return "'";
+        default: return _;
+      }
+    });
+}
+
 export function cleanUrl(href: string) {
   try {
     href = encodeURI(href).replace(other.percentDecode, '%');

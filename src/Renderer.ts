@@ -163,7 +163,7 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     if (cleanHref === null) {
       return text as RendererOutput;
     }
-    href = cleanHref;
+    href = cleanHref.replace(/&/g, '&amp;');
     let out = '<a href="' + href + '"';
     if (title) {
       out += ' title="' + (escapeHtmlEntities(title)) + '"';
@@ -180,7 +180,7 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     if (cleanHref === null) {
       return escapeHtmlEntities(text) as RendererOutput;
     }
-    href = cleanHref;
+    href = cleanHref.replace(/&/g, '&amp;');
 
     let out = `<img src="${href}" alt="${escapeHtmlEntities(text)}"`;
     if (title) {

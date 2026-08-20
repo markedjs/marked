@@ -5,6 +5,7 @@ import {
   findClosingBracket,
   expandTabs,
   trimTrailingBlankLines,
+  decodeHtmlEntities,
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
 import type { _Lexer } from './Lexer.ts';
@@ -736,8 +737,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           href = href.slice(1, -1);
         }
       }
+      // Decode HTML entities in inline link destinations per CommonMark spec.
+      // Entity references (e.g. &amp;) are recognized in link destinations
+      // but not in autolinks. The renderer will re-escape on output.
+      const decodedHref = href ? decodeHtmlEntities(href.replace(this.rules.inline.anyPunctuation, '$1')) : href;
       return outputLink(cap, {
-        href: href ? href.replace(this.rules.inline.anyPunctuation, '$1') : href,
+        href: decodedHref,
         title: title ? title.replace(this.rules.inline.anyPunctuation, '$1') : title,
       }, cap[0], this.lexer, this.rules);
     }
