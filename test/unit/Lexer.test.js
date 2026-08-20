@@ -2118,6 +2118,36 @@ paragraph
             ],
           });
         });
+
+        it('url email domain ending in _ or - is not autolinked (GFM)', () => {
+          // A domain must not end in `_` or `-`; the whole email autolink is
+          // rejected and rendered as plain text, with the domain kept intact.
+          expectInlineTokens({
+            md: 'foo@bar.com_',
+            options: { gfm: true },
+            tokens: [
+              {
+                type: 'text',
+                raw: 'foo@bar.com_',
+                text: 'foo@bar.com_',
+                escaped: false,
+              },
+            ],
+          });
+
+          expectInlineTokens({
+            md: 'foo@bar.com-',
+            options: { gfm: true },
+            tokens: [
+              {
+                type: 'text',
+                raw: 'foo@bar.com-',
+                text: 'foo@bar.com-',
+                escaped: false,
+              },
+            ],
+          });
+        });
       });
 
       it('text', () => {
