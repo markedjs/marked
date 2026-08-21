@@ -42,6 +42,20 @@ describe('marked unit', () => {
     });
   });
 
+  describe('gfm tagfilter', () => {
+    it('should filter disallowed raw HTML tags', () => {
+      const md = '<title> <TEXTAREA rows=1> <style/> <xmp> <iframe> <noembed> <noframes> <script/> <plaintext> </SCRIPT>';
+      const html = '&lt;title> &lt;TEXTAREA rows=1> &lt;style/> &lt;xmp> &lt;iframe> &lt;noembed> &lt;noframes> &lt;script/> &lt;plaintext> &lt;/SCRIPT>';
+
+      assert.strictEqual(marked.parseInline(md), html);
+    });
+
+    it('should only filter complete tag names in GFM', () => {
+      assert.strictEqual(marked.parseInline('<scripted>text</scripted>'), '<scripted>text</scripted>');
+      assert.strictEqual(marked.parseInline('<script>text</script>', { gfm: false }), '<script>text</script>');
+    });
+  });
+
   describe('parseInline', () => {
     it('should parse inline tokens', () => {
       const md = '**strong** _em_';

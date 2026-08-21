@@ -46,6 +46,9 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
   }
 
   html({ text }: Tokens.HTML | Tokens.Tag): RendererOutput {
+    if (this.options.gfm) {
+      return text.replace(other.gfmTagFilter, '&lt;') as RendererOutput;
+    }
     return text as RendererOutput;
   }
 
