@@ -77,6 +77,43 @@ function indentCodeCompensation(raw: string, text: string, rules: Rules) {
     .join('\n');
 }
 
+function isLabelEndInsideToken(src: string, label: string, labelStart: number, rules: Rules) {
+  if (!label.includes('<')) {
+    return false;
+  }
+
+  for (let i = 0; i < label.length; i++) {
+    if (label[i] === '\\') {
+      i++;
+      continue;
+    }
+
+    if (label[i] === '`') {
+      const code = rules.inline.code.exec(label.slice(i));
+      if (code) {
+        i += code[0].length - 1;
+        continue;
+      }
+    }
+
+    if (label[i] !== '<') {
+      continue;
+    }
+
+    const tokenSrc = src.slice(labelStart + i);
+    const token = rules.inline.tag.exec(tokenSrc) || rules.inline.autolink.exec(tokenSrc);
+    if (!token) {
+      continue;
+    }
+
+    if (token[0].length > label.length - i) {
+      return true;
+    }
+    i += token[0].length - 1;
+  }
+  return false;
+}
+
 /**
  * Tokenizer
  */
@@ -685,6 +722,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   link(src: string): Tokens.Link | Tokens.Image | undefined {
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
+      const labelStart = cap[0].charAt(0) === '!' ? 2 : 1;
+      if (!this.options.pedantic && isLabelEndInsideToken(src, cap[1], labelStart, this.rules)) {
+        return;
+      }
+
       const trimmedUrl = cap[2].trim();
       if (!this.options.pedantic && this.rules.other.startAngleBracket.test(trimmedUrl)) {
         // commonmark requires matching angle brackets
@@ -747,6 +789,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     let cap;
     if ((cap = this.rules.inline.reflink.exec(src))
       || (cap = this.rules.inline.nolink.exec(src))) {
+      const labelStart = cap[0].charAt(0) === '!' ? 2 : 1;
+      if (!this.options.pedantic && isLabelEndInsideToken(src, cap[1], labelStart, this.rules)) {
+        return;
+      }
+
       const linkString = (cap[2] || cap[1]).replace(this.rules.other.multipleSpaceGlobal, ' ');
       const link = links[linkString.toLowerCase()];
       if (!link) {
