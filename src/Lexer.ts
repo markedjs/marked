@@ -1,4 +1,4 @@
-import { _Tokenizer } from './Tokenizer.ts';
+import { _Tokenizer, linkParenHints } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
@@ -338,7 +338,29 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
    * Lexing/Compiling
    */
   inlineTokens(src: string, tokens: Token[] = []): Token[] {
+    const prevHint = linkParenHints.get(this.tokenizer);
+    linkParenHints.set(this.tokenizer, {
+      anchorLen: src.length,
+      lastParenFromStart: src.lastIndexOf(')'),
+    });
+    try {
+      return this.inlineTokensInner(src, tokens);
+    } finally {
+      // Nested runs anchored their own label substring; restoring keeps the
+      // outer run's anchor valid for the remainder of its loop.
+      if (prevHint) {
+        linkParenHints.set(this.tokenizer, prevHint);
+      } else {
+        linkParenHints.delete(this.tokenizer);
+      }
+    }
+  }
+
+  private inlineTokensInner(src: string, tokens: Token[] = []): Token[] {
     this.tokenizer.lexer = this;
+    // Every src seen in the loop below is a suffix of the string anchored by
+    // inlineTokens(), which lets Tokenizer.link answer "is there a ')' ahead?"
+    // in O(1) instead of backtracking quadratically over such input.
     // String with links masked to avoid interference with em and strong
     let maskedSrc = src;
 
