@@ -304,7 +304,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
    * Does this link text hold a link already? An image does not count: an image
    * may hold a link, a link may not.
    */
-  private linkInText(text: string, links: string[]): boolean {
+  private linkInText(text: string): boolean {
     if (!text.includes('[')) {
       return false;
     }
@@ -321,11 +321,11 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     for (const match of text.matchAll(this.tokenizer.rules.inline.reflinkSearch)) {
       const match0 = match[0];
       const refStart = match0.lastIndexOf('[');
-      if (match0.charAt(0) === '!' || !links.includes(match0.slice(refStart + 1, -1))) {
+      if (match0.charAt(0) === '!' || !Object.hasOwn(this.tokens.links, match0.slice(refStart + 1, -1))) {
         continue;
       }
       // a candidate holding a link is not a link either, so it does not count
-      if (refStart > 1 && this.linkInText(match0.slice(1, refStart - 1), links)) {
+      if (refStart > 1 && this.linkInText(match0.slice(1, refStart - 1))) {
         continue;
       }
       return true;
@@ -343,31 +343,28 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     let maskedSrc = src;
 
     // Mask out reflinks
-    if (this.tokens.links) {
-      const links = Object.keys(this.tokens.links);
-      if (links.length > 0) {
-        const reflinkSearch = this.tokenizer.rules.inline.reflinkSearch;
-        const maskReflink = (match0: string): string => {
-          const refStart = match0.lastIndexOf('[');
-          if (!links.includes(match0.slice(refStart + 1, -1))) {
-            return match0;
+    if (this.tokens.links && src.includes('[')) {
+      const reflinkSearch = this.tokenizer.rules.inline.reflinkSearch;
+      const maskReflink = (match0: string): string => {
+        const refStart = match0.lastIndexOf('[');
+        if (!Object.hasOwn(this.tokens.links, match0.slice(refStart + 1, -1))) {
+          return match0;
+        }
+        // CommonMark: "Links may not contain other links, at any level of
+        // nesting." A candidate whose text already holds one never becomes a
+        // link, so flattening the whole span would hide the emphasis that
+        // does still apply inside it. Mask the links it holds instead.
+        // Images are exempt: their text is flattened into an alt attribute.
+        if (refStart > 1 && match0.charAt(0) !== '!') {
+          const text = match0.slice(1, refStart - 1);
+          if (this.linkInText(text)) {
+            return '[' + text.replace(reflinkSearch, maskReflink)
+              + '][' + 'a'.repeat(match0.length - refStart - 2) + ']';
           }
-          // CommonMark: "Links may not contain other links, at any level of
-          // nesting." A candidate whose text already holds one never becomes a
-          // link, so flattening the whole span would hide the emphasis that
-          // does still apply inside it. Mask the links it holds instead.
-          // Images are exempt: their text is flattened into an alt attribute.
-          if (refStart > 1 && match0.charAt(0) !== '!') {
-            const text = match0.slice(1, refStart - 1);
-            if (this.linkInText(text, links)) {
-              return '[' + text.replace(reflinkSearch, maskReflink)
-                + '][' + 'a'.repeat(match0.length - refStart - 2) + ']';
-            }
-          }
-          return '[' + 'a'.repeat(match0.length - 2) + ']';
-        };
-        maskedSrc = maskedSrc.replace(reflinkSearch, maskReflink);
-      }
+        }
+        return '[' + 'a'.repeat(match0.length - 2) + ']';
+      };
+      maskedSrc = maskedSrc.replace(reflinkSearch, maskReflink);
     }
 
     // Mask out escaped characters.
