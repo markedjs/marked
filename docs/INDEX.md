@@ -7,7 +7,7 @@ Marked is
 5. available as a command line interface (CLI) and running in client- or server-side JavaScript projects.
 
 <p><small><sup>*</sup> Still working on metrics for comparative analysis and definition.</small><br>
-<small><sup>**</sup> Only dev dependencies.</small><br>
+<small><sup>**</sup> Zero dependencies.</small><br>
 <small><sup>***</sup> Strict compliance could result in slower processing when running comparative benchmarking.</small></p>
 
 
