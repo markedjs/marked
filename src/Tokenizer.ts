@@ -11,21 +11,6 @@ import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens, Token } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
-/**
- * Fast-fail anchor for {@link _Tokenizer.link}: `Lexer.inlineTokens` stores
- * one entry per inline run (keyed by the tokenizer instance), and restores
- * the previous entry when a nested run finishes. Every src passed to link()
- * during that run is a suffix of the anchored string, so "is there a ')'
- * ahead?" is answerable in O(1) instead of letting the link regex backtrack
- * quadratically over unterminated-link inputs like `'[a](b'.repeat(n)`.
- * Kept in a WeakMap so it never shows up on the public tokenizer API surface.
- */
-export interface LinkParenHint {
-  anchorLen: number;
-  lastParenFromStart: number;
-}
-export const linkParenHints = new WeakMap<object, LinkParenHint>();
-
 function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer, rules: Rules): Tokens.Link | Tokens.Image | undefined {
   const href = link.href;
   const title = link.title || null;
@@ -698,23 +683,14 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   link(src: string): Tokens.Link | Tokens.Image | undefined {
-    // Fast fail when no ')' can appear ahead (see LinkParenHint). Skipping
-    // here is semantics-preserving: the link regex requires a ')' to match,
-    // so with no paren left in the remainder it would fail anyway — the
-    // skip only removes its O(n^2) backtracking over such input.
-    const hint = linkParenHints.get(this);
-    if (hint && src.length <= hint.anchorLen) {
-      if (hint.lastParenFromStart < hint.anchorLen - src.length) {
-        return undefined;
-      }
-    } else {
-      // No anchor yet (direct call outside a lexer run) or the string grew
-      // beyond it: anchor lazily. Every later call in this run is a suffix
-      // of this string, so anchoring here stays sound.
-      linkParenHints.set(this, {
-        anchorLen: src.length,
-        lastParenFromStart: src.lastIndexOf(')'),
-      });
+    // The link regex backtracks quadratically over unterminated-link inputs
+    // like '[a](b'.repeat(n): at every '[' its greedy unquoted-href run
+    // re-partitions the whole remainder while hunting for a ')' that never
+    // comes. inlineTokens anchors one paren scan per run in
+    // state.linkParenPossible; when it is false the regex cannot match, so
+    // bail out before running it.
+    if (this.lexer.state.linkParenPossible === false) {
+      return undefined;
     }
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
