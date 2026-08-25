@@ -349,9 +349,11 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     // One paren scan per inline run, shared with Tokenizer.link: without a
     // ')' ahead the link regex cannot match, and skipping it avoids its
     // quadratic backtracking over unterminated-link inputs like
-    // `'[a](b'.repeat(n)`.
+    // `'[a](b'.repeat(n)`. A nested run receives a substring of the outer
+    // run, so if the outer had no ')' neither does this substring — skip
+    // the scan in that case.
     const prevLinkParenPossible = this.state.linkParenPossible;
-    this.state.linkParenPossible = src.includes(')');
+    this.state.linkParenPossible = prevLinkParenPossible && src.includes(')');
     try {
       return this.inlineTokensInner(src, tokens);
     } finally {
