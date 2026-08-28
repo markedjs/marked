@@ -385,6 +385,12 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     let keepPrevChar = false;
     let prevChar = '';
     let srcLength = Infinity;
+    // One-time precomputation (O(n)) so the link-tokenizer fast-reject
+    // below can be an O(1) check per loop iteration instead of re-scanning
+    // the shrinking remainder of src on every call (which would itself be
+    // O(n) per call, and O(n^2) in aggregate across the loop).
+    const originalLength = src.length;
+    const lastCloseParenIndex = src.lastIndexOf(')');
     while (src) {
       if (src.length < srcLength) {
         srcLength = src.length;
@@ -427,7 +433,13 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       }
 
       // link
-      if (token = this.tokenizer.link(src)) {
+      // Fast-reject: rules.inline.link structurally requires a literal ')'
+      // to close the destination. If none remains ahead in src, matching
+      // is impossible, so skip the (potentially expensive) regex attempt.
+      // consumedLength + lastCloseParenIndex comparison is O(1); avoids
+      // algorithmic-complexity DoS via long runs of unclosed "[x](".
+      const consumedLength = originalLength - src.length;
+      if (lastCloseParenIndex >= consumedLength && (token = this.tokenizer.link(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
