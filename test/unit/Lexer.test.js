@@ -44,6 +44,27 @@ describe('Lexer', () => {
       assert.ok(htmlBeginRegex(0).test('<div>'));
       assert.ok(blockquoteBeginRegex(0).test('> quote'));
     });
+
+    it('should match html block start conditions 1-6 but not 7', () => {
+      const { htmlBeginRegex } = new Lexer().tokenizer.rules.other;
+
+      assert.ok(htmlBeginRegex(0).test('<div>'));
+      assert.ok(htmlBeginRegex(0).test('</div>'));
+      assert.ok(htmlBeginRegex(0).test('</DIV>'));
+      assert.ok(htmlBeginRegex(0).test('</div >'));
+      assert.ok(htmlBeginRegex(0).test('<div'));
+      assert.ok(htmlBeginRegex(0).test('<div class="x">'));
+      assert.ok(htmlBeginRegex(0).test('<!-- comment -->'));
+      assert.ok(htmlBeginRegex(0).test('<script>'));
+
+      // type 7 blocks cannot interrupt a paragraph, so they cannot end a list item
+      assert.ok(!htmlBeginRegex(0).test('<b>'));
+      assert.ok(!htmlBeginRegex(0).test('</b>'));
+      assert.ok(!htmlBeginRegex(0).test('<span class="x">'));
+      assert.ok(!htmlBeginRegex(0).test('<x-widget>'));
+      assert.ok(!htmlBeginRegex(0).test('not html'));
+      assert.ok(!htmlBeginRegex(0).test('<divider>'));
+    });
   });
 
   describe('paragraph', () => {
