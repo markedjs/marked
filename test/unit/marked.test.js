@@ -22,6 +22,28 @@ describe('marked unit', () => {
     });
   });
 
+  describe('numeric character references', () => {
+    it('should decode decimal references', () => {
+      assert.strictEqual(marked.parse('&#35; &#1234;\n'), '<p># Ӓ</p>\n');
+    });
+
+    it('should decode hexadecimal references in either case', () => {
+      assert.strictEqual(marked.parse('&#X22; &#xcab;\n'), '<p>&quot; ಫ</p>\n');
+    });
+
+    it('should use the replacement character for zero', () => {
+      assert.strictEqual(marked.parse('&#0;\n'), '<p>�</p>\n');
+    });
+
+    it('should leave an invalid reference alone', () => {
+      assert.strictEqual(marked.parse('&#abcdef0;\n'), '<p>&amp;#abcdef0;</p>\n');
+    });
+
+    it('should not decode inside a code span', () => {
+      assert.strictEqual(marked.parse('`&#35;`\n'), '<p><code>&amp;#35;</code></p>\n');
+    });
+  });
+
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');

@@ -77,6 +77,7 @@ export const other = {
   endAngleBracket: />$/,
   pedanticHrefTitle: /^([^'"]*[^\s])\s+(['"])(.*)\2/,
   unicodeAlphaNumeric: /[\p{L}\p{N}]/u,
+  numericCharacterReference: /&#(?:(\d{1,7})|[Xx]([A-Fa-f0-9]{1,6}));/g,
   escapeTest: /[&<>"']/,
   escapeReplace: /[&<>"']/g,
   escapeTestNoEncode: /[<>"']|&(?!(#\d{1,7}|#[Xx][a-fA-F0-9]{1,6}|\w+);)/,
