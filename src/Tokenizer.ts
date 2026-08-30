@@ -68,11 +68,9 @@ function indentCodeCompensation(raw: string, text: string, rules: Rules) {
 
       const [indentInNode] = matchIndentInNode;
 
-      if (indentInNode.length >= indentToCode.length) {
-        return node.slice(indentToCode.length);
-      }
-
-      return node;
+      // Up to the fence's own indentation is removed from each line, so a line
+      // indented less than the fence loses whatever indentation it has.
+      return node.slice(Math.min(indentInNode.length, indentToCode.length));
     })
     .join('\n');
 }
