@@ -22,6 +22,20 @@ describe('marked unit', () => {
     });
   });
 
+  describe('hard line break', () => {
+    it('should drop the leading whitespace of the continuation line', () => {
+      assert.strictEqual(marked.parse('foo  \n     bar\n'), '<p>foo<br>bar</p>\n');
+    });
+
+    it('should do the same for a backslash break', () => {
+      assert.strictEqual(marked.parse('foo\\\n     bar\n'), '<p>foo<br>bar</p>\n');
+    });
+
+    it('should keep a soft break unchanged', () => {
+      assert.strictEqual(marked.parse('foo\nbar\n'), '<p>foo\nbar</p>\n');
+    });
+  });
+
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');

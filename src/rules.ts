@@ -282,7 +282,7 @@ const blockPedantic: Record<BlockKeys, RegExp> = {
 
 const escape = /^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/;
 const inlineCode = /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/;
-const br = /^( {2,}|\\)\n(?!\s*$)/;
+const br = /^( {2,}|\\)\n(?!\s*$) */;
 const inlineText = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
 
 // list of unicode punctuation marks, plus any missing characters from CommonMark spec
