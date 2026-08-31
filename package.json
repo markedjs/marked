@@ -62,7 +62,7 @@
     "dts-bundle-generator": "^9.5.1",
     "esbuild": "^0.28.2",
     "esbuild-plugin-umd-wrapper": "^3.0.0",
-    "eslint": "^10.9.0",
+    "eslint": "^10.9.1",
     "highlight.js": "^11.12.0",
     "markdown-it": "15.0.0",
     "marked-highlight": "^2.2.4",
