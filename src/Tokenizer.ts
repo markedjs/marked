@@ -4,6 +4,7 @@ import {
   splitCells,
   findClosingBracket,
   expandTabs,
+  normalizeLabel,
   trimTrailingBlankLines,
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
@@ -529,7 +530,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   def(src: string): Tokens.Def | undefined {
     const cap = this.rules.block.def.exec(src);
     if (cap) {
-      const tag = cap[1].toLowerCase().replace(this.rules.other.multipleSpaceGlobal, ' ');
+      const tag = normalizeLabel(cap[1]).replace(this.rules.other.multipleSpaceGlobal, ' ');
       const href = cap[2] ? cap[2].replace(this.rules.other.hrefBrackets, '$1').replace(this.rules.inline.anyPunctuation, '$1') : '';
       const title = cap[3] ? cap[3].substring(1, cap[3].length - 1).replace(this.rules.inline.anyPunctuation, '$1') : cap[3];
       return {
@@ -748,7 +749,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     if ((cap = this.rules.inline.reflink.exec(src))
       || (cap = this.rules.inline.nolink.exec(src))) {
       const linkString = (cap[2] || cap[1]).replace(this.rules.other.multipleSpaceGlobal, ' ');
-      const link = links[linkString.toLowerCase()];
+      const link = links[normalizeLabel(linkString)];
       if (!link) {
         const text = cap[0].charAt(0);
         return {
