@@ -31,6 +31,18 @@ describe('marked unit', () => {
       assert.strictEqual(marked.parse('foo\\\n     bar\n'), '<p>foo<br>bar</p>\n');
     });
 
+    it('should drop a leading tab as well', () => {
+      assert.strictEqual(marked.parse('foo  \n\tbar\n'), '<p>foo<br>bar</p>\n');
+    });
+
+    it('should drop a mix of spaces and tabs', () => {
+      assert.strictEqual(marked.parse('foo  \n  \t bar\n'), '<p>foo<br>bar</p>\n');
+    });
+
+    it('should keep the leading tab of a soft break', () => {
+      assert.strictEqual(marked.parse('foo\n\tbar\n'), '<p>foo\n\tbar</p>\n');
+    });
+
     it('should keep a soft break unchanged', () => {
       assert.strictEqual(marked.parse('foo\nbar\n'), '<p>foo\nbar</p>\n');
     });
