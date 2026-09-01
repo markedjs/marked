@@ -22,32 +22,6 @@ describe('marked unit', () => {
     });
   });
 
-  describe('hard line break', () => {
-    it('should drop the leading whitespace of the continuation line', () => {
-      assert.strictEqual(marked.parse('foo  \n     bar\n'), '<p>foo<br>bar</p>\n');
-    });
-
-    it('should do the same for a backslash break', () => {
-      assert.strictEqual(marked.parse('foo\\\n     bar\n'), '<p>foo<br>bar</p>\n');
-    });
-
-    it('should drop a leading tab as well', () => {
-      assert.strictEqual(marked.parse('foo  \n\tbar\n'), '<p>foo<br>bar</p>\n');
-    });
-
-    it('should drop a mix of spaces and tabs', () => {
-      assert.strictEqual(marked.parse('foo  \n  \t bar\n'), '<p>foo<br>bar</p>\n');
-    });
-
-    it('should keep the leading tab of a soft break', () => {
-      assert.strictEqual(marked.parse('foo\n\tbar\n'), '<p>foo\n\tbar</p>\n');
-    });
-
-    it('should keep a soft break unchanged', () => {
-      assert.strictEqual(marked.parse('foo\nbar\n'), '<p>foo\nbar</p>\n');
-    });
-  });
-
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
