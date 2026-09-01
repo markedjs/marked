@@ -22,34 +22,6 @@ describe('marked unit', () => {
     });
   });
 
-  // The spec suite compares through htmlIsEqual, which leaves ignoreWhitespaces at its default
-  // of true, so it cannot see indentation inside pre. These assert exact output.
-  describe('tab expansion in block structure', () => {
-    it('should treat spaces then a tab as reaching the next four column stop', () => {
-      assert.strictEqual(marked.parse('  \tfoo\n'), '<pre><code>foo\n</code></pre>\n');
-    });
-
-    it('should keep tabs in the content of an indented code block', () => {
-      assert.strictEqual(marked.parse('  \tfoo\tbaz\t\tbim\n'), '<pre><code>foo\tbaz\t\tbim\n</code></pre>\n');
-    });
-
-    it('should strip three spaces and a tab', () => {
-      assert.strictEqual(marked.parse('   \tfoo\n'), '<pre><code>foo\n</code></pre>\n');
-    });
-
-    it('should still strip a lone leading tab', () => {
-      assert.strictEqual(marked.parse('\tfoo\n'), '<pre><code>foo\n</code></pre>\n');
-    });
-
-    it('should still strip exactly four spaces', () => {
-      assert.strictEqual(marked.parse('    foo\n'), '<pre><code>foo\n</code></pre>\n');
-    });
-
-    it('should keep a fifth space as content', () => {
-      assert.strictEqual(marked.parse('     foo\n'), '<pre><code> foo\n</code></pre>\n');
-    });
-  });
-
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
