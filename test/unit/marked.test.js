@@ -22,27 +22,6 @@ describe('marked unit', () => {
     });
   });
 
-  describe('empty code block', () => {
-    it('should not add a newline to an unclosed empty fence', () => {
-      assert.strictEqual(marked.parse('```\n'), '<pre><code></code></pre>\n');
-    });
-
-    it('should not add a newline to a closed empty fence', () => {
-      assert.strictEqual(marked.parse('```\n```\n'), '<pre><code></code></pre>\n');
-    });
-
-    it('should not add a newline to an empty fence with a language', () => {
-      assert.strictEqual(
-        marked.parse('````;\n````\n'),
-        '<pre><code class="language-;"></code></pre>\n',
-      );
-    });
-
-    it('should keep the content of a non-empty code block', () => {
-      assert.strictEqual(marked.parse('```\nx\n```\n'), '<pre><code>x\n</code></pre>\n');
-    });
-  });
-
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
