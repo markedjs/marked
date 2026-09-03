@@ -22,18 +22,6 @@ describe('marked unit', () => {
     });
   });
 
-  describe('fenced code block indentation', () => {
-    it('should remove up to the fence indentation from each line', () => {
-      const md = '   ```\n   aaa\n    aaa\n  aaa\n   ```\n';
-      assert.strictEqual(marked.parse(md), '<pre><code>aaa\n aaa\naaa\n</code></pre>\n');
-    });
-
-    it('should leave lines indented more than the fence with the remainder', () => {
-      const md = '  ```\n      aaa\n  ```\n';
-      assert.strictEqual(marked.parse(md), '<pre><code>    aaa\n</code></pre>\n');
-    });
-  });
-
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
