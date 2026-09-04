@@ -681,6 +681,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   link(src: string): Tokens.Link | Tokens.Image | undefined {
+    // The link regex backtracks quadratically over unterminated-link inputs
+    // like '[a](b'.repeat(n): at every '[' its greedy unquoted-href run
+    // re-partitions the whole remainder while hunting for a ')' that never
+    // comes. inlineTokens anchors one paren scan per run in
+    // state.linkParenPossible; when it is false the regex cannot match, so
+    // bail out before running it.
+    if (this.lexer.state.linkParenPossible === false) {
+      return undefined;
+    }
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
       const trimmedUrl = cap[2].trim();
