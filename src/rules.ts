@@ -48,6 +48,7 @@ export const other = {
   endingHash: /#$/,
   startingSpaceChar: /^ /,
   endingSpaceChar: / $/,
+  endingSpaceTabChar: /[ \t]$/,
   nonSpaceChar: /[^ ]/,
   newLineCharGlobal: /\n/g,
   tabCharGlobal: /\t/g,

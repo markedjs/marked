@@ -138,8 +138,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         const trimmed = rtrim(text, '#');
         if (this.options.pedantic) {
           text = trimmed.trim();
-        } else if (!trimmed || this.rules.other.endingSpaceChar.test(trimmed)) {
-          // CommonMark requires space before trailing #s
+        } else if (!trimmed || this.rules.other.endingSpaceTabChar.test(trimmed)) {
+          // CommonMark requires a space or tab before trailing #s
           text = trimmed.trim();
         }
       }
