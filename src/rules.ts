@@ -441,7 +441,14 @@ const tag = edit(
   .replace('attribute', /\s+[a-zA-Z:_][\w.:-]*(?:\s*=\s*"[^"]*"|\s*=\s*'[^']*'|\s*=\s*[^\s"'=<>`]+)?/)
   .getRegex();
 
-const _inlineLabel = /(?:\[(?:\\[\s\S]|[^\[\]\\])*\]|\\[\s\S]|`+(?!`)[^`]*?`+(?!`)|``+(?=\])|[^\[\]\\`])*?/;
+// One matched pair of brackets, holding no bracket of its own.
+const _inlineLabelBrackets = /\[(?:\\[\s\S]|[^\[\]\\])*\]/;
+// CommonMark lets the brackets in a link label nest to any depth, which a regex
+// cannot follow, so it stops at a fixed one. Two levels is what the spec suite
+// asks for: a third and a fourth flip no further example.
+const _inlineLabel = edit(/(?:\[(?:brackets|\\[\s\S]|[^\[\]\\])*\]|\\[\s\S]|`+(?!`)[^`]*?`+(?!`)|``+(?=\])|[^\[\]\\`])*?/)
+  .replace('brackets', _inlineLabelBrackets)
+  .getRegex();
 
 const link = edit(/^!?\[(label)\]\(\s*(href)(?:(?:[ \t]+(?:\n[ \t]*)?|\n[ \t]*)(title))?\s*\)/)
   .replace('label', _inlineLabel)
