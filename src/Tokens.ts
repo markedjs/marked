@@ -136,6 +136,11 @@ export namespace Tokens {
     title?: string | null;
     text: string;
     tokens: Token[];
+    /**
+     * Set for autolinks and extended (GFM) urls, where character references are
+     * not resolved, so the destination and text are literal.
+     */
+    autolink?: boolean;
   }
 
   export interface List {

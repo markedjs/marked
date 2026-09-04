@@ -2042,6 +2042,7 @@ paragraph
                 raw: '<https://example.com>',
                 text: 'https://example.com',
                 href: 'https://example.com',
+                autolink: true,
                 tokens: [
                   {
                     type: 'text',
@@ -2064,6 +2065,7 @@ paragraph
                 raw: '<test@example.com>',
                 text: 'test@example.com',
                 href: 'mailto:test@example.com',
+                autolink: true,
                 tokens: [
                   {
                     type: 'text',
@@ -2085,6 +2087,7 @@ paragraph
                 raw: 'https://example.com',
                 text: 'https://example.com',
                 href: 'https://example.com',
+                autolink: true,
                 tokens: [
                   {
                     type: 'text',
@@ -2107,6 +2110,7 @@ paragraph
                 raw: 'test@example.com',
                 text: 'test@example.com',
                 href: 'mailto:test@example.com',
+                autolink: true,
                 tokens: [
                   {
                     type: 'text',
