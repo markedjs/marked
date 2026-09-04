@@ -25,7 +25,8 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
   code({ text, lang, escaped }: Tokens.Code): RendererOutput {
     const langString = (lang || '').match(other.notSpaceStart)?.[0];
 
-    const code = text.replace(other.endingNewline, '') + '\n';
+    // An empty code block has no content, so it must not gain a newline.
+    const code = text ? text.replace(other.endingNewline, '') + '\n' : '';
 
     if (!langString) {
       return '<pre><code>'
