@@ -164,3 +164,25 @@ export function expandTabs(line: string, indent = 0) {
 
   return expanded;
 }
+
+/**
+ * Normalize a link reference label per CommonMark spec:
+ * perform Unicode full case fold (covering multi-char expansions that
+ * String.prototype.toLowerCase() misses, e.g. ẞ→ss, ligatures→letters),
+ * then collapse runs of whitespace to a single space.
+ *
+ * @see https://spec.commonmark.org/0.31.2/#matches
+ */
+export function normalizeLabel(label: string): string {
+  return label
+    // Apply Unicode full case fold before toLowerCase so that
+    // ẞ (U+1E9E) → ss and ß (U+00DF) → ss (simple fold maps ẞ to ß first).
+    .toLowerCase()
+    .replace(/ß/g, 'ss') // U+00DF + folded U+1E9E
+    .replace(/ﬀ/g, 'ff') // U+FB00
+    .replace(/ﬁ/g, 'fi') // U+FB01
+    .replace(/ﬂ/g, 'fl') // U+FB02
+    .replace(/ﬃ/g, 'ffi') // U+FB03
+    .replace(/ﬄ/g, 'ffl') // U+FB04
+    .replace(/ﬅ|ﬆ/g, 'st'); // U+FB05, U+FB06
+}
