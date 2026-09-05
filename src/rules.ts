@@ -96,7 +96,9 @@ export const other = {
   hrRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`)),
   fencesBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:\`\`\`|~~~)`)),
   headingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#`)),
-  htmlBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}<(?:[a-z].*>|!--)`, 'i')),
+  // a list item ends where a paragraph would be interrupted, so this mirrors the
+  // html start conditions in the paragraph rule below; type 7 is excluded there
+  htmlBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:</?(?:${_tag})(?: +|$|/?>)|<(?:script|pre|style|textarea|!--))`, 'i')),
   blockquoteBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}>`)),
 };
 
