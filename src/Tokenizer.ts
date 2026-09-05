@@ -293,7 +293,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         raw = cap[0];
         src = src.substring(raw.length);
 
-        let line = expandTabs(cap[2].split('\n', 1)[0], cap[1].length);
+        const firstLine = cap[2].split('\n', 1)[0];
+        const bulletIndent = cap[1].length;
+        let line = this.options.pedantic
+          ? expandTabs(firstLine, bulletIndent)
+          : firstLine.replace(this.rules.other.leadingSpaceTab, whitespace => expandTabs(whitespace, bulletIndent));
         let nextLine = src.split('\n', 1)[0];
         let blankLine = !line.trim();
 
@@ -302,12 +306,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           indent = 2;
           itemContents = line.trimStart();
         } else if (blankLine) {
-          indent = cap[1].length + 1;
+          indent = bulletIndent + 1;
         } else {
           indent = line.search(this.rules.other.nonSpaceChar); // Find first non-space char
           indent = indent > 4 ? 1 : indent; // Treat indented code blocks (> 4 spaces) as having only 1 indent
           itemContents = line.slice(indent);
-          indent += cap[1].length;
+          indent += bulletIndent;
         }
 
         if (blankLine && this.rules.other.blankLine.test(nextLine)) { // Items begin with at most one blank line
@@ -335,7 +339,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
               nextLine = nextLine.replace(this.rules.other.listReplaceNesting, '  ');
               nextLineWithoutTabs = nextLine;
             } else {
-              nextLineWithoutTabs = nextLine.replace(this.rules.other.tabCharGlobal, '    ');
+              nextLineWithoutTabs = nextLine.replace(this.rules.other.leadingSpaceTab, whitespace => whitespace.replace(this.rules.other.tabCharGlobal, '    '));
             }
 
             // End list item if found code fences
