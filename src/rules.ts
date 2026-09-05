@@ -76,6 +76,7 @@ export const other = {
   endPreScriptTag: /^<\/(pre|code|kbd|script)(\s|>)/i,
   startAngleBracket: /^</,
   endAngleBracket: />$/,
+  gfmTagFilter: /<(?=\/?(?:title|textarea|style|xmp|iframe|noembed|noframes|script|plaintext)(?:[\t\n\f\r ]|\/?>))/gi,
   pedanticHrefTitle: /^([^'"]*[^\s])\s+(['"])(.*)\2/,
   unicodeAlphaNumeric: /[\p{L}\p{N}]/u,
   escapeTest: /[&<>"']/,
