@@ -1,9 +1,10 @@
 import { _defaults } from './defaults.ts';
 import {
+  decodeNumericCharacterReferences,
+  expandTabs,
+  findClosingBracket,
   rtrim,
   splitCells,
-  findClosingBracket,
-  expandTabs,
   trimTrailingBlankLines,
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
@@ -994,7 +995,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       return {
         type: 'text',
         raw: cap[0],
-        text: cap[0],
+        // raw HTML keeps whatever it was written with, everywhere else a numeric
+        // character reference stands for the character itself
+        text: escaped ? cap[0] : decodeNumericCharacterReferences(cap[0]),
         escaped,
       };
     }
