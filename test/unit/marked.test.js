@@ -10,27 +10,6 @@ describe('marked unit', () => {
     setOptions(getDefaults());
   });
 
-  describe('literal tabs in list contents', () => {
-    const cases = [
-      ['an internal tab in a fence', '- ```\n  foo\tbar\n  ```\n', 'foo\tbar\n'],
-      ['multiple internal tabs in a fence', '- ~~~\n  foo\t\tbar\n  ~~~\n', 'foo\t\tbar\n'],
-      ['a tab in a first-line code span', '- `foo\tbar`\n', 'foo\tbar'],
-      ['a tab in a continuation code span', '- item\n\n  `foo\tbar`\n', 'foo\tbar'],
-      ['a tab after a tab-separated marker', '-\t`foo\tbar`\n', 'foo\tbar'],
-      ['a tab in a nested list fence', '- outer\n  - ```\n    foo\tbar\n    ```\n', 'foo\tbar\n'],
-      ['a tab in an ordered list fence', '1. ```\n   foo\tbar\n   ```\n', 'foo\tbar\n'],
-      ['a tab after a structural indentation tab', '- ```\n\tfoo\tbar\n  ```\n', '  foo\tbar\n'],
-    ];
-    for (const [name, markdown, expected] of cases) {
-      it(`should preserve ${name}`, () => {
-        for (const gfm of [false, true]) {
-          const html = marked.parse(markdown, { gfm });
-          assert.strictEqual(html.match(/<code>([\s\S]*?)<\/code>/)?.[1], expected);
-        }
-      });
-    }
-  });
-
   describe('Test paragraph token type', () => {
     it('should use the "paragraph" type on top level', () => {
       const md = 'A Paragraph.\n\n> A blockquote\n\n- list item\n';

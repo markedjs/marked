@@ -1,0 +1,162 @@
+[
+  {
+    "section": "literal tabs in list contents",
+    "example": "fence, gfm=false",
+    "markdown": "- ```\n  foo\tbar\n  ```\n",
+    "html": "<ul>\n<li><pre><code>foo\tbar\n</code></pre>\n</li>\n</ul>\n",
+    "options": {
+      "gfm": false,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "fence, gfm=true",
+    "markdown": "- ```\n  foo\tbar\n  ```\n",
+    "html": "<ul>\n<li><pre><code>foo\tbar\n</code></pre>\n</li>\n</ul>\n",
+    "options": {
+      "gfm": true,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "repeated tabs, gfm=false",
+    "markdown": "- ~~~\n  foo\t\tbar\n  ~~~\n",
+    "html": "<ul>\n<li><pre><code>foo\t\tbar\n</code></pre>\n</li>\n</ul>\n",
+    "options": {
+      "gfm": false,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "repeated tabs, gfm=true",
+    "markdown": "- ~~~\n  foo\t\tbar\n  ~~~\n",
+    "html": "<ul>\n<li><pre><code>foo\t\tbar\n</code></pre>\n</li>\n</ul>\n",
+    "options": {
+      "gfm": true,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "first-line code span, gfm=false",
+    "markdown": "- `foo\tbar`\n",
+    "html": "<ul>\n<li><code>foo\tbar</code></li>\n</ul>\n",
+    "options": {
+      "gfm": false,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "first-line code span, gfm=true",
+    "markdown": "- `foo\tbar`\n",
+    "html": "<ul>\n<li><code>foo\tbar</code></li>\n</ul>\n",
+    "options": {
+      "gfm": true,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "continuation code span, gfm=false",
+    "markdown": "- item\n\n  `foo\tbar`\n",
+    "html": "<ul>\n<li><p>item</p>\n<p><code>foo\tbar</code></p>\n</li>\n</ul>\n",
+    "options": {
+      "gfm": false,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "continuation code span, gfm=true",
+    "markdown": "- item\n\n  `foo\tbar`\n",
+    "html": "<ul>\n<li><p>item</p>\n<p><code>foo\tbar</code></p>\n</li>\n</ul>\n",
+    "options": {
+      "gfm": true,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "tab-separated marker, gfm=false",
+    "markdown": "-\t`foo\tbar`\n",
+    "html": "<ul>\n<li><code>foo\tbar</code></li>\n</ul>\n",
+    "options": {
+      "gfm": false,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "tab-separated marker, gfm=true",
+    "markdown": "-\t`foo\tbar`\n",
+    "html": "<ul>\n<li><code>foo\tbar</code></li>\n</ul>\n",
+    "options": {
+      "gfm": true,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "nested fence, gfm=false",
+    "markdown": "- outer\n  - ```\n    foo\tbar\n    ```\n",
+    "html": "<ul>\n<li>outer<ul>\n<li><pre><code>foo\tbar\n</code></pre>\n</li>\n</ul>\n</li>\n</ul>\n",
+    "options": {
+      "gfm": false,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "nested fence, gfm=true",
+    "markdown": "- outer\n  - ```\n    foo\tbar\n    ```\n",
+    "html": "<ul>\n<li>outer<ul>\n<li><pre><code>foo\tbar\n</code></pre>\n</li>\n</ul>\n</li>\n</ul>\n",
+    "options": {
+      "gfm": true,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "ordered fence, gfm=false",
+    "markdown": "1. ```\n   foo\tbar\n   ```\n",
+    "html": "<ol>\n<li><pre><code>foo\tbar\n</code></pre>\n</li>\n</ol>\n",
+    "options": {
+      "gfm": false,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "ordered fence, gfm=true",
+    "markdown": "1. ```\n   foo\tbar\n   ```\n",
+    "html": "<ol>\n<li><pre><code>foo\tbar\n</code></pre>\n</li>\n</ol>\n",
+    "options": {
+      "gfm": true,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "structural indentation tab, gfm=false",
+    "markdown": "- ```\n\tfoo\tbar\n  ```\n",
+    "html": "<ul>\n<li><pre><code>  foo\tbar\n</code></pre>\n</li>\n</ul>\n",
+    "options": {
+      "gfm": false,
+      "renderExact": true
+    }
+  },
+  {
+    "section": "literal tabs in list contents",
+    "example": "structural indentation tab, gfm=true",
+    "markdown": "- ```\n\tfoo\tbar\n  ```\n",
+    "html": "<ul>\n<li><pre><code>  foo\tbar\n</code></pre>\n</li>\n</ul>\n",
+    "options": {
+      "gfm": true,
+      "renderExact": true
+    }
+  }
+]
