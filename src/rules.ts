@@ -93,7 +93,7 @@ export const other = {
   endingNewline: /\n$/,
   listItemRegex: (bull: string) => new RegExp(`^( {0,3}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`),
   nextBulletRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))`)),
-  hrRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`)),
+  hrRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}((?:-[ \t]*){3,}|(?:_[ \t]*){3,}|(?:\\*[ \t]*){3,})(?:\\n+|$)`)),
   fencesBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:\`\`\`|~~~)`)),
   headingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#`)),
   htmlBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}<(?:[a-z].*>|!--)`, 'i')),
