@@ -41,7 +41,7 @@ try {
 })();
 
 export const other = {
-  codeRemoveIndent: /^(?: {1,4}| {0,3}\t)/gm,
+  codeRemoveIndent: /^(?: {0,3}\t| {1,4})/gm,
   outputLinkReplace: /\\([\[\]])/g,
   indentCodeCompensation: /^(\s+)(?:```)/,
   beginningSpace: /^\s+/,
