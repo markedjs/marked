@@ -123,6 +123,17 @@ export function trimTrailingBlankLines(str: string) {
   return lines.slice(0, end + 1).join('\n');
 }
 
+/**
+ * Normalizes a link label so definitions and references can be matched.
+ * CommonMark asks for a Unicode case fold, which `toLowerCase()` does not
+ * reach: `ẞ` lowercases to `ß` and so never meets `SS`. Round-tripping
+ * through upper case does, as in commonmark.js; the final `toLowerCase()`
+ * keeps the folded label lower case, the form `def.tag` has always used.
+ */
+export function normalizeLabel(label: string) {
+  return label.toLowerCase().toUpperCase().toLowerCase();
+}
+
 export function findClosingBracket(str: string, b: string) {
   if (str.indexOf(b[1]) === -1) {
     return -1;

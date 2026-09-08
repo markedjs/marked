@@ -1,6 +1,7 @@
 import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
+import { normalizeLabel } from './helpers.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
@@ -321,7 +322,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     for (const match of text.matchAll(this.tokenizer.rules.inline.reflinkSearch)) {
       const match0 = match[0];
       const refStart = match0.lastIndexOf('[');
-      if (match0.charAt(0) === '!' || !Object.hasOwn(this.tokens.links, match0.slice(refStart + 1, -1))) {
+      if (match0.charAt(0) === '!' || !Object.hasOwn(this.tokens.links, normalizeLabel(match0.slice(refStart + 1, -1)))) {
         continue;
       }
       // a candidate holding a link is not a link either, so it does not count
@@ -347,7 +348,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       const reflinkSearch = this.tokenizer.rules.inline.reflinkSearch;
       const maskReflink = (match0: string): string => {
         const refStart = match0.lastIndexOf('[');
-        if (!Object.hasOwn(this.tokens.links, match0.slice(refStart + 1, -1))) {
+        if (!Object.hasOwn(this.tokens.links, normalizeLabel(match0.slice(refStart + 1, -1)))) {
           return match0;
         }
         // CommonMark: "Links may not contain other links, at any level of
