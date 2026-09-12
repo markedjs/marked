@@ -131,7 +131,10 @@ export function trimTrailingBlankLines(str: string) {
  * keeps the folded label lower case, the form `def.tag` has always used.
  */
 export function normalizeLabel(label: string) {
-  return label.toLowerCase().toUpperCase().toLowerCase();
+  // The spec also asks for leading and trailing spaces, tabs and line endings
+  // to be stripped. Doing it here keeps every call site in agreement: the
+  // definition and the reference have to normalize to the same key.
+  return label.trim().toLowerCase().toUpperCase().toLowerCase();
 }
 
 export function findClosingBracket(str: string, b: string) {
