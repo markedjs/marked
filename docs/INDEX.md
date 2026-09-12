@@ -160,6 +160,7 @@ We actively support the usability of Marked in super-fast markdown transformatio
 | [raito](https://raito.arnaud.at/)             | Mini Markdown Wiki/CMS in 8kb of JavaScript.                |
 | [Homebrewery](https://homebrewery.naturalcrit.com/)             | The Homebrewery is a tool for making authentic looking D&D content using Markdown. It is distributed under the terms of the MIT.             |
 | [marked_reader](https://github.com/CNOCTAVE/marked_reader)          | marked_reader is an open source Markdown reader packed by Electron. |
+| [AtlasDocs](https://atlasdocs.io/en/markdown-to-html)             | Free document tools that run entirely in the browser; uses Marked to turn Markdown into HTML, PDF and DOCX without uploading files. |
 
 <h2 id="security">Security</h2>
 
