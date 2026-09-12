@@ -26,6 +26,21 @@ export function escapeHtmlEntities(html: string, encode?: boolean) {
   return html;
 }
 
+/**
+ * Numeric character references are recognized outside code and are equivalent to the
+ * character they name. Values that are zero, out of range, or a surrogate become the
+ * replacement character.
+ */
+export function decodeNumericCharacterReferences(text: string) {
+  return text.replace(other.numericCharacterReference, (_, dec: string, hex: string) => {
+    const code = dec === undefined ? Number.parseInt(hex, 16) : Number.parseInt(dec, 10);
+    if (code === 0 || code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff)) {
+      return '�';
+    }
+    return String.fromCodePoint(code);
+  });
+}
+
 export function cleanUrl(href: string) {
   try {
     href = encodeURI(href).replace(other.percentDecode, '%');
