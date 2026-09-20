@@ -265,7 +265,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           const newToken = this.blockquote(newText)!;
           tokens[tokens.length - 1] = newToken;
 
-          raw = `${raw}\n${continuation}`;
+          // Only append continuation lines the nested token actually consumed.
+          // The #4030 path used the full continuation string, so leftover
+          // sibling text after an empty nested blockquote was skipped (#4098).
+          const nestedExtra = newToken.raw.startsWith(oldToken.raw)
+            ? newToken.raw.slice(oldToken.raw.length).replace(/^\n/, '')
+            : '';
+          if (nestedExtra) {
+            raw = `${raw}\n${lines.slice(0, nestedExtra.split('\n').length).join('\n')}`;
+          }
           text = text.substring(0, text.length - oldToken.text.length) + newToken.text;
           break;
         } else if (lastToken?.type === 'list') {
