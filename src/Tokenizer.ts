@@ -263,6 +263,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           const continuation = lines.join('\n');
           const newText = oldToken.raw + '\n' + continuation.replace(this.rules.other.blockquoteSetextReplace2, '');
           const newToken = this.blockquote(newText)!;
+
+          // An empty nested blockquote does not consume a lazy continuation.
+          // Leave those lines for the outer lexer instead of swallowing them
+          // into the nested token's raw text.
+          if (newToken.raw.length === oldToken.raw.length) {
+            break;
+          }
           tokens[tokens.length - 1] = newToken;
 
           raw = `${raw}\n${continuation}`;
