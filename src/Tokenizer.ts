@@ -113,6 +113,84 @@ function isLabelEndInsideToken(src: string, label: string, labelStart: number, r
   return false;
 }
 
+type CloserDelim = '*' | '_' | '~';
+
+interface CloserHints {
+  '*': number;
+  _: number;
+  '~': number;
+}
+
+let closerHintSrc = '';
+let closerHints: CloserHints | undefined;
+
+function isCloserDelim(ch: string): ch is CloserDelim {
+  return ch === '*' || ch === '_' || ch === '~';
+}
+
+/**
+ * Last index of a `*`, `_`, or `~` run that can still close — i.e. not
+ * preceded by ASCII whitespace or the start of the string.
+ *
+ * The right-delim regexes only treat a run as a closer in groups 1, 2, 5
+ * and 6, all of which require a non-whitespace predecessor. If nothing
+ * after `windowStart` qualifies, the existing scan cannot succeed, so
+ * unmatched openers can skip it. A hit only means "keep looking":
+ * CommonMark rules 9–10 and mid-run openers are still applied in the loop.
+ *
+ * Cached per maskedSrc so each opener in an inline run does not walk the
+ * remainder again (#4099).
+ */
+function lastPossibleCloserIndex(src: string, delim: CloserDelim): number {
+  if (closerHintSrc !== src || !closerHints) {
+    closerHintSrc = src;
+    closerHints = scanLastPossibleClosers(src);
+  }
+  return closerHints[delim];
+}
+
+function scanLastPossibleClosers(src: string): CloserHints {
+  const last: CloserHints = { '*': -1, _: -1, '~': -1 };
+  const len = src.length;
+  for (let i = 0; i < len; i++) {
+    const ch = src[i];
+    if (!isCloserDelim(ch)) {
+      continue;
+    }
+    const prev = i === 0 ? '\n' : src[i - 1];
+    let j = i + 1;
+    while (j < len && src[j] === ch) {
+      j++;
+    }
+    if (prev !== ' ' && prev !== '\t' && prev !== '\n' && prev !== '\r' && prev !== '\f') {
+      last[ch] = i;
+    }
+    i = j - 1;
+  }
+  return last;
+}
+
+interface DelimWindow {
+  maskedSrc: string;
+  lastCloser: number;
+}
+
+/**
+ * Clip maskedSrc to the same window `emStrong` / `del` already scan, or
+ * return undefined when that window has no possible closer.
+ */
+function remainingDelimWindow(maskedSrc: string, srcLength: number, lLength: number, delim: CloserDelim): DelimWindow | undefined {
+  const windowStart = maskedSrc.length - srcLength + lLength;
+  const lastCloser = lastPossibleCloserIndex(maskedSrc, delim);
+  if (lastCloser < windowStart) {
+    return;
+  }
+  return {
+    maskedSrc: maskedSrc.slice(-1 * srcLength + lLength),
+    lastCloser: lastCloser - windowStart,
+  };
+}
+
 /**
  * Tokenizer
  */
@@ -823,17 +901,20 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
 
       const delimChar = match[0][0];
+      if (!isCloserDelim(delimChar)) return;
       // A mid-run opener (for example the second star of an unmatched `**`) must
       // only pair with a delimiter that can only close, otherwise it steals the
       // opener of a later span (`**a*b*c` must be `**a<em>b</em>c`).
       const midRun = prevChar === delimChar;
       const endReg = delimChar === '*' ? this.rules.inline.emStrongRDelimAst : this.rules.inline.emStrongRDelimUnd;
+      const window = remainingDelimWindow(maskedSrc, src.length, lLength, delimChar);
+      if (!window) return;
+      // Clip maskedSrc to same section of string as src (move to lexer?)
+      maskedSrc = window.maskedSrc;
       endReg.lastIndex = 0;
 
-      // Clip maskedSrc to same section of string as src (move to lexer?)
-      maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
-
       while ((match = endReg.exec(maskedSrc)) !== null) {
+        if (match.index > window.lastCloser) break;
         rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
         if (!rDelim) continue; // skip single * in __abc*abc__
@@ -927,12 +1008,14 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       let rDelim, rLength, delimTotal = lLength;
 
       const endReg = this.rules.inline.delRDelim;
+      const window = remainingDelimWindow(maskedSrc, src.length, lLength, '~');
+      if (!window) return;
+      // Clip maskedSrc to same section of string as src
+      maskedSrc = window.maskedSrc;
       endReg.lastIndex = 0;
 
-      // Clip maskedSrc to same section of string as src
-      maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
-
       while ((match = endReg.exec(maskedSrc)) !== null) {
+        if (match.index > window.lastCloser) break;
         rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
         if (!rDelim) continue;
