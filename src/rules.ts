@@ -52,6 +52,7 @@ export const other = {
   nonSpaceChar: /[^ ]/,
   newLineCharGlobal: /\n/g,
   tabCharGlobal: /\t/g,
+  leadingSpaceTab: /^[ \t]+/,
   multipleSpaceGlobal: /\s+/g,
   blankLine: /^[ \t]*$/,
   doubleBlankLine: /\n[ \t]*\n[ \t]*$/,
