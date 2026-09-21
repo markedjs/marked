@@ -2122,6 +2122,59 @@ paragraph
             ],
           });
         });
+
+        it('url email protocols', () => {
+          expectInlineTokens({
+            md: 'Contact mailto:foo@bar.baz and (xmpp:bar@baz.qux/resource).',
+            options: { gfm: true },
+            tokens: [
+              {
+                type: 'text',
+                raw: 'Contact ',
+                text: 'Contact ',
+                escaped: false,
+              },
+              {
+                type: 'link',
+                raw: 'mailto:foo@bar.baz',
+                text: 'mailto:foo@bar.baz',
+                href: 'mailto:foo@bar.baz',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'mailto:foo@bar.baz',
+                    text: 'mailto:foo@bar.baz',
+                  },
+                ],
+              },
+              {
+                type: 'text',
+                raw: ' and (',
+                text: ' and (',
+                escaped: false,
+              },
+              {
+                type: 'link',
+                raw: 'xmpp:bar@baz.qux/resource',
+                text: 'xmpp:bar@baz.qux/resource',
+                href: 'xmpp:bar@baz.qux/resource',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: 'xmpp:bar@baz.qux/resource',
+                    text: 'xmpp:bar@baz.qux/resource',
+                  },
+                ],
+              },
+              {
+                type: 'text',
+                raw: ').',
+                text: ').',
+                escaped: false,
+              },
+            ],
+          });
+        });
       });
 
       it('text', () => {
