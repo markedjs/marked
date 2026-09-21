@@ -1,4 +1,5 @@
 const versionCache = {};
+const gfmCache = new Map();
 let currentVersion;
 
 onunhandledrejection = (e) => {
@@ -16,6 +17,9 @@ onmessage = function(e) {
 };
 
 function getDefaults() {
+  if (currentVersion === 'commonmark' || currentVersion === 'gfm') {
+    return {};
+  }
   const marked = versionCache[currentVersion];
   let defaults = {};
   if (typeof marked.getDefaults === 'function') {
@@ -61,6 +65,33 @@ function parse(e) {
       break;
     }
     case 'parse': {
+      if (currentVersion === 'commonmark' || currentVersion === 'gfm') {
+        const startTime = new Date();
+        Promise.resolve(versionCache[currentVersion].parse(e.data.markdown))
+          .then((parsed) => {
+            const endTime = new Date();
+            postMessage({
+              id: e.data.id,
+              task: e.data.task,
+              version: currentVersion,
+              lexed: '',
+              parsed,
+              time: endTime - startTime,
+            });
+          })
+          .catch((err) => {
+            postMessage({
+              id: e.data.id,
+              task: e.data.task,
+              version: currentVersion,
+              lexed: '',
+              parsed: `Error: ${err.message}`,
+              time: 0,
+              error: true,
+            });
+          });
+        break;
+      }
       const marked = versionCache[currentVersion];
       // marked 0.0.1 had tokens array as the second parameter of lexer and no options
       const options = currentVersion.endsWith('@0.0.1') ? [] : mergeOptions(e.data.options);
@@ -72,6 +103,7 @@ function parse(e) {
       postMessage({
         id: e.data.id,
         task: e.data.task,
+        version: currentVersion,
         lexed: lexedList,
         parsed,
         time: endTime - startTime,
@@ -132,6 +164,47 @@ function loadVersion(ver) {
   let promise;
   if (versionCache[ver]) {
     promise = Promise.resolve();
+  } else if (ver === 'commonmark') {
+    promise = import('https://cdn.jsdelivr.net/npm/commonmark@0.31.2/+esm')
+      .then((cm) => {
+        const reader = new cm.Parser();
+        const writer = new cm.HtmlRenderer();
+        versionCache[ver] = {
+          parse: (markdown) => writer.render(reader.parse(markdown)),
+        };
+      });
+  } else if (ver === 'gfm') {
+    versionCache[ver] = {
+      parse: async(markdown) => {
+        if (gfmCache.has(markdown)) {
+          return gfmCache.get(markdown);
+        }
+        const res = await fetch('https://api.github.com/markdown', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            text: markdown,
+            mode: 'gfm',
+          }),
+        });
+        const text = await res.text();
+        if (!res.ok) {
+          let errorMsg = `HTTP Error ${res.status}`;
+          try {
+            const json = JSON.parse(text);
+            if (json.message) {
+              errorMsg = json.message;
+            }
+          } catch {}
+          throw new Error(errorMsg);
+        }
+        gfmCache.set(markdown, text);
+        return text;
+      },
+    };
+    promise = Promise.resolve();
   } else {
     promise = import(ver + '/lib/marked.esm.js')
       .catch(fetchMarked(ver + '/marked.min.js'))
@@ -155,6 +228,12 @@ function loadVersion(ver) {
     currentVersion = ver;
   }).catch((err) => {
     console.error(err);
-    throw new Error('Cannot load that version of marked');
+    let errorMsg = 'Cannot load that version of marked';
+    if (ver === 'commonmark') {
+      errorMsg = 'Cannot load commonmark';
+    } else if (ver === 'gfm') {
+      errorMsg = 'Cannot load gfm';
+    }
+    throw new Error(errorMsg);
   });
 }

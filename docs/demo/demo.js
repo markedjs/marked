@@ -25,6 +25,8 @@ let latestVersion = 'master';
 const search = searchToObject();
 const markedVersions = {
   master: '../',
+  commonmark: 'commonmark',
+  gfm: 'gfm',
 };
 let delayTime = 1;
 let checkChangeTimeout = null;
@@ -287,8 +289,18 @@ function handleIframeLoad() {
   }
 }
 
+let debounceInputDirty;
 function handleInput() {
-  inputDirty = true;
+  if ($markedVerElem.value === 'gfm') {
+    // GFM api limits requests to 60 per hour so we
+    // are debouncing here to limit unneccessary requests
+    clearTimeout(debounceInputDirty);
+    debounceInputDirty = setTimeout(() => {
+      inputDirty = true;
+    }, 500);
+  } else {
+    inputDirty = true;
+  }
 }
 
 function handleVersionChange() {
@@ -419,7 +431,7 @@ function updateVersion() {
 }
 
 function checkForChanges() {
-  if (inputDirty && $markedVerElem.value !== 'pr') {
+  if (inputDirty) {
     inputDirty = false;
 
     updateLink();
@@ -498,9 +510,15 @@ function messageWorker(message) {
           break;
         }
         case 'parse': {
-          $previewElem.classList.remove('error');
-          $htmlElem.classList.remove('error');
-          $lexerElem.classList.remove('error');
+          if (e.data.error) {
+            $previewElem.classList.add('error');
+            $htmlElem.classList.add('error');
+            $lexerElem.classList.add('error');
+          } else {
+            $previewElem.classList.remove('error');
+            $htmlElem.classList.remove('error');
+            $lexerElem.classList.remove('error');
+          }
           const scrollPercent = getScrollPercent();
           setParsed(e.data.parsed, e.data.lexed);
           setScrollPercent(scrollPercent);
@@ -511,7 +529,7 @@ function messageWorker(message) {
       clearTimeout(checkChangeTimeout);
       delayTime = 10;
       checkForChanges();
-      workerPromises[e.data.id]();
+      workerPromises[e.data.id](e.data);
       delete workerPromises[e.data.id];
     };
     markedWorker.onerror = markedWorker.onmessageerror = (err) => {
