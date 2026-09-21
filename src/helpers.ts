@@ -153,7 +153,8 @@ export function normalizeLabel(label: string) {
 }
 
 export function findClosingBracket(str: string, b: string) {
-  if (str.indexOf(b[1]) === -1) {
+  // an opening bracket on its own is still unbalanced, so both have to be absent
+  if (str.indexOf(b[0]) === -1 && str.indexOf(b[1]) === -1) {
     return -1;
   }
 
