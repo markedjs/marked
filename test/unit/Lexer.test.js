@@ -2139,6 +2139,7 @@ paragraph
                 raw: 'mailto:foo@bar.baz',
                 text: 'mailto:foo@bar.baz',
                 href: 'mailto:foo@bar.baz',
+                autolink: true,
                 tokens: [
                   {
                     type: 'text',
@@ -2158,6 +2159,7 @@ paragraph
                 raw: 'xmpp:bar@baz.qux/resource',
                 text: 'xmpp:bar@baz.qux/resource',
                 href: 'xmpp:bar@baz.qux/resource',
+                autolink: true,
                 tokens: [
                   {
                     type: 'text',
