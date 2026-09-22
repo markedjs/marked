@@ -266,7 +266,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           const newToken = this.blockquote(newText)!;
           tokens[tokens.length - 1] = newToken;
 
-          raw = `${raw}\n${continuation}`;
+          // Only include continuation lines the nested blockquote actually
+          // consumed. Unconsumed trailing lines must stay out of `raw` so the
+          // lexer can still tokenize them (paragraph, next blockquote, etc.).
+          const leftover = newText.substring(newToken.raw.length).replace(/^\n/, '');
+          const leftoverCount = leftover ? leftover.split('\n').length : 0;
+          const consumed = leftoverCount ? lines.slice(0, -leftoverCount) : lines;
+          if (consumed.length > 0) {
+            raw = `${raw}\n${consumed.join('\n')}`;
+          }
           text = text.substring(0, text.length - oldToken.text.length) + newToken.text;
           break;
         } else if (lastToken?.type === 'list') {
