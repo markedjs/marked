@@ -303,6 +303,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   list(src: string): Tokens.List | undefined {
     let cap = this.rules.block.list.exec(src);
     if (cap) {
+      // src is only consumed from the front, so every raw below is a slice of
+      // listSrc rather than a string built up line by line
+      const listSrc = src;
+      const taken = () => listSrc.length - src.length;
       let bull = cap[1].trim();
       const isordered = bull.length > 1;
 
@@ -327,7 +331,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       // Check if current bullet point can start a new List Item
       while (src) {
         let endEarly = false;
-        let raw = '';
         let itemContents = '';
         if (!(cap = itemRegex.exec(src))) {
           break;
@@ -337,8 +340,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           break;
         }
 
-        raw = cap[0];
-        src = src.substring(raw.length);
+        const itemStart = taken();
+        src = src.substring(cap[0].length);
 
         const firstLine = cap[2].split('\n', 1)[0];
         const bulletIndent = cap[1].length;
@@ -362,7 +365,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         }
 
         if (blankLine && this.rules.other.blankLine.test(nextLine)) { // Items begin with at most one blank line
-          raw += nextLine + '\n';
           src = src.substring(nextLine.length + 1);
           endEarly = true;
         }
@@ -446,11 +448,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
             blankLine = !nextLine.trim();
 
-            raw += rawLine + '\n';
             src = src.substring(rawLine.length + 1);
             line = nextLineWithoutTabs.slice(indent);
           }
         }
+
+        // The loops above appended a '\n' the source may not have had. It could
+        // only land on the item that exhausts src, whose raw is trimmed below,
+        // and after which nothing reads endsWithBlankLine
+        const raw = listSrc.slice(itemStart, taken());
 
         if (!list.loose) {
           // If the previous item ended with a blank line, the list is loose
@@ -469,8 +475,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           text: itemContents,
           tokens: [],
         });
-
-        list.raw += raw;
       }
 
       // Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
@@ -482,7 +486,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         // not a list since there were no items
         return;
       }
-      list.raw = list.raw.trimEnd();
+      list.raw = listSrc.slice(0, taken()).trimEnd();
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first
       // First pass: tokenize items and finalize list.loose from spacers before placing checkboxes
