@@ -22,6 +22,25 @@ describe('marked unit', () => {
     });
   });
 
+  describe('tabs after a block quote marker', () => {
+    it('should expand a tab to the next tab stop so indented code keeps its indentation', () => {
+      // CommonMark example 6: the marker consumes one space of the expanded
+      // tab, the rest is content, so four of the remaining six columns open
+      // the code block and two stay in it.
+      assert.strictEqual(
+        marked.parse('>\t\tfoo\n'),
+        '<blockquote>\n<pre><code>  foo\n</code></pre>\n</blockquote>\n',
+      );
+    });
+
+    it('should treat a single tab after the marker like the spaces it stands for', () => {
+      assert.strictEqual(
+        marked.parse('>\tfoo\n'),
+        marked.parse('>   foo\n'),
+      );
+    });
+  });
+
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
