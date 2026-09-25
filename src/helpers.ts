@@ -32,12 +32,20 @@ export function escapeHtmlEntities(html: string, encode?: boolean) {
  * replacement character.
  */
 export function decodeNumericCharacterReferences(text: string) {
-  return text.replace(other.numericCharacterReference, (_, dec: string, hex: string) => {
-    const code = dec === undefined ? Number.parseInt(hex, 16) : Number.parseInt(dec, 10);
+  if (!other.numericCharacterReference.test(text)) {
+    return text;
+  }
+  // A decoded character must not join its neighbours into a new reference,
+  // so every `&` that is not already one is escaped here.
+  return text.replace(other.numericCharacterReferenceOrAmpersand, (ref: string, dec?: string, hex?: string) => {
+    if (dec === undefined && hex === undefined) {
+      return '&amp;';
+    }
+    const code = dec === undefined ? Number.parseInt(hex!, 16) : Number.parseInt(dec, 10);
     if (code === 0 || code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff)) {
       return '�';
     }
-    return String.fromCodePoint(code);
+    return code === 38 ? '&amp;' : String.fromCodePoint(code);
   });
 }
 
