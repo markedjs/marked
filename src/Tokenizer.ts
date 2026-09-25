@@ -578,6 +578,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   def(src: string): Tokens.Def | undefined {
     const cap = this.rules.block.def.exec(src);
     if (cap) {
+      // outside angle brackets a link destination holds only balanced parentheses
+      if (!this.rules.other.startAngleBracket.test(cap[2]) && findClosingBracket(cap[2], '()') !== -1) {
+        return;
+      }
+
       const tag = normalizeLabel(cap[1]).replace(this.rules.other.multipleSpaceGlobal, ' ');
       const href = cap[2] ? cap[2].replace(this.rules.other.hrefBrackets, '$1').replace(this.rules.inline.anyPunctuation, '$1') : '';
       const title = cap[3] ? cap[3].substring(1, cap[3].length - 1).replace(this.rules.inline.anyPunctuation, '$1') : cap[3];
