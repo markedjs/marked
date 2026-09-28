@@ -364,7 +364,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     }
   }
 
-  private inlineTokensInner(src: string, tokens: Token[]): Token[] {
+  #inlineTokensInner(src: string, tokens: Token[]): Token[] {
     // String with links masked to avoid interference with em and strong
     let maskedSrc = src;
 
