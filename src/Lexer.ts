@@ -356,7 +356,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     const prevLinkParenPossible = this.state.linkParenPossible;
     this.state.linkParenPossible = prevLinkParenPossible && src.includes(')');
     try {
-      return this.inlineTokensInner(src, tokens);
+      return this.#inlineTokensInner(src, tokens);
     } finally {
       // A nested run (e.g. a link label) anchored on its own substring;
       // restore the outer run's flag for the rest of its loop.
