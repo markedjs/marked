@@ -1,4 +1,5 @@
 ---
 renderExact: true
 ---
->	test
+>		foo
+>	bar
