@@ -180,7 +180,7 @@ export async function main(nodeProcess) {
         // try require for json
         markedConfig = require(configFile);
       } catch(err) {
-        if (err.code !== 'ERR_REQUIRE_ESM') {
+        if (err.code !== 'ERR_REQUIRE_ESM' && err.code !== 'ERR_REQUIRE_ASYNC_MODULE') {
           throw err;
         }
         // must import esm
