@@ -231,6 +231,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
         const currentRaw = currentLines.join('\n');
         const currentText = currentRaw
+          // a tab after the block quote marker runs to the next tab stop, and
+          // the marker only consumes one space of it; the rest is content
+          .replace(
+            this.rules.other.blockquoteMarkerWhitespace,
+            (_, marker: string, whitespace: string) => marker + expandTabs(whitespace, marker.length),
+          )
           // precede setext continuation with 4 spaces so it isn't a setext
           .replace(this.rules.other.blockquoteSetextReplace, '\n    $1')
           .replace(this.rules.other.blockquoteSetextReplace2, '');
