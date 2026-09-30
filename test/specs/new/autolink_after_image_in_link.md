@@ -1,6 +1,5 @@
 ---
 gfm: true
-renderExact: true
 ---
 [![logo](logo.png) www.example.com](https://target.example)
 
