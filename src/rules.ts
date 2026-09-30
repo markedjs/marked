@@ -431,6 +431,14 @@ const anyPunctuation = edit(/\\(punct)/, 'gu')
   .replace(/punct/g, _punctuation)
   .getRegex();
 
+// `anyPunctuation` for the em/strong mask. A backslash is literal inside a code
+// span, so a code span (matched like `inline.code`), or a backtick run that
+// opens none, is matched whole and kept; only the escapes outside code spans
+// are masked.
+const anyPunctuationOutsideCode = edit(/(`+)(?:[^`]|[^`][\s\S]*?[^`])\1(?!`)|`+|\\(punct)/, 'gu')
+  .replace(/punct/g, _punctuation)
+  .getRegex();
+
 const autolink = edit(/^<(scheme:[^\s\x00-\x1f<>]*|email)>/)
   .replace('scheme', /[a-zA-Z][a-zA-Z0-9+.-]{1,31}/)
   .replace('email', /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(@)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+(?![-_])/)
@@ -513,6 +521,7 @@ const _extendedEmailProtocol = edit(/(?:mailto:email|xmpp:email(?:\/[A-Za-z0-9@.
 const inlineNormal = {
   _backpedal: noopTest, // only used for GFM url
   anyPunctuation,
+  anyPunctuationOutsideCode,
   autolink,
   blockSkip,
   br,
