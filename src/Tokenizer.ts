@@ -386,7 +386,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
               nextLine = nextLine.replace(this.rules.other.listReplaceNesting, '  ');
               nextLineWithoutTabs = nextLine;
             } else {
-              nextLineWithoutTabs = nextLine.replace(this.rules.other.leadingSpaceTab, whitespace => whitespace.replace(this.rules.other.tabCharGlobal, '    '));
+              nextLineWithoutTabs = nextLine.replace(this.rules.other.leadingSpaceTab, whitespace => expandTabs(whitespace));
             }
 
             // End list item if found code fences
