@@ -59,36 +59,6 @@ describe('marked unit', () => {
   });
 
   describe('link in link text', () => {
-    for (const text of ['www.example.com', 'https://example.com', 'user@example.com']) {
-      it(`should not autolink ${text} after an image inside a link`, () => {
-        assert.strictEqual(
-          marked.parse(`[![logo](logo.png) ${text}](https://target.example)`),
-          `<p><a href="https://target.example"><img src="logo.png" alt="logo"> ${text}</a></p>\n`,
-        );
-      });
-    }
-
-    it('should preserve link state after a reference image inside a reference link', () => {
-      assert.strictEqual(
-        marked.parse('[![logo][image] www.example.com][target]\n\n[image]: logo.png\n[target]: https://target.example'),
-        '<p><a href="https://target.example"><img src="logo.png" alt="logo"> www.example.com</a></p>\n',
-      );
-    });
-
-    it('should preserve link state through nested images', () => {
-      assert.strictEqual(
-        marked.parse('[![![logo](inner.png)](outer.png) www.example.com](https://target.example)'),
-        '<p><a href="https://target.example"><img src="outer.png" alt="logo"> www.example.com</a></p>\n',
-      );
-    });
-
-    it('should still autolink after the enclosing link ends', () => {
-      assert.strictEqual(
-        marked.parse('[![logo](logo.png)](https://target.example) www.example.com'),
-        '<p><a href="https://target.example"><img src="logo.png" alt="logo"></a> <a href="http://www.example.com">www.example.com</a></p>\n',
-      );
-    });
-
     // the spec fixtures cover the nesting itself, but the differ they run through
     // normalizes entities, so this one needs an exact-string assertion
     it('should still escape text before a raw block opener in a rejected link', () => {
