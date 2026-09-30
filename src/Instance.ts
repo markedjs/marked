@@ -14,6 +14,19 @@ export type MaybePromise = void | Promise<void>;
 type UnknownFunction = (...args: unknown[]) => unknown;
 type GenericRendererFunction = (...args: unknown[]) => string | false;
 
+/**
+ * Append value(s) to values in place, flattening one level like concat
+ */
+function pushValues(values: MaybePromise[], value: MaybePromise | MaybePromise[]) {
+  if (Array.isArray(value)) {
+    for (const v of value) {
+      values.push(v);
+    }
+  } else {
+    values.push(value);
+  }
+}
+
 export class Marked<ParserOutput = string, RendererOutput = string> {
   defaults = _getDefaults<ParserOutput, RendererOutput>();
   options = this.setOptions;
@@ -49,25 +62,25 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
    * Run callback for every token
    */
   walkTokens(tokens: Token[] | TokensList, callback: (token: Token) => MaybePromise | MaybePromise[]) {
-    let values: MaybePromise[] = [];
+    const values: MaybePromise[] = [];
     for (const token of tokens) {
-      values = values.concat(callback.call(this, token));
+      pushValues(values, callback.call(this, token));
       switch (token.type) {
         case 'table': {
           const tableToken = token as Tokens.Table;
           for (const cell of tableToken.header) {
-            values = values.concat(this.walkTokens(cell.tokens, callback));
+            pushValues(values, this.walkTokens(cell.tokens, callback));
           }
           for (const row of tableToken.rows) {
             for (const cell of row) {
-              values = values.concat(this.walkTokens(cell.tokens, callback));
+              pushValues(values, this.walkTokens(cell.tokens, callback));
             }
           }
           break;
         }
         case 'list': {
           const listToken = token as Tokens.List;
-          values = values.concat(this.walkTokens(listToken.items, callback));
+          pushValues(values, this.walkTokens(listToken.items, callback));
           break;
         }
         default: {
@@ -75,10 +88,10 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
           if (this.defaults.extensions?.childTokens?.[genericToken.type]) {
             this.defaults.extensions.childTokens[genericToken.type].forEach((childTokens) => {
               const tokens = genericToken[childTokens].flat(Infinity) as Token[] | TokensList;
-              values = values.concat(this.walkTokens(tokens, callback));
+              pushValues(values, this.walkTokens(tokens, callback));
             });
           } else if (genericToken.tokens) {
-            values = values.concat(this.walkTokens(genericToken.tokens, callback));
+            pushValues(values, this.walkTokens(genericToken.tokens, callback));
           }
         }
       }
@@ -266,10 +279,10 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
         const walkTokens = this.defaults.walkTokens;
         const packWalktokens = pack.walkTokens;
         opts.walkTokens = function(token) {
-          let values: MaybePromise[] = [];
+          const values: MaybePromise[] = [];
           values.push(packWalktokens.call(this, token));
           if (walkTokens) {
-            values = values.concat(walkTokens.call(this, token));
+            pushValues(values, walkTokens.call(this, token));
           }
           return values;
         };
