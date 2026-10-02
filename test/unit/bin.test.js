@@ -98,6 +98,12 @@ describe('bin/marked', () => {
       args: ['--string', '# test'],
       stdout: '<h1>test</h1>',
     }));
+
+    it('--string accepts empty input instead of reading stdin', testInput({
+      args: ['--string', ''],
+      stdin: '# ignored',
+      stdout: '\n',
+    }));
   });
 
   describe('config', () => {

@@ -153,7 +153,7 @@ export async function main(nodeProcess) {
     }
 
     async function getData() {
-      if (string) {
+      if (string !== undefined) {
         return string;
       }
       if (input) {
