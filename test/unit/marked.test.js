@@ -1122,4 +1122,37 @@ br
       assert.strictEqual(html.trim(), '<p><em>text</em></p>');
     });
   });
+
+  describe('unmatched emphasis delimiters', () => {
+    it('should parse unmatched * openers in well under a second', () => {
+      const src = ('- *').repeat(2000);
+      const start = performance.now();
+      const html = marked.parse(src);
+      const ms = performance.now() - start;
+      assert.ok(ms < 1000, `expected linear parse, took ${Math.round(ms)}ms`);
+      assert.strictEqual(html, `<ul>\n<li>${'*- '.repeat(1999)}*</li>\n</ul>\n`);
+    });
+
+    it('should parse unmatched _ and ~ openers quickly', () => {
+      const start = performance.now();
+      assert.strictEqual(
+        marked.parse(('+ _').repeat(2000)),
+        `<ul>\n<li>${'_+ '.repeat(1999)}_</li>\n</ul>\n`,
+      );
+      assert.strictEqual(
+        marked.parse(('~x ~x ').repeat(2000)),
+        `<p>${'~x ~x '.repeat(2000)}</p>\n`,
+      );
+      const ms = performance.now() - start;
+      assert.ok(ms < 1000, `expected linear parse, took ${Math.round(ms)}ms`);
+    });
+
+    it('should keep mid-run openers and emphasis rules 9-10', () => {
+      assert.strictEqual(marked.parse('**a*b*c').trim(), '<p>**a<em>b</em>c</p>');
+      assert.strictEqual(marked.parse('*foo**bar*').trim(), '<p><em>foo**bar</em></p>');
+      assert.strictEqual(marked.parse('*foo *bar*').trim(), '<p>*foo <em>bar</em></p>');
+      assert.strictEqual(marked.parse('~~foo~~').trim(), '<p><del>foo</del></p>');
+      assert.strictEqual(marked.parse('~~foo~').trim(), '<p>~~foo~</p>');
+    });
+  });
 });
