@@ -19,8 +19,8 @@ type GenericRendererFunction = (...args: unknown[]) => string | false;
  */
 function pushValues(values: MaybePromise[], value: MaybePromise | MaybePromise[]) {
   if (Array.isArray(value)) {
-    for (const v of value) {
-      values.push(v);
+    for (let i = 0; i < value.length; i++) {
+      values.push(value[i]);
     }
   } else {
     values.push(value);

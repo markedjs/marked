@@ -1170,6 +1170,20 @@ br
       assert.strictEqual(html, new Marked().parse('| A | B |\n|---|---|\n| C | D |\n\n- E\n  - *F*\n\n> G\n'));
     });
 
+    it('should copy returned arrays by index like concat', async() => {
+      const tokens = marked.lexer('before');
+      const pending = timeout().then(() => {
+        tokens[0].tokens[0].text = 'after';
+      });
+      const results = [pending];
+      Object.defineProperty(results, Symbol.iterator, { value: function * () {} });
+      const values = marked.walkTokens(tokens, (token) => token.type === 'paragraph' ? results : undefined);
+
+      assert.deepEqual(values, [pending, undefined]);
+      await Promise.all(values);
+      assert.strictEqual(marked.parser(tokens), '<p>after</p>\n');
+    });
+
     it('should assign marked to `this`', () => {
       marked.use({
         walkTokens(token) {
