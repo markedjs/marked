@@ -122,14 +122,13 @@ When writing tests for parsing behavior or Markdown-to-HTML output, **prefer add
 Reserve unit tests (`test/unit/*.test.js`) for JavaScript API behavior, option handling, AST token inspection, extensions (`marked.use`), and hooks. Unit tests use the built-in Node.js test runner (`node:test`) and `node:assert`:
 
 ```javascript
-import { Marked } from '../../lib/marked.esm.js';
+import { marked } from '../../lib/marked.esm.js';
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
-describe('my-feature', () => {
-  it('should parse expected syntax', () => {
-    const marked = new Marked();
-    assert.strictEqual(marked.parse('# Hello'), '<h1>Hello</h1>\n');
+describe('parseInline', () => {
+  it('should parse inline markdown without paragraph tags', () => {
+    assert.strictEqual(marked.parseInline('**Hello** _world_'), '<strong>Hello</strong> <em>world</em>');
   });
 });
 ```
@@ -138,6 +137,9 @@ To run a single test during development:
 
 1. Mark the target test or suite with `it.only(...)` or `describe.only(...)`.
 2. Run `npm run test:only` (which runs `npm run build` and tests with `--test-only`).
+
+> [!IMPORTANT]
+> **Never commit `only: true` or `.only`**: Always remove `only: true` from spec test front-matter and `.only(...)` from unit tests before committing changes to ensure the full test suite runs.
 
 ---
 
@@ -158,4 +160,5 @@ To run a single test during development:
      - `chore: <description>`, `docs: <description>`, `refactor: <description>`
 4. **Git Hygiene**:
    - Do NOT commit generated build artifacts in `lib/` or `man/marked.1`.
+   - Do NOT commit tests with `only: true` or `.only(...)`.
    - Run `npm run build:reset` before pushing or staging git changes if compiled files appear dirty in git status.
