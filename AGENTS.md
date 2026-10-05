@@ -138,9 +138,6 @@ To run a single test during development:
 1. Mark the target test or suite with `it.only(...)` or `describe.only(...)`.
 2. Run `npm run test:only` (which runs `npm run build` and tests with `--test-only`).
 
-> [!IMPORTANT]
-> **Never commit `only: true` or `.only`**: Always remove `only: true` from spec test front-matter and `.only(...)` from unit tests before committing changes to ensure the full test suite runs.
-
 ---
 
 ## 4. Coding Conventions & Best Practices
