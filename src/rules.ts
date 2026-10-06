@@ -97,7 +97,10 @@ export const other = {
   nextBulletRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))`)),
   hrRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}((?:-[ \t]*){3,}|(?:_[ \t]*){3,}|(?:\\*[ \t]*){3,})(?:\\n+|$)`)),
   fencesBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:\`\`\`|~~~)`)),
-  headingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#`)),
+  // an ATX heading needs a space (or the end of the line) after the hashes, so a line
+  // like `#tag` does not end a list item; pedantic mode accepts it as a heading
+  headingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#{1,6}(?:\\s|$)`)),
+  pedanticHeadingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#`)),
   // a list item ends where a paragraph would be interrupted, so this mirrors the
   // html start conditions in the paragraph rule below; type 7 is excluded there
   htmlBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:</?(?:${_tag})(?: +|$|/?>)|<(?:script|pre|style|textarea|!--))`, 'i')),
