@@ -83,7 +83,7 @@ npm run build
 - `npm run test:specs`: Runs the spec test suite (CommonMark, GFM, new, original, redos).
 - `npm run test:lint` / `npm run lint`: Runs ESLint / auto-fixes formatting.
 - `npm run test:types`: Validates TypeScript types (`tsc` + `attw`).
-- `npm run test:redos`: Runs `recheck` to scan regex patterns for exponential or polynomial backtracking (run when backtracking concerns are noted).
+- `npm run test:redos`: Runs `recheck` to scan regex patterns for exponential or polynomial backtracking (run when backtracking concerns are noted). Supports filtering with dot notation and an optional `--safe` flag (e.g. `npm run test:redos -- other.endingHash`, `npm run test:redos -- inline`, `npm run test:redos -- --safe`). By default, safe regexps are omitted from output unless `--safe` is specified.
 - `npm run test`: Full test suite (cleans build, builds docs, runs spec, unit, umd, cjs, types, lint).
 - `npm run bench`: Runs performance benchmark comparisons against CommonMark and Markdown-it.
 - `npm run rules`: Outputs the compiled regex rules from `src/rules.ts` (e.g. `npm run rules -- block.gfm.item`).
