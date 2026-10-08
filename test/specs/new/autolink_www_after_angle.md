@@ -1,9 +1,5 @@
-Copyright OpenJS Foundation and other contributors, <www.openjsf.org>
+<www.example.com>
 
-See <www.example.com/path> for details.
+<www.example.com/path>
 
-x<www.example.com
-
-<https://example.com> and <foo@example.com> are still autolinks.
-
-Visit www.example.com or (www.example.com) directly.
+<http://www.example.com>
