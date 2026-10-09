@@ -4,11 +4,15 @@ import {
   splitCells,
   findClosingBracket,
   expandTabs,
+  expandTabPrefix,
+  sliceTabRanges,
+  restoreTabRanges,
   normalizeLabel,
   decodeNumericCharacterReferences,
   trimTrailingBlankLines,
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
+import type { TabRange } from './helpers.ts';
 import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens, Token } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
@@ -52,28 +56,28 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
   };
 }
 
-function indentCodeCompensation(raw: string, text: string, rules: Rules) {
+function indentCodeCompensation(raw: string, text: string, rules: Rules, ranges?: readonly TabRange[]) {
   const matchIndentToCode = raw.match(rules.other.indentCodeCompensation);
 
   if (matchIndentToCode === null) {
-    return text;
+    return ranges?.length ? restoreTabRanges(text, ranges) : text;
   }
 
   const indentToCode = matchIndentToCode[1];
+  let sourceOffset = 0;
 
   return text
     .split('\n')
     .map(node => {
       const matchIndentInNode = node.match(rules.other.beginningSpace);
-      if (matchIndentInNode === null) {
-        return node;
-      }
-
-      const [indentInNode] = matchIndentInNode;
-
-      // Up to the fence's own indentation is removed from each line, so a line
-      // indented less than the fence loses whatever indentation it has.
-      return node.slice(Math.min(indentInNode.length, indentToCode.length));
+      const remove = matchIndentInNode ? Math.min(matchIndentInNode[0].length, indentToCode.length) : 0;
+      const remaining = node.slice(remove);
+      const nodeRanges = ranges?.length
+        ? sliceTabRanges(ranges, sourceOffset + remove, sourceOffset + node.length)
+        : undefined;
+      sourceOffset += node.length + 1;
+      // Structural indentation is removed before restoring surviving TABs.
+      return nodeRanges?.length ? restoreTabRanges(remaining, nodeRanges) : remaining;
     })
     .join('\n');
 }
@@ -157,7 +161,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     const cap = this.rules.block.fences.exec(src);
     if (cap) {
       const raw = cap[0];
-      const text = indentCodeCompensation(raw, cap[3] || '', this.rules);
+      const sourceRanges = this.lexer?._getTabRanges?.(src);
+      const bodyStart = raw.indexOf('\n') + 1;
+      const bodyRanges = sourceRanges?.ranges.length && cap[3]
+        ? sliceTabRanges(sourceRanges.ranges, sourceRanges.offset + bodyStart, sourceRanges.offset + bodyStart + cap[3].length)
+        : undefined;
+      const text = indentCodeCompensation(raw, cap[3] || '', this.rules, bodyRanges);
 
       return {
         type: 'code',
@@ -307,6 +316,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       // src is only consumed from the front, so every raw below is a slice of
       // listSrc rather than a string built up line by line
       const listSrc = src;
+      const listRanges = this.options.pedantic ? undefined : this.lexer?._getTabRanges?.(src);
+      let itemRanges: Map<Tokens.ListItem, TabRange[]> | undefined;
       const taken = () => listSrc.length - src.length;
       let bull = cap[1].trim();
       const isordered = bull.length > 1;
@@ -333,6 +344,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       while (src) {
         let endEarly = false;
         let itemContents = '';
+        let contentRanges: TabRange[] | undefined;
         if (!(cap = itemRegex.exec(src))) {
           break;
         }
@@ -346,9 +358,20 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
         const firstLine = cap[2].split('\n', 1)[0];
         const bulletIndent = cap[1].length;
-        let line = this.options.pedantic
-          ? expandTabs(firstLine, bulletIndent)
-          : firstLine.replace(this.rules.other.leadingSpaceTab, whitespace => expandTabs(whitespace, bulletIndent));
+        const firstRanges = listRanges?.ranges.length
+          ? sliceTabRanges(listRanges.ranges, listRanges.offset + itemStart + bulletIndent, listRanges.offset + itemStart + bulletIndent + firstLine.length)
+          : undefined;
+        let lineRanges: TabRange[] | undefined;
+        let line: string;
+        if (!this.options.pedantic && (firstLine.includes('\t') || firstRanges?.length)) {
+          const normalized = expandTabPrefix(firstLine, bulletIndent, firstRanges);
+          line = normalized.text;
+          lineRanges = normalized.ranges;
+        } else {
+          line = this.options.pedantic
+            ? expandTabs(firstLine, bulletIndent)
+            : firstLine.replace(this.rules.other.leadingSpaceTab, whitespace => expandTabs(whitespace, bulletIndent));
+        }
         let nextLine = src.split('\n', 1)[0];
         let blankLine = !line.trim();
 
@@ -362,6 +385,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           indent = line.search(this.rules.other.nonSpaceChar); // Find first non-space char
           indent = indent > 4 ? 1 : indent; // Treat indented code blocks (> 4 spaces) as having only 1 indent
           itemContents = line.slice(indent);
+          if (lineRanges?.length) contentRanges = sliceTabRanges(lineRanges, indent, line.length);
           indent += bulletIndent;
         }
 
@@ -380,14 +404,23 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
           // Check if following lines should be included in List Item
           while (src) {
+            const lineStart = taken();
             const rawLine = src.split('\n', 1)[0];
+            const inheritedRanges = listRanges?.ranges.length
+              ? sliceTabRanges(listRanges.ranges, listRanges.offset + lineStart, listRanges.offset + lineStart + rawLine.length)
+              : undefined;
             let nextLineWithoutTabs;
+            let nextLineRanges: TabRange[] | undefined;
             nextLine = rawLine;
 
             // Re-align to follow commonmark nesting rules
             if (this.options.pedantic) {
               nextLine = nextLine.replace(this.rules.other.listReplaceNesting, '  ');
               nextLineWithoutTabs = nextLine;
+            } else if (nextLine.includes('\t') || inheritedRanges?.length) {
+              const normalized = expandTabPrefix(nextLine, 0, inheritedRanges);
+              nextLineWithoutTabs = normalized.text;
+              nextLineRanges = normalized.ranges;
             } else {
               nextLineWithoutTabs = nextLine.replace(this.rules.other.leadingSpaceTab, whitespace => expandTabs(whitespace));
             }
@@ -423,6 +456,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
             }
 
             if (nextLineWithoutTabs.search(this.rules.other.nonSpaceChar) >= indent || !nextLine.trim()) { // Dedent if possible
+              if (nextLineRanges?.length) {
+                const surviving = sliceTabRanges(nextLineRanges, indent, nextLineWithoutTabs.length);
+                if (surviving.length) {
+                  contentRanges ||= [];
+                  for (const range of surviving) {
+                    contentRanges.push({ start: itemContents.length + 1 + range.start, length: range.length });
+                  }
+                }
+              }
               itemContents += '\n' + nextLineWithoutTabs.slice(indent);
             } else {
               // not enough indentation
@@ -444,6 +486,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
                 break;
               }
 
+              if (inheritedRanges?.length) {
+                contentRanges ||= [];
+                for (const range of inheritedRanges) {
+                  contentRanges.push({ start: itemContents.length + 1 + range.start, length: range.length });
+                }
+              }
               itemContents += '\n' + nextLine;
             }
 
@@ -468,14 +516,19 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           }
         }
 
-        list.items.push({
+        const item: Tokens.ListItem = {
           type: 'list_item',
           raw,
           task: !!this.options.gfm && this.rules.other.listIsTask.test(itemContents),
           loose: false,
           text: itemContents,
           tokens: [],
-        });
+        };
+        list.items.push(item);
+        if (contentRanges?.length) {
+          itemRanges ||= new Map();
+          itemRanges.set(item, contentRanges);
+        }
       }
 
       // Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
@@ -493,7 +546,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       // First pass: tokenize items and finalize list.loose from spacers before placing checkboxes
       for (const item of list.items) {
         this.lexer.state.top = false;
-        item.tokens = this.lexer.blockTokens(item.text, []);
+        const ranges = itemRanges?.get(item);
+        item.tokens = ranges?.length
+          ? this.lexer.blockTokens(item.text, [], false, sliceTabRanges(ranges, 0, item.text.length))
+          : this.lexer.blockTokens(item.text, []);
 
         if (!list.loose) {
           // Check if list should be loose
