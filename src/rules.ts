@@ -101,7 +101,7 @@ export const other = {
   headingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#`)),
   // a list item ends where a paragraph would be interrupted, so this mirrors the
   // html start conditions in the paragraph rule below; type 7 is excluded there
-  htmlBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:</?(?:${_tag})(?: +|$|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--))`, 'i')),
+  htmlBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:</?(?:${_tag})(?: +|$|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)`, 'i')),
   blockquoteBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}>`)),
 };
 
@@ -179,8 +179,8 @@ const createParagraph = (listInterrupt: RegExp) => edit(_paragraph)
   .replace('blockquote', ' {0,3}>')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
   .replace('list', listInterrupt)
-  .replace('html', '</?(?:tag)(?: +|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)')
-  .replace('tag', _tag) // pars can be interrupted by type (6) html blocks
+  .replace('html', ' {0,3}(?:</?(?:tag)(?: +|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
+  .replace('tag', _tag) // pars can be interrupted by html blocks of types (1) to (6)
   .getRegex();
 
 // only non-empty lists starting from 1 can interrupt paragraphs
@@ -230,8 +230,8 @@ const gfmTable = edit(
   .replace('code', '(?: {4}| {0,3}\t)[^\\n]')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
   .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]') // any bullet ends the table rows
-  .replace('html', '</?(?:tag)(?: +|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)')
-  .replace('tag', _tag) // tables can be interrupted by type (6) html blocks
+  .replace('html', ' {0,3}(?:</?(?:tag)(?: +|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
+  .replace('tag', _tag) // tables can be interrupted by html blocks of types (1) to (6)
   .getRegex();
 
 const blockGfm: Record<BlockKeys, RegExp> = {
@@ -246,8 +246,8 @@ const blockGfm: Record<BlockKeys, RegExp> = {
     .replace('blockquote', ' {0,3}>')
     .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
     .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]+[^ \\t\\n]') // only non-empty lists starting from 1 can interrupt
-    .replace('html', '</?(?:tag)(?: +|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)')
-    .replace('tag', _tag) // pars can be interrupted by type (6) html blocks
+    .replace('html', ' {0,3}(?:</?(?:tag)(?: +|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
+    .replace('tag', _tag) // pars can be interrupted by html blocks of types (1) to (6)
     .getRegex(),
 };
 
