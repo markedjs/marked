@@ -10,3 +10,7 @@ renderExact: true
 &#abcdef0;
 
 `&#35;`
+
+&#38;amp; &#x26;lt;
+
+&&#35;35; &co&#112;y; &amp&#59;
