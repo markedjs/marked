@@ -202,3 +202,75 @@ export function expandTabs(line: string, indent = 0) {
 
   return expanded;
 }
+
+/** Complete original TAB expansions in a normalized source string. */
+export interface TabRange {
+  start: number;
+  length: number;
+}
+
+/** Slice only whole ranges; a partially consumed TAB remains spaces. */
+export function sliceTabRanges(ranges: readonly TabRange[], start: number, end: number): TabRange[] {
+  let lo = 0;
+  let hi = ranges.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >>> 1;
+    if (ranges[mid].start < start) lo = mid + 1;
+    else hi = mid;
+  }
+  const result: TabRange[] = [];
+  for (let i = lo; i < ranges.length && ranges[i].start < end; i++) {
+    const range = ranges[i];
+    if (range.start + range.length <= end) {
+      result.push({ start: range.start - start, length: range.length });
+    }
+  }
+  return result;
+}
+
+/** Expand a list line's prefix, preserving sparse inherited TAB provenance. */
+export function expandTabPrefix(line: string, indent = 0, incoming: readonly TabRange[] = []) {
+  let i = 0;
+  let col = indent;
+  let expanded = '';
+  const ranges: TabRange[] = [];
+  let cursor = 0;
+  while (i < line.length && (line[i] === ' ' || line[i] === '\t')) {
+    if (cursor < incoming.length && incoming[cursor].start === i) {
+      ranges.push({ start: expanded.length, length: incoming[cursor].length });
+      cursor++;
+    }
+    if (line[i] === '\t') {
+      const width = 4 - col % 4;
+      ranges.push({ start: expanded.length, length: width });
+      expanded += ' '.repeat(width);
+      col += width;
+    } else {
+      expanded += line[i];
+      col++;
+    }
+    i++;
+  }
+  const shift = expanded.length - i;
+  for (; cursor < incoming.length; cursor++) {
+    const range = incoming[cursor];
+    ranges.push({ start: range.start + shift, length: range.length });
+  }
+  return { text: expanded + line.slice(i), ranges };
+}
+
+/** Restore complete TAB expansions only after the parser identifies code. */
+export function restoreTabRanges(text: string, ranges: readonly TabRange[]) {
+  const chunks: string[] = [];
+  let start = 0;
+  for (const range of ranges) {
+    if (range.start < start || range.start + range.length > text.length
+      || text.slice(range.start, range.start + range.length) !== ' '.repeat(range.length)) {
+      continue;
+    }
+    chunks.push(text.slice(start, range.start), '\t');
+    start = range.start + range.length;
+  }
+  chunks.push(text.slice(start));
+  return chunks.join('');
+}

@@ -2,6 +2,7 @@ import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
 import { normalizeLabel } from './helpers.ts';
+import type { TabRange } from './helpers.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
@@ -28,6 +29,42 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
   public inlineQueue: { src: string, tokens: Token[] }[];
 
   private tokenizer: _Tokenizer<ParserOutput, RendererOutput>;
+  private tabSource?: { length: number, remaining: string, ranges: readonly TabRange[], offset: number };
+  private enteringTabScope = false;
+
+  /** Return a view, so later code blocks do not copy all remaining ranges. */
+  _getTabRanges(src: string): { ranges: readonly TabRange[], offset: number } | undefined {
+    const source = this.tabSource;
+    if (!source || source.remaining !== src) return;
+    return { ranges: source.ranges, offset: source.offset + source.length - src.length };
+  }
+
+  private blockTokensWithTabRanges(src: string, tokens: Token[], lastParagraphClipped: boolean, ranges?: readonly TabRange[]) {
+    const previous = this.tabSource;
+    const previousEntry = this.enteringTabScope;
+    if (ranges !== undefined) {
+      this.tabSource = ranges.length ? { length: src.length, remaining: src, ranges, offset: 0 } : undefined;
+    } else if (previous?.remaining === src) {
+      // A reentrant observer has its own cursor but shares immutable ranges.
+      this.tabSource = {
+        length: src.length,
+        remaining: src,
+        ranges: previous.ranges,
+        offset: previous.offset + previous.length - src.length,
+      };
+    } else {
+      this.tabSource = undefined;
+    }
+    this.enteringTabScope = true;
+    try {
+      // Resume this implementation without calling a public override twice.
+      const blockTokens: (this: _Lexer<ParserOutput, RendererOutput>, src: string, tokens: Token[], lastParagraphClipped: boolean) => Token[] = _Lexer.prototype.blockTokens;
+      return blockTokens.call(this, src, tokens, lastParagraphClipped);
+    } finally {
+      this.tabSource = previous;
+      this.enteringTabScope = previousEntry;
+    }
+  }
 
   constructor(options?: MarkedOptions<ParserOutput, RendererOutput>) {
     // TokenList cannot be created in one go
@@ -113,9 +150,14 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
   /**
    * Lexing
    */
-  blockTokens(src: string, tokens?: Token[], lastParagraphClipped?: boolean): Token[];
-  blockTokens(src: string, tokens?: TokensList, lastParagraphClipped?: boolean): TokensList;
-  blockTokens(src: string, tokens: Token[] = [], lastParagraphClipped = false) {
+  blockTokens(src: string, tokens?: Token[], lastParagraphClipped?: boolean, tabRanges?: readonly TabRange[]): Token[];
+  blockTokens(src: string, tokens?: TokensList, lastParagraphClipped?: boolean, tabRanges?: readonly TabRange[]): TokensList;
+  blockTokens(src: string, tokens: Token[] = [], lastParagraphClipped = false, tabRanges?: readonly TabRange[]) {
+    if (this.enteringTabScope) {
+      this.enteringTabScope = false;
+    } else if (tabRanges !== undefined || this.tabSource) {
+      return this.blockTokensWithTabRanges(src, tokens, lastParagraphClipped, tabRanges);
+    }
     this.tokenizer.lexer = this;
     if (this.options.pedantic) {
       src = src.replace(other.tabCharGlobal, '    ').replace(other.spaceLine, '');
@@ -123,6 +165,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
 
     let srcLength = Infinity;
     while (src) {
+      if (this.tabSource) this.tabSource.remaining = src;
       if (src.length < srcLength) {
         srcLength = src.length;
       } else {
