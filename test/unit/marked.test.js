@@ -42,6 +42,18 @@ describe('marked unit', () => {
     });
   });
 
+  describe('image alt text', () => {
+    it('should render nested formatting as plain text', () => {
+      for (const label of ['**a *b***', '*a **b***', '**a `b`**', '~~a **b**~~', '[a **b**](url)', '![a **b**](inner)']) {
+        assert.strictEqual(marked.parse(`![${label}](image.png)`), '<p><img src="image.png" alt="a b"></p>\n');
+      }
+    });
+
+    it('should keep Markdown characters inside code spans literal', () => {
+      assert.strictEqual(marked.parse('![**a `*b*`**](image.png)'), '<p><img src="image.png" alt="a *b*"></p>\n');
+    });
+  });
+
   describe('parseInline', () => {
     it('should parse inline tokens', () => {
       const md = '**strong** _em_';
