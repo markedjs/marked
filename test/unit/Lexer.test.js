@@ -1642,6 +1642,31 @@ paragraph
         ],
       });
     });
+
+    it('duplicate label', () => {
+      expectTokens({
+        md: '[link]: https://example.com\n[link]: https://example.org',
+        links: {
+          link: { href: 'https://example.com', title: undefined },
+        },
+        tokens: [
+          {
+            type: 'def',
+            raw: '[link]: https://example.com\n',
+            tag: 'link',
+            href: 'https://example.com',
+            title: undefined,
+          },
+          {
+            type: 'def',
+            raw: '[link]: https://example.org',
+            tag: 'link',
+            href: 'https://example.org',
+            title: undefined,
+          },
+        ],
+      });
+    });
   });
 
   describe('inline', () => {

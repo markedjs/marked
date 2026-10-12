@@ -222,11 +222,14 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
           lastToken.raw += (lastToken.raw.endsWith('\n') ? '' : '\n') + token.raw;
           lastToken.text += '\n' + token.raw;
           this.inlineQueue.at(-1)!.src = lastToken.text;
-        } else if (!this.tokens.links[token.tag]) {
-          this.tokens.links[token.tag] = {
-            href: token.href,
-            title: token.title,
-          };
+        } else {
+          // The first definition of a label wins, but a later one still consumes its text
+          if (!this.tokens.links[token.tag]) {
+            this.tokens.links[token.tag] = {
+              href: token.href,
+              title: token.title,
+            };
+          }
           tokens.push(token);
         }
         continue;
