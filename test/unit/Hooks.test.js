@@ -21,6 +21,27 @@ describe('Hooks', () => {
     marked = new Marked();
   });
 
+  it('awaits chained preprocess hooks with a per-call async option', async() => {
+    marked.use({ hooks: { preprocess: markdown => markdown.toUpperCase() } });
+    marked.use({ hooks: { async preprocess(markdown) { return markdown + ' world'; } } });
+    const html = await marked.parse('hello', { async: true });
+    assert.strictEqual(html.trim(), '<p>HELLO WORLD</p>');
+    assert.strictEqual(marked.defaults.async, false);
+  });
+
+  it('awaits chained postprocess hooks with a per-call async option', async() => {
+    marked.use({ hooks: { postprocess: html => html.trim() } });
+    marked.use({ hooks: { async postprocess(html) { return html + ' '; } } });
+    const html = await marked.parse('hello', { async: true });
+    assert.strictEqual(html, '<p>hello</p>');
+  });
+
+  it('uses an asynchronous provider fallback with a per-call async option', async() => {
+    marked.use({ hooks: { async provideParser() { return false; } } });
+    const html = await marked.parse('hello', { async: true });
+    assert.strictEqual(html.trim(), '<p>hello</p>');
+  });
+
   it('should preprocess markdown', () => {
     marked.use({
       hooks: {
