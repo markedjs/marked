@@ -161,7 +161,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     const cap = this.rules.block.fences.exec(src);
     if (cap) {
       const raw = cap[0];
-      const sourceRanges = this.lexer?._getTabRanges?.(src);
+      const tabSource = this.lexer.state.tabSource;
+      const sourceRanges = tabSource?.remaining === src
+        ? { ranges: tabSource.ranges, offset: tabSource.offset + tabSource.length - src.length }
+        : undefined;
       const bodyStart = raw.indexOf('\n') + 1;
       const bodyRanges = sourceRanges?.ranges.length && cap[3]
         ? sliceTabRanges(sourceRanges.ranges, sourceRanges.offset + bodyStart, sourceRanges.offset + bodyStart + cap[3].length)
@@ -316,7 +319,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       // src is only consumed from the front, so every raw below is a slice of
       // listSrc rather than a string built up line by line
       const listSrc = src;
-      const listRanges = this.options.pedantic ? undefined : this.lexer?._getTabRanges?.(src);
+      const tabSource = this.lexer.state.tabSource;
+      const listRanges = !this.options.pedantic && tabSource?.remaining === src
+        ? { ranges: tabSource.ranges, offset: tabSource.offset + tabSource.length - src.length }
+        : undefined;
       let itemRanges: Map<Tokens.ListItem, TabRange[]> | undefined;
       const taken = () => listSrc.length - src.length;
       let bull = cap[1].trim();
@@ -547,9 +553,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       for (const item of list.items) {
         this.lexer.state.top = false;
         const ranges = itemRanges?.get(item);
-        item.tokens = ranges?.length
-          ? this.lexer.blockTokens(item.text, [], false, sliceTabRanges(ranges, 0, item.text.length))
-          : this.lexer.blockTokens(item.text, []);
+        const previousRanges = this.lexer.state.nextTabRanges;
+        this.lexer.state.nextTabRanges = ranges?.length
+          ? sliceTabRanges(ranges, 0, item.text.length)
+          : undefined;
+        try {
+          item.tokens = this.lexer.blockTokens(item.text, []);
+        } finally {
+          this.lexer.state.nextTabRanges = previousRanges;
+        }
 
         if (!list.loose) {
           // Check if list should be loose
