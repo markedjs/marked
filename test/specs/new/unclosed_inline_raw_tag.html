@@ -1,0 +1,11 @@
+<p>an unclosed <code> tag</p>
+<p>does not leak into the next paragraph: 1 &lt; 2 &amp; 3 &gt; 2</p>
+<p>an unclosed <pre> tag</p>
+<h1>does not leak into a heading: 1 &lt; 2 &amp; 3 &gt; 2</h1>
+<p>an unclosed <kbd> tag</p>
+<ul>
+<li>does not leak into a list item: 1 &lt; 2 &amp; 3 &gt; 2</li>
+</ul>
+<p>within a paragraph <code>a & b</code> is still raw, as is
+<code>a & b
+across a line</code> but not after it: 1 &lt; 2</p>
