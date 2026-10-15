@@ -418,6 +418,18 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     // Mask out blocks from extensions
     maskedSrc = this.options.hooks?.emStrongMask?.call({ lexer: this }, maskedSrc) ?? maskedSrc;
 
+    // One scan of this maskedSrc for the last emphasis, strong, and
+    // strikethrough closers, shared by every opener in the pass. Popped
+    // when the pass ends so the source is not retained (#4099).
+    this.tokenizer.beginEmStrongDelCloserScan(maskedSrc);
+    try {
+      return this.#tokenizeInlines(src, maskedSrc, tokens);
+    } finally {
+      this.tokenizer.endEmStrongDelCloserScan();
+    }
+  }
+
+  #tokenizeInlines(src: string, maskedSrc: string, tokens: Token[]): Token[] {
     let keepPrevChar = false;
     let prevChar = '';
     let srcLength = Infinity;

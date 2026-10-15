@@ -115,81 +115,62 @@ function isLabelEndInsideToken(src: string, label: string, labelStart: number, r
   return false;
 }
 
-type CloserDelim = '*' | '_' | '~';
-
-interface CloserHints {
+interface LastPossibleEmStrongCloserIndex {
+  /** Last `*` run that can close emphasis or strong. `-1` if none. */
   '*': number;
+  /** Last `_` run that can close emphasis or strong. `-1` if none. */
   _: number;
-  '~': number;
-}
-
-let closerHintSrc = '';
-let closerHints: CloserHints | undefined;
-
-function isCloserDelim(ch: string): ch is CloserDelim {
-  return ch === '*' || ch === '_' || ch === '~';
 }
 
 /**
- * Last index of a `*`, `_`, or `~` run that can still close — i.e. not
- * preceded by ASCII whitespace or the start of the string.
- *
- * The right-delim regexes only treat a run as a closer in groups 1, 2, 5
- * and 6, all of which require a non-whitespace predecessor. If nothing
- * after `windowStart` qualifies, the existing scan cannot succeed, so
- * unmatched openers can skip it. A hit only means "keep looking":
- * CommonMark rules 9–10 and mid-run openers are still applied in the loop.
- *
- * Cached per maskedSrc so each opener in an inline run does not walk the
- * remainder again (#4099).
+ * Closer hints for one inline `maskedSrc`. Held only while that pass runs.
  */
-function lastPossibleCloserIndex(src: string, delim: CloserDelim): number {
-  if (closerHintSrc !== src || !closerHints) {
-    closerHintSrc = src;
-    closerHints = scanLastPossibleClosers(src);
-  }
-  return closerHints[delim];
+interface EmStrongDelCloserHintFrame {
+  maskedSrc: string;
+  lastPossibleEmStrongCloserIndex: LastPossibleEmStrongCloserIndex;
+  /** Last `~` run that can close strikethrough. `-1` if none. */
+  lastPossibleDelCloserIndex: number;
 }
 
-function scanLastPossibleClosers(src: string): CloserHints {
-  const last: CloserHints = { '*': -1, _: -1, '~': -1 };
+/**
+ * Last indexes of `*` / `_` runs that can close emphasis or strong, and of
+ * a `~` run that can close strikethrough.
+ *
+ * A run can close only when it is not preceded by ASCII whitespace or the
+ * start of the string. The right-delim regexes accept a closer only in
+ * groups 1, 2, 5, and 6, and each of those requires that predecessor. When
+ * the opener's window has no such run, the regex scan cannot succeed.
+ * Finding one only means "keep looking": CommonMark rules 9–10 and mid-run
+ * openers are still applied in the loop (#4099).
+ */
+function scanLastPossibleEmStrongDelClosers(src: string): EmStrongDelCloserHintFrame {
+  const lastPossibleEmStrongCloserIndex: LastPossibleEmStrongCloserIndex = { '*': -1, _: -1 };
+  let lastPossibleDelCloserIndex = -1;
   const len = src.length;
   for (let i = 0; i < len; i++) {
     const ch = src[i];
-    if (!isCloserDelim(ch)) {
+    if (ch !== '*' && ch !== '_' && ch !== '~') {
       continue;
     }
+    // A leading run has no predecessor, same as one after a line break.
     const prev = i === 0 ? '\n' : src[i - 1];
     let j = i + 1;
     while (j < len && src[j] === ch) {
       j++;
     }
     if (prev !== ' ' && prev !== '\t' && prev !== '\n' && prev !== '\r' && prev !== '\f') {
-      last[ch] = i;
+      if (ch === '~') {
+        lastPossibleDelCloserIndex = i;
+      } else {
+        lastPossibleEmStrongCloserIndex[ch] = i;
+      }
     }
     i = j - 1;
   }
-  return last;
-}
-
-interface DelimWindow {
-  maskedSrc: string;
-  lastCloser: number;
-}
-
-/**
- * Clip maskedSrc to the same window `emStrong` / `del` already scan, or
- * return undefined when that window has no possible closer.
- */
-function remainingDelimWindow(maskedSrc: string, srcLength: number, lLength: number, delim: CloserDelim): DelimWindow | undefined {
-  const windowStart = maskedSrc.length - srcLength + lLength;
-  const lastCloser = lastPossibleCloserIndex(maskedSrc, delim);
-  if (lastCloser < windowStart) {
-    return;
-  }
   return {
-    maskedSrc: maskedSrc.slice(-1 * srcLength + lLength),
-    lastCloser: lastCloser - windowStart,
+    maskedSrc: src,
+    lastPossibleEmStrongCloserIndex,
+    lastPossibleDelCloserIndex,
   };
 }
 
@@ -201,8 +182,69 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   rules!: Rules; // set by the lexer
   lexer!: _Lexer<ParserOutput, RendererOutput>; // set by the lexer
 
+  /**
+   * Closer hints for inline passes currently on the stack. Nested
+   * `inlineTokens` calls push a frame. Empty after the outermost pass so
+   * `maskedSrc` is not retained once parsing returns (#4099).
+   */
+  #emStrongDelCloserHintStack?: EmStrongDelCloserHintFrame[];
+
   constructor(options?: MarkedOptions<ParserOutput, RendererOutput>) {
     this.options = options || _defaults;
+  }
+
+  /**
+   * Scan `maskedSrc` once for the last `*` / `_` run that can close
+   * emphasis or strong and the last `~` run that can close strikethrough.
+   * The lexer calls `endEmStrongDelCloserScan` when this inline pass ends.
+   */
+  beginEmStrongDelCloserScan(maskedSrc: string): void {
+    const frame = scanLastPossibleEmStrongDelClosers(maskedSrc);
+    if (this.#emStrongDelCloserHintStack) {
+      this.#emStrongDelCloserHintStack.push(frame);
+    } else {
+      this.#emStrongDelCloserHintStack = [frame];
+    }
+  }
+
+  /**
+   * Drop the closer-hint frame for the inline pass that just finished.
+   */
+  endEmStrongDelCloserScan(): void {
+    const stack = this.#emStrongDelCloserHintStack;
+    if (!stack) {
+      return;
+    }
+    stack.pop();
+    if (stack.length === 0) {
+      this.#emStrongDelCloserHintStack = undefined;
+    }
+  }
+
+  /**
+   * Index in `maskedSrc` of the last `*` or `_` run that can close emphasis
+   * or strong. Uses the active inline-pass scan when `maskedSrc` is that
+   * pass's source; otherwise scans this string and discards the result.
+   */
+  #lastPossibleEmStrongCloserIndex(maskedSrc: string, delim: '*' | '_'): number {
+    const frame = this.#emStrongDelCloserHintStack?.at(-1);
+    if (frame && frame.maskedSrc === maskedSrc) {
+      return frame.lastPossibleEmStrongCloserIndex[delim];
+    }
+    return scanLastPossibleEmStrongDelClosers(maskedSrc).lastPossibleEmStrongCloserIndex[delim];
+  }
+
+  /**
+   * Index in `maskedSrc` of the last `~` run that can close strikethrough.
+   * Uses the active inline-pass scan when `maskedSrc` is that pass's
+   * source; otherwise scans this string and discards the result.
+   */
+  #lastPossibleDelCloserIndex(maskedSrc: string): number {
+    const frame = this.#emStrongDelCloserHintStack?.at(-1);
+    if (frame && frame.maskedSrc === maskedSrc) {
+      return frame.lastPossibleDelCloserIndex;
+    }
+    return scanLastPossibleEmStrongDelClosers(maskedSrc).lastPossibleDelCloserIndex;
   }
 
   space(src: string): Tokens.Space | undefined {
@@ -933,20 +975,22 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
 
       const delimChar = match[0][0];
-      if (!isCloserDelim(delimChar)) return;
+      if (delimChar !== '*' && delimChar !== '_') return;
       // A mid-run opener (for example the second star of an unmatched `**`) must
       // only pair with a delimiter that can only close, otherwise it steals the
       // opener of a later span (`**a*b*c` must be `**a<em>b</em>c`).
       const midRun = prevChar === delimChar;
       const endReg = delimChar === '*' ? this.rules.inline.emStrongRDelimAst : this.rules.inline.emStrongRDelimUnd;
-      const window = remainingDelimWindow(maskedSrc, src.length, lLength, delimChar);
-      if (!window) return;
+      const lastPossibleEmStrongCloserIndex = this.#lastPossibleEmStrongCloserIndex(maskedSrc, delimChar);
+      const emStrongCloserWindowStart = maskedSrc.length - src.length + lLength;
+      if (lastPossibleEmStrongCloserIndex < emStrongCloserWindowStart) return;
       // Clip maskedSrc to same section of string as src (move to lexer?)
-      maskedSrc = window.maskedSrc;
+      maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
+      const lastPossibleEmStrongCloserIndexInWindow = lastPossibleEmStrongCloserIndex - emStrongCloserWindowStart;
       endReg.lastIndex = 0;
 
       while ((match = endReg.exec(maskedSrc)) !== null) {
-        if (match.index > window.lastCloser) break;
+        if (match.index > lastPossibleEmStrongCloserIndexInWindow) break;
         rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
         if (!rDelim) continue; // skip single * in __abc*abc__
@@ -1040,14 +1084,16 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       let rDelim, rLength, delimTotal = lLength;
 
       const endReg = this.rules.inline.delRDelim;
-      const window = remainingDelimWindow(maskedSrc, src.length, lLength, '~');
-      if (!window) return;
+      const lastPossibleDelCloserIndex = this.#lastPossibleDelCloserIndex(maskedSrc);
+      const delCloserWindowStart = maskedSrc.length - src.length + lLength;
+      if (lastPossibleDelCloserIndex < delCloserWindowStart) return;
       // Clip maskedSrc to same section of string as src
-      maskedSrc = window.maskedSrc;
+      maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
+      const lastPossibleDelCloserIndexInWindow = lastPossibleDelCloserIndex - delCloserWindowStart;
       endReg.lastIndex = 0;
 
       while ((match = endReg.exec(maskedSrc)) !== null) {
-        if (match.index > window.lastCloser) break;
+        if (match.index > lastPossibleDelCloserIndexInWindow) break;
         rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
         if (!rDelim) continue;
