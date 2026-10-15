@@ -1083,6 +1083,107 @@ br
       ]);
     });
 
+    it('should return callback values in walk order', () => {
+      const tokens = lexer('| a | b |\n|---|---|\n| c | d |\n\n- e\n  - *f*\n', getDefaults());
+      const values = walkTokens(tokens, (token) => {
+        if (token.type === 'space') {
+          return undefined;
+        }
+        if (token.type === 'text' && !token.tokens) {
+          return [token.raw, [token.raw]];
+        }
+        return token.type;
+      });
+
+      assert.deepEqual(values, [
+        'table',
+        'a', ['a'],
+        'b', ['b'],
+        'c', ['c'],
+        'd', ['d'],
+        undefined,
+        'list',
+        'list_item',
+        'text',
+        'e', ['e'],
+        'list',
+        'list_item',
+        'text',
+        'em',
+        'f', ['f'],
+      ]);
+    });
+
+    it('should return callback values from extension childTokens', () => {
+      marked.use({
+        extensions: [{
+          name: 'dl',
+          level: 'block',
+          childTokens: ['dt', 'dd'],
+          tokenizer(src) {
+            const match = /^:(.+) \| (.+)\n?/.exec(src);
+            if (match) {
+              return {
+                type: 'dl',
+                raw: match[0],
+                dt: this.lexer.inlineTokens(match[1]),
+                dd: [this.lexer.inlineTokens(match[2])],
+              };
+            }
+          },
+        }],
+      });
+      const tokens = marked.lexer(':term | **def**');
+      const values = marked.walkTokens(tokens, (token) => [token.type]);
+
+      assert.deepEqual(values, ['dl', 'text', 'strong', 'text']);
+    });
+
+    it('should return values from every walkTokens extension', () => {
+      marked.use(
+        { walkTokens: () => 'one' },
+        { walkTokens: () => 'two' },
+        { walkTokens: () => 'three' },
+      );
+      const tokens = marked.lexer('*em*');
+      const values = marked.walkTokens(tokens, marked.defaults.walkTokens);
+
+      assert.deepEqual(values, [
+        'three', 'two', 'one', // paragraph
+        'three', 'two', 'one', // em
+        'three', 'two', 'one', // text
+      ]);
+    });
+
+    it('should wait for async `walkTokens` on nested tokens', async() => {
+      marked.use({
+        async: true,
+        async walkTokens(token) {
+          if (token.type === 'text' && !token.tokens) {
+            await timeout();
+            token.text = token.text.toUpperCase();
+          }
+        },
+      });
+      const html = await marked.parse('| a | b |\n|---|---|\n| c | d |\n\n- e\n  - *f*\n\n> g\n');
+
+      assert.strictEqual(html, new Marked().parse('| A | B |\n|---|---|\n| C | D |\n\n- E\n  - *F*\n\n> G\n'));
+    });
+
+    it('should copy returned arrays by index like concat', async() => {
+      const tokens = marked.lexer('before');
+      const pending = timeout().then(() => {
+        tokens[0].tokens[0].text = 'after';
+      });
+      const results = [pending];
+      Object.defineProperty(results, Symbol.iterator, { value: function * () {} });
+      const values = marked.walkTokens(tokens, (token) => token.type === 'paragraph' ? results : undefined);
+
+      assert.deepEqual(values, [pending, undefined]);
+      await Promise.all(values);
+      assert.strictEqual(marked.parser(tokens), '<p>after</p>\n');
+    });
+
     it('should assign marked to `this`', () => {
       marked.use({
         walkTokens(token) {

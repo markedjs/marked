@@ -98,6 +98,12 @@ describe('bin/marked', () => {
       args: ['--string', '# test'],
       stdout: '<h1>test</h1>',
     }));
+
+    it('--string accepts empty input instead of reading stdin', testInput({
+      args: ['--string', ''],
+      stdin: '# ignored',
+      stdout: '\n',
+    }));
   });
 
   describe('config', () => {
@@ -113,6 +119,11 @@ describe('bin/marked', () => {
 
     it('config path with hash', testInput({
       args: ['--config', fixturePath('bin-config#hash.js'), '-s', 'line1\nline2'],
+      stdout: '<p>line1<br>line2</p>',
+    }));
+
+    it('config with top-level await', testInput({
+      args: ['--config', fixturePath('bin-config-await.mjs'), '-s', 'line1\nline2'],
       stdout: '<p>line1<br>line2</p>',
     }));
 

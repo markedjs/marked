@@ -1,0 +1,6 @@
+---
+gfm: true
+---
+- foo
+
+  	bar

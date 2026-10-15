@@ -26,6 +26,29 @@ export function escapeHtmlEntities(html: string, encode?: boolean) {
   return html;
 }
 
+/**
+ * Numeric character references are recognized outside code and are equivalent to the
+ * character they name. Values that are zero, out of range, or a surrogate become the
+ * replacement character.
+ */
+export function decodeNumericCharacterReferences(text: string) {
+  if (!other.numericCharacterReference.test(text)) {
+    return text;
+  }
+  // A decoded character must not join its neighbours into a new reference,
+  // so every `&` that is not already one is escaped here.
+  return text.replace(other.numericCharacterReferenceOrAmpersand, (ref: string, dec?: string, hex?: string) => {
+    if (dec === undefined && hex === undefined) {
+      return '&amp;';
+    }
+    const code = dec === undefined ? Number.parseInt(hex!, 16) : Number.parseInt(dec, 10);
+    if (code === 0 || code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff)) {
+      return '�';
+    }
+    return code === 38 ? '&amp;' : String.fromCodePoint(code);
+  });
+}
+
 export function cleanUrl(href: string) {
   try {
     href = encodeURI(href).replace(other.percentDecode, '%');
@@ -131,11 +154,15 @@ export function trimTrailingBlankLines(str: string) {
  * keeps the folded label lower case, the form `def.tag` has always used.
  */
 export function normalizeLabel(label: string) {
-  return label.toLowerCase().toUpperCase().toLowerCase();
+  // The spec also asks for leading and trailing spaces, tabs and line endings
+  // to be stripped. Doing it here keeps every call site in agreement: the
+  // definition and the reference have to normalize to the same key.
+  return label.trim().toLowerCase().toUpperCase().toLowerCase();
 }
 
 export function findClosingBracket(str: string, b: string) {
-  if (str.indexOf(b[1]) === -1) {
+  // an opening bracket on its own is still unbalanced, so both have to be absent
+  if (str.indexOf(b[0]) === -1 && str.indexOf(b[1]) === -1) {
     return -1;
   }
 

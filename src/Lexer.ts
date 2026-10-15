@@ -16,6 +16,12 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     inRawBlock: boolean;
     /** a link was produced in the inline run currently being scanned */
     linkEmitted: boolean;
+    /**
+     * false while scanning an inline run whose source contains no ')',
+     * letting Tokenizer.link bail out before its quadratic backtracking.
+     * Anchored once per run by inlineTokens.
+     */
+    linkParenPossible: boolean;
     top: boolean;
   };
 
@@ -37,6 +43,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       inLink: false,
       inRawBlock: false,
       linkEmitted: false,
+      linkParenPossible: true,
       top: true,
     };
 
@@ -340,6 +347,24 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
    */
   inlineTokens(src: string, tokens: Token[] = []): Token[] {
     this.tokenizer.lexer = this;
+    // One paren scan per inline run, shared with Tokenizer.link: without a
+    // ')' ahead the link regex cannot match, and skipping it avoids its
+    // quadratic backtracking over unterminated-link inputs like
+    // `'[a](b'.repeat(n)`. A nested run receives a substring of the outer
+    // run, so if the outer had no ')' neither does this substring — skip
+    // the scan in that case.
+    const prevLinkParenPossible = this.state.linkParenPossible;
+    this.state.linkParenPossible = prevLinkParenPossible && src.includes(')');
+    try {
+      return this.#inlineTokensInner(src, tokens);
+    } finally {
+      // A nested run (e.g. a link label) anchored on its own substring;
+      // restore the outer run's flag for the rest of its loop.
+      this.state.linkParenPossible = prevLinkParenPossible;
+    }
+  }
+
+  #inlineTokensInner(src: string, tokens: Token[]): Token[] {
     // String with links masked to avoid interference with em and strong
     let maskedSrc = src;
 
@@ -372,7 +397,17 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     // Every mask must keep the length it replaces: emStrong and del line
     // maskedSrc up with src by slicing from the end. `anyPunctuation` matches
     // unicode punctuation, so an escaped astral character is 3 code units.
-    maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.anyPunctuation, match0 => '+'.repeat(match0.length));
+    // A backslash inside a code span is literal, not an escape. Mask the
+    // backticks inside the span instead, so blockSkip still skips all of it.
+    maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.anyPunctuationOutsideCode, (match0, code, punct) => {
+      if (punct) {
+        return '+'.repeat(match0.length);
+      }
+      if (code) {
+        return code + match0.slice(code.length, -code.length).replace(/`/g, '+') + code;
+      }
+      return match0;
+    });
 
     // Mask out other blocks
     maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.blockSkip, (match0, _link, context) => {

@@ -5,6 +5,7 @@ import {
   findClosingBracket,
   expandTabs,
   normalizeLabel,
+  decodeNumericCharacterReferences,
   trimTrailingBlankLines,
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
@@ -18,14 +19,15 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
   const text = cap[1].replace(rules.other.outputLinkReplace, '$1');
   const isImage = cap[0].charAt(0) === '!';
 
-  lexer.state.inLink = true;
+  const outerInLink = lexer.state.inLink;
   const outerLinkEmitted = lexer.state.linkEmitted;
   const outerInRawBlock = lexer.state.inRawBlock;
+  lexer.state.inLink = true;
   lexer.state.linkEmitted = false;
   const tokens = lexer.inlineTokens(text);
   const textHasLink = lexer.state.linkEmitted;
   lexer.state.linkEmitted = outerLinkEmitted;
-  lexer.state.inLink = false;
+  lexer.state.inLink = outerInLink;
 
   if (!isImage) {
     // CommonMark: "Links may not contain other links, at any level of nesting."
@@ -328,8 +330,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
         const lastToken = tokens.at(-1);
 
-        if (lastToken?.type === 'code') {
-          // blockquote continuation cannot be preceded by a code block
+        if (lastToken?.type === 'code' || lastToken?.type === 'heading' || lastToken?.type === 'hr' || lastToken?.type === 'html') {
+          // blockquote continuation cannot be preceded by a code block, heading, hr or html block
           break;
         } else if (lastToken?.type === 'blockquote') {
           // include continuation in nested blockquote
@@ -343,7 +345,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           const newToken = this.blockquote(newText)!;
           tokens[tokens.length - 1] = newToken;
 
-          raw = `${raw}\n${continuation}`;
+          // Only include continuation lines the nested blockquote actually
+          // consumed. Unconsumed trailing lines must stay out of `raw` so the
+          // lexer can still tokenize them (paragraph, next blockquote, etc.).
+          const leftover = newText.substring(newToken.raw.length).replace(/^\n/, '');
+          const leftoverCount = leftover ? leftover.split('\n').length : 0;
+          const consumed = leftoverCount ? lines.slice(0, -leftoverCount) : lines;
+          if (consumed.length > 0) {
+            raw = `${raw}\n${consumed.join('\n')}`;
+          }
           text = text.substring(0, text.length - oldToken.text.length) + newToken.text;
           break;
         } else if (lastToken?.type === 'list') {
@@ -372,6 +382,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   list(src: string): Tokens.List | undefined {
     let cap = this.rules.block.list.exec(src);
     if (cap) {
+      // src is only consumed from the front, so every raw below is a slice of
+      // listSrc rather than a string built up line by line
+      const listSrc = src;
+      const taken = () => listSrc.length - src.length;
       let bull = cap[1].trim();
       const isordered = bull.length > 1;
 
@@ -396,7 +410,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       // Check if current bullet point can start a new List Item
       while (src) {
         let endEarly = false;
-        let raw = '';
         let itemContents = '';
         if (!(cap = itemRegex.exec(src))) {
           break;
@@ -406,10 +419,14 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           break;
         }
 
-        raw = cap[0];
-        src = src.substring(raw.length);
+        const itemStart = taken();
+        src = src.substring(cap[0].length);
 
-        let line = expandTabs(cap[2].split('\n', 1)[0], cap[1].length);
+        const firstLine = cap[2].split('\n', 1)[0];
+        const bulletIndent = cap[1].length;
+        let line = this.options.pedantic
+          ? expandTabs(firstLine, bulletIndent)
+          : firstLine.replace(this.rules.other.leadingSpaceTab, whitespace => expandTabs(whitespace, bulletIndent));
         let nextLine = src.split('\n', 1)[0];
         let blankLine = !line.trim();
 
@@ -418,16 +435,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           indent = 2;
           itemContents = line.trimStart();
         } else if (blankLine) {
-          indent = cap[1].length + 1;
+          indent = bulletIndent + 1;
         } else {
           indent = line.search(this.rules.other.nonSpaceChar); // Find first non-space char
           indent = indent > 4 ? 1 : indent; // Treat indented code blocks (> 4 spaces) as having only 1 indent
           itemContents = line.slice(indent);
-          indent += cap[1].length;
+          indent += bulletIndent;
         }
 
         if (blankLine && this.rules.other.blankLine.test(nextLine)) { // Items begin with at most one blank line
-          raw += nextLine + '\n';
           src = src.substring(nextLine.length + 1);
           endEarly = true;
         }
@@ -451,7 +467,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
               nextLine = nextLine.replace(this.rules.other.listReplaceNesting, '  ');
               nextLineWithoutTabs = nextLine;
             } else {
-              nextLineWithoutTabs = nextLine.replace(this.rules.other.tabCharGlobal, '    ');
+              nextLineWithoutTabs = nextLine.replace(this.rules.other.leadingSpaceTab, whitespace => expandTabs(whitespace));
             }
 
             // End list item if found code fences
@@ -511,11 +527,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
             blankLine = !nextLine.trim();
 
-            raw += rawLine + '\n';
             src = src.substring(rawLine.length + 1);
             line = nextLineWithoutTabs.slice(indent);
           }
         }
+
+        // The loops above appended a '\n' the source may not have had. It could
+        // only land on the item that exhausts src, whose raw is trimmed below,
+        // and after which nothing reads endsWithBlankLine
+        const raw = listSrc.slice(itemStart, taken());
 
         if (!list.loose) {
           // If the previous item ended with a blank line, the list is loose
@@ -534,8 +554,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           text: itemContents,
           tokens: [],
         });
-
-        list.raw += raw;
       }
 
       // Do not consume newlines at end of final item. Alternatively, make itemRegex *start* with any newlines to simplify/speed up endsWithBlankLine logic
@@ -547,7 +565,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         // not a list since there were no items
         return;
       }
-      list.raw = list.raw.trimEnd();
+      list.raw = listSrc.slice(0, taken()).trimEnd();
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first
       // First pass: tokenize items and finalize list.loose from spacers before placing checkboxes
@@ -643,6 +661,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   def(src: string): Tokens.Def | undefined {
     const cap = this.rules.block.def.exec(src);
     if (cap) {
+      // outside angle brackets a link destination holds only balanced parentheses
+      if (!this.rules.other.startAngleBracket.test(cap[2]) && findClosingBracket(cap[2], '()') !== -1) {
+        return;
+      }
+
       const tag = normalizeLabel(cap[1]).replace(this.rules.other.multipleSpaceGlobal, ' ');
       const href = cap[2] ? cap[2].replace(this.rules.other.hrefBrackets, '$1').replace(this.rules.inline.anyPunctuation, '$1') : '';
       const title = cap[3] ? cap[3].substring(1, cap[3].length - 1).replace(this.rules.inline.anyPunctuation, '$1') : cap[3];
@@ -797,6 +820,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   link(src: string): Tokens.Link | Tokens.Image | undefined {
+    // The link regex backtracks quadratically over unterminated-link inputs
+    // like '[a](b'.repeat(n): at every '[' its greedy unquoted-href run
+    // re-partitions the whole remainder while hunting for a ')' that never
+    // comes. inlineTokens anchors one paren scan per run in
+    // state.linkParenPossible; when it is false the regex cannot match, so
+    // bail out before running it.
+    if (this.lexer.state.linkParenPossible === false) {
+      return undefined;
+    }
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
       const labelStart = cap[0].charAt(0) === '!' ? 2 : 1;
@@ -1125,7 +1157,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       return {
         type: 'text',
         raw: cap[0],
-        text: cap[0],
+        // raw HTML keeps whatever it was written with, everywhere else a numeric
+        // character reference stands for the character itself
+        text: escaped ? cap[0] : decodeNumericCharacterReferences(cap[0]),
         escaped,
       };
     }
