@@ -646,6 +646,59 @@ const html = await marked.parse(markdown);
 
 The lexer takes a markdown string and calls the tokenizer functions.
 
+<h3 id="numeric-character-references">Numeric character references in tokens</h3>
+
+Inline text tokens decode numeric character references according to CommonMark.
+For example, `&#27;` and `&#x1b;` in ordinary text become the U+001B escape
+character in `token.text`. The token's `raw` property contains the Markdown it
+consumed; `text` is not a lossless copy of that source.
+
+A non-HTML renderer that needs literal numeric references in inline text can
+intercept them with a [custom inline extension](#extensions):
+
+```js
+import { Marked } from 'marked';
+
+const marked = new Marked({
+  extensions: [{
+    name: 'numericEntity',
+    level: 'inline',
+    start(src) {
+      return src.indexOf('&#');
+    },
+    tokenizer(src) {
+      const match = /^&#(?:\d{1,7}|[xX][a-fA-F0-9]{1,6});/.exec(src);
+      if (match) {
+        return {
+          type: 'numericEntity',
+          raw: match[0],
+          text: match[0]
+        };
+      }
+    },
+    renderer(token) {
+      return token.text;
+    }
+  }]
+});
+
+const tokens = marked.lexer('before &#27;[2J and &#x1b;[2J after');
+console.log(tokens[0].tokens
+  .filter(token => token.type === 'numericEntity')
+  .map(token => token.text));
+// ['&#27;', '&#x1b;']
+```
+
+The extension's `start` hint lets the lexer find references after ordinary text,
+not just at the beginning of the input. Your non-HTML renderer can handle the
+`numericEntity` tokens without decoding their `text`.
+
+This example changes inline text tokenization, not link destinations, code spans,
+or raw HTML. It is not a terminal sanitizer: renderers must still decide how to
+handle untrusted content, including literal control characters. When used with
+the HTML parser, the example renderer emits the original reference spelling,
+which a browser can still interpret as a character reference.
+
 
 <h2 id="parser">The Parser</h2>
 
