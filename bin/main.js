@@ -222,7 +222,7 @@ export async function main(nodeProcess) {
     }
 
     const html = tokens
-      ? JSON.stringify(marked.lexer(data, options), null, 2)
+      ? JSON.stringify(marked.lexer(data, { ...marked.defaults, ...options }), null, 2)
       : await marked.parse(data, options);
 
     if (output) {
