@@ -182,7 +182,9 @@ Lots of text using **markdown syntax.**
 ```
 </details>
 
-<h3 id="numeric-character-references">Numeric character references in tokens</h3>
+<details id="numeric-character-references">
+
+<summary>Preserve numeric character references in inline text tokens.</summary>
 
 Inline text tokens decode numeric character references according to CommonMark.
 For example, `&#27;` and `&#x1b;` in ordinary text become the U+001B escape
@@ -234,6 +236,8 @@ or raw HTML. It is not a terminal sanitizer: renderers must still decide how to
 handle untrusted content, including literal control characters. When used with
 the HTML parser, the example renderer emits the original reference spelling,
 which a browser can still interpret as a character reference.
+
+</details>
 
 <h2 id="inline">Inline Markdown</h2>
 
