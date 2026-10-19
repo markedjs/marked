@@ -96,7 +96,7 @@ export interface MarkedExtension<ParserOutput = string, RendererOutput = string>
   renderer?: RendererObject<ParserOutput, RendererOutput> | null;
 
   /**
-   * Shows an HTML error message when rendering fails.
+   * If true, errors caught by `marked.parse` / `marked.parseInline` are returned as an HTML error message instead of being thrown. Problems the lexer or parser recover from (an unknown token type, the infinite-loop guard) are logged with `console.error` instead of thrown.
    */
   silent?: boolean;
 

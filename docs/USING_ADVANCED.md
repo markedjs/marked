@@ -53,7 +53,7 @@ console.log(marked.parse(markdownString));
 |gfm         |`boolean` |`true`   |v0.2.1   |If true, use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).|
 |pedantic    |`boolean` |`false`  |v0.2.1   |If true, conform to the original `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`.|
 |renderer    |`object`  |`new Renderer()`|v0.3.0|An object containing functions to render tokens to HTML. See [extensibility](/using_pro) for more details.|
-|silent      |`boolean` |`false`  |v0.2.7   |If true, parse errors are not thrown; they are returned as an HTML error message. An unknown token type is logged with `console.error` and rendered as an empty string.|
+|silent      |`boolean` |`false`  |v0.2.7   |If true, errors caught by `marked.parse` / `marked.parseInline` are returned as an HTML error message instead of being thrown. Problems the lexer or parser recover from (an unknown token type, the infinite-loop guard) are logged with `console.error` instead of thrown.|
 |tokenizer    |`object`  |`new Tokenizer()`|v1.0.0|An object containing functions to create tokens from markdown. See [extensibility](/using_pro) for more details.|
 |walkTokens   |`function`  |`null`|v1.1.0|A function which is called for every token. See [extensibility](/using_pro) for more details.|
 
