@@ -160,6 +160,20 @@ describe('bin/marked', () => {
 });
 
 describe('exec', () => {
+  it('awaits an async config function before parsing', execMarked({
+    args: `--config "${fixturePath('bin-config-async-function.mjs')}"`,
+    stdin: 'line1\\nline2',
+    stdout: '<p>line1<br>line2</p>',
+  }));
+
+  it('reports an async config rejection through the CLI error handler', async() => {
+    const execPath = resolve(import.meta.dirname, '../../bin/marked');
+    await assert.rejects(
+      execAsync(`node "${execPath}" --config "${fixturePath('bin-config-async-error.mjs')}" --string test`),
+      (err) => err.code === 1 && err.stderr === 'Failed to load async configuration',
+    );
+  });
+
   it('stdin', execMarked({
     stdin: '# test',
     stdout: '<h1>test</h1>',
