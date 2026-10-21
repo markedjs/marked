@@ -155,9 +155,10 @@ export function trimTrailingBlankLines(str: string) {
  */
 export function normalizeLabel(label: string) {
   // The spec also asks for leading and trailing spaces, tabs and line endings
-  // to be stripped. Doing it here keeps every call site in agreement: the
-  // definition and the reference have to normalize to the same key.
-  return label.trim().toLowerCase().toUpperCase().toLowerCase();
+  // to be stripped, and for internal runs of them to collapse to one space.
+  // Doing it here keeps every call site in agreement: the definition and the
+  // reference have to normalize to the same key.
+  return label.trim().replace(other.multipleSpaceGlobal, ' ').toLowerCase().toUpperCase().toLowerCase();
 }
 
 export function findClosingBracket(str: string, b: string) {
