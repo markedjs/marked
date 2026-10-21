@@ -59,7 +59,7 @@ export async function main(nodeProcess) {
    */
   async function start(argv) {
     const files = [];
-    const options = {};
+    const cliOptions = {};
     let input;
     let output;
     let string;
@@ -137,11 +137,11 @@ export async function main(nodeProcess) {
               continue;
             }
             if (arg.indexOf('--no-') === 0) {
-              options[opt] = typeof marked.defaults[opt] !== 'boolean'
+              cliOptions[opt] = typeof marked.defaults[opt] !== 'boolean'
                 ? null
                 : false;
             } else {
-              options[opt] = typeof marked.defaults[opt] !== 'boolean'
+              cliOptions[opt] = typeof marked.defaults[opt] !== 'boolean'
                 ? argv.shift()
                 : true;
             }
@@ -221,8 +221,9 @@ export async function main(nodeProcess) {
       }
     }
 
+    const options = { ...marked.defaults, ...cliOptions };
     const html = tokens
-      ? JSON.stringify(marked.lexer(data, { ...marked.defaults, ...options }), null, 2)
+      ? JSON.stringify(marked.lexer(data, options), null, 2)
       : await marked.parse(data, options);
 
     if (output) {
