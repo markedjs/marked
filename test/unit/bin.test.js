@@ -3,10 +3,11 @@ import { htmlIsEqual } from '@markedjs/testutils';
 import { resolve } from 'node:path';
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
-import { exec } from 'node:child_process';
+import { exec, execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 
 const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 
 function createMocks() {
   const mocks = {
@@ -126,6 +127,34 @@ describe('bin/marked', () => {
       args: ['--config', fixturePath('bin-config-await.mjs'), '-s', 'line1\nline2'],
       stdout: '<p>line1<br>line2</p>',
     }));
+
+    it('config with a synchronous function', testInput({
+      args: ['--config', fixturePath('bin-config-function.js'), '-s', 'line1\nline2'],
+      stdout: '<p>line1<br>line2</p>',
+    }));
+
+    it('waits for an async config function', async() => {
+      const { stdout, stderr } = await execFileAsync(process.execPath, [
+        resolve(import.meta.dirname, '../../bin/marked.js'),
+        '--config', fixturePath('bin-config-async.mjs'),
+        '--string', 'line1\nline2',
+      ]);
+
+      assert.strictEqual(stdout, '<p>line1<br>line2</p>\n\n');
+      assert.strictEqual(stderr, '');
+    });
+
+    it('reports a rejected config function', async() => {
+      await assert.rejects(execFileAsync(process.execPath, [
+        resolve(import.meta.dirname, '../../bin/marked.js'),
+        '--config', fixturePath('bin-config-reject.cjs'),
+        '--string', '# test',
+      ]), {
+        code: 1,
+        stdout: '',
+        stderr: 'Async config failed',
+      });
+    });
 
     it('config not found', testInput({
       args: ['--config', fixturePath('does-not-exist.js'), '-s', 'line1\nline2'],
