@@ -285,9 +285,17 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           const newToken = this.list(newText)!;
           tokens[tokens.length - 1] = newToken;
 
-          raw = raw.substring(0, raw.length - lastToken.raw.length) + newToken.raw;
-          text = text.substring(0, text.length - oldToken.raw.length) + newToken.raw;
-          lines = newText.substring(tokens.at(-1)!.raw.length).split('\n');
+          // The list raw has no '>' markers, so it cannot be cut out of `raw`.
+          // Count the continuation lines the list took and add those lines instead.
+          const consumedCount = newToken.raw.length > oldToken.raw.length
+            ? newText.slice(oldToken.raw.length + 1, newToken.raw.length).split('\n').length
+            : 0;
+          if (consumedCount > 0) {
+            const consumed = lines.slice(0, consumedCount).join('\n');
+            raw = `${raw}\n${consumed}`;
+            text = `${text}\n${consumed}`;
+          }
+          lines = lines.slice(consumedCount);
           continue;
         }
       }
