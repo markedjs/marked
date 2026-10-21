@@ -374,7 +374,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           const nextBulletRegex = this.rules.other.nextBulletRegex(indent);
           const hrRegex = this.rules.other.hrRegex(indent);
           const fencesBeginRegex = this.rules.other.fencesBeginRegex(indent);
-          const headingBeginRegex = this.rules.other.headingBeginRegex(indent);
+          const headingBeginRegex = this.options.pedantic
+            ? this.rules.other.pedanticHeadingBeginRegex(indent)
+            : this.rules.other.headingBeginRegex(indent);
           const htmlBeginRegex = this.rules.other.htmlBeginRegex(indent);
           const blockquoteBeginRegex = this.rules.other.blockquoteBeginRegex(indent);
 
