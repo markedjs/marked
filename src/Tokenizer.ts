@@ -7,6 +7,8 @@ import {
   normalizeLabel,
   decodeNumericCharacterReferences,
   trimTrailingBlankLines,
+  cachedLastPossibleEmStrongCloserIndex,
+  cachedLastPossibleDelCloserIndex,
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
 import type { _Lexer } from './Lexer.ts';
@@ -855,17 +857,22 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
 
       const delimChar = match[0][0];
+      if (delimChar !== '*' && delimChar !== '_') return;
       // A mid-run opener (for example the second star of an unmatched `**`) must
       // only pair with a delimiter that can only close, otherwise it steals the
       // opener of a later span (`**a*b*c` must be `**a<em>b</em>c`).
       const midRun = prevChar === delimChar;
       const endReg = delimChar === '*' ? this.rules.inline.emStrongRDelimAst : this.rules.inline.emStrongRDelimUnd;
-      endReg.lastIndex = 0;
-
+      const lastPossibleEmStrongCloserIndex = cachedLastPossibleEmStrongCloserIndex(this, maskedSrc, delimChar);
+      const emStrongCloserWindowStart = maskedSrc.length - src.length + lLength;
+      if (lastPossibleEmStrongCloserIndex < emStrongCloserWindowStart) return;
       // Clip maskedSrc to same section of string as src (move to lexer?)
       maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
+      const lastPossibleEmStrongCloserIndexInWindow = lastPossibleEmStrongCloserIndex - emStrongCloserWindowStart;
+      endReg.lastIndex = 0;
 
       while ((match = endReg.exec(maskedSrc)) !== null) {
+        if (match.index > lastPossibleEmStrongCloserIndexInWindow) break;
         rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
         if (!rDelim) continue; // skip single * in __abc*abc__
@@ -959,12 +966,16 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       let rDelim, rLength, delimTotal = lLength;
 
       const endReg = this.rules.inline.delRDelim;
-      endReg.lastIndex = 0;
-
+      const lastPossibleDelCloserIndex = cachedLastPossibleDelCloserIndex(this, maskedSrc);
+      const delCloserWindowStart = maskedSrc.length - src.length + lLength;
+      if (lastPossibleDelCloserIndex < delCloserWindowStart) return;
       // Clip maskedSrc to same section of string as src
       maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
+      const lastPossibleDelCloserIndexInWindow = lastPossibleDelCloserIndex - delCloserWindowStart;
+      endReg.lastIndex = 0;
 
       while ((match = endReg.exec(maskedSrc)) !== null) {
+        if (match.index > lastPossibleDelCloserIndexInWindow) break;
         rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
         if (!rDelim) continue;
