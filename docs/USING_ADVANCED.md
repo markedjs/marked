@@ -53,7 +53,7 @@ console.log(marked.parse(markdownString));
 |gfm         |`boolean` |`true`   |v0.2.1   |If true, use approved [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/).|
 |pedantic    |`boolean` |`false`  |v0.2.1   |If true, conform to the original `markdown.pl` as much as possible. Don't fix original markdown bugs or behavior. Turns off and overrides `gfm`.|
 |renderer    |`object`  |`new Renderer()`|v0.3.0|An object containing functions to render tokens to HTML. See [extensibility](/using_pro) for more details.|
-|silent      |`boolean` |`false`  |v0.2.7   |If true, the parser does not throw any exception or log any warning. Any error will be returned as a string.|
+|silent      |`boolean` |`false`  |v0.2.7   |If true, errors caught by `marked.parse` / `marked.parseInline` are returned as an HTML error message instead of being thrown. Problems the lexer or parser recover from (an unknown token type, the infinite-loop guard) are logged with `console.error` instead of thrown.|
 |tokenizer    |`object`  |`new Tokenizer()`|v1.0.0|An object containing functions to create tokens from markdown. See [extensibility](/using_pro) for more details.|
 |walkTokens   |`function`  |`null`|v1.1.0|A function which is called for every token. See [extensibility](/using_pro) for more details.|
 
@@ -180,6 +180,63 @@ Lots of text using **markdown syntax.**
  </body>
 </html>
 ```
+</details>
+
+<details id="numeric-character-references">
+
+<summary>Preserve numeric character references in inline text tokens.</summary>
+
+Inline text tokens decode numeric character references according to CommonMark.
+For example, `&#27;` and `&#x1b;` in ordinary text become the U+001B escape
+character in `token.text`. The token's `raw` property contains the Markdown it
+consumed; `text` is not a lossless copy of that source.
+
+A non-HTML renderer that needs literal numeric references in inline text can
+intercept them with a [custom inline extension](/using_pro#extensions):
+
+```js
+import { Marked } from 'marked';
+
+const marked = new Marked({
+  extensions: [{
+    name: 'numericEntity',
+    level: 'inline',
+    start(src) {
+      return src.indexOf('&#');
+    },
+    tokenizer(src) {
+      const match = /^&#(?:\d{1,7}|[xX][a-fA-F0-9]{1,6});/.exec(src);
+      if (match) {
+        return {
+          type: 'numericEntity',
+          raw: match[0],
+          text: match[0]
+        };
+      }
+    },
+    renderer(token) {
+      return token.text;
+    }
+  }]
+});
+
+const tokens = marked.lexer('before &#27;[2J and &#x1b;[2J after');
+console.log(tokens[0].tokens
+  .filter(token => token.type === 'numericEntity')
+  .map(token => token.text));
+// ['&#27;', '&#x1b;']
+```
+
+The extension's `start` hint lets the lexer find references after ordinary text,
+not just at the beginning of the input. Your non-HTML renderer can handle the
+`numericEntity` tokens without decoding their `text`.
+
+This example changes inline text tokenization, not link destinations, code spans,
+or raw HTML. It is not a terminal sanitizer: renderers must still decide how to
+handle untrusted content, including literal control characters. When used with
+the HTML parser, the example renderer emits the original reference spelling,
+which a browser can still interpret as a character reference.
+
 </details>
 
 <h2 id="inline">Inline Markdown</h2>
