@@ -27,6 +27,36 @@ describe('Marked', () => {
     assert.strictEqual(marked.parse('# header'), '<h1>header</h1>\n');
   });
 
+  for (const fallback of [false, true]) {
+    it(`should preserve a numeric renderer result through a custom parser${fallback ? ' after falling back' : ''}`, () => {
+      const instance = new Marked({
+        renderer: {
+          code({ text }) {
+            return text.length;
+          },
+        },
+        hooks: {
+          provideParser() {
+            return (tokens, options) => options.renderer.code(tokens[0]);
+          },
+        },
+      });
+      if (fallback) {
+        instance.use({ renderer: { code: () => false } });
+      }
+
+      assert.strictEqual(instance.parse('```\n```'), 0);
+      assert.strictEqual(instance.parse('```\nabc\n```'), 3);
+    });
+  }
+
+  for (const result of [null, undefined]) {
+    it(`should still suppress ${result} renderer output`, () => {
+      const instance = new Marked({ renderer: { code: () => result } });
+      assert.strictEqual(instance.parse('```\n```'), '');
+    });
+  }
+
   it('should work with use', () => {
     const marked1 = new Marked();
     marked1.use({
