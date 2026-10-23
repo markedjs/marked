@@ -205,7 +205,11 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       }
 
       // list
-      if (token = this.tokenizer.list(src)) {
+      // Inside a list item, paragraph lines are lexed as text tokens, so this is where a list
+      // would interrupt one. Only a non-empty list starting with a bullet or 1 can do that
+      const lastTokenIsText = tokens.at(-1)?.type === 'text';
+      if ((!lastTokenIsText || this.options.pedantic || this.tokenizer.rules.other.listInterruptsParagraph.test(src))
+        && (token = this.tokenizer.list(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
