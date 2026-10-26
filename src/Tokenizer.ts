@@ -884,12 +884,14 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       runStart--;
     }
     const runPrevChar = [...maskedSrc.slice(Math.max(0, runStart - 2), runStart)].at(-1) ?? '';
-    // The other delimiter character counts as punctuation here (`_**a*`)
+    // The other delimiter character counts as punctuation here (`_**a*`, `*_#_`)
     const runPrevPunct = runPrevChar === '*' || runPrevChar === '_' || !!this.rules.inline.punctuation.exec(runPrevChar);
     if (runStart < srcStart) {
       prevChar = runPrevChar;
     }
-    const prevPunct = runStart < srcStart ? runPrevPunct : !!this.rules.inline.punctuation.exec(prevChar);
+    const prevPunct = runStart < srcStart
+      ? runPrevPunct
+      : prevChar === '*' || prevChar === '_' || !!this.rules.inline.punctuation.exec(prevChar);
 
     // _ can't be between two alphanumerics. \p{L}\p{N} includes non-english alphabet/numbers as well
     if (match[4] && prevChar.match(this.rules.other.unicodeAlphaNumeric)) return;
