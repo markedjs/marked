@@ -205,6 +205,20 @@ describe('marked unit', () => {
       assert.strictEqual(html, '<p><em>Before $dollar * dollar$ =equal * equal= after</em></p>\n');
     });
 
+    it('should pass the masked source to a custom emStrong tokenizer without em delimiters', () => {
+      const maskedSources = [];
+      marked.use({
+        tokenizer: {
+          emStrong(src, maskedSrc) {
+            maskedSources.push(maskedSrc);
+            return false;
+          },
+        },
+      });
+      marked.parseInline('a `b` [c](d) e');
+      assert.strictEqual(maskedSources[0], 'a [a] [aaaa] e');
+    });
+
     it('should handle interacting block and inline extensions', () => {
       const descriptionlist = {
         name: 'descriptionList',

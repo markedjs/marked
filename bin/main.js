@@ -192,7 +192,7 @@ export async function main(nodeProcess) {
       }
 
       if (typeof markedConfig === 'function') {
-        markedConfig(marked);
+        await markedConfig(marked);
       } else {
         marked.use(markedConfig);
       }
@@ -226,10 +226,14 @@ export async function main(nodeProcess) {
       : await marked.parse(data, options);
 
     if (output) {
-      if (noclobber && await fileExists(output)) {
-        throw Error('marked: output file \'' + output + '\' already exists, disable the \'-n\' / \'--no-clobber\' flag to overwrite\n');
+      try {
+        return await writeFile(output, html, { flag: noclobber ? 'wx' : 'w' });
+      } catch(err) {
+        if (noclobber && err.code === 'EEXIST') {
+          throw Error('marked: output file \'' + output + '\' already exists, disable the \'-n\' / \'--no-clobber\' flag to overwrite\n');
+        }
+        throw err;
       }
-      return await writeFile(output, html);
     }
 
     nodeProcess.stdout.write(html + '\n');

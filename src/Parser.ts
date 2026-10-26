@@ -18,6 +18,7 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
     this.renderer.options = this.options;
     this.renderer.parser = this;
     this.textRenderer = new _TextRenderer<RendererOutput>();
+    this.textRenderer.parser = this;
   }
 
   /**

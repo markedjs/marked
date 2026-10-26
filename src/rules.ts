@@ -59,6 +59,7 @@ export const other = {
   blockquoteStart: /^ {0,3}>/,
   blockquoteSetextReplace: /\n {0,3}((?:=+|-+) *)(?=\n|$)/g,
   blockquoteSetextReplace2: /^ {0,3}>[ \t]?/gm,
+  blockquoteMarkerWhitespace: /^( {0,3}>)([ \t]+)/gm,
   listReplaceNesting: /^ {1,4}(?=( {4})*[^ ])/g,
   listIsTask: /^\[[ xX]\] +\S/,
   listReplaceTask: /^\[[ xX]\] +/,
@@ -98,7 +99,10 @@ export const other = {
   nextBulletRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))`)),
   hrRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}((?:-[ \t]*){3,}|(?:_[ \t]*){3,}|(?:\\*[ \t]*){3,})(?:\\n+|$)`)),
   fencesBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:\`\`\`|~~~)`)),
-  headingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#`)),
+  // an ATX heading needs a space (or the end of the line) after the hashes, so a line
+  // like `#tag` does not end a list item; pedantic mode accepts it as a heading
+  headingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#{1,6}(?:\\s|$)`)),
+  pedanticHeadingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#`)),
   // a list item ends where a paragraph would be interrupted, so this mirrors the
   // html start conditions in the paragraph rule below; type 7 is excluded there
   htmlBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:</?(?:${_tag})(?: +|$|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)`, 'i')),
@@ -162,7 +166,7 @@ const html = edit(
 + '|<\\?[\\s\\S]*?(?:\\?>[^\\n]*\\n*|$)' // (3)
 + '|<![A-Z][\\s\\S]*?(?:>[^\\n]*\\n*|$)' // (4)
 + '|<!\\[CDATA\\[[\\s\\S]*?(?:\\]\\]>[^\\n]*\\n*|$)' // (5)
-+ '|</?(tag)(?: +|\\n|/?>)[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (6)
++ '|</?(tag)(?:[ \\t]+|\\n|/?>|$)[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (6)
 + '|<(?!(?:script|pre|style|textarea)(?![a-z0-9-]))([a-z][a-z0-9-]*)(?:attribute)*? */?>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (7) open tag
 + '|</[a-z][a-z0-9-]*\\s*>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (7) closing tag
 + ')', 'i')
@@ -190,7 +194,9 @@ const paragraph = createParagraph(/ {0,3}(?:[*+-]|1[.)])[ \t]+[^ \t\n]/);
 // paragraph, where an empty list cannot interrupt)
 const blockquoteParagraph = createParagraph(/ {0,3}(?:[*+-]|\d{1,9}[.)])(?:[ \t]|\n|$)/);
 
-const blockquote = edit(/^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/)
+// a line with only whitespace after the marker is blank, so it must not start a
+// paragraph that lazily continues onto the next line
+const blockquote = edit(/^( {0,3}> ?(?:(?![ \t]*(?:\n|$))(paragraph)|[^\n]*)(?:\n|$))+/)
   .replace('paragraph', blockquoteParagraph)
   .getRegex();
 
