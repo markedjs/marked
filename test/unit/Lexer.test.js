@@ -638,6 +638,56 @@ a | b
         ],
       });
     });
+
+    it('lazy line in a nested list', () => {
+      expectTokens({
+        md: '> - a\n> - b\nc',
+        tokens: [
+          {
+            type: 'blockquote',
+            raw: '> - a\n> - b\nc',
+            tokens: [
+              {
+                type: 'list',
+                raw: '- a\n- b\nc',
+                ordered: false,
+                start: '',
+                loose: false,
+                items: [
+                  {
+                    type: 'list_item',
+                    raw: '- a\n',
+                    task: false,
+                    loose: false,
+                    text: 'a',
+                    tokens: [{
+                      type: 'text',
+                      raw: 'a',
+                      text: 'a',
+                      tokens: [{ type: 'text', raw: 'a', text: 'a', escaped: false }],
+                    }],
+                  },
+                  {
+                    type: 'list_item',
+                    raw: '- b\nc',
+                    task: false,
+                    loose: false,
+                    text: 'b\nc',
+                    tokens: [{
+                      type: 'text',
+                      raw: 'b\nc',
+                      text: 'b\nc',
+                      tokens: [{ type: 'text', raw: 'b\nc', text: 'b\nc', escaped: false }],
+                    }],
+                  },
+                ],
+              },
+            ],
+            text: '- a\n- b\nc',
+          },
+        ],
+      });
+    });
   });
 
   describe('list', () => {
