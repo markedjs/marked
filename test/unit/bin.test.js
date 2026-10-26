@@ -5,6 +5,8 @@ import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
+import { mkdtemp, readFile, rm, symlink, writeFile, access } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 
 const execAsync = promisify(exec);
 
@@ -88,6 +90,66 @@ function execMarked({ args = '', stdin = '', stdout = '', stderr = '' }) {
 }
 
 describe('bin/marked', () => {
+  describe('output', () => {
+    it('does not follow an existing dangling symlink with --no-clobber', { skip: process.platform === 'win32' }, async() => {
+      const dir = await mkdtemp(resolve(tmpdir(), 'marked-no-clobber-'));
+      try {
+        const output = resolve(dir, 'output.html');
+        const target = resolve(dir, 'target.html');
+        await symlink(target, output);
+        await testInput({
+          args: ['--no-clobber', '--output', output, '--string', '# test'],
+          stderr: `marked: output file '${output}' already exists, disable the '-n' / '--no-clobber' flag to overwrite\n`,
+          code: 1,
+        })();
+        await assert.rejects(access(target), { code: 'ENOENT' });
+      } finally {
+        await rm(dir, { recursive: true, force: true });
+      }
+    });
+
+    it('preserves an existing file with --no-clobber', async() => {
+      const dir = await mkdtemp(resolve(tmpdir(), 'marked-no-clobber-'));
+      try {
+        const output = resolve(dir, 'output.html');
+        await writeFile(output, 'original');
+        await testInput({
+          args: ['--no-clobber', '--output', output, '--string', '# test'],
+          stderr: `marked: output file '${output}' already exists, disable the '-n' / '--no-clobber' flag to overwrite\n`,
+          code: 1,
+        })();
+        assert.strictEqual(await readFile(output, 'utf8'), 'original');
+      } finally {
+        await rm(dir, { recursive: true, force: true });
+      }
+    });
+
+    for (const args of [[], ['--no-clobber']]) {
+      it(`creates a new output file with ${args.join(' ') || 'default options'}`, async() => {
+        const dir = await mkdtemp(resolve(tmpdir(), 'marked-no-clobber-'));
+        try {
+          const output = resolve(dir, 'output.html');
+          await testInput({ args: [...args, '--output', output, '--string', '# test'] })();
+          assert.strictEqual(await readFile(output, 'utf8'), '<h1>test</h1>\n');
+        } finally {
+          await rm(dir, { recursive: true, force: true });
+        }
+      });
+    }
+
+    it('overwrites an existing output file by default', async() => {
+      const dir = await mkdtemp(resolve(tmpdir(), 'marked-no-clobber-'));
+      try {
+        const output = resolve(dir, 'output.html');
+        await writeFile(output, 'original');
+        await testInput({ args: ['--output', output, '--string', '# test'] })();
+        assert.strictEqual(await readFile(output, 'utf8'), '<h1>test</h1>\n');
+      } finally {
+        await rm(dir, { recursive: true, force: true });
+      }
+    });
+  });
+
   describe('string', () => {
     it('-s', testInput({
       args: ['-s', '# test'],
