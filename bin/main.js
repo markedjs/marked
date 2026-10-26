@@ -192,7 +192,7 @@ export async function main(nodeProcess) {
       }
 
       if (typeof markedConfig === 'function') {
-        markedConfig(marked);
+        await markedConfig(marked);
       } else {
         marked.use(markedConfig);
       }

@@ -83,6 +83,7 @@ If it is a `.json` file it should be a JSON object that will be passed to marked
 
 If `.js` is used it should have a default export of a marked options object or a function that takes `marked` as a parameter.
 It can use the `marked` parameter to install extensions using `marked.use`.
+The CLI waits for asynchronous config functions to finish before parsing the input.
 
 By default the marked cli will look for a config file in your home directory in the following order.
 
