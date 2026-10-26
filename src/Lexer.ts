@@ -2,6 +2,7 @@ import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
 import { normalizeLabel } from './helpers.ts';
+import type { TabRange } from './helpers.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
@@ -23,12 +24,13 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
      */
     linkParenPossible: boolean;
     top: boolean;
+    tabSource: { length: number, remaining: string, ranges: readonly TabRange[], offset: number } | undefined;
+    nextTabRanges: readonly TabRange[] | undefined;
   };
 
   public inlineQueue: { src: string, tokens: Token[] }[];
 
   private tokenizer: _Tokenizer<ParserOutput, RendererOutput>;
-
   constructor(options?: MarkedOptions<ParserOutput, RendererOutput>) {
     // TokenList cannot be created in one go
     this.tokens = [] as unknown as TokensList;
@@ -45,6 +47,8 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       linkEmitted: false,
       linkParenPossible: true,
       top: true,
+      tabSource: undefined,
+      nextTabRanges: undefined,
     };
 
     const rules = {
@@ -120,6 +124,34 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
   blockTokens(src: string, tokens?: Token[], lastParagraphClipped?: boolean): Token[];
   blockTokens(src: string, tokens?: TokensList, lastParagraphClipped?: boolean): TokensList;
   blockTokens(src: string, tokens: Token[] = [], lastParagraphClipped = false) {
+    const previous = this.state.tabSource;
+    const pending = this.state.nextTabRanges;
+    this.state.nextTabRanges = undefined;
+
+    if (pending !== undefined) {
+      this.state.tabSource = pending.length
+        ? { length: src.length, remaining: src, ranges: pending, offset: 0 }
+        : undefined;
+    } else if (previous?.remaining === src) {
+      // Reentrant tokenization of the same source inherits the remaining ranges.
+      this.state.tabSource = {
+        length: src.length,
+        remaining: src,
+        ranges: previous.ranges,
+        offset: previous.offset + previous.length - src.length,
+      };
+    } else {
+      this.state.tabSource = undefined;
+    }
+
+    try {
+      return this.#blockTokens(src, tokens, lastParagraphClipped);
+    } finally {
+      this.state.tabSource = previous;
+    }
+  }
+
+  #blockTokens(src: string, tokens: Token[], lastParagraphClipped: boolean) {
     this.tokenizer.lexer = this;
     if (this.options.pedantic) {
       src = src.replace(other.tabCharGlobal, '    ').replace(other.spaceLine, '');
@@ -127,6 +159,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
 
     let srcLength = Infinity;
     while (src) {
+      if (this.state.tabSource) this.state.tabSource.remaining = src;
       if (src.length < srcLength) {
         srcLength = src.length;
       } else {
