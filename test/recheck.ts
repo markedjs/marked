@@ -98,7 +98,7 @@ async function main() {
   }
 
   console.log(`
-import { marked } from '../lib/marked.esm.js';
+import { marked } from './lib/marked.esm.js';
 
 const start = Date.now();
 `);
