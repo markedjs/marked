@@ -190,7 +190,9 @@ const paragraph = createParagraph(/ {0,3}(?:[*+-]|1[.)])[ \t]+[^ \t\n]/);
 // paragraph, where an empty list cannot interrupt)
 const blockquoteParagraph = createParagraph(/ {0,3}(?:[*+-]|\d{1,9}[.)])(?:[ \t]|\n|$)/);
 
-const blockquote = edit(/^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/)
+// a line with only whitespace after the marker is blank, so it must not start a
+// paragraph that lazily continues onto the next line
+const blockquote = edit(/^( {0,3}> ?(?:(?![ \t]*(?:\n|$))(paragraph)|[^\n]*)(?:\n|$))+/)
   .replace('paragraph', blockquoteParagraph)
   .getRegex();
 
