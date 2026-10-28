@@ -220,7 +220,7 @@ console.log(marked.parse('$ latex code $\n\n` other code `'));
 - <code>**heading**(src: *string*): *Tokens.Heading*</code>
 - <code>**hr**(src: *string*): *Tokens.Hr*</code>
 - <code>**blockquote**(src: *string*): *Tokens.Blockquote*</code>
-- <code>**list**(src: *string*, tokens: *array*): *Tokens.List*</code>
+- <code>**list**(src: *string*): *Tokens.List*</code>
 - <code>**html**(src: *string*): *Tokens.HTML*</code>
 - <code>**def**(src: *string*): *Tokens.Def*</code>
 - <code>**table**(src: *string*): *Tokens.Table*</code>

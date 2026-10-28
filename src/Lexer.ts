@@ -23,6 +23,8 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
      */
     linkParenPossible: boolean;
     top: boolean;
+    /** the tokens of the block run being lexed, so a tokenizer can check the token before it */
+    tokens: Token[];
   };
 
   public inlineQueue: { src: string, tokens: Token[] }[];
@@ -45,6 +47,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       linkEmitted: false,
       linkParenPossible: true,
       top: true,
+      tokens: [],
     };
 
     const rules = {
@@ -121,6 +124,10 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
   blockTokens(src: string, tokens?: TokensList, lastParagraphClipped?: boolean): TokensList;
   blockTokens(src: string, tokens: Token[] = [], lastParagraphClipped = false) {
     this.tokenizer.lexer = this;
+    // list items and block quotes lex their contents with a nested call, so
+    // restore the outer tokens when it returns
+    const outerTokens = this.state.tokens;
+    this.state.tokens = tokens;
     if (this.options.pedantic) {
       src = src.replace(other.tabCharGlobal, '    ').replace(other.spaceLine, '');
     }
@@ -205,7 +212,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       }
 
       // list
-      if (token = this.tokenizer.list(src, tokens)) {
+      if (token = this.tokenizer.list(src)) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -307,6 +314,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     }
 
     this.state.top = true;
+    this.state.tokens = outerTokens;
     return tokens;
   }
 

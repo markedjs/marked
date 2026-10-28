@@ -315,16 +315,16 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     }
   }
 
-  list(src: string, tokens?: Token[]): Tokens.List | undefined {
-    // Inside a list item, paragraph lines are lexed as text tokens, so a list after one would
-    // interrupt the paragraph. Only a non-empty list starting with a bullet or 1 can do that
-    if (!this.options.pedantic && tokens?.at(-1)?.type === 'text'
-      && !this.rules.other.listInterruptsParagraph.test(src)) {
-      return;
-    }
-
+  list(src: string): Tokens.List | undefined {
     let cap = this.rules.block.list.exec(src);
     if (cap) {
+      // Inside a list item, paragraph lines are lexed as text tokens, so a list after one would
+      // interrupt the paragraph. Only a non-empty list starting with a bullet or 1 can do that
+      if (!this.options.pedantic && this.lexer.state.tokens.at(-1)?.type === 'text'
+        && !this.rules.other.listInterruptsParagraph.test(src)) {
+        return;
+      }
+
       // src is only consumed from the front, so every raw below is a slice of
       // listSrc rather than a string built up line by line
       const listSrc = src;
