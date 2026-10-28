@@ -159,3 +159,11 @@ To run a single test during development:
    - Do NOT commit generated build artifacts in `lib/` or `man/marked.1`.
    - Do NOT commit tests with `only: true` or `.only(...)`.
    - Run `npm run build:reset` before pushing or staging git changes if compiled files appear dirty in git status.
+5. **Pull Requests & Demo Links**:
+   - When submitting a PR that alters parsing or rendering behavior, include demo links in the PR description showing the behavior on the Marked demo page:
+     `https://marked.js.org/demo/?text={markdown}&options={options}&version={version}&outputType={outputType}`
+   - Query parameters (must be URL-encoded):
+     - `text`: Markdown source string to parse.
+     - `options`: JSON object string of Marked options (e.g. `{"gfm":true}`).
+     - `version`: Any Marked version, typically set to the latest release (e.g., `18.1.2`), or `master`. To compare with reference parsers, set to `commonmark` or `gfm`.
+     - `outputType`: Display format on the demo page; use `html` to show the output HTML source text or `preview` to show the rendered HTML.
