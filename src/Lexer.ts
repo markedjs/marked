@@ -1,7 +1,7 @@
 import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
-import { normalizeLabel } from './helpers.ts';
+import { beginEmStrongDelCloserScan, endEmStrongDelCloserScan, normalizeLabel } from './helpers.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
@@ -382,6 +382,18 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       ? this.#maskSrc(src)
       : src;
 
+    // One scan of this maskedSrc for the last emphasis, strong, and
+    // strikethrough closers, shared by every opener in the pass. Popped
+    // when the pass ends so the source is not retained (#4099).
+    beginEmStrongDelCloserScan(this.tokenizer, maskedSrc);
+    try {
+      return this.#tokenizeInlines(src, maskedSrc, tokens);
+    } finally {
+      endEmStrongDelCloserScan(this.tokenizer);
+    }
+  }
+
+  #tokenizeInlines(src: string, maskedSrc: string, tokens: Token[]): Token[] {
     let keepPrevChar = false;
     let prevChar = '';
     let srcLength = Infinity;
