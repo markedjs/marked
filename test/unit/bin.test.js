@@ -71,6 +71,15 @@ function fixturePath(filePath) {
   return resolve(import.meta.dirname, './fixtures', filePath);
 }
 
+async function execMarkedString(args, markdown) {
+  const { stdout, stderr } = await execFileAsync(process.execPath, [
+    resolve(import.meta.dirname, '../../bin/marked.js'),
+    ...args, '--string', markdown,
+  ]);
+  assert.strictEqual(stderr, '');
+  return stdout;
+}
+
 function execMarked({ args = '', stdin = '', stdout = '', stderr = '' }) {
   const execPath = resolve(import.meta.dirname, '../../bin/marked');
   return async() => {
@@ -170,6 +179,26 @@ describe('bin/marked', () => {
   });
 
   describe('config', () => {
+    it('uses GFM by default', async() => {
+      const result = await execMarkedString([], '~~test~~');
+      assert.strictEqual(result, '<p><del>test</del></p>\n\n');
+    });
+
+    it('uses options from the config file in a separate process', async() => {
+      const result = await execMarkedString(['--config', fixturePath('bin-config.js')], 'line1\nline2');
+      assert.strictEqual(result, '<p>line1<br>line2</p>\n\n');
+    });
+
+    it('uses a tokenizer from the config file', async() => {
+      const result = await execMarkedString(['--config', fixturePath('bin-config-tokenizer.js')], '`test`');
+      assert.strictEqual(result, '<p><code>TEST</code></p>\n\n');
+    });
+
+    it('lets command-line options override config options', async() => {
+      const result = await execMarkedString(['--config', fixturePath('bin-config.js'), '--no-breaks'], 'line1\nline2');
+      assert.strictEqual(result, '<p>line1\nline2</p>\n\n');
+    });
+
     it('-c', testInput({
       args: ['-c', fixturePath('bin-config.js'), '-s', 'line1\nline2'],
       stdout: '<p>line1<br>line2</p>',
@@ -223,6 +252,34 @@ describe('bin/marked', () => {
       stderr: `Cannot load config file '${fixturePath('does-not-exist.js')}'`,
       code: 1,
     }));
+  });
+
+  describe('tokens', () => {
+    async function tokens(args, markdown) {
+      const stdout = await execMarkedString(['--tokens', ...args], markdown);
+      return JSON.parse(stdout);
+    }
+
+    it('uses GFM by default', async() => {
+      const result = await tokens([], '~~test~~');
+      assert.strictEqual(result[0].tokens[0].type, 'del');
+    });
+
+    it('uses options from the config file', async() => {
+      const result = await tokens(['--config', fixturePath('bin-config.js')], 'line1\nline2');
+      assert.deepStrictEqual(result[0].tokens.map(token => token.type), ['text', 'br', 'text']);
+    });
+
+    it('uses a tokenizer from the config file', async() => {
+      const result = await tokens(['--config', fixturePath('bin-config-tokenizer.js')], '`test`');
+      assert.strictEqual(result[0].tokens[0].type, 'codespan');
+      assert.strictEqual(result[0].tokens[0].text, 'TEST');
+    });
+
+    it('lets command-line options override config options', async() => {
+      const result = await tokens(['--config', fixturePath('bin-config.js'), '--no-breaks'], 'line1\nline2');
+      assert.deepStrictEqual(result[0].tokens.map(token => token.type), ['text']);
+    });
   });
 
   describe('input', () => {
