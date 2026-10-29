@@ -109,9 +109,9 @@ export interface MarkedExtension<ParserOutput = string, RendererOutput = string>
    * The walkTokens function gets called with every token.
    * Child tokens are called before moving on to sibling tokens.
    * Each token is passed by reference so updates are persisted when passed to the parser.
-   * The return value of the function is ignored.
+   * When async is true, returned promises, including arrays of promises, are awaited before parsing.
    */
-  walkTokens?: ((token: Token) => void | Promise<void>) | null;
+  walkTokens?: ((token: Token) => void | Promise<void> | (void | Promise<void>)[]) | null;
 }
 
 export interface MarkedOptions<ParserOutput = string, RendererOutput = string> extends Omit<MarkedExtension<ParserOutput, RendererOutput>, 'hooks' | 'renderer' | 'tokenizer' | 'extensions' | 'walkTokens'> {

@@ -280,7 +280,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
         const packWalktokens = pack.walkTokens;
         opts.walkTokens = function(token) {
           const values: MaybePromise[] = [];
-          values.push(packWalktokens.call(this, token));
+          pushValues(values, packWalktokens.call(this, token));
           if (walkTokens) {
             pushValues(values, walkTokens.call(this, token));
           }
