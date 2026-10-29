@@ -23,8 +23,8 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
      */
     linkParenPossible: boolean;
     top: boolean;
-    /** the tokens of the block run being lexed, so a tokenizer can check the token before it */
-    tokens: Token[];
+    /** the last block token lexed in the current block run, so a tokenizer can check the token before it */
+    lastToken?: Token;
   };
 
   public inlineQueue: { src: string, tokens: Token[] }[];
@@ -47,7 +47,6 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       linkEmitted: false,
       linkParenPossible: true,
       top: true,
-      tokens: [],
     };
 
     const rules = {
@@ -125,9 +124,8 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
   blockTokens(src: string, tokens: Token[] = [], lastParagraphClipped = false) {
     this.tokenizer.lexer = this;
     // list items and block quotes lex their contents with a nested call, so
-    // restore the outer tokens when it returns
-    const outerTokens = this.state.tokens;
-    this.state.tokens = tokens;
+    // restore the outer last token when it returns
+    const outerLastToken = this.state.lastToken;
     if (this.options.pedantic) {
       src = src.replace(other.tabCharGlobal, '    ').replace(other.spaceLine, '');
     }
@@ -141,6 +139,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
         break;
       }
 
+      this.state.lastToken = tokens.at(-1);
       let token: Tokens.Generic | undefined;
 
       if (this.options.extensions?.block?.some((extTokenizer) => {
@@ -314,7 +313,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     }
 
     this.state.top = true;
-    this.state.tokens = outerTokens;
+    this.state.lastToken = outerLastToken;
     return tokens;
   }
 

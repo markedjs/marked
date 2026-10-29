@@ -320,7 +320,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     if (cap) {
       // Inside a list item, paragraph lines are lexed as text tokens, so a list after one would
       // interrupt the paragraph. Only a non-empty list starting with a bullet or 1 can do that
-      if (!this.options.pedantic && this.lexer.state.tokens.at(-1)?.type === 'text'
+      if (!this.options.pedantic && this.lexer.state.lastToken?.type === 'text'
         && !this.rules.other.listInterruptsParagraph.test(src)) {
         return;
       }
