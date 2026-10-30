@@ -12,7 +12,7 @@ import type { Token, Tokens, TokensList } from './Tokens.ts';
 export type MaybePromise = void | Promise<void>;
 
 type UnknownFunction = (...args: unknown[]) => unknown;
-type GenericRendererFunction = (...args: unknown[]) => string | false;
+type GenericRendererFunction<RendererOutput> = (...args: unknown[]) => RendererOutput | false;
 
 /**
  * Append value(s) to values in place, flattening one level like concat
@@ -184,15 +184,15 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
             continue;
           }
           const rendererProp = prop as Exclude<keyof _Renderer<ParserOutput, RendererOutput>, 'options' | 'parser'>;
-          const rendererFunc = pack.renderer[rendererProp] as GenericRendererFunction;
-          const prevRenderer = renderer[rendererProp] as GenericRendererFunction;
+          const rendererFunc = pack.renderer[rendererProp] as GenericRendererFunction<RendererOutput>;
+          const prevRenderer = renderer[rendererProp] as GenericRendererFunction<RendererOutput>;
           // Replace renderer with func to run extension, but fall back if false
           renderer[rendererProp] = (...args: unknown[]) => {
             let ret = rendererFunc.apply(renderer, args);
             if (ret === false) {
               ret = prevRenderer.apply(renderer, args);
             }
-            return (ret || '') as RendererOutput;
+            return (ret === false ? '' : ret ?? '') as RendererOutput;
           };
         }
         opts.renderer = renderer;
