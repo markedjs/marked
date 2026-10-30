@@ -57,7 +57,10 @@ export const other = {
   blankLine: /^[ \t]*$/,
   doubleBlankLine: /\n[ \t]*\n[ \t]*$/,
   blockquoteStart: /^ {0,3}>/,
-  blockquoteSetextReplace: /\n {0,3}((?:=+|-+) *)(?=\n|$)/g,
+  // Neutralize a lazy setext underline, including one with trailing tabs.
+  // CommonMark §4.3 allows those tabs on a real underline, so the same class
+  // has to be recognized here or a lazy `===\t` becomes a heading.
+  blockquoteSetextReplace: /\n {0,3}((?:=+|-+)[ \t]*)(?=\n|$)/g,
   blockquoteSetextReplace2: /^ {0,3}>[ \t]?/gm,
   blockquoteMarkerWhitespace: /^( {0,3}>)([ \t]+)/gm,
   listReplaceNesting: /^ {1,4}(?=( {4})*[^ ])/g,
@@ -119,7 +122,10 @@ const fences = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\
 const hr = /^ {0,3}((?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/;
 const heading = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
 const bullet = / {0,3}(?:[*+-]|\d{1,9}[.)])/;
-const lheadingCore = /^(?!bull |blockCode|fences|blockquote|heading|html|table)((?:.|\n(?!\s*?\n|bull |fences|blockquote|heading|hr|html|table))+?)\n {0,3}(=+|-+) *(?:\n+|$)/;
+// The underline may end with spaces or tabs (CommonMark §4.3). Internal
+// spaces or tabs still fail to match, and more than three spaces of indent
+// still do not.
+const lheadingCore = /^(?!bull |blockCode|fences|blockquote|heading|html|table)((?:.|\n(?!\s*?\n|bull |fences|blockquote|heading|hr|html|table))+?)\n {0,3}(=+|-+)[ \t]*(?:\n+|$)/;
 const lheading = edit(lheadingCore)
   .replace(/bull/g, bullet) // lists can interrupt
   .replace(/blockCode/g, /(?: {4}| {0,3}\t)/) // indented code can start a block but cannot interrupt a paragraph
