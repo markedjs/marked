@@ -612,7 +612,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         return;
       }
 
-      const tag = normalizeLabel(cap[1]).replace(this.rules.other.multipleSpaceGlobal, ' ');
+      const tag = normalizeLabel(cap[1]);
       const href = cap[2] ? cap[2].replace(this.rules.other.hrefBrackets, '$1').replace(this.rules.inline.anyPunctuation, '$1') : '';
       const title = cap[3] ? cap[3].substring(1, cap[3].length - 1).replace(this.rules.inline.anyPunctuation, '$1') : cap[3];
       return {
@@ -849,8 +849,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         return;
       }
 
-      const linkString = (cap[2] || cap[1]).replace(this.rules.other.multipleSpaceGlobal, ' ');
-      const link = links[normalizeLabel(linkString)];
+      const link = links[normalizeLabel(cap[2] || cap[1])];
       if (!link) {
         const text = cap[0].charAt(0);
         return {
