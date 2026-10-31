@@ -258,8 +258,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
         const lastToken = tokens.at(-1);
 
-        if (lastToken?.type === 'code' || lastToken?.type === 'heading' || lastToken?.type === 'hr' || lastToken?.type === 'html') {
-          // blockquote continuation cannot be preceded by a code block, heading, hr or html block
+        if (lastToken?.type === 'code' || lastToken?.type === 'heading' || lastToken?.type === 'hr' || lastToken?.type === 'html' || lastToken?.type === 'table') {
+          // blockquote continuation cannot be preceded by a code block, heading, hr, html block or table
           break;
         } else if (lastToken?.type === 'blockquote') {
           // include continuation in nested blockquote
