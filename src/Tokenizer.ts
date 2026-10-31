@@ -810,6 +810,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           cap[3] = '';
         }
       }
+      // The ')' that ends the match is the link closer only when it is not
+      // escaped. `[foo](/url\)` has no closer; that paren is destination text.
+      const unescaped = rtrim(cap[0].slice(0, -1), '\\');
+      if ((cap[0].length - unescaped.length) % 2 === 0) {
+        return;
+      }
       let href = cap[2];
       let title = '';
       if (this.options.pedantic) {
