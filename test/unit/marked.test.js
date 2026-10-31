@@ -1184,6 +1184,36 @@ br
       assert.strictEqual(html, new Marked().parse('| A | B |\n|---|---|\n| C | D |\n\n- E\n  - *F*\n\n> G\n'));
     });
 
+    it('should flatten arrays returned by composed walkTokens extensions', () => {
+      const first = Promise.resolve();
+      const second = Promise.resolve();
+      marked.use(
+        { walkTokens: () => [first] },
+        { walkTokens: () => [second] },
+      );
+
+      assert.deepEqual(
+        marked.walkTokens([{ type: 'text', raw: 'text', text: 'text' }], marked.defaults.walkTokens),
+        [second, first],
+      );
+    });
+
+    it('should await promise arrays returned by walkTokens extensions', async() => {
+      marked.use({
+        async: true,
+        walkTokens(token) {
+          if (token.type === 'text') {
+            return [timeout().then(() => {
+              token.text = token.text.toUpperCase();
+            })];
+          }
+        },
+      });
+
+      assert.strictEqual(await marked.parse('before'), '<p>BEFORE</p>\n');
+      assert.strictEqual(await marked.parseInline('before'), 'BEFORE');
+    });
+
     it('should copy returned arrays by index like concat', async() => {
       const tokens = marked.lexer('before');
       const pending = timeout().then(() => {
