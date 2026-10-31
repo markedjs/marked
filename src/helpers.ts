@@ -186,6 +186,129 @@ export function findClosingBracket(str: string, b: string) {
   return -1;
 }
 
+interface LastPossibleEmStrongCloserIndex {
+  /** Last `*` run that can close emphasis or strong. `-1` if none. */
+  '*': number;
+  /** Last `_` run that can close emphasis or strong. `-1` if none. */
+  _: number;
+}
+
+/**
+ * Closer hints for one inline `maskedSrc`. Held only while that pass runs.
+ */
+interface EmStrongDelCloserHintFrame {
+  maskedSrc: string;
+  lastPossibleEmStrongCloserIndex: LastPossibleEmStrongCloserIndex;
+  /** Last `~` run that can close strikethrough. `-1` if none. */
+  lastPossibleDelCloserIndex: number;
+}
+
+/**
+ * Hint stacks for inline passes currently running. Keyed by the tokenizer
+ * instance so parses do not share frames. Nested `inlineTokens` calls push
+ * a frame. The entry is removed when the outermost pass ends, so
+ * `maskedSrc` is not retained once parsing returns (#4099).
+ */
+const emStrongDelCloserHintStacks = new WeakMap<object, EmStrongDelCloserHintFrame[]>();
+
+/**
+ * Last indexes of `*` / `_` runs that can close emphasis or strong, and of
+ * a `~` run that can close strikethrough.
+ *
+ * A run can close only when it is not preceded by ASCII whitespace or the
+ * start of the string. The right-delim regexes accept a closer only in
+ * groups 1, 2, 5, and 6, and each of those requires that predecessor. When
+ * the opener's window has no such run, the regex scan cannot succeed.
+ * Finding one only means "keep looking": CommonMark rules 9–10 and mid-run
+ * openers are still applied in the loop (#4099).
+ */
+function scanLastPossibleEmStrongDelClosers(src: string): EmStrongDelCloserHintFrame {
+  const lastPossibleEmStrongCloserIndex: LastPossibleEmStrongCloserIndex = { '*': -1, _: -1 };
+  let lastPossibleDelCloserIndex = -1;
+  const len = src.length;
+  for (let i = 0; i < len; i++) {
+    const ch = src[i];
+    if (ch !== '*' && ch !== '_' && ch !== '~') {
+      continue;
+    }
+    // A leading run has no predecessor, same as one after a line break.
+    const prev = i === 0 ? '\n' : src[i - 1];
+    let j = i + 1;
+    while (j < len && src[j] === ch) {
+      j++;
+    }
+    if (prev !== ' ' && prev !== '\t' && prev !== '\n' && prev !== '\r' && prev !== '\f') {
+      if (ch === '~') {
+        lastPossibleDelCloserIndex = i;
+      } else {
+        lastPossibleEmStrongCloserIndex[ch] = i;
+      }
+    }
+    i = j - 1;
+  }
+  return {
+    maskedSrc: src,
+    lastPossibleEmStrongCloserIndex,
+    lastPossibleDelCloserIndex,
+  };
+}
+
+/**
+ * Scan `maskedSrc` once for the last `*` / `_` run that can close emphasis
+ * or strong and the last `~` run that can close strikethrough.
+ * `endEmStrongDelCloserScan` drops this frame when the inline pass ends.
+ */
+export function beginEmStrongDelCloserScan(tokenizer: object, maskedSrc: string): void {
+  const frame = scanLastPossibleEmStrongDelClosers(maskedSrc);
+  const stack = emStrongDelCloserHintStacks.get(tokenizer);
+  if (stack) {
+    stack.push(frame);
+  } else {
+    emStrongDelCloserHintStacks.set(tokenizer, [frame]);
+  }
+}
+
+/**
+ * Drop the closer-hint frame for the inline pass that just finished.
+ * Removing the last frame drops the tokenizer's `maskedSrc` reference.
+ */
+export function endEmStrongDelCloserScan(tokenizer: object): void {
+  const stack = emStrongDelCloserHintStacks.get(tokenizer);
+  if (!stack) {
+    return;
+  }
+  stack.pop();
+  if (stack.length === 0) {
+    emStrongDelCloserHintStacks.delete(tokenizer);
+  }
+}
+
+/**
+ * Index in `maskedSrc` of the last `*` or `_` run that can close emphasis
+ * or strong. Uses the active inline-pass scan when `maskedSrc` is that
+ * pass's source; otherwise scans this string and discards the result.
+ */
+export function cachedLastPossibleEmStrongCloserIndex(tokenizer: object, maskedSrc: string, delim: '*' | '_'): number {
+  const frame = emStrongDelCloserHintStacks.get(tokenizer)?.at(-1);
+  if (frame && frame.maskedSrc === maskedSrc) {
+    return frame.lastPossibleEmStrongCloserIndex[delim];
+  }
+  return scanLastPossibleEmStrongDelClosers(maskedSrc).lastPossibleEmStrongCloserIndex[delim];
+}
+
+/**
+ * Index in `maskedSrc` of the last `~` run that can close strikethrough.
+ * Uses the active inline-pass scan when `maskedSrc` is that pass's
+ * source; otherwise scans this string and discards the result.
+ */
+export function cachedLastPossibleDelCloserIndex(tokenizer: object, maskedSrc: string): number {
+  const frame = emStrongDelCloserHintStacks.get(tokenizer)?.at(-1);
+  if (frame && frame.maskedSrc === maskedSrc) {
+    return frame.lastPossibleDelCloserIndex;
+  }
+  return scanLastPossibleEmStrongDelClosers(maskedSrc).lastPossibleDelCloserIndex;
+}
+
 export function expandTabs(line: string, indent = 0) {
   let col = indent;
   let expanded = '';
