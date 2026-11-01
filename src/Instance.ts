@@ -109,7 +109,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
    * Use this method when supplying only some hook methods.
    */
   use(...args: MarkedExtension<ParserOutput, RendererOutput>[]) {
-    const extensions: MarkedOptions<ParserOutput, RendererOutput>['extensions'] = this.defaults.extensions || { renderers: {}, childTokens: {} };
+    const extensions: MarkedOptions<ParserOutput, RendererOutput>['extensions'] = this.defaults.extensions || { renderers: Object.create(null), childTokens: Object.create(null) };
 
     args.forEach((pack) => {
       // copy options to new object
