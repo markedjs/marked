@@ -283,6 +283,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
             raw = `${raw}\n${consumed.join('\n')}`;
           }
           text = text.substring(0, text.length - oldToken.text.length) + newToken.text;
+
+          // A leftover line that starts with '>' still belongs to this
+          // blockquote; any other leftover line ends it.
+          lines = lines.slice(consumed.length);
+          if (lines.length > 0 && this.rules.other.blockquoteStart.test(lines[0])) {
+            continue;
+          }
           break;
         } else if (lastToken?.type === 'list') {
           // include continuation in nested list
