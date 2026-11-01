@@ -449,6 +449,76 @@ describe('marked unit', () => {
       assert.strictEqual(html, '<ul>\n<li><p><input checked="" disabled="" type="checkbox"> one</p>\n</li>\n<li><p><input disabled="" type="checkbox"> two</p>\n</li>\n</ul>\n');
     });
 
+    describe('extension names matching Object.prototype properties', () => {
+      for (const level of ['block', 'inline']) {
+        for (const name of ['constructor', 'toString', '__proto__', 'custom']) {
+          it(`should render and walk ${level} extension ${name}`, () => {
+            const seen = [];
+            marked.use({
+              extensions: [{
+                name,
+                level,
+                tokenizer(src) {
+                  return {
+                    type: name,
+                    raw: src,
+                    tokens: [{ type: 'text', raw: 'child', text: 'child' }],
+                  };
+                },
+                renderer(token) {
+                  return this.parser.parseInline(token.tokens);
+                },
+              }],
+              walkTokens(token) {
+                seen.push(token.type);
+              },
+            });
+
+            const html = level === 'block' ? marked.parse('example') : marked.parseInline('example');
+            assert.strictEqual(html, 'child');
+            assert.deepStrictEqual(seen, [name, 'text']);
+          });
+        }
+
+        for (const name of ['constructor', 'toString', '__proto__']) {
+          it(`should not fall back to an inherited ${level} renderer for ${name}`, () => {
+            marked.use({
+              extensions: [{
+                name,
+                level,
+                tokenizer(src) {
+                  return { type: name, raw: src };
+                },
+                renderer() {
+                  return false;
+                },
+              }],
+            });
+
+            const html = level === 'block' ? marked.parse('example') : marked.parseInline('example');
+            assert.strictEqual(html, '');
+          });
+        }
+      }
+
+      it('should fall back to a registered __proto__ renderer', () => {
+        marked.use({
+          extensions: [{
+            name: '__proto__',
+            level: 'block',
+            tokenizer(src) {
+              return { type: '__proto__', raw: src };
+            },
+            renderer() {
+              return 'previous';
+            },
+          }],
+        });
+        marked.use({ extensions: [{ name: '__proto__', renderer: () => false }] });
+        assert.strictEqual(marked.parse('example'), 'previous');
+      });
+    });
+
     it('should walk only specified child tokens', () => {
       const walkableDescription = {
         extensions: [{
