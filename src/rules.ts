@@ -64,6 +64,7 @@ export const other = {
   blockquoteSetextReplace: /\n {0,3}((?:=+|-+)[ \t]*)(?=\n|$)/g,
   blockquoteSetextReplace2: /^ {0,3}>[ \t]?/gm,
   blockquoteMarkerWhitespace: /^( {0,3}>)(\t[ \t]*)/gm,
+  nestedBlockMarker: /^ {0,3}(?:(?:[*+-]|\d{1,9}[.)])(?: |$)|> ?)/,
   listReplaceNesting: /^ {1,4}(?=( {4})*[^ ])/g,
   listIsTask: /^\[[ xX]\][ \t]+\S/,
   listReplaceTask: /^\[[ xX]\][ \t]+/,
