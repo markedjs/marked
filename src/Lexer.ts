@@ -167,6 +167,13 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
         const lastToken = tokens.at(-1);
         // An indented code block cannot interrupt a paragraph.
         if (lastToken?.type === 'paragraph' || lastToken?.type === 'text') {
+          // Only the lines before a blank line continue it; lex the rest again.
+          const blankLine = token.raw.search(this.tokenizer.rules.other.innerBlankLine);
+          if (blankLine !== -1) {
+            src = token.raw.substring(blankLine) + src;
+            token.raw = token.raw.substring(0, blankLine);
+            token.text = token.raw.replace(this.tokenizer.rules.other.codeRemoveIndent, '');
+          }
           lastToken.raw += (lastToken.raw.endsWith('\n') ? '' : '\n') + token.raw;
           lastToken.text += '\n' + token.text;
           this.inlineQueue.at(-1)!.src = lastToken.text;
