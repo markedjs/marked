@@ -959,14 +959,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           delimTotal += rLength;
           continue;
         } else if (match[5] || match[6] || openerCanClose) { // either Left or Right Delim
-          if (midRun && (match[5] || match[6])) {
-            // A mid-run opener cannot close against an ambiguous delimiter that
-            // can also open; that delimiter opens its own emphasis span instead.
-            break;
-          }
-          if (runLength % 3 && !((runLength + rLength) % 3)) {
+          if (runLength % 3 && !((runLength + rLength) % 3)) { // CommonMark Emphasis Rules 9-10
+            if (midRun && (match[5] || match[6])) {
+              // A delimiter that can also open and cannot close this run
+              // opens its own span; a later closer pairs with it, not with a
+              // mid-run opener (`**a*a*` must be `**a<em>a</em>`).
+              break;
+            }
             midDelimTotal += rLength;
-            continue; // CommonMark Emphasis Rules 9-10
+            continue;
           }
         }
 
