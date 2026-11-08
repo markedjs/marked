@@ -212,7 +212,11 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       }
 
       // html
-      if (token = this.tokenizer.html(src)) {
+      // An html block of type 7 cannot interrupt a paragraph, so a lazy
+      // continuation line that starts one continues the paragraph instead.
+      const lastToken = tokens.at(-1);
+      const isLazyParagraphLine = lastParagraphClipped && lastToken?.type === 'paragraph' && !other.htmlBeginRegex(3).test(src);
+      if (!isLazyParagraphLine && (token = this.tokenizer.html(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
