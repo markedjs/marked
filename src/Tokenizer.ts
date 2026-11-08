@@ -605,12 +605,23 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     const cap = this.rules.block.html.exec(src);
     if (cap) {
       const raw = trimTrailingBlankLines(cap[0]);
+      // A blank line ends an HTML block, but the newline that ends the
+      // block's last content line is part of its content, and
+      // trimTrailingBlankLines drops that newline along with the blank
+      // lines. The loss is invisible between tags and real inside a <pre>,
+      // where it swallows a line (CommonMark 0.31.2 example 148).
+      //
+      // Only the emitted text is restored, never `raw`: raw is what the
+      // lexer consumed, so changing it would move the boundary between this
+      // token and the space that follows. `code` already emits text that
+      // differs from its raw, for the same kind of reason.
+      const text = raw === cap[0] || raw.endsWith('\n') ? raw : raw + '\n';
       const token: Tokens.HTML = {
         type: 'html',
         block: true,
         raw,
         pre: cap[1] === 'pre' || cap[1] === 'script' || cap[1] === 'style',
-        text: raw,
+        text,
       };
       return token;
     }
