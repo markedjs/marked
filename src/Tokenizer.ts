@@ -403,6 +403,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           const htmlBeginRegex = this.rules.other.htmlBeginRegex(indent);
           const blockquoteBeginRegex = this.rules.other.blockquoteBeginRegex(indent);
 
+          // A lazy line continues a paragraph, so it is not checked for the start of a block
+          let lineIsLazy = false;
+
           // Check if following lines should be included in List Item
           while (src) {
             const rawLine = src.split('\n', 1)[0];
@@ -449,6 +452,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
             if (nextLineWithoutTabs.search(this.rules.other.nonSpaceChar) >= indent || !nextLine.trim()) { // Dedent if possible
               itemContents += '\n' + nextLineWithoutTabs.slice(indent);
+              lineIsLazy = false;
             } else {
               // not enough indentation
               if (blankLine) {
@@ -471,6 +475,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
               if (hrRegex.test(line)) {
                 break;
               }
+              if (!this.options.pedantic && !lineIsLazy) {
+                // `line` is relative to the item content, so a block on it can be indented up to 3 spaces whatever
+                // the item indent is. A nested list item or blockquote on it, as in `- # heading` or `> ---`, holds
+                // a block that a lazy line cannot continue either, so check what follows those markers too.
+                const lastBlockLine = line.replace(this.rules.other.nestedContainerMarkers, '');
+                if (this.rules.block.fences.test(lastBlockLine) || this.rules.block.heading.test(lastBlockLine) || this.rules.block.hr.test(lastBlockLine)) {
+                  break;
+                }
+              }
 
               // A lazy continuation can look like a setext underline after
               // list indentation is removed. Keep it in the paragraph.
@@ -481,6 +494,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
                 ? `    ${nextLineWithoutTabs.replace(/^ {0,3}/, '')}`
                 : nextLine;
               itemContents += '\n' + continuation;
+              lineIsLazy = true;
             }
 
             blankLine = !nextLine.trim();

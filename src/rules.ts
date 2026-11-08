@@ -110,6 +110,8 @@ export const other = {
   // html start conditions in the paragraph rule below; type 7 is excluded there
   htmlBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:</?(?:${_tag})(?: +|$|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)`, 'i')),
   blockquoteBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}>`)),
+  // list item and blockquote markers that open nested blocks at the start of a line, as in `- > # heading`
+  nestedContainerMarkers: /^(?: {0,3}(?:(?:[*+-]|\d{1,9}[.)])[ \t]+|>[ \t]?))+/,
 };
 
 /**
