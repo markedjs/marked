@@ -26,7 +26,10 @@ function createMocks() {
       env: [],
       argv: [],
       stdout: {
-        write: mock.fn((str) => { mocks.stdout += str; }),
+        write: mock.fn((str, callback) => {
+          mocks.stdout += str;
+          callback?.();
+        }),
       },
       stderr: {
         write: mock.fn((str) => { mocks.stderr += str; }),
@@ -101,6 +104,24 @@ function execMarked({ args = '', stdin = '', stdout = '', stderr = '' }) {
 
 describe('bin/marked', () => {
   describe('output', () => {
+    it('writes all output before exiting when stdout is piped', async() => {
+      const dir = await mkdtemp(resolve(tmpdir(), 'marked-stdout-'));
+      try {
+        const input = resolve(dir, 'input.md');
+        const markdown = 'markdown output '.repeat(131072);
+        await writeFile(input, markdown);
+        const { stdout, stderr } = await execFileAsync(process.execPath, [
+          resolve(import.meta.dirname, '../../bin/marked.js'),
+          '--input', input,
+        ], { maxBuffer: 4 * 1024 * 1024 });
+
+        assert.strictEqual(stdout, `<p>${markdown}</p>\n\n`);
+        assert.strictEqual(stderr, '');
+      } finally {
+        await rm(dir, { recursive: true, force: true });
+      }
+    });
+
     it('does not follow an existing dangling symlink with --no-clobber', { skip: process.platform === 'win32' }, async() => {
       const dir = await mkdtemp(resolve(tmpdir(), 'marked-no-clobber-'));
       try {
