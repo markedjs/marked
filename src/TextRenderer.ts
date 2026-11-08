@@ -41,7 +41,7 @@ export class _TextRenderer<RendererOutput = string> {
   }
 
   br(): RendererOutput {
-    return '' as RendererOutput;
+    return '\n' as RendererOutput;
   }
 
   checkbox({ raw }: Tokens.Checkbox): RendererOutput {
