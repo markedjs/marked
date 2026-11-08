@@ -543,6 +543,38 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
   }
 
   /**
+   * Mask links, code spans, raw html and autolinks. blockSkip finds every
+   * `<...>` run, but only real raw html and autolinks take precedence over
+   * emphasis: other text in angle brackets, like `<*name*>`, stays unmasked so
+   * emphasis can open and close in it. A tag may also run past the first `>`,
+   * as in `<a title=">">`, so mask the whole tag.
+   */
+  #maskBlocks(src: string): string {
+    const { blockSkip, tag, autolink } = this.tokenizer.rules.inline;
+    let masked = '';
+    let last = 0;
+    let match: RegExpExecArray | null;
+    blockSkip.lastIndex = 0;
+    while ((match = blockSkip.exec(src))) {
+      const start = match.index + (match[2] ? match[2].length : 0);
+      let end = match.index + match[0].length;
+      if (src.charAt(start) === '<') {
+        const rest = src.slice(start);
+        const html = tag.exec(rest) || autolink.exec(rest);
+        if (!html) {
+          blockSkip.lastIndex = start + 1;
+          continue;
+        }
+        end = start + html[0].length;
+        blockSkip.lastIndex = end;
+      }
+      masked += src.slice(last, start) + '[' + 'a'.repeat(end - start - 2) + ']';
+      last = end;
+    }
+    return masked + src.slice(last);
+  }
+
+  /**
    * Mask links, code, html and escapes so emStrong and del do not see their
    * delimiters inside them.
    */
@@ -592,10 +624,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     });
 
     // Mask out other blocks
-    maskedSrc = maskedSrc.replace(this.tokenizer.rules.inline.blockSkip, (match0, _link, context) => {
-      const offset = context ? context.length : 0;
-      return match0.slice(0, offset) + '[' + 'a'.repeat(match0.length - offset - 2) + ']';
-    });
+    maskedSrc = this.#maskBlocks(maskedSrc);
 
     // Mask out blocks from extensions
     maskedSrc = this.options.hooks?.emStrongMask?.call({ lexer: this }, maskedSrc) ?? maskedSrc;
