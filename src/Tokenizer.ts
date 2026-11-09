@@ -15,10 +15,36 @@ import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens, Token } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
+/**
+ * Remove the bracket escapes that the label match consumed, but leave code
+ * spans untouched: their content is literal, so a `\[` or `\]` inside a
+ * code span is not an escape.
+ */
+function unescapeLinkLabel(label: string, rules: Rules): string {
+  let result = '';
+  for (let i = 0; i < label.length; i++) {
+    if (label[i] === '`') {
+      const code = rules.inline.code.exec(label.slice(i));
+      if (code) {
+        result += code[0];
+        i += code[0].length - 1;
+        continue;
+      }
+    }
+    if (label[i] === '\\' && (label[i + 1] === '[' || label[i + 1] === ']')) {
+      result += label[i + 1];
+      i++;
+      continue;
+    }
+    result += label[i];
+  }
+  return result;
+}
+
 function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer, rules: Rules): Tokens.Link | Tokens.Image | undefined {
   const href = link.href;
   const title = link.title || null;
-  const text = cap[1].replace(rules.other.outputLinkReplace, '$1');
+  const text = unescapeLinkLabel(cap[1], rules);
   const isImage = cap[0].charAt(0) === '!';
 
   const outerInLink = lexer.state.inLink;
