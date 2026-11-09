@@ -922,9 +922,23 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   reflink(src: string, links: Links): Tokens.Link | Tokens.Image | Tokens.Text | undefined {
-    let cap;
-    if ((cap = this.rules.inline.reflink.exec(src))
-      || (cap = this.rules.inline.nolink.exec(src))) {
+    let cap = this.rules.inline.reflink.exec(src);
+    if (!cap && !this.options.pedantic
+      && (src.charAt(0) === '[' || src.startsWith('!['))
+      && src.includes('`')) {
+      // Same label limitation as `link`: a reference label holding a code span
+      // with backticks in its content can fail to match. Rescan with matched
+      // runs and bracket depth, then match the reference tail from there.
+      const labelStart = src.charAt(0) === '!' ? 2 : 1;
+      const labelEnd = scanLabelEnd(src, labelStart, this.rules);
+      if (labelEnd !== -1) {
+        const tail = this.rules.other.reflinkTail.exec(src.slice(labelEnd + 1));
+        if (tail) {
+          cap = [src.slice(0, labelEnd + 1) + tail[0], src.slice(labelStart, labelEnd), tail[1]] as unknown as RegExpExecArray;
+        }
+      }
+    }
+    if (cap || (cap = this.rules.inline.nolink.exec(src))) {
       const labelStart = cap[0].charAt(0) === '!' ? 2 : 1;
       if (!this.options.pedantic && isLabelEndInsideToken(src, cap[1], labelStart, this.rules)) {
         return;
