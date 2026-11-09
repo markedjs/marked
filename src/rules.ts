@@ -40,6 +40,9 @@ try {
 }
 })();
 
+const gfmTableHeader = '^ *([^\\n ].*)\\n' // Header
+  + ' {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)'; // Align
+
 export const other = {
   codeRemoveIndent: /^(?: {0,3}\t| {1,4})/gm,
   outputLinkReplace: /\\([\[\]])/g,
@@ -69,6 +72,7 @@ export const other = {
   listTaskCheckbox: /\[[ xX]\]/,
   anyLine: /\n.*\n/,
   hrefBrackets: /^<(.*)>$/,
+  tableHeader: new RegExp(gfmTableHeader + '(?:\\n|$)'),
   tableDelimiter: /[:|]/,
   tableAlignChars: /^\||\| *$/g,
   tableRowBlankLine: /\n[ \t]*$/,
@@ -237,9 +241,7 @@ type BlockKeys = keyof typeof blockNormal;
  * GFM Block Grammar
  */
 
-const gfmTable = edit(
-  '^ *([^\\n ].*)\\n' // Header
-+ ' {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)' // Align
+const gfmTable = edit(gfmTableHeader
 + '(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)') // Cells
   .replace('hr', hr)
   .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
@@ -259,7 +261,7 @@ const blockGfm: Record<BlockKeys, RegExp> = {
     .replace('hr', hr)
     .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
     .replace('|lheading', '') // setext headings don't interrupt commonmark paragraphs
-    .replace('table', gfmTable) // interrupt paragraphs with table
+    .replace('table', other.tableHeader) // only the header and delimiter are needed to interrupt
     .replace('blockquote', ' {0,3}>')
     .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
     .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]+[^ \\t\\n]') // only non-empty lists starting from 1 can interrupt
