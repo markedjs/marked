@@ -21,8 +21,54 @@ import type { MarkedOptions } from './MarkedOptions.ts';
  * content can end early and swallow the `](href)` tail into the label. Rescan
  * with the lexer's own code span rule and bracket depth, and return the index
  * of the label's real closing bracket (-1 when there is none).
+ *
+ * Code spans are scanned by hand rather than with rules.inline.code: the regex
+ * costs a scan of the whole remainder per backtick position, which goes cubic
+ * when the rescan is re-armed at every unmatched '['. The scan below is
+ * equivalent to the regex - inline.code = /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/
+ * matches an opening run of k backticks, content that starts and ends with a
+ * non-backtick, then a closing run of exactly k backticks. Because the content
+ * must end with a non-backtick, the closing run always starts at a maximal
+ * run boundary, and (?!`) rules out any run longer than k, so comparing
+ * maximal run lengths is exact.
  */
-function scanLabelEnd(src: string, labelStart: number, rules: Rules): number {
+function matchCodeSpan(src: string, start: number): number {
+  let open = 0;
+  while (src[start + open] === '`') {
+    open++;
+  }
+  let i = start + open;
+  if (i >= src.length) {
+    return 0;
+  }
+  while (i < src.length) {
+    if (src[i] === '`') {
+      let close = 0;
+      while (src[i + close] === '`') {
+        close++;
+      }
+      if (close === open) {
+        return i + close - start;
+      }
+      i += close;
+    } else {
+      i++;
+    }
+  }
+  return 0;
+}
+
+/**
+ * Bracket depth mirrors _inlineLabel, which nests two levels below the label
+ * and no further; deeper nesting keeps the label regex's reading. Code spans
+ * bind tighter than brackets at any depth, so they are matched at every
+ * depth. A backtick run that does not close a matched code span is literal
+ * label text: CommonMark allows unmatched backticks in link text even though
+ * the label regex cannot include them there. Code span opening runs must be
+ * maximal (a backtick string cannot be preceded by a backtick), so a failed
+ * match skips the whole run.
+ */
+function scanLabelEnd(src: string, labelStart: number): number {
   let depth = 1;
   for (let i = labelStart; i < src.length; i++) {
     const ch = src[i];
@@ -31,14 +77,20 @@ function scanLabelEnd(src: string, labelStart: number, rules: Rules): number {
       continue;
     }
     if (ch === '`') {
-      const code = rules.inline.code.exec(src.slice(i));
-      if (code) {
-        i += code[0].length - 1;
+      const codeLength = matchCodeSpan(src, i);
+      if (codeLength > 0) {
+        i += codeLength - 1;
         continue;
       }
+      while (src[i + 1] === '`') {
+        i++;
+      }
+      continue;
     }
     if (ch === '[') {
-      depth++;
+      if (++depth > 3) {
+        return -1;
+      }
     } else if (ch === ']' && --depth === 0) {
       return i;
     }
@@ -835,20 +887,24 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     let cap = this.rules.inline.link.exec(src);
     if (!this.options.pedantic
       && (src.charAt(0) === '[' || src.startsWith('!['))
-      && src.includes('`')) {
+      && src.includes('`')
+      && src.includes(']')) {
       // A code span's closing backtick run must match its opening run, which
       // the label regex cannot express, so a label holding a code span with
       // backticks in its content can end the match early or prevent it
       // entirely. Rescan with matched runs and bracket depth for the real
       // label end, and match the link tail again from there.
       const scanStart = src.charAt(0) === '!' ? 2 : 1;
-      const labelEnd = scanLabelEnd(src, scanStart, this.rules);
+      const labelEnd = scanLabelEnd(src, scanStart);
       if (labelEnd !== -1 && (!cap || labelEnd !== scanStart + cap[1].length)) {
         const tail = this.rules.other.linkTail.exec(src.slice(labelEnd + 1));
-        if (!tail) {
+        if (tail) {
+          cap = [src.slice(0, labelEnd + 1) + tail[0], src.slice(scanStart, labelEnd), tail[1], tail[2]] as unknown as RegExpExecArray;
+        } else if (!cap) {
           return;
         }
-        cap = [src.slice(0, labelEnd + 1) + tail[0], src.slice(scanStart, labelEnd), tail[1], tail[2]] as unknown as RegExpExecArray;
+        // When the regex already matched, keep its reading: the rescan only
+        // adds links the regex missed, it never takes one away.
       }
     }
     if (cap) {
@@ -925,12 +981,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     let cap = this.rules.inline.reflink.exec(src);
     if (!cap && !this.options.pedantic
       && (src.charAt(0) === '[' || src.startsWith('!['))
-      && src.includes('`')) {
+      && src.includes('`')
+      && src.includes(']')) {
       // Same label limitation as `link`: a reference label holding a code span
       // with backticks in its content can fail to match. Rescan with matched
       // runs and bracket depth, then match the reference tail from there.
       const labelStart = src.charAt(0) === '!' ? 2 : 1;
-      const labelEnd = scanLabelEnd(src, labelStart, this.rules);
+      const labelEnd = scanLabelEnd(src, labelStart);
       if (labelEnd !== -1) {
         const tail = this.rules.other.reflinkTail.exec(src.slice(labelEnd + 1));
         if (tail) {
