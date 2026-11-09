@@ -541,8 +541,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first
       // First pass: tokenize items and finalize list.loose from spacers before placing checkboxes
+      // Where each item's inline queue entries start, so the checkbox is removed from its own text
+      const queueStarts: number[] = [];
       for (const item of list.items) {
         this.lexer.state.top = false;
+        queueStarts.push(this.lexer.inlineQueue.length);
         item.tokens = this.lexer.blockTokens(item.text, []);
 
         if (!list.loose) {
@@ -555,16 +558,19 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       }
 
       // Second pass: place task checkboxes using the final list.loose
-      for (const item of list.items) {
+      for (let i = 0; i < list.items.length; i++) {
+        const item = list.items[i];
         const itemToken = item.tokens[0];
         if (item.task && (itemToken?.type === 'text' || itemToken?.type === 'paragraph')) {
           // Remove checkbox markdown from item tokens
           item.text = item.text.replace(this.rules.other.listReplaceTask, '');
           itemToken.raw = itemToken.raw.replace(this.rules.other.listReplaceTask, '');
           itemToken.text = itemToken.text.replace(this.rules.other.listReplaceTask, '');
-          for (let i = this.lexer.inlineQueue.length - 1; i >= 0; i--) {
-            if (this.rules.other.listIsTask.test(this.lexer.inlineQueue[i].src)) {
-              this.lexer.inlineQueue[i].src = this.lexer.inlineQueue[i].src.replace(this.rules.other.listReplaceTask, '');
+          // The first token queued its text first, so its entry is found right away
+          const inlineQueue = this.lexer.inlineQueue;
+          for (let j = queueStarts[i]; j < inlineQueue.length; j++) {
+            if (inlineQueue[j].tokens === itemToken.tokens) {
+              inlineQueue[j].src = inlineQueue[j].src.replace(this.rules.other.listReplaceTask, '');
               break;
             }
           }
