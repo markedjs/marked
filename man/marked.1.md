@@ -58,7 +58,7 @@ Enable github flavored markdown.
 * --breaks
 Enable GFM line breaks. Only works with the gfm option.
 
-* --no-breaks, -no-etc...
+* --no-breaks, --no-etc...
 The inverse of any of the marked options above.
 
 * --silent
@@ -66,6 +66,9 @@ Silence error output.
 
 * -h, --help
 Display help information.
+
+* -v, --version
+Display the installed version of marked.
 
 ## CONFIGURATION
 
