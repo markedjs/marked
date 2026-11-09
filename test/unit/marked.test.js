@@ -344,6 +344,25 @@ describe('marked unit', () => {
       assert.strictEqual(html, 'fallbacktest');
     });
 
+    it('should keep zero from both block and inline extension renderers', () => {
+      const extension = level => ({
+        name: level + 'Count',
+        level,
+        tokenizer(src) {
+          if (src.startsWith(':count:')) {
+            return { type: level + 'Count', raw: ':count:' };
+          }
+        },
+        renderer() {
+          return 0;
+        },
+      });
+      marked.use({ extensions: [extension('block'), extension('inline')] });
+
+      assert.strictEqual(marked.parse(':count:'), '0');
+      assert.strictEqual(marked.parseInline(':count:'), '0');
+    });
+
     it('should fall back when tokenizers return false', () => {
       const extension = {
         name: 'test',
