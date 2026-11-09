@@ -15,6 +15,37 @@ import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens, Token } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
+/**
+ * The inline label regex cannot require a code span's closing backtick run to
+ * match its opening run, so a label holding a code span with backticks in its
+ * content can end early and swallow the `](href)` tail into the label. Rescan
+ * with the lexer's own code span rule and bracket depth, and return the index
+ * of the label's real closing bracket (-1 when there is none).
+ */
+function scanLabelEnd(src: string, labelStart: number, rules: Rules): number {
+  let depth = 1;
+  for (let i = labelStart; i < src.length; i++) {
+    const ch = src[i];
+    if (ch === '\\') {
+      i++;
+      continue;
+    }
+    if (ch === '`') {
+      const code = rules.inline.code.exec(src.slice(i));
+      if (code) {
+        i += code[0].length - 1;
+        continue;
+      }
+    }
+    if (ch === '[') {
+      depth++;
+    } else if (ch === ']' && --depth === 0) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer, rules: Rules): Tokens.Link | Tokens.Image | undefined {
   const href = link.href;
   const title = link.title || null;
@@ -801,7 +832,25 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     if (this.lexer.state.linkParenPossible === false) {
       return undefined;
     }
-    const cap = this.rules.inline.link.exec(src);
+    let cap = this.rules.inline.link.exec(src);
+    if (!this.options.pedantic
+      && (src.charAt(0) === '[' || src.startsWith('!['))
+      && src.includes('`')) {
+      // A code span's closing backtick run must match its opening run, which
+      // the label regex cannot express, so a label holding a code span with
+      // backticks in its content can end the match early or prevent it
+      // entirely. Rescan with matched runs and bracket depth for the real
+      // label end, and match the link tail again from there.
+      const scanStart = src.charAt(0) === '!' ? 2 : 1;
+      const labelEnd = scanLabelEnd(src, scanStart, this.rules);
+      if (labelEnd !== -1 && (!cap || labelEnd !== scanStart + cap[1].length)) {
+        const tail = this.rules.other.linkTail.exec(src.slice(labelEnd + 1));
+        if (!tail) {
+          return;
+        }
+        cap = [src.slice(0, labelEnd + 1) + tail[0], src.slice(scanStart, labelEnd), tail[1], tail[2]] as unknown as RegExpExecArray;
+      }
+    }
     if (cap) {
       const labelStart = cap[0].charAt(0) === '!' ? 2 : 1;
       if (!this.options.pedantic && isLabelEndInsideToken(src, cap[1], labelStart, this.rules)) {
