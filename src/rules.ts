@@ -42,6 +42,7 @@ try {
 
 export const other = {
   codeRemoveIndent: /^(?: {0,3}\t| {1,4})/gm,
+  listInterruptsParagraph: /^ {0,3}(?:[*+-]|1[.)])[ \t]+[^ \t\n]/,
   outputLinkReplace: /\\([\[\]])/g,
   indentCodeCompensation: /^(\s+)(?:```)/,
   beginningSpace: /^\s+/,
