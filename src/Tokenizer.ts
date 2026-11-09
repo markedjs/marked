@@ -234,11 +234,16 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
         const currentRaw = currentLines.join('\n');
         const currentText = currentRaw
-          // a tab after the block quote marker runs to the next tab stop, and
-          // the marker only consumes one space of it; the rest is content
+          // `>` takes one optional column. A leading tab provides it, and the
+          // rest of that run is indent, so expand to the tab stop. A literal
+          // space already took the column; tabs after it are content.
           .replace(
             this.rules.other.blockquoteMarkerWhitespace,
-            (_, marker: string, whitespace: string) => marker + expandTabs(whitespace, marker.length),
+            (_, marker: string, whitespace: string) => (
+              whitespace[0] === ' '
+                ? marker + whitespace
+                : marker + expandTabs(whitespace, marker.length)
+            ),
           )
           // precede setext continuation with 4 spaces so it isn't a setext
           .replace(this.rules.other.blockquoteSetextReplace, '\n    $1')
