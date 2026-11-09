@@ -652,6 +652,19 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   table(src: string): Tokens.Table | undefined {
+    let headers: string[] | undefined;
+    let aligns: string[] | undefined;
+    if (this.options.gfm && !this.options.pedantic) {
+      const header = this.rules.other.tableHeader.exec(src);
+      if (!header || !this.rules.other.tableDelimiter.test(header[2])) {
+        return;
+      }
+      headers = splitCells(header[1]);
+      aligns = header[2].replace(this.rules.other.tableAlignChars, '').split('|');
+      if (headers.length !== aligns.length) {
+        return;
+      }
+    }
     const cap = this.rules.block.table.exec(src);
     if (!cap) {
       return;
@@ -662,8 +675,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       return;
     }
 
-    const headers = splitCells(cap[1]);
-    const aligns = cap[2].replace(this.rules.other.tableAlignChars, '').split('|');
+    headers ??= splitCells(cap[1]);
+    aligns ??= cap[2].replace(this.rules.other.tableAlignChars, '').split('|');
     const rows = cap[3]?.trim() ? cap[3].replace(this.rules.other.tableRowBlankLine, '').split('\n') : [];
 
     const item: Tokens.Table = {
