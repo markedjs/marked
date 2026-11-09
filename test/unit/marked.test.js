@@ -1356,4 +1356,18 @@ br
       assert.strictEqual(html.trim(), '<p><em>text</em></p>');
     });
   });
+
+  describe('blockquote fenced code tabs', () => {
+    it('keeps a tab that is code content after the optional marker space', () => {
+      const html = marked.parse('> ```python\n> class P:\n> \tname: str\n> ```\n');
+      assert.match(html, /class P:\n\tname: str\n/);
+      assert.doesNotMatch(html, /class P:\n  name: str\n/);
+    });
+
+    it('still expands tabs that open indented code under a quote', () => {
+      const html = marked.parse('>\t\tfoo\n');
+      assert.match(html, /<pre><code> {2}foo\n<\/code><\/pre>/);
+    });
+  });
+
 });
