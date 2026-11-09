@@ -45,10 +45,16 @@ try {
 // pieces as `link`.
 const linkTail = /^\([ \t\n]*(<(?:\\.|[^\n<>\\])+>|[^ \t\n\x00-\x1f]+|(?=\)))(?:(?:[ \t]+(?:\n[ \t]*)?|\n[ \t]*)("(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|\((?:\\[\s\S]|[^)\\])*\)))?[ \t\n]*\)/;
 
+// The tail of `reflink` after the label, re-matched from a corrected label
+// end when the label holds code spans (see `Tokenizer.reflink`). Same
+// reference piece as `reflink`, plus the empty `[]` of a collapsed reference.
+const reflinkTail = /^\[((?:\\[\s\S]|[^\[\]\\])*)\]/;
+
 export const other = {
   codeRemoveIndent: /^(?: {0,3}\t| {1,4})/gm,
   outputLinkReplace: /\\([\[\]])/g,
   linkTail,
+  reflinkTail,
   indentCodeCompensation: /^(\s+)(?:```)/,
   beginningSpace: /^\s+/,
   endingHash: /#$/,
