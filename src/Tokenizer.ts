@@ -54,6 +54,332 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
   };
 }
 
+// A block quote marker is `>` plus one column. A tab can supply that column,
+// and any columns past it belong to the line. `markerLength` is the column
+// the whitespace starts in (` {0,3}>`).
+function blockquoteMarkerTabWidth(markerLength: number) {
+  return 4 - (markerLength % 4);
+}
+
+// Split `^ {0,3}>[ \t]+` the way blockquoteMarkerWhitespace does, without a
+// shared /g regex (those keep lastIndex).
+function splitBlockquoteMarker(line: string) {
+  let i = 0;
+  const len = line.length;
+  while (i < 3 && i < len && line[i] === ' ') {
+    i++;
+  }
+  if (i >= len || line[i] !== '>') {
+    return;
+  }
+  const markerEnd = i + 1;
+  let j = markerEnd;
+  while (j < len && (line[j] === ' ' || line[j] === '\t')) {
+    j++;
+  }
+  if (j === markerEnd) {
+    return;
+  }
+  return {
+    marker: line.slice(0, markerEnd),
+    whitespace: line.slice(markerEnd, j),
+    rest: line.slice(j),
+  };
+}
+
+function expandMarkerTabs(line: string) {
+  if (!line.includes('\t')) {
+    return line;
+  }
+  const parts = splitBlockquoteMarker(line);
+  if (!parts) {
+    return line;
+  }
+  return parts.marker + expandTabs(parts.whitespace, parts.marker.length) + parts.rest;
+}
+
+// Inside a fence the marker's one column is the only structural whitespace.
+// A leading tab is partly that column (expanded); every later tab is code.
+function preserveFenceContentTabs(line: string) {
+  const parts = splitBlockquoteMarker(line);
+  if (!parts || parts.whitespace.charCodeAt(0) !== 9 /* \t */) {
+    return line;
+  }
+  const spaces = ' '.repeat(blockquoteMarkerTabWidth(parts.marker.length));
+  return parts.marker + spaces + parts.whitespace.slice(1) + parts.rest;
+}
+
+function stripBlockquoteMarker(line: string) {
+  let i = 0;
+  const len = line.length;
+  while (i < 3 && i < len && line[i] === ' ') {
+    i++;
+  }
+  if (i >= len || line[i] !== '>') {
+    return line;
+  }
+  i++;
+  if (i < len && (line[i] === ' ' || line[i] === '\t')) {
+    i++;
+  }
+  return line.slice(i);
+}
+
+type BlockquoteFence = { ch: '`' | '~', len: number };
+
+function openingFence(content: string): BlockquoteFence | undefined {
+  let spaces = 0;
+  while (spaces < content.length && content[spaces] === ' ') {
+    if (spaces === 3) {
+      return;
+    }
+    spaces++;
+  }
+  const ch = content[spaces];
+  if (ch !== '`' && ch !== '~') {
+    return;
+  }
+  let i = spaces + 1;
+  while (i < content.length && content[i] === ch) {
+    i++;
+  }
+  const len = i - spaces;
+  if (len < 3) {
+    return;
+  }
+  if (ch === '`') {
+    for (let j = i; j < content.length; j++) {
+      if (content[j] === '`') {
+        return;
+      }
+    }
+  }
+  return { ch, len };
+}
+
+function isClosingFence(content: string, fence: BlockquoteFence) {
+  let i = 0;
+  while (i < content.length && content[i] === ' ') {
+    if (i === 3) {
+      return false;
+    }
+    i++;
+  }
+  let n = 0;
+  while (i < content.length && content[i] === fence.ch) {
+    n++;
+    i++;
+  }
+  if (n < fence.len) {
+    return false;
+  }
+  for (; i < content.length; i++) {
+    const c = content[i];
+    if (c !== ' ' && c !== '\t') {
+      return false;
+    }
+  }
+  return true;
+}
+
+function leadingSpaces(content: string) {
+  let i = 0;
+  while (i < content.length && content[i] === ' ') {
+    i++;
+  }
+  return i;
+}
+
+// Continuation indent of a list item, matching Tokenizer.list for a non-blank
+// first line: marker width plus the content indent (capped the same way).
+function listContinuationIndent(line: string) {
+  const m = /^( {0,3}(?:[*+-]|\d{1,9}[.)]))(.*)$/.exec(line);
+  if (!m) {
+    return;
+  }
+  const rest = m[2];
+  if (rest && rest[0] !== ' ' && rest[0] !== '\t') {
+    return;
+  }
+  const bulletIndent = m[1].length;
+  const firstLine = rest.replace(/^[ \t]+/, whitespace => expandTabs(whitespace, bulletIndent));
+  if (!firstLine.trim()) {
+    return bulletIndent + 1;
+  }
+  let indent = firstLine.search(/[^ ]/);
+  if (indent < 0 || indent > 4) {
+    indent = 1;
+  }
+  return bulletIndent + indent;
+}
+
+const lineHeading = /^ {0,3}#{1,6}(?:\s|$)/;
+const lineHr = /^ {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})$/;
+const lineBlockquote = /^ {0,3}>/;
+
+function lineEndsList(content: string) {
+  return lineHeading.test(content) || lineHr.test(content) || lineBlockquote.test(content);
+}
+
+// How many content lines an HTML block consumes, using the same raw the
+// html tokenizer hands back to the lexer (trailing blank lines trimmed).
+function htmlBlockLines(rest: string, html: RegExp) {
+  const prev = html.lastIndex;
+  html.lastIndex = 0;
+  const cap = html.exec(rest);
+  html.lastIndex = prev;
+  if (!cap) {
+    return 0;
+  }
+  const raw = trimTrailingBlankLines(cap[0]);
+  let newlines = 0;
+  for (let i = 0; i < raw.length; i++) {
+    if (raw[i] === '\n') {
+      newlines++;
+    }
+  }
+  if (raw.length === rest.length || rest[raw.length] === '\n') {
+    return raw.endsWith('\n') ? newlines : newlines + 1;
+  }
+  return newlines + 1;
+}
+
+/**
+ * Tabs set block structure (the block quote marker, indented code, lists).
+ * A tab inside a fenced code block is content and stays a tab — CommonMark
+ * §2.2. Only the column the marker itself borrows from a leading tab is
+ * expanded there. Lines with no tab keep the single replace below.
+ */
+function expandBlockquoteTabs(raw: string, rules: Rules, pedantic: boolean) {
+  if (pedantic || !raw.includes('\t')) {
+    return raw.replace(
+      rules.other.blockquoteMarkerWhitespace,
+      (_, marker: string, whitespace: string) => marker + expandTabs(whitespace, marker.length),
+    );
+  }
+
+  const lines = raw.split('\n');
+  const expanded = lines.map(expandMarkerTabs);
+  const content = expanded.map(stripBlockquoteMarker);
+  const out = new Array<string>(lines.length);
+  let fence: BlockquoteFence | undefined;
+  // Set while a list item started at this block-quote level is still open.
+  // Fences indented to the item belong to the list tokenizer, which expands
+  // their leading tabs itself; a less-indented fence ends the item.
+  let listIndent: number | undefined;
+  let afterBlank = false;
+
+  let i = 0;
+  while (i < lines.length) {
+    const lineContent = content[i];
+    const blank = /^[ \t]*$/.test(lineContent);
+
+    if (fence) {
+      if (!blank && isClosingFence(lineContent, fence)) {
+        fence = undefined;
+        out[i] = expanded[i];
+      } else {
+        out[i] = preserveFenceContentTabs(lines[i]);
+      }
+      afterBlank = blank;
+      i++;
+      continue;
+    }
+
+    if (listIndent !== undefined && !blank) {
+      const indent = leadingSpaces(lineContent);
+      if (indent >= listIndent) {
+        out[i] = expanded[i];
+        afterBlank = false;
+        i++;
+        continue;
+      }
+      const opened = openingFence(lineContent);
+      if (opened) {
+        listIndent = undefined;
+        fence = opened;
+        out[i] = expanded[i];
+        afterBlank = false;
+        i++;
+        continue;
+      }
+      const nextItem = listContinuationIndent(lineContent);
+      if (nextItem !== undefined && !lineHr.test(lineContent)) {
+        listIndent = nextItem;
+        out[i] = expanded[i];
+        afterBlank = false;
+        i++;
+        continue;
+      }
+      // An HTML block ends the item, same as a heading. A `<` that is not an
+      // HTML block is lazy text and stays in the item.
+      const htmlLines = /^ {0,3}</.test(lineContent)
+        ? htmlBlockLines(content.slice(i).join('\n'), rules.block.html)
+        : 0;
+      if (!afterBlank && !lineEndsList(lineContent) && htmlLines === 0) {
+        out[i] = expanded[i];
+        afterBlank = false;
+        i++;
+        continue;
+      }
+      listIndent = undefined;
+      if (htmlLines > 0) {
+        const end = Math.min(lines.length, i + htmlLines);
+        for (; i < end; i++) {
+          out[i] = expanded[i];
+        }
+        afterBlank = true;
+        continue;
+      }
+    }
+
+    if (blank) {
+      out[i] = expanded[i];
+      afterBlank = true;
+      i++;
+      continue;
+    }
+
+    const opened = openingFence(lineContent);
+    if (opened) {
+      fence = opened;
+      out[i] = expanded[i];
+      afterBlank = false;
+      i++;
+      continue;
+    }
+
+    if (!lineHr.test(lineContent)) {
+      const nextItem = listContinuationIndent(lineContent);
+      if (nextItem !== undefined) {
+        listIndent = nextItem;
+        out[i] = expanded[i];
+        afterBlank = false;
+        i++;
+        continue;
+      }
+    }
+
+    if (/^ {0,3}</.test(lineContent) && !lineHeading.test(lineContent) && !lineBlockquote.test(lineContent)) {
+      const n = htmlBlockLines(content.slice(i).join('\n'), rules.block.html);
+      if (n > 0) {
+        const end = Math.min(lines.length, i + n);
+        for (; i < end; i++) {
+          out[i] = expanded[i];
+        }
+        afterBlank = true;
+        continue;
+      }
+    }
+
+    out[i] = expanded[i];
+    afterBlank = false;
+    i++;
+  }
+
+  return out.join('\n');
+}
+
 function indentCodeCompensation(raw: string, text: string, rules: Rules) {
   const matchIndentToCode = raw.match(rules.other.indentCodeCompensation);
 
@@ -233,13 +559,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         lines = lines.slice(i);
 
         const currentRaw = currentLines.join('\n');
-        const currentText = currentRaw
-          // a tab after the block quote marker runs to the next tab stop, and
-          // the marker only consumes one space of it; the rest is content
-          .replace(
-            this.rules.other.blockquoteMarkerWhitespace,
-            (_, marker: string, whitespace: string) => marker + expandTabs(whitespace, marker.length),
-          )
+        const currentText = expandBlockquoteTabs(currentRaw, this.rules, !!this.options.pedantic)
           // precede setext continuation with 4 spaces so it isn't a setext
           .replace(this.rules.other.blockquoteSetextReplace, '\n    $1')
           .replace(this.rules.other.blockquoteSetextReplace2, '');
