@@ -327,6 +327,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   list(src: string): Tokens.List | undefined {
     let cap = this.rules.block.list.exec(src);
     if (cap) {
+      // Inside a list item, paragraph lines are lexed as text tokens, so a list after one would
+      // interrupt the paragraph. Only a non-empty list starting with a bullet or 1 can do that
+      if (!this.options.pedantic && this.lexer.state.lastToken?.type === 'text'
+        && !this.rules.other.listInterruptsParagraph.test(src)) {
+        return;
+      }
+
       // src is only consumed from the front, so every raw below is a slice of
       // listSrc rather than a string built up line by line
       const listSrc = src;
@@ -915,12 +922,14 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       runStart--;
     }
     const runPrevChar = [...maskedSrc.slice(Math.max(0, runStart - 2), runStart)].at(-1) ?? '';
-    // The other delimiter character counts as punctuation here (`_**a*`)
+    // The other delimiter character counts as punctuation here (`_**a*`, `*_#_`)
     const runPrevPunct = runPrevChar === '*' || runPrevChar === '_' || !!this.rules.inline.punctuation.exec(runPrevChar);
     if (runStart < srcStart) {
       prevChar = runPrevChar;
     }
-    const prevPunct = runStart < srcStart ? runPrevPunct : !!this.rules.inline.punctuation.exec(prevChar);
+    const prevPunct = runStart < srcStart
+      ? runPrevPunct
+      : prevChar === '*' || prevChar === '_' || !!this.rules.inline.punctuation.exec(prevChar);
 
     // _ can't be between two alphanumerics. \p{L}\p{N} includes non-english alphabet/numbers as well
     if (match[4] && prevChar.match(this.rules.other.unicodeAlphaNumeric)) return;
