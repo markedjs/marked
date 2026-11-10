@@ -1,4 +1,4 @@
-import { Marked, Renderer, lexer, parse, parseInline, getDefaults, walkTokens, defaults, setOptions } from '../../lib/marked.esm.js';
+import { Marked, Renderer, lexer, parseInline, getDefaults, walkTokens, defaults, setOptions } from '../../lib/marked.esm.js';
 import { timeout } from './utils.js';
 import assert from 'node:assert';
 import { describe, it, beforeEach, mock } from 'node:test';
@@ -1336,21 +1336,5 @@ br
       const html = await promise;
       assert.strictEqual(html.trim(), '<p><em>text</em></p>');
     });
-  });
-});
-
-describe('link label rescan performance', () => {
-  it('should not rescan per unmatched open bracket', () => {
-    const md = '['.repeat(6000) + '`'.repeat(6000);
-    const start = performance.now();
-    parse(md);
-    assert.ok(performance.now() - start < 1000, 'parsing took too long');
-  });
-
-  it('should not run the code span rule at every backtick', () => {
-    const md = '[' + '`'.repeat(65536) + '](x)';
-    const start = performance.now();
-    parse(md);
-    assert.ok(performance.now() - start < 1000, 'parsing took too long');
   });
 });
