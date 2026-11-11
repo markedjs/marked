@@ -467,21 +467,25 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
                 break;
               }
 
-              // paragraph continuation unless last line was a different block level element
-              if (line.replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar) >= 4) { // indented code block
-                break;
-              }
-              if (fencesBeginRegex.test(line)) {
-                break;
-              }
-              if (headingBeginRegex.test(line)) {
-                break;
-              }
-              if (htmlBeginRegex.test(line)) {
-                break;
-              }
-              if (hrRegex.test(line)) {
-                break;
+              // paragraph continuation unless last line was a different block level element.
+              // A lazy last line was paragraph text, and cutting the item indent off it
+              // could make it look like the start of a block, so it is not checked
+              if (!lineIsLazy) {
+                if (line.replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar) >= 4) { // indented code block
+                  break;
+                }
+                if (fencesBeginRegex.test(line)) {
+                  break;
+                }
+                if (headingBeginRegex.test(line)) {
+                  break;
+                }
+                if (htmlBeginRegex.test(line)) {
+                  break;
+                }
+                if (hrRegex.test(line)) {
+                  break;
+                }
               }
               if (!this.options.pedantic && !lineIsLazy) {
                 // `line` is relative to the item content, so a block on it can be indented up to 3 spaces whatever
@@ -497,7 +501,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
               // list indentation is removed. Keep it in the paragraph.
               const setextContinuation = !this.options.pedantic
                 && /^ {0,3}(?:=+|-+) *$/.test(nextLine)
-                && this.rules.block.lheading.test(`${line}\n${nextLine}`);
+                && (lineIsLazy || this.rules.block.lheading.test(`${line}\n${nextLine}`));
               const continuation = setextContinuation
                 ? `    ${nextLineWithoutTabs.replace(/^ {0,3}/, '')}`
                 : nextLine;
