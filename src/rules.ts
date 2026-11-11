@@ -63,7 +63,7 @@ export const other = {
   // has to be recognized here or a lazy `===\t` becomes a heading.
   blockquoteSetextReplace: /\n {0,3}((?:=+|-+)[ \t]*)(?=\n|$)/g,
   blockquoteSetextReplace2: /^ {0,3}>[ \t]?/gm,
-  blockquoteMarkerWhitespace: /^( {0,3}>)([ \t]+)/gm,
+  blockquoteMarkerWhitespace: /^( {0,3}>)(\t[ \t]*)/gm,
   listReplaceNesting: /^ {1,4}(?=( {4})*[^ ])/g,
   listIsTask: /^\[[ xX]\][ \t]+\S/,
   listReplaceTask: /^\[[ xX]\][ \t]+/,
