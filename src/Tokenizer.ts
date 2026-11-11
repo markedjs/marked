@@ -732,11 +732,20 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   text(src: string): Tokens.Text | undefined {
     const cap = this.rules.block.text.exec(src);
     if (cap) {
+      let raw = cap[0];
+      let text = cap[0];
+      // Indented code cannot interrupt the text, so indented lines continue it
+      // up to the next blank line
+      const continuation = this.rules.other.textIndentedContinuation.exec(src.slice(raw.length));
+      if (continuation) {
+        raw += continuation[0];
+        text += continuation[0].replace(this.rules.other.codeRemoveIndent, '');
+      }
       return {
         type: 'text',
-        raw: cap[0],
-        text: cap[0],
-        tokens: this.lexer.inline(cap[0]),
+        raw,
+        text,
+        tokens: this.lexer.inline(text),
       };
     }
   }
