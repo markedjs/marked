@@ -239,7 +239,16 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           // After a space the marker consumes it whole, so later tabs stay literal.
           .replace(
             this.rules.other.blockquoteMarkerWhitespace,
-            (_, marker: string, whitespace: string) => marker + expandTabs(whitespace, marker.length),
+            (_: string, marker: string, whitespace: string) => {
+              // The optional space after ">" is marker; anything after that is
+              // content (e.g. a tab that opens a fenced code line) and must not
+              // be expanded. Tabs with no leading space are structural and are
+              // expanded so indented code under the quote still works.
+              if (whitespace.startsWith(' ')) {
+                return marker + ' ' + whitespace.slice(1);
+              }
+              return marker + expandTabs(whitespace, marker.length);
+            },
           )
           // precede setext continuation with 4 spaces so it isn't a setext
           .replace(this.rules.other.blockquoteSetextReplace, '\n    $1')
