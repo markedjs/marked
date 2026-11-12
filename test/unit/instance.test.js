@@ -3,6 +3,63 @@ import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert';
 
 describe('Marked', () => {
+  describe('extension errors', () => {
+    const cases = [
+      { name: 'a string', value: '<hook failed>', message: '<hook failed>', escapedMessage: '&lt;hook failed&gt;' },
+      { name: 'a number', value: 42, message: '42' },
+      { name: 'null', value: null, message: 'null' },
+      { name: 'undefined', value: undefined, message: 'undefined' },
+      { name: 'an object', value: {}, message: '[object Object]' },
+      { name: 'an Error', value: new TypeError('hook failed'), message: 'hook failed' },
+    ];
+    const reportMessage = '\nPlease report this to https://github.com/markedjs/marked.';
+
+    for (const async of [false, true]) {
+      for (const method of ['parse', 'parseInline']) {
+        for (const { name, value, message, escapedMessage = message } of cases) {
+          for (const silent of [false, true]) {
+            it(`should handle ${name} from ${async ? 'async' : 'sync'} ${method} with silent: ${silent}`, async() => {
+              // Use fresh objects because Marked appends a report message to errors.
+              const thrown = value instanceof Error
+                ? new TypeError(message)
+                : (value && typeof value === 'object' ? { ...value } : value);
+              const parser = new Marked({
+                async,
+                hooks: {
+                  preprocess() {
+                    if (async) {
+                      return Promise.reject(thrown);
+                    }
+                    throw thrown;
+                  },
+                },
+              });
+
+              if (silent) {
+                const result = await parser[method]('hello', { silent });
+                assert.strictEqual(result, `<p>An error occurred:</p><pre>${escapedMessage}${reportMessage}</pre>`);
+              } else {
+                const checkError = (error) => {
+                  assert.ok(error instanceof Error);
+                  assert.strictEqual(error.message, message + reportMessage);
+                  if (thrown instanceof Error) {
+                    assert.strictEqual(error, thrown);
+                  }
+                  return true;
+                };
+                if (async) {
+                  await assert.rejects(parser[method]('hello'), checkError);
+                } else {
+                  assert.throws(() => parser[method]('hello'), checkError);
+                }
+              }
+            });
+          }
+        }
+      }
+    }
+  });
+
   it('should allow multiple instances', () => {
     const marked1 = new Marked({
       silent: true,
