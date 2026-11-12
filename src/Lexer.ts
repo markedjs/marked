@@ -382,12 +382,18 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     // The masked source is only read by emStrong and del, which need a *, _ or
     // ~ to start. Skip building it for a run without one, unless a custom
     // tokenizer or an emStrongMask hook may read it.
-    const maskedSrc = src.includes('*') || src.includes('_') || src.includes('~')
+    const hasDelimiter = src.includes('*') || src.includes('_') || src.includes('~');
+    const maskedSrc = hasDelimiter
       || this.options.hooks?.emStrongMask
       || this.tokenizer.emStrong !== _Tokenizer.prototype.emStrong
       || this.tokenizer.del !== _Tokenizer.prototype.del
       ? this.#maskSrc(src)
       : src;
+
+    // Without a delimiter no opener can match, so nothing reads the closer scan.
+    if (!hasDelimiter) {
+      return this.#tokenizeInlines(src, maskedSrc, tokens);
+    }
 
     // One scan of this maskedSrc for the last emphasis, strong, and
     // strikethrough closers, shared by every opener in the pass. Popped
