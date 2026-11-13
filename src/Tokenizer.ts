@@ -467,20 +467,35 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
                 break;
               }
 
+              // The first line of an item always starts a block, which can be a
+              // nested list item or block quote. Look past their markers to the
+              // block a lazy line would continue. Tabs are left alone because
+              // their width depends on the column they start at.
+              let lastBlock = line;
+              if (!this.options.pedantic && !itemContents.includes('\n') && !line.includes('\t')) {
+                let marker;
+                while (!hrRegex.test(lastBlock) && (marker = this.rules.other.nestedBlockMarker.exec(lastBlock))) {
+                  lastBlock = lastBlock.slice(marker[0].length);
+                }
+                if (!lastBlock.trim()) { // empty list item or block quote
+                  break;
+                }
+              }
+
               // paragraph continuation unless last line was a different block level element
-              if (line.replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar) >= 4) { // indented code block
+              if (lastBlock.replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar) >= 4) { // indented code block
                 break;
               }
-              if (fencesBeginRegex.test(line)) {
+              if (fencesBeginRegex.test(lastBlock)) {
                 break;
               }
-              if (headingBeginRegex.test(line)) {
+              if (headingBeginRegex.test(lastBlock)) {
                 break;
               }
-              if (htmlBeginRegex.test(line)) {
+              if (htmlBeginRegex.test(lastBlock)) {
                 break;
               }
-              if (hrRegex.test(line)) {
+              if (hrRegex.test(lastBlock)) {
                 break;
               }
               if (!this.options.pedantic && !lineIsLazy) {
