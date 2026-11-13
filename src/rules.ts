@@ -57,6 +57,7 @@ export const other = {
   multipleSpaceGlobal: /\s+/g,
   blankLine: /^[ \t]*$/,
   doubleBlankLine: /\n[ \t]*\n[ \t]*$/,
+  textIndentedContinuation: /^(?:\n(?: {4}| {0,3}\t)[ \t]*[^ \t\n][^\n]*)+/,
   blockquoteStart: /^ {0,3}>/,
   // Neutralize a lazy setext underline, including one with trailing tabs.
   // CommonMark §4.3 allows those tabs on a real underline, so the same class
