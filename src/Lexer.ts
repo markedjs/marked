@@ -1,7 +1,7 @@
 import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
-import { beginEmStrongDelCloserScan, endEmStrongDelCloserScan, normalizeLabel } from './helpers.ts';
+import { beginEmStrongDelCloserScan, cachedLastPossibleDelCloserIndex, cachedLastPossibleEmStrongCloserIndex, endEmStrongDelCloserScan, normalizeLabel } from './helpers.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
@@ -463,6 +463,51 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
           tokens.push(token);
         }
         continue;
+      }
+
+      // #4099 follow-up: for a run of `*` or `_` with no possible closer
+      // anywhere ahead in maskedSrc, every opener position fails identically
+      // and the outer loop walks the run char-by-char, giving O(n^2) time.
+      // Consume the whole run as literal text in one step.
+      const firstChar = src[0];
+      if (firstChar === '*' || firstChar === '_') {
+        const pos = maskedSrc.length - src.length;
+        const lastCloser = cachedLastPossibleEmStrongCloserIndex(this.tokenizer, maskedSrc, firstChar);
+        if (lastCloser <= pos) {
+          let runEnd = 1;
+          while (runEnd < src.length && src.charCodeAt(runEnd) === firstChar.charCodeAt(0)) runEnd++;
+          const raw = src.substring(0, runEnd);
+          const lastToken = tokens.at(-1);
+          if (lastToken?.type === 'text' && !lastToken.escaped) {
+            lastToken.raw += raw;
+            lastToken.text += raw;
+          } else {
+            tokens.push({ type: 'text', raw, text: raw, escaped: false } as Tokens.Text);
+          }
+          src = src.substring(runEnd);
+          prevChar = firstChar;
+          keepPrevChar = true;
+          continue;
+        }
+      } else if (firstChar === '~') {
+        const pos = maskedSrc.length - src.length;
+        const lastCloser = cachedLastPossibleDelCloserIndex(this.tokenizer, maskedSrc);
+        if (lastCloser <= pos) {
+          let runEnd = 1;
+          while (runEnd < src.length && src.charCodeAt(runEnd) === 126 /* ~ */) runEnd++;
+          const raw = src.substring(0, runEnd);
+          const lastToken = tokens.at(-1);
+          if (lastToken?.type === 'text' && !lastToken.escaped) {
+            lastToken.raw += raw;
+            lastToken.text += raw;
+          } else {
+            tokens.push({ type: 'text', raw, text: raw, escaped: false } as Tokens.Text);
+          }
+          src = src.substring(runEnd);
+          prevChar = firstChar;
+          keepPrevChar = true;
+          continue;
+        }
       }
 
       // em & strong
