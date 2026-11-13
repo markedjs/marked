@@ -4,6 +4,7 @@ import {
   splitCells,
   findClosingBracket,
   expandTabs,
+  expandBlockquoteTabs,
   normalizeLabel,
   decodeNumericCharacterReferences,
   trimTrailingBlankLines,
@@ -259,14 +260,14 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         lines = lines.slice(i);
 
         const currentRaw = currentLines.join('\n');
-        const currentText = currentRaw
-          // a tab right after the block quote marker runs to the next tab stop, and
-          // the marker only consumes one space of it; the rest is content.
-          // After a space the marker consumes it whole, so later tabs stay literal.
-          .replace(
+        const tabsExpanded = this.lexer.state.top && currentRaw.includes('\t')
+          ? expandBlockquoteTabs(currentLines)
+          // inside a list item the marker's column is unknown, so only a tab right after it is expanded
+          : currentRaw.replace(
             this.rules.other.blockquoteMarkerWhitespace,
             (_, marker: string, whitespace: string) => marker + expandTabs(whitespace, marker.length),
-          )
+          );
+        const currentText = tabsExpanded
           // precede setext continuation with 4 spaces so it isn't a setext
           .replace(this.rules.other.blockquoteSetextReplace, '\n    $1')
           .replace(this.rules.other.blockquoteSetextReplace2, '');

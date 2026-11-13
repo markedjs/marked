@@ -326,3 +326,87 @@ export function expandTabs(line: string, indent = 0) {
 
   return expanded;
 }
+
+/**
+ * Expands the tabs in block quote markers and the indentation after them to spaces, with tab
+ * stops measured from the start of the line. Inside fenced code the indentation is code content,
+ * so a tab there stays literal.
+ */
+export function expandBlockquoteTabs(lines: string[]) {
+  let fence: { marker: string, depth: number } | undefined;
+  return lines.map((line) => {
+    const { depth, expanded, keptIndent, content } = splitBlockquoteLine(line, fence?.depth ?? Infinity);
+    if (fence?.depth !== depth) {
+      fence = undefined;
+    }
+    if (fence) {
+      const close = other.blockquoteFenceClose.exec(content)?.[1];
+      if (!close || close[0] !== fence.marker[0] || close.length < fence.marker.length) {
+        return keptIndent;
+      }
+      fence = undefined;
+      return expanded;
+    }
+    const open = other.blockquoteFenceOpen.exec(content)?.[1];
+    if (open) {
+      fence = { marker: open, depth };
+    }
+    return expanded;
+  }).join('\n');
+}
+
+/**
+ * Reads the `>` markers at the start of a line. `expanded` has the tabs in them and in the
+ * content's first four columns of indentation expanded, `keptIndent` only the tab that the
+ * optional space after the last marker cuts into, and `content` is what follows the markers.
+ */
+function splitBlockquoteLine(line: string, maxDepth: number) {
+  let i = 0;
+  let col = 0;
+  let depth = 0;
+  let contentCol = 0;
+  let prefix = '';
+
+  while (depth < maxDepth) {
+    let j = i;
+    let markerCol = col;
+    while (line[j] === ' ' || line[j] === '\t') {
+      markerCol += tabWidth(line[j], markerCol);
+      j++;
+    }
+    if (line[j] !== '>' || markerCol - contentCol > 3) {
+      break;
+    }
+    prefix += ' '.repeat(markerCol - col) + '>';
+    depth++;
+    i = j + 1;
+    col = markerCol + 1;
+    contentCol = line[i] === ' ' || line[i] === '\t' ? col + 1 : col;
+  }
+
+  if (depth === 0) {
+    return { depth, expanded: line, keptIndent: line, content: line };
+  }
+
+  let indent = '';
+  let keptIndent = '';
+  while ((line[i] === ' ' || line[i] === '\t') && col < contentCol + 4) {
+    const added = tabWidth(line[i], col);
+    indent += ' '.repeat(added);
+    keptIndent += col < contentCol && added > 1 ? ' '.repeat(added) : line[i];
+    col += added;
+    i++;
+  }
+
+  const rest = line.slice(i);
+  return {
+    depth,
+    expanded: prefix + indent + rest,
+    keptIndent: prefix + keptIndent + rest,
+    content: ' '.repeat(Math.max(0, col - contentCol)) + rest,
+  };
+}
+
+function tabWidth(char: string, col: number) {
+  return char === '\t' ? 4 - (col % 4) : 1;
+}
