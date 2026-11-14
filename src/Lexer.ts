@@ -131,6 +131,9 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     }
 
     let srcLength = Infinity;
+    let lastParagraph: Token | undefined;
+    const mergeAdjacentParagraphs = this.options.gfm && !this.options.pedantic
+      && this.tokenizer.paragraph === _Tokenizer.prototype.paragraph;
     while (src) {
       if (src.length < srcLength) {
         srcLength = src.length;
@@ -278,13 +281,18 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       }
       if (this.state.top && (token = this.tokenizer.paragraph(cutSrc))) {
         const lastToken = tokens.at(-1);
-        if (lastParagraphClipped && lastToken?.type === 'paragraph') {
+        // A table-shaped header rejected by the table tokenizer is still
+        // paragraph continuation, not a new block. Keep custom paragraph
+        // tokenizers' choice to emit separate paragraphs unchanged.
+        if ((lastParagraphClipped || (lastToken === lastParagraph && mergeAdjacentParagraphs)) && lastToken?.type === 'paragraph') {
           lastToken.raw += (lastToken.raw.endsWith('\n') ? '' : '\n') + token.raw;
           lastToken.text += '\n' + token.text;
           this.inlineQueue.pop();
           this.inlineQueue.at(-1)!.src = lastToken.text;
+          lastParagraph = lastToken;
         } else {
           tokens.push(token);
+          lastParagraph = token;
         }
         lastParagraphClipped = cutSrc.length !== src.length;
         src = src.substring(token.raw.length);
