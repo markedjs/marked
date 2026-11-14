@@ -235,6 +235,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   blockquote(src: string): Tokens.Blockquote | undefined {
     const cap = this.rules.block.blockquote.exec(src);
     if (cap) {
+      if (this.options.extensions?.interruptBlock?.blockquote) {
+        cap[0] = this.clipBlockExtension(cap[0], 'blockquote');
+      }
       let lines = rtrim(cap[0], '\n').split('\n');
       let raw = '';
       let text = '';
@@ -719,6 +722,17 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
     const headers = splitCells(cap[1]);
     const aligns = cap[2].replace(this.rules.other.tableAlignChars, '').split('|');
+    // Header and delimiter rows must have the same number of columns.
+    if (headers.length !== aligns.length) {
+      return;
+    }
+    if (cap[3] && this.options.extensions?.interruptBlock?.table) {
+      // The full match can include blank lines after the captured body.
+      const bodyStart = cap[0].indexOf('\n', cap[0].indexOf('\n') + 1) + 1;
+      const bodyEnd = bodyStart + cap[3].length;
+      cap[0] = this.clipBlockExtension(cap[0], 'table', bodyStart);
+      cap[3] = cap[0].slice(bodyStart, bodyEnd);
+    }
     const rows = cap[3]?.trim() ? cap[3].replace(this.rules.other.tableRowBlankLine, '').split('\n') : [];
 
     const item: Tokens.Table = {
@@ -728,11 +742,6 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       align: [],
       rows: [],
     };
-
-    if (headers.length !== aligns.length) {
-      // header and align columns must be equal, rows can be different.
-      return;
-    }
 
     for (const align of aligns) {
       if (this.rules.other.tableAlignRight.test(align)) {
@@ -767,6 +776,37 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     }
 
     return item;
+  }
+
+  private clipBlockExtension(src: string, target: 'table' | 'blockquote', minOffset = 0): string {
+    let end = src.length;
+    for (const start of this.options.extensions!.interruptBlock![target]!) {
+      // Include the newline before a table body for newline-prefixed hints.
+      let offset = Math.max(0, minOffset - 1);
+      let lineStart = 0;
+      let lineEnd = src.indexOf('\n');
+      while (offset < end) {
+        const found = start.call({ lexer: this.lexer }, src.slice(offset));
+        if (typeof found !== 'number' || !Number.isInteger(found) || found < 0 || found >= src.length - offset) {
+          break;
+        }
+        let index = offset + found;
+        // start functions may point at the newline before a block.
+        if (src[index] === '\n') index++;
+        while (lineEnd !== -1 && lineEnd < index) {
+          lineStart = lineEnd + 1;
+          lineEnd = src.indexOf('\n', lineStart);
+        }
+        if (lineStart >= minOffset && index - lineStart <= 3 && /^ {0,3}$/.test(src.slice(lineStart, index))
+          && (target !== 'table' || src[index] !== '|')) {
+          end = Math.min(end, lineStart);
+          break;
+        }
+        // A hint in a cell or on an explicitly quoted line is not a boundary.
+        offset = index + 1;
+      }
+    }
+    return src.slice(0, end);
   }
 
   lheading(src: string): Tokens.Heading | undefined {
