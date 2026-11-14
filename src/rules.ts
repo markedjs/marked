@@ -126,6 +126,16 @@ const fences = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\
 const hr = /^ {0,3}((?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/;
 const heading = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
 const bullet = / {0,3}(?:[*+-]|\d{1,9}[.)])/;
+const _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
+  + '|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption'
+  + '|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe'
+  + '|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option'
+  + '|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title'
+  + '|tr|track|ul';
+// HTML blocks of types (1) to (6) can interrupt a paragraph, type (7) cannot
+const _htmlInterrupt = edit(' {0,3}(?:</?(?:tag)(?:[ \\t]+|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
+  .replace('tag', _tag)
+  .getRegex();
 // The underline may end with spaces or tabs (CommonMark §4.3). Internal
 // spaces or tabs still fail to match, and more than three spaces of indent
 // still do not.
@@ -137,8 +147,8 @@ const lheading = edit(lheadingCore)
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
   .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
   .replace(/hr/g, / {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/) // thematic break can interrupt
-  .replace(/html/g, / {0,3}<[^\n>]+>\n/) // block html can interrupt
   .replace(/\|table/g, '') // table not in commonmark
+  .replace(/html/g, _htmlInterrupt) // block html of types (1) to (6) can interrupt
   .getRegex();
 const lheadingGfm = edit(lheadingCore)
   .replace(/bull/g, bullet) // lists can interrupt
@@ -147,8 +157,8 @@ const lheadingGfm = edit(lheadingCore)
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
   .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
   .replace(/hr/g, / {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/) // thematic break can interrupt
-  .replace(/html/g, / {0,3}<[^\n>]+>\n/) // block html can interrupt
   .replace(/table/g, / {0,3}\|?(?:[:\- ]*\|)+[\:\- ]*\n/) // table can interrupt
+  .replace(/html/g, _htmlInterrupt) // block html of types (1) to (6) can interrupt
   .getRegex();
 const _paragraph = /^([^\n]+(?:\n(?!hr|heading|lheading|blockquote|fences|list|html|table|[ \t]+\n)[^\n]+)*)/;
 const blockText = /^[^\n]+/;
@@ -165,12 +175,6 @@ const list = edit(/^(bull)([ \t][^\n]*?)?(?:\n|$)/)
   .replace(/bull/g, bullet)
   .getRegex();
 
-const _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
-  + '|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption'
-  + '|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe'
-  + '|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option'
-  + '|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title'
-  + '|tr|track|ul';
 const _comment = /<!--(?:-?>|[\s\S]*?(?:-->|$))/;
 const html = edit(
   '^ {0,3}(?:' // optional indentation
@@ -196,8 +200,7 @@ const createParagraph = (listInterrupt: RegExp) => edit(_paragraph)
   .replace('blockquote', ' {0,3}>')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
   .replace('list', listInterrupt)
-  .replace('html', ' {0,3}(?:</?(?:tag)(?:[ \\t]+|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
-  .replace('tag', _tag) // pars can be interrupted by html blocks of types (1) to (6)
+  .replace('html', _htmlInterrupt) // pars can be interrupted by html blocks of types (1) to (6)
   .getRegex();
 
 // only non-empty lists starting from 1 can interrupt paragraphs
@@ -249,8 +252,7 @@ const gfmTable = edit(
   .replace('code', '(?: {4}| {0,3}\t)[^\\n]')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
   .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]') // any bullet ends the table rows
-  .replace('html', ' {0,3}(?:</?(?:tag)(?:[ \\t]+|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
-  .replace('tag', _tag) // tables can be interrupted by html blocks of types (1) to (6)
+  .replace('html', _htmlInterrupt) // tables can be interrupted by html blocks of types (1) to (6)
   .getRegex();
 
 const blockGfm: Record<BlockKeys, RegExp> = {
@@ -265,8 +267,7 @@ const blockGfm: Record<BlockKeys, RegExp> = {
     .replace('blockquote', ' {0,3}>')
     .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
     .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]+[^ \\t\\n]') // only non-empty lists starting from 1 can interrupt
-    .replace('html', ' {0,3}(?:</?(?:tag)(?:[ \\t]+|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
-    .replace('tag', _tag) // pars can be interrupted by html blocks of types (1) to (6)
+    .replace('html', _htmlInterrupt) // pars can be interrupted by html blocks of types (1) to (6)
     .getRegex(),
 };
 
@@ -293,13 +294,13 @@ const blockPedantic: Record<BlockKeys, RegExp> = {
   paragraph: edit(_paragraph)
     .replace('hr', hr)
     .replace('heading', ' *#{1,6} *[^\n]')
-    .replace('lheading', lheading)
     .replace('|table', '')
     .replace('blockquote', ' {0,3}>')
     .replace('|fences', '')
     .replace('|list', '')
     .replace('|html', '')
     .replace('|tag', '')
+    .replace('lheading', lheading) // last, so the replacements above do not match inside it
     .getRegex(),
 };
 
