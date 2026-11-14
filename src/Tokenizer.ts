@@ -811,6 +811,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   escape(src: string): Tokens.Escape | undefined {
+    if (src.charCodeAt(0) !== 92) return; // \\
     const cap = this.rules.inline.escape.exec(src);
     if (cap) {
       return {
@@ -822,6 +823,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   tag(src: string): Tokens.Tag | undefined {
+    if (src.charCodeAt(0) !== 60) return; // <
     const cap = this.rules.inline.tag.exec(src);
     if (cap) {
       if (!this.lexer.state.inLink && this.rules.other.startATag.test(cap[0])) {
@@ -856,6 +858,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     if (this.lexer.state.linkParenPossible === false) {
       return undefined;
     }
+    const first = src.charCodeAt(0);
+    if (first !== 91 && first !== 33) return; // [ or !
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
       const labelStart = cap[0].charAt(0) === '!' ? 2 : 1;
@@ -928,6 +932,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   reflink(src: string, links: Links): Tokens.Link | Tokens.Image | Tokens.Text | undefined {
+    const first = src.charCodeAt(0);
+    if (first !== 91 && first !== 33) return; // [ or !
     let cap;
     if ((cap = this.rules.inline.reflink.exec(src))
       || (cap = this.rules.inline.nolink.exec(src))) {
@@ -1061,6 +1067,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   codespan(src: string): Tokens.Codespan | undefined {
+    if (src.charCodeAt(0) !== 96) return; // `
     const cap = this.rules.inline.code.exec(src);
     if (cap) {
       let text = cap[2].replace(this.rules.other.newLineCharGlobal, ' ');
@@ -1078,6 +1085,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   br(src: string): Tokens.Br | undefined {
+    const first = src.charCodeAt(0);
+    if (first !== 32 && first !== 92 && first !== 10) return; // space, \\ or newline (breaks)
     const cap = this.rules.inline.br.exec(src);
     if (cap) {
       return {
@@ -1088,6 +1097,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   del(src: string, maskedSrc: string, prevChar = ''): Tokens.Del | undefined {
+    if (src.charCodeAt(0) !== 126) return; // ~
     let match = this.rules.inline.delLDelim.exec(src);
     if (!match) return;
 
@@ -1145,6 +1155,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   autolink(src: string): Tokens.Link | undefined {
+    if (src.charCodeAt(0) !== 60) return; // <
     const cap = this.rules.inline.autolink.exec(src);
     if (cap) {
       let text, href;
