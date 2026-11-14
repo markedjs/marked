@@ -329,6 +329,31 @@ lheading 2
     });
   });
 
+  describe('rejected table headers', () => {
+    it('does not scan table body rows after a header-column mismatch', () => {
+      const lexer = new Lexer({ gfm: true });
+      let bodyScans = 0;
+      const originalTable = lexer.tokenizer.rules.block.table;
+      lexer.tokenizer.rules = {
+        ...lexer.tokenizer.rules,
+        block: {
+          ...lexer.tokenizer.rules.block,
+          table: { exec(src) { bodyScans++; return originalTable.exec(src); } },
+        },
+      };
+      assert.strictEqual(lexer.tokenizer.table('a|b\n-|-|-\n1|2|3\n4|5|6'), undefined);
+      assert.strictEqual(bodyScans, 0);
+    });
+
+    it('still scans and tokenizes the body of a valid table', () => {
+      const lexer = new Lexer({ gfm: true });
+      const table = lexer.tokenizer.table('a|b\n-|-\n1|2\n3|4');
+      assert.strictEqual(table.type, 'table');
+      assert.strictEqual(table.rows.length, 2);
+      assert.deepEqual(table.rows.map(row => row.map(cell => cell.text)), [['1', '2'], ['3', '4']]);
+    });
+  });
+
   describe('table', () => {
     it('pipe table', () => {
       expectTokens({
