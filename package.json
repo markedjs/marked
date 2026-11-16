@@ -59,7 +59,7 @@
     "cheerio": "1.2.0",
     "commonmark": "0.31.2",
     "cross-env": "^10.1.0",
-    "dts-bundle-generator": "^9.5.1",
+    "dts-bundle-generator": "^10.0.0",
     "esbuild": "^0.28.2",
     "esbuild-plugin-umd-wrapper": "^3.0.0",
     "eslint": "^10.14.0",
