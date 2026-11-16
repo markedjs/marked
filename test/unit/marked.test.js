@@ -942,6 +942,28 @@ used extension2 walked</p>
       assert.strictEqual(html, '<p>extension</p>\n');
     });
 
+    it('should call a custom lheading tokenizer on every line of a list item', () => {
+      marked.use({
+        tokenizer: {
+          lheading(src) {
+            const cap = /^([^\n]+)\n\+\+\+(?:\n|$)/.exec(src);
+            if (cap) {
+              return {
+                type: 'heading',
+                raw: cap[0],
+                depth: 1,
+                text: cap[1],
+                tokens: this.lexer.inline(cap[1]),
+              };
+            }
+            return false;
+          },
+        },
+      });
+      const html = marked.parse('- foo\n  bar\n  +++\n');
+      assert.strictEqual(html, '<ul>\n<li>foo<h1>bar</h1>\n</li>\n</ul>\n');
+    });
+
     it('should use walkTokens', () => {
       let walked = 0;
       const extension = {

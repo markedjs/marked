@@ -131,6 +131,13 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     }
 
     let srcLength = Infinity;
+    // where a setext heading is known not to start (see the text tokenizer below)
+    let noLheadingAt = -1;
+    // that shortcut relies on the built-in lheading and text tokenizers
+    const canSkipLheading = this.tokenizer.lheading === _Tokenizer.prototype.lheading
+      && this.tokenizer.text === _Tokenizer.prototype.text;
+    // where the last token's raw is known to end with a newline
+    let newlineEndAt = -1;
     while (src) {
       if (src.length < srcLength) {
         srcLength = src.length;
@@ -161,6 +168,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
           // if there's a single \n as a spacer, it's terminating the last line,
           // so move it there so that we don't get unnecessary paragraph tags
           lastToken.raw += '\n';
+          newlineEndAt = src.length;
         } else {
           tokens.push(token);
         }
@@ -253,7 +261,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       }
 
       // lheading
-      if (token = this.tokenizer.lheading(src)) {
+      if (src.length !== noLheadingAt && (token = this.tokenizer.lheading(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -293,10 +301,25 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
 
       // text
       if (token = this.tokenizer.text(src)) {
+        // lheading failed on this line. If the next line continues this
+        // line's text (both lines and an underline would make a heading), a
+        // heading starting on the next line would have matched here too, so
+        // skip lheading there. Otherwise a long run of text lines in a list
+        // item is scanned to its end once per line.
+        const nextLineStart = token.raw.length + 1;
+        if (canSkipLheading && nextLineStart < src.length) {
+          const nextLineEnd = src.indexOf('\n', nextLineStart);
+          const nextLine = src.slice(nextLineStart, nextLineEnd === -1 ? src.length : nextLineEnd);
+          if (this.tokenizer.rules.block.lheading.test(`${token.raw}\n${nextLine}\n=`)) {
+            noLheadingAt = src.length - nextLineStart;
+          }
+        }
         src = src.substring(token.raw.length);
         const lastToken = tokens.at(-1);
         if (lastToken?.type === 'text') {
-          lastToken.raw += (lastToken.raw.endsWith('\n') ? '' : '\n') + token.raw;
+          // calling endsWith on the growing raw would copy it once per line
+          const endsWithNewline = newlineEndAt === srcLength || lastToken.raw.endsWith('\n');
+          lastToken.raw += (endsWithNewline ? '' : '\n') + token.raw;
           lastToken.text += '\n' + token.text;
           this.inlineQueue.pop();
           this.inlineQueue.at(-1)!.src = lastToken.text;
