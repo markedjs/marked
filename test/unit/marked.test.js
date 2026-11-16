@@ -22,6 +22,28 @@ describe('marked unit', () => {
     });
   });
 
+  describe('rejected table paragraph continuation', () => {
+    it('keeps one inline queue entry so emphasis can cross the rejected table header', () => {
+      assert.strictEqual(marked.parse('*a\nb|c\n-|-|-*'), '<p><em>a\nb|c\n-|-|-</em></p>\n');
+    });
+
+    it('does not merge paragraphs separated by a blank line', () => {
+      assert.strictEqual(marked.parse('a\n\nb|c\n-|-|-'), '<p>a</p>\n<p>b|c\n-|-|-</p>\n');
+    });
+
+    it('preserves custom paragraph tokenizers that emit separate paragraphs', () => {
+      marked.use({
+        tokenizer: {
+          paragraph(src) {
+            const raw = src[0];
+            return { type: 'paragraph', raw, text: raw, tokens: this.lexer.inline(raw) };
+          },
+        },
+      });
+      assert.strictEqual(marked.parse('abc'), '<p>a</p>\n<p>b</p>\n<p>c</p>\n');
+    });
+  });
+
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
