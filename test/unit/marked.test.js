@@ -71,6 +71,57 @@ describe('marked unit', () => {
     });
   });
 
+  describe('nested inline tokenizers', () => {
+    const mention = {
+      name: 'mention',
+      level: 'inline',
+      start(src) { return src.indexOf('@'); },
+      tokenizer(src) {
+        const match = /^@(alice|bob|plain)\b/.exec(src);
+        if (match) {
+          const text = match[1] === 'plain' ? 'plain' : `[${match[1]}](/users/${match[1]})`;
+          return { type: 'mention', raw: match[0], tokens: this.lexer.inlineTokens(text) };
+        }
+      },
+      renderer(token) { return this.parser.parseInline(token.tokens); },
+    };
+
+    const cases = [
+      ['a generated link without a closing parenthesis in the input', '@alice', '<a href="/users/alice">alice</a>'],
+      ['a generated link when the input contains a closing parenthesis', '@alice)', '<a href="/users/alice">alice</a>)'],
+      ['a generated link inside emphasis', '*Hello @alice*', '<em>Hello <a href="/users/alice">alice</a></em>'],
+      ['multiple generated links', '@alice and @bob', '<a href="/users/alice">alice</a> and <a href="/users/bob">bob</a>'],
+      ['the outer link after a child without a closing parenthesis', '@plain [outside](/outer)', 'plain <a href="/outer">outside</a>'],
+    ];
+
+    for (const [name, input, expected] of cases) {
+      it(`should parse ${name}`, () => {
+        marked.use({ extensions: [mention] });
+        assert.strictEqual(marked.parseInline(input), expected);
+      });
+    }
+
+    it('should parse a generated link in a block', () => {
+      marked.use({ extensions: [mention] });
+      assert.strictEqual(marked.parse('@alice'), '<p><a href="/users/alice">alice</a></p>\n');
+    });
+
+    it('should parse generated links from an overridden tokenizer', () => {
+      marked.use({
+        tokenizer: {
+          emStrong(src) {
+            if (src.startsWith('@')) {
+              const text = '[inner](/inside)';
+              return { type: 'strong', raw: '@', text, tokens: this.lexer.inlineTokens(text) };
+            }
+            return false;
+          },
+        },
+      });
+      assert.strictEqual(marked.parseInline('@'), '<strong><a href="/inside">inner</a></strong>');
+    });
+  });
+
   describe('use extension', () => {
     it('should use custom block tokenizer + renderer extensions', () => {
       const underline = {
