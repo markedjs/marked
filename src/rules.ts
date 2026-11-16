@@ -217,8 +217,14 @@ const blockquoteParagraph = createParagraph(/ {0,3}(?:[*+-]|\d{1,9}[.)])(?:[ \t]
 
 // a line with only whitespace after the marker is blank, so it must not start a
 // paragraph that lazily continues onto the next line
-const blockquote = edit(/^( {0,3}> ?(?:(?![ \t]*(?:\n|$))(paragraph)|[^\n]*)(?:\n|$))+/)
-  .replace('paragraph', blockquoteParagraph)
+// Only a paragraph can lazily continue the first quoted line. Indented code
+// must not scan the remaining document looking for paragraph continuation.
+// Later quoted lines may continue an earlier paragraph and keep the old rule.
+const blockquoteLine = / {0,3}> ?(?:(?!blank)(paragraph)|[^\n]*)(?:\n|$)/;
+const blockquote = edit(/^(first)(?:next)*/)
+  .replace('first', edit(blockquoteLine).replace('blank', /[ \t]*(?:\n|$)| {4}/).getRegex())
+  .replace('next', edit(blockquoteLine).replace('blank', /[ \t]*(?:\n|$)/).getRegex())
+  .replace(/paragraph/g, blockquoteParagraph)
   .getRegex();
 
 /**
