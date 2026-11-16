@@ -71,6 +71,26 @@ describe('marked unit', () => {
     });
   });
 
+  describe('html block whitespace', () => {
+    // A spec fixture cannot guard this. The spec suite compares through
+    // htmlIsEqual, which treats whitespace inside a <pre> as equal, so the
+    // fixture for CommonMark example 148 passes with or without the fix.
+    // Only an exact-string assertion catches it.
+    it('should keep the newline ending an html block before a blank line', () => {
+      // CommonMark 0.31.2 example 148. The blank line ends the html block;
+      // the newline before it is the block's own last line, and dropping it
+      // swallows a line of the <pre>.
+      assert.strictEqual(
+        marked.parse('<table><tr><td>\n<pre>\n**Hello**,\n\n_world_.\n</pre>\n</td></tr></table>\n'),
+        '<table><tr><td>\n<pre>\n**Hello**,\n<p><em>world</em>.\n</pre></p>\n</td></tr></table>\n',
+      );
+    });
+
+    it('should not add a newline to an html block that ends the document', () => {
+      // Nothing was trimmed here, so nothing should be restored.
+      assert.strictEqual(marked.parse('<div>\na\n'), '<div>\na\n');
+    });
+  });
   describe('use extension', () => {
     it('should use custom block tokenizer + renderer extensions', () => {
       const underline = {

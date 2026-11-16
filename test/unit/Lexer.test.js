@@ -1639,7 +1639,10 @@ paragraph
             raw: '<div>\n  html\n</div>',
             pre: false,
             block: true,
-            text: '<div>\n  html\n</div>',
+            // The newline ending the block's last content line is part of
+            // the block; the blank lines after it are not. raw is unchanged,
+            // so the boundary with the following space token has not moved.
+            text: '<div>\n  html\n</div>\n',
           },
           {
             type: 'space',
