@@ -98,6 +98,10 @@ export async function main(nodeProcess) {
     }
 
     while (argv.length) {
+      if (argv[0] === '--') {
+        files.push(...argv.slice(1));
+        break;
+      }
       arg = getArg();
       switch (arg) {
         case '-o':
