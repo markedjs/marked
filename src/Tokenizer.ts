@@ -338,6 +338,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
             text = `${text}\n${consumed}`;
           }
           lines = lines.slice(consumedCount);
+
+          // A lazy line the list did not take is not a paragraph continuation,
+          // e.g. after an empty list item, so it ends the blockquote.
+          if (lines.length > 0 && !this.rules.other.blockquoteStart.test(lines[0])) {
+            break;
+          }
           continue;
         }
       }
