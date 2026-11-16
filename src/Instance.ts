@@ -143,6 +143,18 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
             if (!ext.level || (ext.level !== 'block' && ext.level !== 'inline')) {
               throw new Error("extension level must be 'block' or 'inline'");
             }
+            if (ext.interrupts) {
+              if (ext.level !== 'block' || !ext.start) {
+                throw new Error('interrupts requires a block extension with a start function');
+              }
+              for (const target of ext.interrupts) {
+                if (target !== 'table' && target !== 'blockquote') {
+                  throw new Error("interrupts target must be 'table' or 'blockquote'");
+                }
+                const targets = extensions.interruptBlock ??= {};
+                (targets[target] ??= []).push(ext.start);
+              }
+            }
             const extLevel = extensions[ext.level];
             if (extLevel) {
               extLevel.unshift(ext.tokenizer);

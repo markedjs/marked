@@ -17,6 +17,8 @@ export interface TokenizerExtension {
   name: string;
   level: 'block' | 'inline';
   start?: TokenizerStartFunction;
+  /** Additional block tokens this extension can interrupt at a line start. */
+  interrupts?: ('table' | 'blockquote')[];
   tokenizer: TokenizerExtensionFunction;
   childTokens?: string[];
 }
@@ -146,6 +148,7 @@ export interface MarkedOptions<ParserOutput = string, RendererOutput = string> e
     block?: TokenizerExtensionFunction[];
     startInline?: TokenizerStartFunction[];
     startBlock?: TokenizerStartFunction[];
+    interruptBlock?: Partial<Record<'table' | 'blockquote', TokenizerStartFunction[]>>;
   };
 
   /**

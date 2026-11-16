@@ -412,3 +412,17 @@ markedNumber.use({ renderer: rendererNumber, hooks: { provideParser() { return p
 
 const num: number = await markedNumber.parse('');
 console.log(num);
+
+const interruptingBlock: TokenizerExtension = {
+  name: 'interruptingBlock',
+  level: 'block',
+  interrupts: ['table', 'blockquote'],
+  start: src => src.indexOf('{{block\n'),
+  tokenizer: () => undefined,
+};
+new Marked({ extensions: [interruptingBlock] });
+const unsupportedInterrupt: TokenizerExtension = {
+  ...interruptingBlock,
+  // @ts-expect-error Only supported built-in block targets can be interrupted.
+  interrupts: ['code'],
+};
