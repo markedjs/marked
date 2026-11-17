@@ -237,7 +237,15 @@ export async function main(nodeProcess) {
       }
     }
 
-    nodeProcess.stdout.write(html + '\n');
+    await new Promise((resolve, reject) => {
+      nodeProcess.stdout.write(html + '\n', (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
   }
 
   /**

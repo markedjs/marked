@@ -293,7 +293,7 @@ let debounceInputDirty;
 function handleInput() {
   if ($markedVerElem.value === 'gfm') {
     // GFM api limits requests to 60 per hour so we
-    // are debouncing here to limit unneccessary requests
+    // are debouncing here to limit unnecessary requests
     clearTimeout(debounceInputDirty);
     debounceInputDirty = setTimeout(() => {
       inputDirty = true;

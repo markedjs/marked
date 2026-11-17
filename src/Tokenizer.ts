@@ -15,10 +15,36 @@ import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens, Token } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
+/**
+ * Remove the bracket escapes that the label match consumed, but leave code
+ * spans untouched: their content is literal, so a `\[` or `\]` inside a
+ * code span is not an escape.
+ */
+function unescapeLinkLabel(label: string, rules: Rules): string {
+  let result = '';
+  for (let i = 0; i < label.length; i++) {
+    if (label[i] === '`') {
+      const code = rules.inline.code.exec(label.slice(i));
+      if (code) {
+        result += code[0];
+        i += code[0].length - 1;
+        continue;
+      }
+    }
+    if (label[i] === '\\' && (label[i + 1] === '[' || label[i + 1] === ']')) {
+      result += label[i + 1];
+      i++;
+      continue;
+    }
+    result += label[i];
+  }
+  return result;
+}
+
 function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer, rules: Rules): Tokens.Link | Tokens.Image | undefined {
   const href = link.href;
   const title = link.title || null;
-  const text = cap[1].replace(rules.other.outputLinkReplace, '$1');
+  const text = unescapeLinkLabel(cap[1], rules);
   const isImage = cap[0].charAt(0) === '!';
 
   const outerInLink = lexer.state.inLink;
@@ -159,7 +185,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     const cap = this.rules.block.fences.exec(src);
     if (cap) {
       const raw = cap[0];
-      const text = indentCodeCompensation(raw, cap[3] || '', this.rules);
+      let text = indentCodeCompensation(raw, cap[3] || '', this.rules);
+      // The fence pattern consumes the final content newline outside the capture.
+      // Keep it when the captured content ends in a blank line.
+      if (cap[3] !== undefined && (text === '' || text.endsWith('\n'))) {
+        text += '\n';
+      }
 
       return {
         type: 'code',
@@ -236,10 +267,14 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         const currentText = currentRaw
           // `>` takes one optional column. A leading tab provides it, and the
           // rest of that run is indent, so expand to the tab stop. A literal
-          // space already took the column; tabs after it are content.
+          // space already took the column; tabs after it are content (for
+          // example a tab that opens a fenced code line). The marker rule only
+          // matches a leading tab, so a space-then-tab run is left literal.
+          // Tabs with no leading space stay structural so indented code under
+          // the quote still works.
           .replace(
             this.rules.other.blockquoteMarkerWhitespace,
-            (_, marker: string, whitespace: string) => (
+            (_: string, marker: string, whitespace: string) => (
               whitespace[0] === ' '
                 ? marker + whitespace
                 : marker + expandTabs(whitespace, marker.length)
@@ -316,6 +351,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
             text = `${text}\n${consumed}`;
           }
           lines = lines.slice(consumedCount);
+
+          // A lazy line the list did not take is not a paragraph continuation,
+          // e.g. after an empty list item, so it ends the blockquote.
+          if (lines.length > 0 && !this.rules.other.blockquoteStart.test(lines[0])) {
+            break;
+          }
           continue;
         }
       }
@@ -332,6 +373,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   list(src: string): Tokens.List | undefined {
     let cap = this.rules.block.list.exec(src);
     if (cap) {
+      // Inside a list item, paragraph lines are lexed as text tokens, so a list after one would
+      // interrupt the paragraph. Only a non-empty list starting with a bullet or 1 can do that
+      if (!this.options.pedantic && this.lexer.state.lastToken?.type === 'text'
+        && !this.rules.other.listInterruptsParagraph.test(src)) {
+        return;
+      }
+
       // src is only consumed from the front, so every raw below is a slice of
       // listSrc rather than a string built up line by line
       const listSrc = src;
@@ -464,20 +512,35 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
                 break;
               }
 
+              // The first line of an item always starts a block, which can be a
+              // nested list item or block quote. Look past their markers to the
+              // block a lazy line would continue. Tabs are left alone because
+              // their width depends on the column they start at.
+              let lastBlock = line;
+              if (!this.options.pedantic && !itemContents.includes('\n') && !line.includes('\t')) {
+                let marker;
+                while (!hrRegex.test(lastBlock) && (marker = this.rules.other.nestedBlockMarker.exec(lastBlock))) {
+                  lastBlock = lastBlock.slice(marker[0].length);
+                }
+                if (!lastBlock.trim()) { // empty list item or block quote
+                  break;
+                }
+              }
+
               // paragraph continuation unless last line was a different block level element
-              if (line.replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar) >= 4) { // indented code block
+              if (lastBlock.replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar) >= 4) { // indented code block
                 break;
               }
-              if (fencesBeginRegex.test(line)) {
+              if (fencesBeginRegex.test(lastBlock)) {
                 break;
               }
-              if (headingBeginRegex.test(line)) {
+              if (headingBeginRegex.test(lastBlock)) {
                 break;
               }
-              if (htmlBeginRegex.test(line)) {
+              if (htmlBeginRegex.test(lastBlock)) {
                 break;
               }
-              if (hrRegex.test(line)) {
+              if (hrRegex.test(lastBlock)) {
                 break;
               }
               if (!this.options.pedantic && !lineIsLazy) {
@@ -546,8 +609,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
       // Item child tokens handled here at end because we needed to have the final item to trim it first
       // First pass: tokenize items and finalize list.loose from spacers before placing checkboxes
+      // Where each item's inline queue entries start, so the checkbox is removed from its own text
+      const queueStarts: number[] = [];
       for (const item of list.items) {
         this.lexer.state.top = false;
+        queueStarts.push(this.lexer.inlineQueue.length);
         item.tokens = this.lexer.blockTokens(item.text, []);
 
         if (!list.loose) {
@@ -560,16 +626,19 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       }
 
       // Second pass: place task checkboxes using the final list.loose
-      for (const item of list.items) {
+      for (let i = 0; i < list.items.length; i++) {
+        const item = list.items[i];
         const itemToken = item.tokens[0];
         if (item.task && (itemToken?.type === 'text' || itemToken?.type === 'paragraph')) {
           // Remove checkbox markdown from item tokens
           item.text = item.text.replace(this.rules.other.listReplaceTask, '');
           itemToken.raw = itemToken.raw.replace(this.rules.other.listReplaceTask, '');
           itemToken.text = itemToken.text.replace(this.rules.other.listReplaceTask, '');
-          for (let i = this.lexer.inlineQueue.length - 1; i >= 0; i--) {
-            if (this.rules.other.listIsTask.test(this.lexer.inlineQueue[i].src)) {
-              this.lexer.inlineQueue[i].src = this.lexer.inlineQueue[i].src.replace(this.rules.other.listReplaceTask, '');
+          // The first token queued its text first, so its entry is found right away
+          const inlineQueue = this.lexer.inlineQueue;
+          for (let j = queueStarts[i]; j < inlineQueue.length; j++) {
+            if (inlineQueue[j].tokens === itemToken.tokens) {
+              inlineQueue[j].src = inlineQueue[j].src.replace(this.rules.other.listReplaceTask, '');
               break;
             }
           }
@@ -623,6 +692,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   html(src: string): Tokens.HTML | undefined {
     const cap = this.rules.block.html.exec(src);
     if (cap) {
+      // an html block of type 7 cannot interrupt a paragraph, so a lazy
+      // continuation line that starts one continues the paragraph instead
+      if (this.lexer.state.lastToken?.type === 'paragraph' && !this.rules.other.htmlBeginRegex(4).test(src)) {
+        return;
+      }
+
       const raw = trimTrailingBlankLines(cap[0]);
       const token: Tokens.HTML = {
         type: 'html',
@@ -657,6 +732,19 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   table(src: string): Tokens.Table | undefined {
+    let headers: string[] | undefined;
+    let aligns: string[] | undefined;
+    if (this.options.gfm && !this.options.pedantic) {
+      const header = this.rules.other.tableHeader.exec(src);
+      if (!header || !this.rules.other.tableDelimiter.test(header[2])) {
+        return;
+      }
+      headers = splitCells(header[1]);
+      aligns = header[2].replace(this.rules.other.tableAlignChars, '').split('|');
+      if (headers.length !== aligns.length) {
+        return;
+      }
+    }
     const cap = this.rules.block.table.exec(src);
     if (!cap) {
       return;
@@ -667,8 +755,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       return;
     }
 
-    const headers = splitCells(cap[1]);
-    const aligns = cap[2].replace(this.rules.other.tableAlignChars, '').split('|');
+    headers ??= splitCells(cap[1]);
+    aligns ??= cap[2].replace(this.rules.other.tableAlignChars, '').split('|');
     const rows = cap[3]?.trim() ? cap[3].replace(this.rules.other.tableRowBlankLine, '').split('\n') : [];
 
     const item: Tokens.Table = {
@@ -751,16 +839,26 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   text(src: string): Tokens.Text | undefined {
     const cap = this.rules.block.text.exec(src);
     if (cap) {
+      let raw = cap[0];
+      let text = cap[0];
+      // Indented code cannot interrupt the text, so indented lines continue it
+      // up to the next blank line
+      const continuation = this.rules.other.textIndentedContinuation.exec(src.slice(raw.length));
+      if (continuation) {
+        raw += continuation[0];
+        text += continuation[0].replace(this.rules.other.codeRemoveIndent, '');
+      }
       return {
         type: 'text',
-        raw: cap[0],
-        text: cap[0],
-        tokens: this.lexer.inline(cap[0]),
+        raw,
+        text,
+        tokens: this.lexer.inline(text),
       };
     }
   }
 
   escape(src: string): Tokens.Escape | undefined {
+    if (src.charCodeAt(0) !== 92) return; // \\
     const cap = this.rules.inline.escape.exec(src);
     if (cap) {
       return {
@@ -772,6 +870,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   tag(src: string): Tokens.Tag | undefined {
+    if (src.charCodeAt(0) !== 60) return; // <
     const cap = this.rules.inline.tag.exec(src);
     if (cap) {
       if (!this.lexer.state.inLink && this.rules.other.startATag.test(cap[0])) {
@@ -806,6 +905,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     if (this.lexer.state.linkParenPossible === false) {
       return undefined;
     }
+    const first = src.charCodeAt(0);
+    if (first !== 91 && first !== 33) return; // [ or !
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
       const labelStart = cap[0].charAt(0) === '!' ? 2 : 1;
@@ -878,6 +979,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   reflink(src: string, links: Links): Tokens.Link | Tokens.Image | Tokens.Text | undefined {
+    const first = src.charCodeAt(0);
+    if (first !== 91 && first !== 33) return; // [ or !
     let cap;
     if ((cap = this.rules.inline.reflink.exec(src))
       || (cap = this.rules.inline.nolink.exec(src))) {
@@ -920,12 +1023,14 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       runStart--;
     }
     const runPrevChar = [...maskedSrc.slice(Math.max(0, runStart - 2), runStart)].at(-1) ?? '';
-    // The other delimiter character counts as punctuation here (`_**a*`)
+    // The other delimiter character counts as punctuation here (`_**a*`, `*_#_`)
     const runPrevPunct = runPrevChar === '*' || runPrevChar === '_' || !!this.rules.inline.punctuation.exec(runPrevChar);
     if (runStart < srcStart) {
       prevChar = runPrevChar;
     }
-    const prevPunct = runStart < srcStart ? runPrevPunct : !!this.rules.inline.punctuation.exec(prevChar);
+    const prevPunct = runStart < srcStart
+      ? runPrevPunct
+      : prevChar === '*' || prevChar === '_' || !!this.rules.inline.punctuation.exec(prevChar);
 
     // _ can't be between two alphanumerics. \p{L}\p{N} includes non-english alphabet/numbers as well
     if (match[4] && prevChar.match(this.rules.other.unicodeAlphaNumeric)) return;
@@ -964,14 +1069,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           delimTotal += rLength;
           continue;
         } else if (match[5] || match[6] || openerCanClose) { // either Left or Right Delim
-          if (midRun && (match[5] || match[6])) {
-            // A mid-run opener cannot close against an ambiguous delimiter that
-            // can also open; that delimiter opens its own emphasis span instead.
-            break;
-          }
-          if (runLength % 3 && !((runLength + rLength) % 3)) {
+          if (runLength % 3 && !((runLength + rLength) % 3)) { // CommonMark Emphasis Rules 9-10
+            if (midRun && (match[5] || match[6])) {
+              // A delimiter that can also open and cannot close this run
+              // opens its own span; a later closer pairs with it, not with a
+              // mid-run opener (`**a*a*` must be `**a<em>a</em>`).
+              break;
+            }
             midDelimTotal += rLength;
-            continue; // CommonMark Emphasis Rules 9-10
+            continue;
           }
         }
 
@@ -1009,6 +1115,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   codespan(src: string): Tokens.Codespan | undefined {
+    if (src.charCodeAt(0) !== 96) return; // `
     const cap = this.rules.inline.code.exec(src);
     if (cap) {
       let text = cap[2].replace(this.rules.other.newLineCharGlobal, ' ');
@@ -1026,6 +1133,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   br(src: string): Tokens.Br | undefined {
+    const first = src.charCodeAt(0);
+    if (first !== 32 && first !== 92 && first !== 10) return; // space, \\ or newline (breaks)
     const cap = this.rules.inline.br.exec(src);
     if (cap) {
       return {
@@ -1036,6 +1145,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   del(src: string, maskedSrc: string, prevChar = ''): Tokens.Del | undefined {
+    if (src.charCodeAt(0) !== 126) return; // ~
     let match = this.rules.inline.delLDelim.exec(src);
     if (!match) return;
 
@@ -1093,6 +1203,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   autolink(src: string): Tokens.Link | undefined {
+    if (src.charCodeAt(0) !== 60) return; // <
     const cap = this.rules.inline.autolink.exec(src);
     if (cap) {
       let text, href;

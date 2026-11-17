@@ -1,0 +1,18 @@
+- The number of windows in my house is
+  14.  The number of doors is 6.
+
+text
+
+- foo
+  *
+
+text
+
+- bar
+  1. baz
+
+text
+
+- qux
+
+14. quux

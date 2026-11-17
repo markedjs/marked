@@ -103,7 +103,7 @@ export interface MarkedExtension<ParserOutput = string, RendererOutput = string>
   /**
    * The tokenizer defines how to turn markdown text into tokens.
    */
-  tokenizer?: TokenizerObject | null;
+  tokenizer?: TokenizerObject<ParserOutput, RendererOutput> | null;
 
   /**
    * The walkTokens function gets called with every token.
