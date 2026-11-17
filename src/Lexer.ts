@@ -99,7 +99,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
    * Preprocessing
    */
   lex(src: string) {
-    src = src.replace(other.carriageReturn, '\n');
+    src = src.replace(other.carriageReturn, '\n').replace(other.nullCharacter, '\uFFFD');
 
     this.blockTokens(src, this.tokens);
 
@@ -368,6 +368,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
    * Lexing/Compiling
    */
   inlineTokens(src: string, tokens: Token[] = []): Token[] {
+    src = src.replace(other.nullCharacter, '\uFFFD');
     this.tokenizer.lexer = this;
     // One paren scan per inline run, shared with Tokenizer.link: without a
     // ')' ahead the link regex cannot match, and skipping it avoids its
