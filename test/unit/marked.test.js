@@ -44,6 +44,24 @@ describe('marked unit', () => {
     });
   });
 
+  describe('ATX heading content whitespace', () => {
+    it('preserves Unicode whitespace in heading text and inline tokens', () => {
+      for (const gfm of [false, true]) {
+        for (const separator of ['\v', '\f', '\u00a0', '\u1680', '\u2000', '\u2003', '\u202f', '\u205f', '\u3000', '\ufeff']) {
+          const text = `${separator}text${separator}`;
+          const token = marked.lexer(`# \t${text} \t`, { gfm })[0];
+          assert.strictEqual(token.type, 'heading');
+          assert.strictEqual(token.text, text);
+          assert.strictEqual(token.tokens[0].text, text);
+        }
+      }
+    });
+
+    it('keeps the legacy pedantic content trim', () => {
+      assert.strictEqual(marked.parse('# \u00a0text\u00a0', { pedantic: true }), '<h1>text</h1>\n');
+    });
+  });
+
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
