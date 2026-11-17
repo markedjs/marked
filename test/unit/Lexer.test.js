@@ -1,4 +1,4 @@
-import { Lexer } from '../../lib/marked.esm.js';
+import { Lexer, Marked } from '../../lib/marked.esm.js';
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
@@ -66,6 +66,89 @@ describe('Lexer', () => {
           },
         ],
       });
+    });
+  });
+
+  describe('lazy blockquote setext headings', () => {
+    it('merges the paragraph raw, text and inline queue into the heading', () => {
+      for (const gfm of [false, true]) {
+        const lexer = new Lexer({ gfm });
+        const [quote] = lexer.lex('> *foo*\nbar\n> ===\n> after');
+        assert.equal(quote.tokens.length, 2);
+        const [heading, paragraph] = quote.tokens;
+        assert.equal(heading.type, 'heading');
+        assert.equal(heading.raw, '*foo*\nbar\n===\n');
+        assert.equal(heading.text, '*foo*\nbar');
+        assert.equal(heading.depth, 1);
+        assert.deepEqual(heading.tokens, [
+          {
+            type: 'em',
+            raw: '*foo*',
+            text: 'foo',
+            tokens: [
+              { type: 'text', raw: 'foo', text: 'foo', escaped: false },
+            ],
+          },
+          { type: 'text', raw: '\nbar', text: '\nbar', escaped: false },
+        ]);
+        assert.equal(paragraph.text, 'after');
+        const queuedLexer = new Lexer({ gfm });
+        queuedLexer.blockTokens('> *foo*\nbar\n> ===\n> after');
+        assert.deepEqual(queuedLexer.inlineQueue.map(entry => entry.src), ['*foo*\nbar', 'after']);
+      }
+    });
+
+    it('keeps the pedantic paragraph and heading separate', () => {
+      const marked = new Marked({ pedantic: true });
+      assert.equal(marked.parse('> foo\nbar\n> ==='), '<blockquote>\n<p>foo</p>\n<h1>bar</h1>\n</blockquote>\n');
+    });
+
+    it('preserves a block extension paragraph without a matching inline queue entry', () => {
+      const marked = new Marked({
+        extensions: [{
+          name: 'paragraph',
+          level: 'block',
+          tokenizer(src) {
+            if (src === 'foo') {
+              return {
+                type: 'paragraph',
+                raw: src,
+                text: src,
+                tokens: [
+                  { type: 'text', raw: src, text: src },
+                ],
+              };
+            }
+          },
+        }],
+      });
+      assert.equal(marked.parse('> foo\nbar\n> ==='), '<blockquote>\n<p>foo</p>\n<h1>bar</h1>\n</blockquote>\n');
+    });
+
+    it('does not merge a custom paragraph without an inline queue entry', () => {
+      const lexer = new Lexer({});
+      lexer.tokenizer.paragraph = (src) => {
+        if (src === 'foo') {
+          return { type: 'paragraph', raw: src, text: src, tokens: [] };
+        }
+      };
+      const [quote] = lexer.lex('> foo\nbar\n> ===');
+      assert.deepEqual(quote.tokens.map(token => token.type), ['paragraph', 'heading']);
+      assert.equal(quote.tokens[0].text, 'foo');
+      assert.equal(quote.tokens[1].text, 'bar');
+    });
+
+    it('does not merge a custom setext heading tokenizer into a paragraph', () => {
+      const lexer = new Lexer({});
+      lexer.tokenizer.lheading = (src) => {
+        if (src.startsWith('bar\n===')) {
+          return { type: 'heading', raw: 'bar\n===', depth: 1, text: 'custom', tokens: [] };
+        }
+      };
+      const [quote] = lexer.lex('> foo\nbar\n> ===');
+      assert.deepEqual(quote.tokens.map(token => token.type), ['paragraph', 'heading']);
+      assert.equal(quote.tokens[0].text, 'foo');
+      assert.equal(quote.tokens[1].text, 'custom');
     });
   });
 
