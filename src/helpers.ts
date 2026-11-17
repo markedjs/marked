@@ -330,11 +330,16 @@ export function expandTabs(line: string, indent = 0) {
 /**
  * Expands the tabs in block quote markers and the indentation after them to spaces, with tab
  * stops measured from the start of the line. Inside fenced code the indentation is code content,
- * so a tab there stays literal.
+ * so a tab there stays literal. Lines from the first list item on are returned as is, because
+ * the item's columns and the fences inside it are not tracked here.
  */
 export function expandBlockquoteTabs(lines: string[]) {
   let fence: { marker: string, depth: number } | undefined;
+  let inListItem = false;
   return lines.map((line) => {
+    if (inListItem) {
+      return line;
+    }
     const { depth, expanded, keptIndent, content } = splitBlockquoteLine(line, fence?.depth ?? Infinity);
     if (fence?.depth !== depth) {
       fence = undefined;
@@ -346,6 +351,10 @@ export function expandBlockquoteTabs(lines: string[]) {
       }
       fence = undefined;
       return expanded;
+    }
+    inListItem = other.blockquoteListItemStart.test(content);
+    if (inListItem) {
+      return line;
     }
     const open = other.blockquoteFenceOpen.exec(content)?.[1];
     if (open) {

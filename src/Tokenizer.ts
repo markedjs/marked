@@ -265,10 +265,14 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         lines = lines.slice(i);
 
         const currentRaw = currentLines.join('\n');
-        const tabsExpanded = this.lexer.state.top && currentRaw.includes('\t')
-          ? expandBlockquoteTabs(currentLines)
-          // inside a list item the marker's column is unknown, so only a tab right after it is expanded
-          : currentRaw.replace(
+        // expandBlockquoteTabs needs the marker's column, which is unknown inside a list item
+        // or a block quote, where the outermost block quote has already expanded the markers
+        const expandColumns = this.lexer.state.top && !this.lexer.state.inBlockquote && currentRaw.includes('\t');
+        const currentText = (expandColumns ? expandBlockquoteTabs(currentLines) : currentRaw)
+          // a tab right after the block quote marker runs to the next tab stop, and
+          // the marker only consumes one space of it; the rest is content.
+          // After a space the marker consumes it whole, so later tabs stay literal.
+          .replace(
             this.rules.other.blockquoteMarkerWhitespace,
             (_: string, marker: string, whitespace: string) => {
               // The optional space after ">" is marker; anything after that is
@@ -280,8 +284,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
               }
               return marker + expandTabs(whitespace, marker.length);
             },
-          );
-        const currentText = tabsExpanded
+          )
           // precede setext continuation with 4 spaces so it isn't a setext
           .replace(this.rules.other.blockquoteSetextReplace, '\n    $1')
           .replace(this.rules.other.blockquoteSetextReplace2, '');
@@ -291,9 +294,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         // parse blockquote lines as top level tokens
         // merge paragraphs if this is a continuation
         const top = this.lexer.state.top;
+        const outerInBlockquote = this.lexer.state.inBlockquote;
         this.lexer.state.top = true;
+        this.lexer.state.inBlockquote = true;
         this.lexer.blockTokens(currentText, tokens, true);
         this.lexer.state.top = top;
+        this.lexer.state.inBlockquote = outerInBlockquote;
 
         // if there is no continuation then we are done
         if (lines.length === 0) {
@@ -314,7 +320,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           // lazy line is re-parsed as a spurious deeper blockquote.
           const continuation = lines.join('\n');
           const newText = oldToken.raw + '\n' + continuation.replace(this.rules.other.blockquoteSetextReplace2, '');
+          this.lexer.state.inBlockquote = true;
           const newToken = this.blockquote(newText)!;
+          this.lexer.state.inBlockquote = outerInBlockquote;
           tokens[tokens.length - 1] = newToken;
 
           // Only include continuation lines the nested blockquote actually
