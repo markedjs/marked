@@ -963,7 +963,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         title = cap[3] ? cap[3].slice(1, -1) : '';
       }
 
-      href = href.trim();
+      // Modern link rules already separate ASCII whitespace from the destination.
+      // Other whitespace is destination content and must not be trimmed.
+      if (this.options.pedantic) {
+        href = href.trim();
+      }
       if (this.rules.other.startAngleBracket.test(href)) {
         if (this.options.pedantic && !(this.rules.other.endAngleBracket.test(trimmedUrl))) {
           // pedantic allows starting angle bracket without ending angle bracket
