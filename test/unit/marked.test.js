@@ -10,6 +10,16 @@ describe('marked unit', () => {
     setOptions(getDefaults());
   });
 
+  describe('type 6 html tag names at end of input', () => {
+    for (const gfm of [false, true]) {
+      for (const tag of ['<div', '</div', '<table', '</table']) {
+        it(`interrupts a paragraph before ${tag} without a final newline (gfm=${gfm})`, () => {
+          assert.strictEqual(marked.parse(`a\n${tag}`, { gfm }), `<p>a</p>\n${tag}`);
+        });
+      }
+    }
+  });
+
   describe('Test paragraph token type', () => {
     it('should use the "paragraph" type on top level', () => {
       const md = 'A Paragraph.\n\n> A blockquote\n\n- list item\n';
