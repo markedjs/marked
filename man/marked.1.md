@@ -29,6 +29,9 @@ marked --output="hello world.html" -i in.md --no-breaks
 
 ## OPTIONS
 
+* --
+End option parsing. Arguments after this are treated as input filenames, even if they start with a hyphen.
+
 * -o, --output [output file]
 Specify file output. If none is specified, write to stdout.
 

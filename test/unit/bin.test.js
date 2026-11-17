@@ -304,6 +304,29 @@ describe('bin/marked', () => {
   });
 
   describe('input', () => {
+    it('does not treat --=value as the end of options', testInput({
+      args: ['--=ignored', '--string', '# test'],
+      stdout: '<h1>test</h1>',
+    }));
+
+    for (const filename of ['-s.md', '--version']) {
+      it(`treats ${filename} as a filename after --`, async() => {
+        const dir = await mkdtemp(resolve(tmpdir(), 'marked-end-options-'));
+        try {
+          await writeFile(resolve(dir, filename), '~~file contents~~');
+          const { stdout, stderr } = await execFileAsync(process.execPath, [
+            resolve(import.meta.dirname, '../../bin/marked.js'),
+            '--no-gfm', '--', filename,
+          ], { cwd: dir });
+
+          assert.strictEqual(stdout, '<p>~~file contents~~</p>\n\n');
+          assert.strictEqual(stderr, '');
+        } finally {
+          await rm(dir, { recursive: true, force: true });
+        }
+      });
+    }
+
     it('input file positional', testInput({
       args: [fixturePath('bin-input.md')],
       stdout: '<h1>file</h1>',
