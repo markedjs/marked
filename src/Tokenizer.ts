@@ -1026,7 +1026,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     const runPrevChar = [...maskedSrc.slice(Math.max(0, runStart - 2), runStart)].at(-1) ?? '';
     // The other delimiter character counts as punctuation here (`_**a*`, `*_#_`)
     const runPrevPunct = runPrevChar === '*' || runPrevChar === '_' || !!this.rules.inline.punctuation.exec(runPrevChar);
-    if (runStart < srcStart) {
+    // The lexer keeps prevChar from before literal underscores for intraword
+    // underscore rules. A star opener still sees the adjacent underscore.
+    if (runStart < srcStart || (!this.options.pedantic && delimChar === '*' && runPrevChar === '_')) {
       prevChar = runPrevChar;
     }
     const prevPunct = runStart < srcStart
