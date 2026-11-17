@@ -1,4 +1,4 @@
-import { marked, Marked, Renderer, Tokenizer, Hooks } from '../../lib/marked.esm.js';
+import { marked, Marked, Renderer, Tokenizer, Hooks, Lexer } from '../../lib/marked.esm.js';
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert';
 
@@ -155,6 +155,18 @@ describe('Marked', () => {
 
       assert.strictEqual(marked1.parse('# header'), '<h1>im marked tokenizer</h1>\n');
       assert.strictEqual(marked.parse('# header'), '<h1>im marked tokenizer</h1>\n');
+    });
+
+    it('allows a configured code tokenizer without a lexer', () => {
+      const tokenizer = new Tokenizer();
+      const lexer = new Lexer({ tokenizer });
+      delete lexer.tokenizer.lexer;
+      assert.deepStrictEqual(tokenizer.code('    code\n'), {
+        type: 'code',
+        raw: '    code\n',
+        codeBlockStyle: 'indented',
+        text: 'code\n',
+      });
     });
 
     it('allow new Hooks()', () => {

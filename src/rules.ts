@@ -234,6 +234,7 @@ const blockNormal = {
   hr,
   html,
   lheading,
+  lheadingAfterDef: edit(lheading).replace('(?: {4}| {0,3}\t)|', '').getRegex(),
   list,
   newline,
   paragraph,
@@ -261,6 +262,7 @@ const gfmTable = edit(gfmTableHeader
 const blockGfm: Record<BlockKeys, RegExp> = {
   ...blockNormal,
   lheading: lheadingGfm,
+  lheadingAfterDef: edit(lheadingGfm).replace('(?: {4}| {0,3}\t)|', '').getRegex(),
   table: gfmTable,
   paragraph: edit(_paragraph)
     .replace('hr', hr)
