@@ -1293,4 +1293,4 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       };
     }
   }
-      }
+}
