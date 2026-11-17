@@ -4,22 +4,22 @@ gfm: false
 [a]: /url
     [a]
 
-    [b]: /other
-        plain
-            continuation
+[b]: /other
+    plain
+    continuation
 
-            [c]: /heading
-                [c]
-                ===
+[c]: /heading
+    [c]
+===
 
-                [d]: /code
+[d]: /code
 
-                    [d]
+    [d]
 
-                        standalone
+    standalone
 
-                        [e]: /url
-                            # not a heading
+[e]: /url
+    # not a heading
 
-                            [f]: /url
-                                - not a list
+[f]: /url
+    - not a list
