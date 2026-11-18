@@ -566,10 +566,17 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
               lineIsLazy = true;
             }
 
+            const contentLine = nextLineWithoutTabs.slice(indent);
+            // Indented code cannot interrupt a paragraph. Keep the preceding
+            // block context when an indented line continues non-blank content.
+            // Nested containers can change that context at a deeper indent.
+            if (this.options.pedantic || blankLine || contentLine.search(this.rules.other.nonSpaceChar) < 4
+              || this.rules.other.nestedBlockMarker.test(line)) {
+              line = contentLine;
+            }
             blankLine = !nextLine.trim();
 
             src = src.substring(rawLine.length + 1);
-            line = nextLineWithoutTabs.slice(indent);
           }
         }
 
