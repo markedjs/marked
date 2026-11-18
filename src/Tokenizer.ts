@@ -460,6 +460,25 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           // A lazy line continues a paragraph, so it is not checked for the start of a block
           let lineIsLazy = false;
 
+          // Whether the previous line of this item is an indented code block.
+          // An indented code block cannot interrupt a paragraph, so a line
+          // that continues one is paragraph text even when it is indented
+          // 4+ columns; only a line that starts a code block (the first line
+          // of the item, or the first line after a blank line) or continues
+          // one counts as code. The first line is checked the same way the
+          // lazy-line check below checks it.
+          let lastLineWasCode = false;
+          if (!this.options.pedantic && !line.includes('\t')) {
+            let firstBlock = line;
+            let marker;
+            while (!hrRegex.test(firstBlock) && (marker = this.rules.other.nestedBlockMarker.exec(firstBlock))) {
+              firstBlock = firstBlock.slice(marker[0].length);
+            }
+            lastLineWasCode = firstBlock.replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar) >= 4;
+          } else {
+            lastLineWasCode = line.replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar) >= 4;
+          }
+
           // Check if following lines should be included in List Item
           while (src) {
             const rawLine = src.split('\n', 1)[0];
@@ -507,6 +526,17 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
             if (nextLineWithoutTabs.search(this.rules.other.nonSpaceChar) >= indent || !nextLine.trim()) { // Dedent if possible
               itemContents += '\n' + nextLineWithoutTabs.slice(indent);
               lineIsLazy = false;
+              if (!nextLine.trim()) {
+                lastLineWasCode = false;
+              } else if (blankLine || lastLineWasCode) {
+                // This line starts a new block after a blank line, or
+                // continues a code block: it is code only if it is
+                // indented 4+ columns past the item content.
+                lastLineWasCode = nextLineWithoutTabs.slice(indent).replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar) >= 4;
+              } else {
+                // A paragraph is open, so this line continues it.
+                lastLineWasCode = false;
+              }
             } else {
               // not enough indentation
               if (blankLine) {
@@ -528,8 +558,16 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
                 }
               }
 
-              // paragraph continuation unless last line was a different block level element
-              if (lastBlock.replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar) >= 4) { // indented code block
+              // paragraph continuation unless last line was a different block level element.
+              // An indented code block cannot interrupt a paragraph, so the
+              // previous line only counts as one when it is the first line of
+              // the item (checked as `lastBlock` above) or was tracked as
+              // code when it was read; a later line that continued a
+              // paragraph is paragraph text even if it is indented 4+ columns.
+              const lastLineIsCode = itemContents.includes('\n')
+                ? lastLineWasCode
+                : lastBlock.replace(this.rules.other.tabCharGlobal, '    ').search(this.rules.other.nonSpaceChar) >= 4;
+              if (lastLineIsCode) { // indented code block
                 break;
               }
               if (fencesBeginRegex.test(lastBlock)) {
@@ -564,6 +602,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
                 : nextLine;
               itemContents += '\n' + continuation;
               lineIsLazy = true;
+              lastLineWasCode = false; // a lazy line continues a paragraph
             }
 
             blankLine = !nextLine.trim();
