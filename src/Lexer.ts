@@ -22,6 +22,8 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
      * Anchored once per run by inlineTokens.
      */
     linkParenPossible: boolean;
+    /** Length of the suffix starting at the last '>' in the current inline run. */
+    tagCloserSuffixLength: number;
     top: boolean;
     /** the last block token lexed in the current block run, so a tokenizer can check the token before it */
     lastToken?: Token;
@@ -46,6 +48,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       inRawBlock: false,
       linkEmitted: false,
       linkParenPossible: true,
+      tagCloserSuffixLength: 0,
       top: true,
     };
 
@@ -376,11 +379,14 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     // nested runs, so each run must check its own source.
     const prevLinkParenPossible = this.state.linkParenPossible;
     this.state.linkParenPossible = src.includes(')');
+    const prevTagCloserSuffixLength = this.state.tagCloserSuffixLength;
+    this.state.tagCloserSuffixLength = src.length - src.lastIndexOf('>');
     try {
       return this.#inlineTokensInner(src, tokens);
     } finally {
       // Restore the outer run's flag for the rest of its loop.
       this.state.linkParenPossible = prevLinkParenPossible;
+      this.state.tagCloserSuffixLength = prevTagCloserSuffixLength;
     }
   }
 
