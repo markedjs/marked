@@ -12,6 +12,12 @@ const cases = [
   ['<!--\0-->', '<!--\ufffd-->'],
   ['&#0;', '<p>\ufffd</p>\n'],
   ['\\0', '<p>\\0</p>\n'],
+  ['[a\0]: /u\n\n[a\ufffd]', '<p><a href="/u">a\ufffd</a></p>\n'],
+  ['[a\ufffd]: /u\n\n[a\0]', '<p><a href="/u">a\ufffd</a></p>\n'],
+  ['a\0*b*', '<p>a\ufffd<em>b</em></p>\n'],
+  ['*a*\0b', '<p><em>a</em>\ufffdb</p>\n'],
+  ['a_\0b_', '<p>a_\ufffdb_</p>\n'],
+
 ];
 module.exports = [false, true].flatMap(gfm => cases.map(([markdown, html]) => ({
   markdown,
