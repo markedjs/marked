@@ -128,6 +128,7 @@ Marked can be extended using [custom extensions](/using_pro#extensions). This is
 |[Highlight](https://github.com/markedjs/marked-highlight)|[`marked-highlight`](https://www.npmjs.com/package/marked-highlight)|Highlight code blocks|
 |[HTML Renderer](https://github.com/UziTech/marked-html-renderer)|[`marked-html-renderer`](https://www.npmjs.com/package/marked-html-renderer)|Output HTML Elements instead of a string|
 |[Jira Renderer](https://github.com/mrmarble/marked-jira)|[`marked-jira`](https://www.npmjs.com/package/marked-jira)|Output Jira compatible format|
+|[Inline Annotation](https://github.com/BaksiLi/markdown-inline-annotation/tree/main/packages/marked)|[`marked-inline-annotation`](https://www.npmjs.com/package/marked-inline-annotation)|Add ruby (furigana), interlinear glosses, and emphasis dots to Markdown text|
 |[Katex Code](https://github.com/UziTech/marked-katex-extension)|[`marked-katex-extension`](https://www.npmjs.com/package/marked-katex-extension)|Render [katex](https://katex.org/) code|
 |[LinkifyIt](https://github.com/UziTech/marked-linkify-it)|[`marked-linkify-it`](https://www.npmjs.com/package/marked-linkify-it)|Use [linkify-it](https://github.com/markdown-it/linkify-it) for urls|
 |[Mangle](https://github.com/markedjs/marked-mangle)|[`marked-mangle`](https://www.npmjs.com/package/marked-mangle)|Mangle mailto links with HTML character references|
