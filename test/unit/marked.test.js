@@ -44,6 +44,61 @@ describe('marked unit', () => {
     });
   });
 
+  describe('inline HTML closer scan', () => {
+    it('restores the outer closer after a nested run without one', () => {
+      const localMarked = new Marked();
+      localMarked.use({
+        extensions: [{
+          name: 'nestedText',
+          level: 'inline',
+          renderer(token) {
+            return this.parser.parseInline(token.tokens);
+          },
+          tokenizer(src) {
+            if (src.startsWith('@')) {
+              return { type: 'nestedText', raw: '@', tokens: this.lexer.inlineTokens('a'.repeat(100)) };
+            }
+          },
+        }],
+      });
+      assert.strictEqual(localMarked.parse('@ <!a>'), `<p>${'a'.repeat(100)} <!a></p>\n`);
+    });
+
+    it('finds a closer in generated text when the outer run has none', () => {
+      const localMarked = new Marked();
+      localMarked.use({
+        extensions: [{
+          name: 'nestedText',
+          level: 'inline',
+          renderer(token) {
+            return this.parser.parseInline(token.tokens);
+          },
+          tokenizer(src) {
+            if (src.startsWith('@')) {
+              return { type: 'nestedText', raw: '@', tokens: this.lexer.inlineTokens('x<!a>') };
+            }
+          },
+        }],
+      });
+      assert.strictEqual(localMarked.parse('@ <!a'), '<p>x<!a> &lt;!a</p>\n');
+    });
+
+    it('keeps the old inline declaration grammar in pedantic mode', () => {
+      const localMarked = new Marked();
+      assert.strictEqual(localMarked.parse('before <!a> after', { pedantic: true }), '<p>before &lt;!a&gt; after</p>\n');
+    });
+    for (const [src, expected] of [
+      ['<!1> <!DOCTYPE html>', '<p>&lt;!1&gt; <!DOCTYPE html></p>\n'],
+      ['<![x]> <!A b>', '<p>&lt;![x]&gt; <!A b></p>\n'],
+      ['**txt<!a>** <!DOCTYPE html>', '<p><strong>txt&lt;!a&gt;</strong> <!DOCTYPE html></p>\n'],
+    ]) {
+      it(`keeps later pedantic declarations anchored: ${src}`, () => {
+        const localMarked = new Marked();
+        assert.strictEqual(localMarked.parse(src, { pedantic: true }), expected);
+      });
+    }
+  });
+
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
