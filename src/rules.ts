@@ -58,6 +58,7 @@ export const other = {
   tabCharGlobal: /\t/g,
   leadingSpaceTab: /^[ \t]+/,
   multipleSpaceGlobal: /\s+/g,
+  multipleSpaceTabGlobal: /[ \t\r\n]+/g,
   blankLine: /^[ \t]*$/,
   doubleBlankLine: /\n[ \t]*\n[ \t]*$/,
   textIndentedContinuation: /^(?:\n(?: {4}| {0,3}\t)[ \t]*[^ \t\n][^\n]*)+/,
