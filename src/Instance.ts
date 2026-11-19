@@ -374,7 +374,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
         }
         return html;
       } catch(e) {
-        return throwError(e as Error);
+        return throwError(e);
       }
     };
 
@@ -382,7 +382,8 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
   }
 
   private onError(silent: boolean, async: boolean) {
-    return (e: Error): string | Promise<string> => {
+    return (error: unknown): string | Promise<string> => {
+      const e = error instanceof Error ? error : new Error(String(error));
       e.message += '\nPlease report this to https://github.com/markedjs/marked.';
 
       if (silent) {
