@@ -1,8 +1,3 @@
----
-gfm: true
-renderExact: true
----
-
 - a
   
   b
