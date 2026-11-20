@@ -559,9 +559,23 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
               const setextContinuation = !this.options.pedantic
                 && /^ {0,3}(?:=+|-+) *$/.test(nextLine)
                 && this.rules.block.lheading.test(`${line}\n${nextLine}`);
-              const continuation = setextContinuation
+              let continuation = setextContinuation
                 ? `    ${nextLineWithoutTabs.replace(/^ {0,3}/, '')}`
                 : nextLine;
+              const nestedItem = !this.options.pedantic && !lineIsLazy && nextLineWithoutTabs.startsWith('    ')
+                ? this.rules.block.list.exec(line)
+                : null;
+              if (nestedItem?.[2]) {
+                const markerWidth = nestedItem[1].length;
+                const content = nestedItem[2].replace(this.rules.other.leadingSpaceTab, whitespace => expandTabs(whitespace, markerWidth));
+                const padding = content.search(this.rules.other.nonSpaceChar);
+                if (padding > 0 && padding <= 4
+                  && !this.rules.other.nestedBlockMarker.test(content.slice(padding))
+                  && this.rules.other.listInterruptsParagraph.test(nextLineWithoutTabs.slice(markerWidth + padding))) {
+                  // Removing the nested item's indent must not turn lazy text into another list.
+                  continuation = `    ${nextLineWithoutTabs}`;
+                }
+              }
               itemContents += '\n' + continuation;
               lineIsLazy = true;
             }
