@@ -68,18 +68,20 @@ export async function main(nodeProcess) {
     let config;
     let opt;
     let noclobber;
+    let argValue;
 
     function getArg() {
       let arg = argv.shift();
+      argValue = undefined;
 
       if (arg.indexOf('--') === 0) {
         // e.g. --opt
-        arg = arg.split('=');
-        if (arg.length > 1) {
+        const eqIndex = arg.indexOf('=');
+        if (eqIndex !== -1) {
           // e.g. --opt=val
-          argv.unshift(arg.slice(1).join('='));
+          argValue = arg.slice(eqIndex + 1);
+          arg = arg.slice(0, eqIndex);
         }
-        arg = arg[0];
       } else if (arg[0] === '-') {
         if (arg.length > 2) {
           // e.g. -abc
@@ -98,6 +100,9 @@ export async function main(nodeProcess) {
     }
 
     function getOptionValue(option) {
+      if (argValue !== undefined) {
+        return argValue;
+      }
       if (argv.length === 0) {
         throw new Error(`marked: option '${option}' requires an argument`);
       }
@@ -144,17 +149,19 @@ export async function main(nodeProcess) {
         default:
           if (arg.indexOf('--') === 0) {
             opt = camelize(arg.replace(/^--(no-)?/, ''));
-            if (!(opt in marked.defaults)) {
+            if (!Object.hasOwn(marked.defaults, opt)) {
               continue;
             }
             if (arg.indexOf('--no-') === 0) {
               cliOptions[opt] = typeof marked.defaults[opt] !== 'boolean'
                 ? null
                 : false;
+            } else if (typeof marked.defaults[opt] === 'boolean') {
+              cliOptions[opt] = argValue === undefined
+                ? true
+                : argValue !== 'false';
             } else {
-              cliOptions[opt] = typeof marked.defaults[opt] !== 'boolean'
-                ? argv.shift()
-                : true;
+              cliOptions[opt] = getOptionValue(arg);
             }
           } else {
             files.push(arg);
