@@ -872,6 +872,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
   tag(src: string): Tokens.Tag | undefined {
     if (src.charCodeAt(0) !== 60) return; // <
+    // Builtin calls receive suffixes of the current inline run. No tag can
+    // end after its last '>'. Avoid rescanning an
+    // unterminated declaration suffix from every '<!a' it contains.
+    if (src.length < this.lexer.state.tagCloserSuffixLength) return;
     const cap = this.rules.inline.tag.exec(src);
     if (cap) {
       if (!this.lexer.state.inLink && this.rules.other.startATag.test(cap[0])) {
