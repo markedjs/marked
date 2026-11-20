@@ -298,11 +298,12 @@ export async function main(nodeProcess) {
     await start(nodeProcess.argv.slice(2));
     nodeProcess.exit(0);
   } catch(err) {
-    if (err.code === 'ENOENT') {
-      nodeProcess.stderr.write('marked: ' + err.path + ': No such file or directory');
-    } else {
-      nodeProcess.stderr.write(err.message);
-    }
+    const message = err.code === 'ENOENT'
+      ? 'marked: ' + err.path + ': No such file or directory'
+      : err.message;
+    await new Promise(resolve => {
+      nodeProcess.stderr.write(message, resolve);
+    });
     return nodeProcess.exit(1);
   }
 }
