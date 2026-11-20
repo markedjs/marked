@@ -103,6 +103,17 @@ function execMarked({ args = '', stdin = '', stdout = '', stderr = '' }) {
 }
 
 describe('bin/marked', () => {
+  describe('required option values', () => {
+    for (const option of ['-o', '--output', '-i', '--input', '-s', '--string', '-c', '--config']) {
+      it(`rejects ${option} without a value`, testInput({
+        args: [option],
+        stdin: '# ignored',
+        stderr: `marked: option '${option}' requires an argument`,
+        code: 1,
+      }));
+    }
+  });
+
   describe('output', () => {
     it('writes all output before exiting when stdout is piped', async() => {
       const dir = await mkdtemp(resolve(tmpdir(), 'marked-stdout-'));
@@ -182,6 +193,12 @@ describe('bin/marked', () => {
   });
 
   describe('string', () => {
+    it('--string= accepts empty input instead of reading stdin', testInput({
+      args: ['--string='],
+      stdin: '# ignored',
+      stdout: '\n',
+    }));
+
     it('-s', testInput({
       args: ['-s', '# test'],
       stdout: '<h1>test</h1>',

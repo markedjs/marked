@@ -97,6 +97,13 @@ export async function main(nodeProcess) {
       return arg;
     }
 
+    function getOptionValue(option) {
+      if (argv.length === 0) {
+        throw new Error(`marked: option '${option}' requires an argument`);
+      }
+      return argv.shift();
+    }
+
     while (argv.length) {
       if (argv[0] === '--') {
         files.push(...argv.slice(1));
@@ -106,15 +113,15 @@ export async function main(nodeProcess) {
       switch (arg) {
         case '-o':
         case '--output':
-          output = argv.shift();
+          output = getOptionValue(arg);
           break;
         case '-i':
         case '--input':
-          input = argv.shift();
+          input = getOptionValue(arg);
           break;
         case '-s':
         case '--string':
-          string = argv.shift();
+          string = getOptionValue(arg);
           break;
         case '-t':
         case '--tokens':
@@ -122,7 +129,7 @@ export async function main(nodeProcess) {
           break;
         case '-c':
         case '--config':
-          config = argv.shift();
+          config = getOptionValue(arg);
           break;
         case '-n':
         case '--no-clobber':
