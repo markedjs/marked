@@ -27,6 +27,10 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     lastToken?: Token;
   };
 
+  private normalizeSourceNulls: boolean;
+  private inlineDepth = 0;
+  private inlineHasNull = false;
+
   public inlineQueue: { src: string, tokens: Token[] }[];
 
   private tokenizer: _Tokenizer<ParserOutput, RendererOutput>;
@@ -36,7 +40,14 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     this.tokens = [] as unknown as TokensList;
     this.tokens.links = Object.create(null);
     this.options = options || _defaults;
-    this.options.tokenizer = this.options.tokenizer || new _Tokenizer<ParserOutput, RendererOutput>();
+    const tokenizer = this.options.tokenizer;
+    // Extensions keep receiving normalized source, including custom fields and
+    // child-token layouts the built-in semantic-field walk cannot know about.
+    this.normalizeSourceNulls = !!this.options.extensions || (!!tokenizer && (
+      Object.getPrototypeOf(tokenizer) !== _Tokenizer.prototype
+      || Object.getOwnPropertyNames(tokenizer).some(key => key !== 'options' && key !== 'rules' && key !== 'lexer')
+    ));
+    this.options.tokenizer = tokenizer || new _Tokenizer<ParserOutput, RendererOutput>();
     this.tokenizer = this.options.tokenizer;
     this.tokenizer.options = this.options;
     this.tokenizer.lexer = this;
@@ -99,7 +110,15 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
    * Preprocessing
    */
   lex(src: string) {
+    const hasNull = src.includes('\0');
+    const firstToken = this.tokens.length;
+    const previousLinks = hasNull && !this.normalizeSourceNulls
+      ? new Set(Object.values(this.tokens.links))
+      : undefined;
     src = src.replace(other.carriageReturn, '\n');
+    if (this.normalizeSourceNulls) {
+      src = src.replace(other.nullCharacter, '\uFFFD');
+    }
 
     this.blockTokens(src, this.tokens);
 
@@ -113,6 +132,16 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     }
     this.inlineQueue = [];
 
+    if (hasNull && !this.normalizeSourceNulls) {
+      normalizeTokenNulls(this.tokens.slice(firstToken));
+      for (const link of Object.values(this.tokens.links)) {
+        if (previousLinks?.has(link)) {
+          continue;
+        }
+        link.href = link.href.replace(other.nullCharacter, '\uFFFD');
+        link.title = link.title?.replace(other.nullCharacter, '\uFFFD');
+      }
+    }
     return this.tokens;
   }
 
@@ -368,6 +397,12 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
    * Lexing/Compiling
    */
   inlineTokens(src: string, tokens: Token[] = []): Token[] {
+    if (this.normalizeSourceNulls) {
+      src = src.replace(other.nullCharacter, '\uFFFD');
+    }
+    const firstToken = tokens.length;
+    this.inlineDepth++;
+    this.inlineHasNull ||= !this.normalizeSourceNulls && src.includes('\0');
     this.tokenizer.lexer = this;
     // One paren scan per inline run, shared with Tokenizer.link: without a
     // ')' ahead the link regex cannot match, and skipping it avoids its
@@ -381,6 +416,11 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     } finally {
       // Restore the outer run's flag for the rest of its loop.
       this.state.linkParenPossible = prevLinkParenPossible;
+      this.inlineDepth--;
+      if (this.inlineDepth === 0 && this.inlineHasNull) {
+        this.inlineHasNull = false;
+        normalizeTokenNulls(tokens.slice(firstToken));
+      }
     }
   }
 
@@ -702,6 +742,27 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       console.error(errMsg);
     } else {
       throw new Error(errMsg);
+    }
+  }
+}
+
+function normalizeTokenNulls(tokens: Token[]) {
+  for (const token of tokens) {
+    const value = token as Tokens.Generic;
+    for (const field of ['text', 'href', 'title', 'lang', 'tag']) {
+      if (typeof value[field] === 'string') {
+        value[field] = value[field].replace(other.nullCharacter, '\uFFFD');
+      }
+    }
+    if (token.type === 'table') {
+      for (const cell of [...token.header, ...token.rows.flat()]) {
+        cell.text = cell.text.replace(other.nullCharacter, '\uFFFD');
+        normalizeTokenNulls(cell.tokens);
+      }
+    } else if (token.type === 'list') {
+      normalizeTokenNulls(token.items);
+    } else if (Array.isArray(value.tokens)) {
+      normalizeTokenNulls(value.tokens);
     }
   }
 }

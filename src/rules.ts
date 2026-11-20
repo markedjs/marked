@@ -102,6 +102,7 @@ export const other = {
   splitPipe: / \|/,
   slashPipe: /\\\|/g,
   carriageReturn: /\r\n|\r/g,
+  nullCharacter: /\0/g,
   spaceLine: /^ +$/gm,
   notSpaceStart: /^\S*/,
   endingNewline: /\n$/,
@@ -323,9 +324,9 @@ const br = /^( {2,}|\\)\n(?!\s*$)[ \t]*/;
 const inlineText = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
 
 // list of unicode punctuation marks, plus any missing characters from CommonMark spec
-const _punctuation = /[\p{P}\p{S}]/u;
-const _punctuationOrSpace = /[\s\p{P}\p{S}]/u;
-const _notPunctuationOrSpace = /[^\s\p{P}\p{S}]/u;
+const _punctuation = /[\p{P}\p{S}\0]/u;
+const _punctuationOrSpace = /[\s\p{P}\p{S}\0]/u;
+const _notPunctuationOrSpace = /[^\s\p{P}\p{S}\0]/u;
 const punctuation = edit(/^((?![*_])punctSpace)/, 'u')
   .replace(/punctSpace/g, _punctuationOrSpace).getRegex();
 
@@ -336,9 +337,9 @@ const punctuation = edit(/^((?![*_])punctSpace)/, 'u')
 const _openQuote = /[\p{Pi}\p{Ps}"']/u;
 
 // GFM allows ~ inside strong and em for strikethrough
-const _punctuationGfmStrongEm = /(?!~)[\p{P}\p{S}]/u;
-const _punctuationOrSpaceGfmStrongEm = /(?!~)[\s\p{P}\p{S}]/u;
-const _notPunctuationOrSpaceGfmStrongEm = /(?:[^\s\p{P}\p{S}]|~)/u;
+const _punctuationGfmStrongEm = /(?!~)[\p{P}\p{S}\0]/u;
+const _punctuationOrSpaceGfmStrongEm = /(?!~)[\s\p{P}\p{S}\0]/u;
+const _notPunctuationOrSpaceGfmStrongEm = /(?:[^\s\p{P}\p{S}\0]|~)/u;
 
 // sequences em should skip over [title](link), `code`, <html>
 const blockSkip = edit(/link|precode-code|html/, 'g')
@@ -469,7 +470,7 @@ const anyPunctuationOutsideCode = edit(/(`+)(?:[^`]|[^`][\s\S]*?[^`])\1(?!`)|`+|
   .replace(/punct/g, _punctuation)
   .getRegex();
 
-const autolink = edit(/^<(scheme:[^\s\x00-\x1f<>]*|email)>/)
+const autolink = edit(/^<(scheme:[^\s\x01-\x1f<>]*|email)>/)
   .replace('scheme', /[a-zA-Z][a-zA-Z0-9+.-]{1,31}/)
   .replace('email', /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(@)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+(?![-_])/)
   .getRegex();
@@ -497,7 +498,7 @@ const _inlineLabel = edit(/(?:\[(?:brackets|\\[\s\S]|[^\[\]\\])*\]|\\[\s\S]|`+(?
 
 const link = edit(/^!?\[(label)\]\([ \t\n]*(href)(?:(?:[ \t]+(?:\n[ \t]*)?|\n[ \t]*)(title))?[ \t\n]*\)/)
   .replace('label', _inlineLabel)
-  .replace('href', /<(?:\\.|[^\n<>\\])*>|(?!<)[^ \t\n\x00-\x1f]+|(?=\))/)
+  .replace('href', /<(?:\\.|[^\n<>\\])*>|(?!<)[^ \t\n\x01-\x1f]+|(?=\))/)
   // Same as the definition title: the escaped character is not the closer.
   .replace('title', /"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|\((?:\\[\s\S]|[^)\\])*\)/)
   .getRegex();

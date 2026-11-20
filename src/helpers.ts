@@ -158,7 +158,7 @@ export function normalizeLabel(label: string) {
   // to be stripped, and for internal runs of them to collapse to one space.
   // Doing it here keeps every call site in agreement: the definition and the
   // reference have to normalize to the same key.
-  return label.trim().replace(other.multipleSpaceGlobal, ' ').toLowerCase().toUpperCase().toLowerCase();
+  return label.replace(other.nullCharacter, '\uFFFD').trim().replace(other.multipleSpaceGlobal, ' ').toLowerCase().toUpperCase().toLowerCase();
 }
 
 export function findClosingBracket(str: string, b: string) {
