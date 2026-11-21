@@ -3,12 +3,11 @@ import { htmlIsEqual } from '@markedjs/testutils';
 import { resolve } from 'node:path';
 import { describe, it, mock } from 'node:test';
 import assert from 'node:assert';
-import { exec, execFile } from 'node:child_process';
+import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { mkdtemp, readFile, rm, symlink, writeFile, access } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 
-const execAsync = promisify(exec);
 const execFileAsync = promisify(execFile);
 
 function createMocks() {
@@ -86,19 +85,12 @@ async function execMarkedString(args, markdown) {
   return stdout;
 }
 
-function execMarked({ args = '', stdin = '', stdout = '', stderr = '' }) {
-  const execPath = resolve(import.meta.dirname, '../../bin/marked');
+function execMarked({ args = [], stdin = '', stdout = '', stderr = '' }) {
+  const cliPath = resolve(import.meta.dirname, '../../bin/marked.js');
   return async() => {
-    let command = '';
-
-    if (stdin) {
-      command += `node -e "process.stdout.write('${stdin}')" | `;
-    }
-    command += `node ${execPath}`;
-    if (args) {
-      command += ` ${args}`;
-    }
-    const res = await execAsync(command);
+    const execution = execFileAsync(process.execPath, [cliPath, ...args]);
+    execution.child.stdin.end(stdin);
+    const res = await execution;
 
     assert.ok(await htmlIsEqual(res.stdout, stdout));
     assert.strictEqual(res.stderr, stderr);
@@ -369,7 +361,7 @@ describe('bin/marked', () => {
     }
 
     it('input file positional', testInput({
-      args: [fixturePath('bin-input.md')],
+      args: [fixturePath('bin input.md')],
       stdout: '<h1>file</h1>',
     }));
 
@@ -394,27 +386,27 @@ describe('bin/marked', () => {
 
 describe('exec', () => {
   it('stdin', execMarked({
-    stdin: '# test',
+    stdin: '# test\n',
     stdout: '<h1>test</h1>',
   }));
 
   it('string', execMarked({
-    args: '-s "# test"',
+    args: ['-s', '# test'],
     stdout: '<h1>test</h1>',
   }));
 
   it('input', execMarked({
-    args: `-i ${fixturePath('bin-input.md')}`,
+    args: ['-i', fixturePath('bin input.md')],
     stdout: '<h1>file</h1>',
   }));
 
   it('input file positional', execMarked({
-    args: fixturePath('bin-input.md'),
+    args: [fixturePath('bin input.md')],
     stdout: '<h1>file</h1>',
   }));
 
   it('input last file positional', execMarked({
-    args: `${fixturePath('does-not-exist.md')} ${fixturePath('bin-input.md')}`,
+    args: [fixturePath('does-not-exist.md'), fixturePath('bin input.md')],
     stdout: '<h1>file</h1>',
   }));
 });
