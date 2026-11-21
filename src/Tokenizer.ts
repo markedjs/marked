@@ -936,8 +936,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         }
 
         if (lastParenIndex > -1) {
-          const start = cap[0].indexOf('!') === 0 ? 5 : 4;
-          const linkLen = start + cap[1].length + lastParenIndex;
+          const hrefStart = cap[0].indexOf(cap[2], cap[1].length + (cap[0][0] === '!' ? 4 : 3));
+          const linkLen = hrefStart + lastParenIndex + 1;
           cap[2] = cap[2].substring(0, lastParenIndex);
           cap[0] = cap[0].substring(0, linkLen).trim();
           cap[3] = '';
