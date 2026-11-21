@@ -1748,6 +1748,34 @@ paragraph
         ],
       });
     });
+
+    it('label cannot span a line that starts a block', () => {
+      expectTokens({
+        md: '[foo\n# bar]: /url\n',
+        links: {},
+        tokens: [
+          {
+            type: 'paragraph',
+            raw: '[foo\n',
+            text: '[foo',
+            tokens: [{ type: 'text', raw: '[foo', text: '[foo', escaped: false }],
+          },
+          {
+            type: 'heading',
+            raw: '# bar]: /url\n',
+            depth: 1,
+            text: 'bar]: /url',
+            tokens: [{ type: 'text', raw: 'bar]: /url', text: 'bar]: /url', escaped: false }],
+          },
+        ],
+      });
+    });
+
+    it('label can span a line that continues the paragraph', () => {
+      const lexer = new Lexer();
+      lexer.lex('[foo\n  bar]: /url\n');
+      assert.deepEqual({ ...lexer.tokens.links }, { 'foo bar': { href: '/url', title: undefined } });
+    });
   });
 
   describe('inline', () => {
