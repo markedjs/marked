@@ -571,6 +571,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
                 const padding = content.search(this.rules.other.nonSpaceChar);
                 if (padding > 0 && padding <= 4
                   && !this.rules.other.nestedBlockMarker.test(content.slice(padding))
+                  && nextLineWithoutTabs.search(this.rules.other.nonSpaceChar) >= markerWidth + padding
                   && this.rules.other.listInterruptsParagraph.test(nextLineWithoutTabs.slice(markerWidth + padding))) {
                   // Removing the nested item's indent must not turn lazy text into another list.
                   continuation = `    ${nextLineWithoutTabs}`;
