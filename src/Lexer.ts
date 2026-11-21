@@ -258,6 +258,20 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       // lheading
       if (token = this.tokenizer.lheading(src)) {
         src = src.substring(token.raw.length);
+        const lastToken = tokens.at(-1);
+        // A quoted setext underline can finish a paragraph from the previous
+        // lazy-continuation chunk. Keep custom heading tokenizers independent.
+        if (!this.options.pedantic && lastParagraphClipped && lastToken?.type === 'paragraph'
+          && this.tokenizer.lheading === _Tokenizer.prototype.lheading
+          && this.tokenizer.paragraph === _Tokenizer.prototype.paragraph
+          && this.inlineQueue.at(-2)?.tokens === lastToken.tokens
+          && this.inlineQueue.at(-1)?.tokens === token.tokens) {
+          token.raw = lastToken.raw + (lastToken.raw.endsWith('\n') ? '' : '\n') + token.raw;
+          token.text = lastToken.text + '\n' + token.text;
+          this.inlineQueue.splice(-2, 1);
+          this.inlineQueue.at(-1)!.src = token.text;
+          tokens.pop();
+        }
         tokens.push(token);
         continue;
       }
