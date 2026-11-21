@@ -44,6 +44,33 @@ describe('marked unit', () => {
     });
   });
 
+  describe('ATX heading opening whitespace', () => {
+    it('accepts only ASCII spaces, tabs, and line endings after opening hashes', () => {
+      for (const gfm of [false, true]) {
+        for (const separator of ['\v', '\f', '\u00a0', '\u1680', '\u2000', '\u2003', '\u2028', '\u2029', '\u202f', '\u205f', '\u3000', '\ufeff']) {
+          const text = `#${separator}text`;
+          assert.strictEqual(marked.parse(text, { gfm }), `<p>${text}</p>\n`);
+        }
+        assert.strictEqual(marked.parse('# text', { gfm }), '<h1>text</h1>\n');
+        assert.strictEqual(marked.parse('#\ttext', { gfm }), '<h1>text</h1>\n');
+        assert.strictEqual(marked.parse('#', { gfm }), '<h1></h1>\n');
+        assert.strictEqual(marked.parse('#\ntext', { gfm }), '<h1></h1>\n<p>text</p>\n');
+      }
+    });
+
+    it('keeps the legacy pedantic heading opener', () => {
+      assert.strictEqual(marked.parse('#\u00a0text', { pedantic: true }), '<h1>text</h1>\n');
+    });
+
+    it('ends nested blockquote lists before non-lazy text after a heading', () => {
+      assert.strictEqual(marked.parse('> > - #  \n##\u00a0\u2029'), '<blockquote>\n<blockquote>\n<ul>\n<li><h1></h1>\n</li>\n</ul>\n</blockquote>\n</blockquote>\n<p>##\u00a0\u2029</p>\n');
+    });
+
+    it('replaces a continued list before trailing space tokens without duplicating it', () => {
+      assert.strictEqual(marked.parse('> - item  \t\n#text'), '<blockquote>\n<ul>\n<li>item\n#text</li>\n</ul>\n</blockquote>\n');
+    });
+  });
+
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');

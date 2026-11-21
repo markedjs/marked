@@ -299,7 +299,12 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           break;
         }
 
-        const lastToken = tokens.at(-1);
+        let lastTokenIndex = tokens.length - 1;
+        // Trailing whitespace does not turn a non-paragraph block into a lazy paragraph.
+        while (!this.options.pedantic && lastTokenIndex >= 0 && tokens[lastTokenIndex].type === 'space') {
+          lastTokenIndex--;
+        }
+        const lastToken = tokens[lastTokenIndex];
 
         if (lastToken?.type === 'code' || lastToken?.type === 'heading' || lastToken?.type === 'hr' || lastToken?.type === 'html' || lastToken?.type === 'table') {
           // blockquote continuation cannot be preceded by a code block, heading, hr, html block or table
@@ -314,7 +319,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           const continuation = lines.join('\n');
           const newText = oldToken.raw + '\n' + continuation.replace(this.rules.other.blockquoteSetextReplace2, '');
           const newToken = this.blockquote(newText)!;
-          tokens[tokens.length - 1] = newToken;
+          tokens[lastTokenIndex] = newToken;
 
           // Only include continuation lines the nested blockquote actually
           // consumed. Unconsumed trailing lines must stay out of `raw` so the
@@ -339,7 +344,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           const oldToken = lastToken as Tokens.List;
           const newText = oldToken.raw + '\n' + lines.join('\n');
           const newToken = this.list(newText)!;
-          tokens[tokens.length - 1] = newToken;
+          tokens[lastTokenIndex] = newToken;
 
           // The list raw has no '>' markers, so it cannot be cut out of `raw`.
           // Count the continuation lines the list took and add those lines instead.

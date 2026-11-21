@@ -111,7 +111,7 @@ export const other = {
   fencesBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:\`\`\`|~~~)`)),
   // an ATX heading needs a space (or the end of the line) after the hashes, so a line
   // like `#tag` does not end a list item; pedantic mode accepts it as a heading
-  headingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#{1,6}(?:\\s|$)`)),
+  headingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#{1,6}(?:[ \\t\\n]|$)`)),
   pedanticHeadingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#`)),
   // a list item ends where a paragraph would be interrupted, so this mirrors the
   // html start conditions in the paragraph rule below; type 7 is excluded there
@@ -129,7 +129,9 @@ const newline = /^(?:[ \t]*(?:\n|$))+/;
 const blockCode = /^((?: {4}| {0,3}\t)[^\n]+(?:\n(?:[ \t]*(?:\n|$))*)?)+/;
 const fences = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}(?:(?=`)\1`*|(?=~)\1~*)[ \t]*(?=\n|$)|$)/;
 const hr = /^ {0,3}((?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/;
-const heading = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
+const heading = /^ {0,3}(#{1,6})(?=[ \t\n]|$)(.*)(?:\n+|$)/;
+// ATX openers require an ASCII space, tab, or line ending, not Unicode whitespace.
+const headingInterrupt = / {0,3}#{1,6}(?:[ \t\n]|$)/;
 const bullet = / {0,3}(?:[*+-]|\d{1,9}[.)])/;
 const _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
   + '|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption'
@@ -150,7 +152,7 @@ const lheading = edit(lheadingCore)
   .replace(/blockCode/g, /(?: {4}| {0,3}\t)/) // indented code can start a block but cannot interrupt a paragraph
   .replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/) // fenced code blocks can interrupt
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
-  .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
+  .replace(/heading/g, headingInterrupt) // ATX heading can interrupt
   .replace(/hr/g, / {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/) // thematic break can interrupt
   .replace(/\|table/g, '') // table not in commonmark
   .replace(/html/g, _htmlInterrupt) // block html of types (1) to (6) can interrupt
@@ -160,7 +162,7 @@ const lheadingGfm = edit(lheadingCore)
   .replace(/blockCode/g, /(?: {4}| {0,3}\t)/) // indented code can start a block but cannot interrupt a paragraph
   .replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/) // fenced code blocks can interrupt
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
-  .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
+  .replace(/heading/g, headingInterrupt) // ATX heading can interrupt
   .replace(/hr/g, / {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/) // thematic break can interrupt
   .replace(/table/g, / {0,3}\|?(?:[:\- ]*\|)+[\:\- ]*\n/) // table can interrupt
   .replace(/html/g, _htmlInterrupt) // block html of types (1) to (6) can interrupt
@@ -199,7 +201,7 @@ const html = edit(
 
 const createParagraph = (listInterrupt: RegExp) => edit(_paragraph)
   .replace('hr', hr)
-  .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
+  .replace('heading', headingInterrupt)
   .replace('|lheading', '') // setext headings don't interrupt commonmark paragraphs
   .replace('|table', '')
   .replace('blockquote', ' {0,3}>')
@@ -256,7 +258,7 @@ type BlockKeys = keyof typeof blockNormal;
 const gfmTable = edit(gfmTableHeader
 + '(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)') // Cells
   .replace('hr', hr)
-  .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
+  .replace('heading', headingInterrupt)
   .replace('blockquote', ' {0,3}>')
   .replace('code', '(?: {4}| {0,3}\t)[^\\n]')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
@@ -270,7 +272,7 @@ const blockGfm: Record<BlockKeys, RegExp> = {
   table: gfmTable,
   paragraph: edit(_paragraph)
     .replace('hr', hr)
-    .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
+    .replace('heading', headingInterrupt)
     .replace('|lheading', '') // setext headings don't interrupt commonmark paragraphs
     .replace('table', other.tableHeader) // only the header and delimiter are needed to interrupt
     .replace('blockquote', ' {0,3}>')
@@ -284,8 +286,12 @@ const blockGfm: Record<BlockKeys, RegExp> = {
  * Pedantic grammar (original John Gruber's loose markdown specification)
  */
 
+const legacyHeadingInterrupt = / {0,3}#{1,6}(?:\s|$)/;
+const legacyLheading = new RegExp(lheading.source.replaceAll(headingInterrupt.source, legacyHeadingInterrupt.source));
+
 const blockPedantic: Record<BlockKeys, RegExp> = {
   ...blockNormal,
+  blockquote: new RegExp(blockquote.source.replaceAll(headingInterrupt.source, legacyHeadingInterrupt.source)),
   html: edit(
     '^ *(?:comment(?: *\\n|\\s*$)'
     + '|<(tag)[\\s\\S]+?</\\1>(?: *\\n{2,}|\\s*$)' // closed tag
@@ -309,7 +315,7 @@ const blockPedantic: Record<BlockKeys, RegExp> = {
     .replace('|list', '')
     .replace('|html', '')
     .replace('|tag', '')
-    .replace('lheading', lheading) // last, so the replacements above do not match inside it
+    .replace('lheading', legacyLheading) // last, so the replacements above do not match inside it
     .getRegex(),
 };
 
