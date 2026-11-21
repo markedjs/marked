@@ -138,8 +138,14 @@ const _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
   + '|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title'
   + '|tr|track|ul';
 // HTML blocks of types (1) to (6) can interrupt a paragraph, type (7) cannot
-const _htmlInterrupt = edit(' {0,3}(?:</?(?:tag)(?:[ \\t]+|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
+const _htmlInterruptCore = ' {0,3}(?:</?(?:tag)(?:[ \\t]+|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)';
+const _htmlInterruptLegacy = edit(_htmlInterruptCore)
   .replace('tag', _tag)
+  .getRegex();
+// At EOF, meta is an inline tag rather than a type 6 block start.
+const _htmlInterrupt = edit(_htmlInterruptCore)
+  .replace('tag', '(?!meta$)(?:' + _tag + ')')
+  .replace('|\\n|', '|\\n|$|')
   .getRegex();
 // The underline may end with spaces or tabs (CommonMark §4.3). Internal
 // spaces or tabs still fail to match, and more than three spaces of indent
@@ -286,6 +292,7 @@ const blockGfm: Record<BlockKeys, RegExp> = {
 
 const blockPedantic: Record<BlockKeys, RegExp> = {
   ...blockNormal,
+  blockquote: edit(blockquote.source).replace(_htmlInterrupt.source, _htmlInterruptLegacy).getRegex(),
   html: edit(
     '^ *(?:comment(?: *\\n|\\s*$)'
     + '|<(tag)[\\s\\S]+?</\\1>(?: *\\n{2,}|\\s*$)' // closed tag
@@ -309,7 +316,7 @@ const blockPedantic: Record<BlockKeys, RegExp> = {
     .replace('|list', '')
     .replace('|html', '')
     .replace('|tag', '')
-    .replace('lheading', lheading) // last, so the replacements above do not match inside it
+    .replace('lheading', lheading.source.replaceAll(_htmlInterrupt.source, _htmlInterruptLegacy.source)) // last, so the replacements above do not match inside it
     .getRegex(),
 };
 
