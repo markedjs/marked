@@ -87,8 +87,10 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
           const genericToken = token as Tokens.Generic;
           if (this.defaults.extensions?.childTokens?.[genericToken.type]) {
             this.defaults.extensions.childTokens[genericToken.type].forEach((childTokens) => {
-              const tokens = genericToken[childTokens].flat(Infinity) as Token[] | TokensList;
-              pushValues(values, this.walkTokens(tokens, callback));
+              if (genericToken[childTokens]) {
+                const tokens = genericToken[childTokens].flat(Infinity) as Token[] | TokensList;
+                pushValues(values, this.walkTokens(tokens, callback));
+              }
             });
           } else if (genericToken.tokens) {
             pushValues(values, this.walkTokens(genericToken.tokens, callback));
