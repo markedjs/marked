@@ -439,6 +439,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           indent = line.search(this.rules.other.nonSpaceChar); // Find first non-space char
           indent = indent > 4 ? 1 : indent; // Treat indented code blocks (> 4 spaces) as having only 1 indent
           itemContents = line.slice(indent);
+          // later lines are checked relative to the item content, so drop the spaces after the marker
+          line = itemContents;
           indent += bulletIndent;
         }
 
