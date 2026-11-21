@@ -719,13 +719,27 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         return;
       }
 
+      const raw = rtrim(cap[0], '\n');
+      // A definition belongs to the paragraph it starts. A line that starts a
+      // block (heading, block quote, list, fence, html block, ...) ends that
+      // paragraph, so the label or the title cannot span it: doing so would
+      // swallow the block and silently drop its text. The paragraph rule is
+      // the list of the interruptions that end a paragraph, and running it on
+      // the matched text keeps the check linear.
+      const paragraph = this.rules.block.paragraph.exec(raw);
+      // A setext underline turns the paragraph before it into a heading, so a
+      // definition cannot span it either.
+      if ((paragraph && paragraph[0].length < raw.length) || this.rules.other.setextUnderline.test(raw)) {
+        return;
+      }
+
       const tag = normalizeLabel(cap[1]);
       const href = cap[2] ? cap[2].replace(this.rules.other.hrefBrackets, '$1').replace(this.rules.inline.anyPunctuation, '$1') : '';
       const title = cap[3] ? cap[3].substring(1, cap[3].length - 1).replace(this.rules.inline.anyPunctuation, '$1') : cap[3];
       return {
         type: 'def',
         tag,
-        raw: rtrim(cap[0], '\n'),
+        raw,
         href,
         title,
       };
