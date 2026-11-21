@@ -166,6 +166,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   code(src: string): Tokens.Code | undefined {
+    // A definition with no intervening blank line continues its paragraph.
+    if (!this.options.pedantic && this.lexer?.state.lastToken?.type === 'def') {
+      return;
+    }
     const cap = this.rules.block.code.exec(src);
     if (cap) {
       const raw = this.options.pedantic
@@ -809,7 +813,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   lheading(src: string): Tokens.Heading | undefined {
-    const cap = this.rules.block.lheading.exec(src);
+    const rule = !this.options.pedantic && this.lexer?.state.lastToken?.type === 'def'
+      ? this.rules.block.lheadingAfterDef
+      : this.rules.block.lheading;
+    const cap = rule.exec(src);
     if (cap) {
       const text = cap[1].trim();
       return {
