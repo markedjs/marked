@@ -516,4 +516,16 @@ describe('Parser', () => {
       });
     });
   });
+
+  it('ignores inherited Object.prototype properties on extensions.renderers', () => {
+    const parser = new Parser({ extensions: { renderers: {} } });
+    assert.throws(
+      () => parser.parse([{ type: 'toString', raw: '' }]),
+      /Token with "toString" type was not found\./,
+    );
+    assert.throws(
+      () => parser.parseInline([{ type: 'toString', raw: '' }]),
+      /Token with "toString" type was not found\./,
+    );
+  });
 });
