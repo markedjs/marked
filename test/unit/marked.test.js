@@ -44,6 +44,45 @@ describe('marked unit', () => {
     });
   });
 
+  describe('escaped ampersands in link attributes', () => {
+    for (const gfm of [false, true]) {
+      for (const image of [false, true]) {
+        for (const reference of [false, true]) {
+          for (const [value, expectedValue] of [
+            ['prefix&copy;', 'prefix&copy;'],
+            ['prefix\\\\&copy;', 'prefix%5C&copy;'],
+            ['prefix\\!end', 'prefix!end'],
+          ]) {
+            it(`preserves other attribute escapes (${gfm}, ${image}, ${reference}, ${value})`, () => {
+              const label = image ? '![x]' : '[x]';
+              const src = reference
+                ? `${label}[ref]\n\n[ref]: ${value}`
+                : `${label}(${value})`;
+              const expected = image
+                ? `<p><img src="${expectedValue}" alt="x"></p>\n`
+                : `<p><a href="${expectedValue}">x</a></p>\n`;
+              assert.strictEqual(marked.parse(src, { gfm }), expected);
+            });
+          }
+          for (const suffix of ['copy;', '#65;', '#x41;', 'amp;copy;']) {
+            it(`keeps escaped entity-like text literal (${gfm}, ${image}, ${reference}, ${suffix})`, () => {
+              const label = image ? '![x]' : '[x]';
+              const value = `prefix\\&${suffix}`;
+              const src = reference
+                ? `${label}[ref]\n\n[ref]: ${value} "${value}"`
+                : `${label}(${value} "${value}")`;
+              const escaped = `prefix&amp;${suffix}`;
+              const expected = image
+                ? `<p><img src="${escaped}" alt="x" title="${escaped}"></p>\n`
+                : `<p><a href="${escaped}" title="${escaped}">x</a></p>\n`;
+              assert.strictEqual(marked.parse(src, { gfm }), expected);
+            });
+          }
+        }
+      }
+    }
+  });
+
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
