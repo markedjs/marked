@@ -168,7 +168,7 @@ const lheadingGfm = edit(lheadingCore)
 const _paragraph = /^([^\n]+(?:\n(?!hr|heading|lheading|blockquote|fences|list|html|table|[ \t]+\n)[^\n]+)*)/;
 const blockText = /^[^\n]+/;
 const _blockLabel = /(?!\s*\])(?:\\[\s\S]|[^\[\]\\\n]|\n(?![ \t]*\n))+/;
-const def = edit(/^ {0,3}\[(label)\]: *(?:\n[ \t]*)?([^<\s][^\s]*|<(?:\\.|[^\n<>\\])*>)(?:(?: +(?:\n[ \t]*)?| *\n[ \t]*)(title))? *(?:\n+|$)/)
+const def = edit(/^ {0,3}\[(label)\]:[ \t]*(?:\n[ \t]*)?([^<\s][^\s]*|<(?:\\.|[^\n<>\\])*>)(?:(?:[ \t]+(?:\n[ \t]*)?|[ \t]*\n[ \t]*)(title))?[ \t]*(?:\n+|$)/)
   .replace('label', _blockLabel)
   // An escaped delimiter is part of the title, so a backslash must consume the
   // next character. An optional closer (`\"?`) lets that character backtrack
