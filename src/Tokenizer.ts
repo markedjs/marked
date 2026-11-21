@@ -612,6 +612,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       // First pass: tokenize items and finalize list.loose from spacers before placing checkboxes
       // Where each item's inline queue entries start, so the checkbox is removed from its own text
       const queueStarts: number[] = [];
+      // blockTokens resets top when it finishes, so restore it for the tokens after this list
+      const top = this.lexer.state.top;
       for (const item of list.items) {
         this.lexer.state.top = false;
         queueStarts.push(this.lexer.inlineQueue.length);
@@ -625,6 +627,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           list.loose = hasMultipleLineBreaks;
         }
       }
+      this.lexer.state.top = top;
 
       // Second pass: place task checkboxes using the final list.loose
       for (let i = 0; i < list.items.length; i++) {
