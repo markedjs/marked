@@ -37,7 +37,8 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
   }
 
   code({ text, lang, escaped }: Tokens.Code): RendererOutput {
-    const langString = (lang || '').match(other.notSpaceStart)?.[0];
+    // Keep the default renderer's legacy language selection; custom renderers receive all metadata.
+    const langString = (lang || '').trim().match(other.notSpaceStart)?.[0];
 
     // An empty code block has no content, so it must not gain a newline.
     const code = text ? text.replace(other.endingNewline, '') + '\n' : '';

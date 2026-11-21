@@ -192,10 +192,20 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         text += '\n';
       }
 
+      let lang = cap[2];
+      if (lang) {
+        // Only spaces and tabs surround the info string; other whitespace is data.
+        let start = 0;
+        let end = lang.length;
+        while (start < end && (lang[start] === ' ' || lang[start] === '\t')) start++;
+        while (end > start && (lang[end - 1] === ' ' || lang[end - 1] === '\t')) end--;
+        lang = lang.slice(start, end).replace(this.rules.inline.anyPunctuation, '$1');
+      }
+
       return {
         type: 'code',
         raw,
-        lang: cap[2] ? cap[2].trim().replace(this.rules.inline.anyPunctuation, '$1') : cap[2],
+        lang,
         text,
       };
     }
