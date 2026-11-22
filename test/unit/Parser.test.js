@@ -33,6 +33,70 @@ describe('Parser', () => {
     assert.strictEqual(parser.textRenderer.codespan(tokens[0].tokens[2]), '&amp;');
   });
 
+  it('keeps autolink entities literal in image alt without mutating tokens or TextRenderer', () => {
+    const parser = new Parser();
+    const plainAutolink = Lexer.lexInline('<https://example.com/?a=1&amp;b=2>');
+    assert.strictEqual(parser.parseInline(plainAutolink, parser.textRenderer), 'https://example.com/?a=1&amp;b=2');
+
+    const tokens = Lexer.lexInline('![<https://example.com/?a=1&amp;b=2>](u)');
+    const before = structuredClone(tokens);
+    assert.strictEqual(parser.parseInline(tokens), '<img src="u" alt="https://example.com/?a=1&amp;amp;b=2">');
+    assert.deepStrictEqual(tokens, before);
+
+    const customParser = new Parser();
+    customParser.textRenderer.link = ({ text }) => text;
+    assert.strictEqual(customParser.parseInline(tokens), '<img src="u" alt="https://example.com/?a=1&amp;amp;b=2">');
+    assert.deepStrictEqual(tokens, before);
+
+    const tokenlessAutolink = [{
+      type: 'image',
+      raw: '',
+      href: 'u',
+      title: null,
+      text: '',
+      tokens: [{
+        type: 'link',
+        raw: '<https://example.com/?a=1&amp;b=2>',
+        href: 'https://example.com/?a=1&amp;b=2',
+        text: 'https://example.com/?a=1&amp;b=2',
+        autolink: true,
+      }],
+    }];
+    assert.strictEqual(parser.parseInline(tokenlessAutolink), '<img src="u" alt="https://example.com/?a=1&amp;amp;b=2">');
+
+    const invalidHrefImage = [{
+      type: 'image',
+      raw: '',
+      href: '\uD800',
+      title: null,
+      text: '',
+      tokens: Lexer.lexInline('https://example.com/?a=1&amp;b=2'),
+    }];
+    assert.strictEqual(parser.parseInline(invalidHrefImage), 'https://example.com/?a=1&amp;amp;b=2');
+
+    const nestedAutolink = [{
+      type: 'image',
+      raw: '',
+      href: 'u',
+      title: null,
+      text: '',
+      tokens: [{
+        type: 'link',
+        raw: '<https://example.com/>',
+        href: 'https://example.com/',
+        text: 'https://example.com/',
+        autolink: true,
+        tokens: [
+          { type: 'codespan', raw: '`&amp;`', text: '&amp;' },
+          { type: 'strong', raw: '**&copy;**', text: '&copy;', tokens: [{ type: 'text', raw: '&copy;', text: '&copy;' }] },
+        ],
+      }],
+    }];
+    const nestedBefore = structuredClone(nestedAutolink);
+    assert.strictEqual(parser.parseInline(nestedAutolink), '<img src="u" alt="&amp;amp;&amp;copy;">');
+    assert.deepStrictEqual(nestedAutolink, nestedBefore);
+  });
+
   describe('block', () => {
     it('space between paragraphs', async() => {
       await expectHtml({
