@@ -495,9 +495,30 @@ const _inlineLabel = edit(/(?:\[(?:brackets|\\[\s\S]|[^\[\]\\])*\]|\\[\s\S]|`+(?
   .replace('brackets', _inlineLabelBrackets)
   .getRegex();
 
+// Bare link destinations allow balanced parentheses (CommonMark asks for at
+// least three levels of nesting) and backslash escapes, but must stop before
+// an unmatched ')' so adjacent links like `[a](b)[a](b)...` don't scan to the
+// end of the paragraph on every link.
+const _bareHrefChar = /\\[^ \t\n\x00-\x1f]|\\(?=[ \t\n])|[^ \t\n\x00-\x1f\\()]/;
+const _bareHrefParens1 = edit(/\((?:char)*\)/)
+  .replace('char', _bareHrefChar)
+  .getRegex();
+const _bareHrefParens2 = edit(/\((?:char|p1)*\)/)
+  .replace('char', _bareHrefChar)
+  .replace('p1', _bareHrefParens1)
+  .getRegex();
+const _bareHrefParens3 = edit(/\((?:char|p2)*\)/)
+  .replace('char', _bareHrefChar)
+  .replace('p2', _bareHrefParens2)
+  .getRegex();
+const _bareHref = edit(/(?!<)(?:char|p3)+/)
+  .replace('char', _bareHrefChar)
+  .replace('p3', _bareHrefParens3)
+  .getRegex();
+
 const link = edit(/^!?\[(label)\]\([ \t\n]*(href)(?:(?:[ \t]+(?:\n[ \t]*)?|\n[ \t]*)(title))?[ \t\n]*\)/)
   .replace('label', _inlineLabel)
-  .replace('href', /<(?:\\.|[^\n<>\\])*>|(?!<)[^ \t\n\x00-\x1f]+|(?=\))/)
+  .replace('href', edit(/<(?:\\.|[^\n<>\\])*>|bareHref|(?=\))/).replace('bareHref', _bareHref).getRegex())
   // Same as the definition title: the escaped character is not the closer.
   .replace('title', /"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|\((?:\\[\s\S]|[^)\\])*\)/)
   .getRegex();
