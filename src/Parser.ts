@@ -24,7 +24,7 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
   /**
    * Static Parse Method
    */
-  static parse<ParserOutput = string, RendererOutput = string>(tokens: Token[], options?: MarkedOptions<ParserOutput, RendererOutput>) {
+  static parse<ParserOutput = string, RendererOutput = string>(tokens: Token[], options?: MarkedOptions<ParserOutput, RendererOutput>): NoInfer<ParserOutput> {
     const parser = new _Parser<ParserOutput, RendererOutput>(options);
     return parser.parse(tokens);
   }
@@ -32,7 +32,7 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
   /**
    * Static Parse Inline Method
    */
-  static parseInline<ParserOutput = string, RendererOutput = string>(tokens: Token[], options?: MarkedOptions<ParserOutput, RendererOutput>) {
+  static parseInline<ParserOutput = string, RendererOutput = string>(tokens: Token[], options?: MarkedOptions<ParserOutput, RendererOutput>): NoInfer<ParserOutput> {
     const parser = new _Parser<ParserOutput, RendererOutput>(options);
     return parser.parseInline(tokens);
   }
