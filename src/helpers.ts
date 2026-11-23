@@ -1,4 +1,4 @@
-import { emailDomainSticky, other } from './rules.ts';
+import { other } from './rules.ts';
 
 /**
  * Helpers
@@ -375,8 +375,8 @@ function scanBareEmails(src: string): readonly BareEmailRange[] {
       continue;
     }
 
-    emailDomainSticky.lastIndex = at + 1;
-    const domain = emailDomainSticky.exec(src);
+    other.emailDomainSticky.lastIndex = at + 1;
+    const domain = other.emailDomainSticky.exec(src);
     if (!domain) {
       continue;
     }

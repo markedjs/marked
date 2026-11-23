@@ -18,7 +18,7 @@ function edit(regex: string | RegExp, opt = '') {
   const obj = {
     replace: (name: string | RegExp, val: string | RegExp) => {
       let valSource = typeof val === 'string' ? val : val.source;
-      valSource = valSource.replace(other.caret, '$1');
+      valSource = valSource.replace(_other.caret, '$1');
       source = source.replace(name, valSource);
       return obj;
     },
@@ -43,7 +43,7 @@ try {
 const gfmTableHeader = '^ *([^\\n ].*)\\n' // Header
   + ' {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)'; // Align
 
-export const other = {
+const _other = {
   codeRemoveIndent: /^(?: {0,3}\t| {1,4})/gm,
   listInterruptsParagraph: /^ {0,3}(?:[*+-]|1[.)])[ \t]+[^ \t\n]/,
   outputLinkReplace: /\\([\[\]])/g,
@@ -272,7 +272,7 @@ const blockGfm: Record<BlockKeys, RegExp> = {
     .replace('hr', hr)
     .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
     .replace('|lheading', '') // setext headings don't interrupt commonmark paragraphs
-    .replace('table', other.tableHeader) // only the header and delimiter are needed to interrupt
+    .replace('table', _other.tableHeader) // only the header and delimiter are needed to interrupt
     .replace('blockquote', ' {0,3}>')
     .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
     .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]+[^ \\t\\n]') // only non-empty lists starting from 1 can interrupt
@@ -550,18 +550,18 @@ const _extendedEmailProtocol = edit(/(?:mailto:email|xmpp:email(?:\/[A-Za-z0-9@.
 
 // Sticky matcher for the domain after `@` in a bare GFM email autolink,
 // shared with the per-pass email scan in helpers.ts.
-export const emailDomainSticky = edit(_emailDomain, 'y').getRegex();
+const emailDomainSticky = edit(_emailDomain, 'y').getRegex();
 
 // GFM url rule without the trailing bare `^email` alternative, which is
 // resolved in O(1) from the per-pass email scan.
-export const urlGfmNoEmail = edit(/^emailProtocol|^((?:protocol):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*/)
+const urlGfmNoEmail = edit(/^emailProtocol|^((?:protocol):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*/)
   .replace('emailProtocol', _extendedEmailProtocol)
   .replace('protocol', _caseInsensitiveProtocol)
   .getRegex();
 
 // GFM text rules without the bare email look-aheads; bare email starts are
 // clipped in O(1) from the per-pass email scan instead.
-export const inlineTextGfmNoEmail = edit(/^(?:[^a-zA-Z0-9](?=emailProtocol)|(`+|~+|[^`~])(?:(?=[`~])|(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|protocol:\/\/|wwwStart|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9](?=emailProtocol))))/)
+const inlineTextGfmNoEmail = edit(/^(?:[^a-zA-Z0-9](?=emailProtocol)|(`+|~+|[^`~])(?:(?=[`~])|(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|protocol:\/\/|wwwStart|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9](?=emailProtocol))))/)
   .replace('protocol', _caseInsensitiveProtocol)
   .replace(/emailProtocol/g, /(?:mailto|xmpp):/)
   // GFM: a www autolink starts only at the beginning of a line, after whitespace or after
@@ -569,7 +569,7 @@ export const inlineTextGfmNoEmail = edit(/^(?:[^a-zA-Z0-9](?=emailProtocol)|(`+|
   .replace('wwwStart', supportsLookbehind ? '(?<![^\\s*_~(])www\\.' : 'www\\.')
   .getRegex();
 
-export const inlineTextBreaksNoEmail = edit(inlineTextGfmNoEmail)
+const inlineTextBreaksNoEmail = edit(inlineTextGfmNoEmail)
   .replace('\\b_', '\\b_| {2,}\\n')
   .replace(/\{2,\}/g, '*')
   .getRegex();
@@ -664,6 +664,14 @@ const inlineBreaks: Record<InlineKeys, RegExp> = {
 /**
  * exports
  */
+
+export const other = {
+  ..._other,
+  emailDomainSticky,
+  urlGfmNoEmail,
+  inlineTextGfmNoEmail,
+  inlineTextBreaksNoEmail,
+};
 
 export const block = {
   normal: blockNormal,

@@ -13,12 +13,7 @@ import {
   findNextBareEmailStart,
   getActiveInlineEmailScan,
 } from './helpers.ts';
-import {
-  inline,
-  inlineTextBreaksNoEmail,
-  inlineTextGfmNoEmail,
-  urlGfmNoEmail,
-} from './rules.ts';
+import { inline } from './rules.ts';
 import type { Rules } from './rules.ts';
 import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens, Token } from './Tokens.ts';
@@ -1252,7 +1247,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           || first === 102 || first === 70 // f, F (ftp)
           || first === 119 // w (www.)
           || (frame.hasAt && (first === 109 || first === 120))) { // m, x (mailto:/xmpp:)
-          cap = urlGfmNoEmail.exec(src);
+          cap = this.rules.other.urlGfmNoEmail.exec(src);
         }
         if (!cap && frame.emails.length > 0) {
           const email = findBareEmailAt(frame, frame.pos);
@@ -1324,8 +1319,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       const frame = getActiveInlineEmailScan(this);
       if (frame && frame.currentSrc === src) {
         const noEmailRule = textRule === inline.breaks.text
-          ? inlineTextBreaksNoEmail
-          : inlineTextGfmNoEmail;
+          ? this.rules.other.inlineTextBreaksNoEmail
+          : this.rules.other.inlineTextGfmNoEmail;
         const cap = noEmailRule.exec(src);
         if (cap) {
           raw = cap[0];
