@@ -6,7 +6,14 @@ import { _Renderer } from './Renderer.ts';
 import { _Tokenizer } from './Tokenizer.ts';
 import { _TextRenderer } from './TextRenderer.ts';
 import { escapeHtmlEntities } from './helpers.ts';
-import type { MarkedExtension, MarkedOptions } from './MarkedOptions.ts';
+import {
+  blockTokenPositionMap,
+  inlineTokenPositionMap,
+  type BlockLexerPosition,
+  type InlineLexerPosition,
+  type MarkedExtension,
+  type MarkedOptions,
+} from './MarkedOptions.ts';
 import type { Token, Tokens, TokensList } from './Tokens.ts';
 
 export type MaybePromise = void | Promise<void>;
@@ -140,23 +147,104 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
             }
           }
           if ('tokenizer' in ext) { // Tokenizer Extensions
-            if (!ext.level || (ext.level !== 'block' && ext.level !== 'inline')) {
+            if (ext.level !== undefined && ext.level !== 'block' && ext.level !== 'inline') {
               throw new Error("extension level must be 'block' or 'inline'");
             }
-            const extLevel = extensions[ext.level];
-            if (extLevel) {
-              extLevel.unshift(ext.tokenizer);
-            } else {
-              extensions[ext.level] = [ext.tokenizer];
+            if (ext.level === undefined && ext.position === undefined) {
+              throw new Error('extension level or position is required');
             }
+
+            let level: 'block' | 'inline';
+            let blockPos: BlockLexerPosition | undefined;
+            let inlinePos: InlineLexerPosition | undefined;
+
+            if (ext.position !== undefined) {
+              if (Object.hasOwn(blockTokenPositionMap, ext.position)) {
+                if (ext.level === 'inline') {
+                  throw new Error(`extension level 'inline' does not match block position '${ext.position}'`);
+                }
+                level = 'block';
+                blockPos = blockTokenPositionMap[ext.position as keyof typeof blockTokenPositionMap];
+              } else if (Object.hasOwn(inlineTokenPositionMap, ext.position)) {
+                if (ext.level === 'block') {
+                  throw new Error(`extension level 'block' does not match inline position '${ext.position}'`);
+                }
+                level = 'inline';
+                inlinePos = inlineTokenPositionMap[ext.position as keyof typeof inlineTokenPositionMap];
+              } else {
+                const validPositions = [
+                  ...Object.keys(blockTokenPositionMap),
+                  ...Object.keys(inlineTokenPositionMap),
+                ].join("', '");
+                throw new Error(`extension position must be one of '${validPositions}'`);
+              }
+            } else {
+              level = ext.level!;
+              if (level === 'block') {
+                blockPos = 'beforeSpace';
+              } else {
+                inlinePos = 'beforeEscape';
+              }
+            }
+
+            if (level === 'block') {
+              if (blockPos === 'beforeSpace') {
+                if (extensions.block) {
+                  extensions.block.unshift(ext.tokenizer);
+                } else {
+                  extensions.block = [ext.tokenizer];
+                }
+                if (extensions.blockTokenizers) {
+                  extensions.blockTokenizers.beforeSpace = extensions.block;
+                }
+              } else {
+                if (!extensions.blockTokenizers) {
+                  extensions.blockTokenizers = Object.create(null);
+                  if (extensions.block) {
+                    extensions.blockTokenizers!.beforeSpace = extensions.block;
+                  }
+                }
+                const slot = extensions.blockTokenizers![blockPos!];
+                if (slot) {
+                  slot.unshift(ext.tokenizer);
+                } else {
+                  extensions.blockTokenizers![blockPos!] = [ext.tokenizer];
+                }
+              }
+            } else {
+              if (inlinePos === 'beforeEscape') {
+                if (extensions.inline) {
+                  extensions.inline.unshift(ext.tokenizer);
+                } else {
+                  extensions.inline = [ext.tokenizer];
+                }
+                if (extensions.inlineTokenizers) {
+                  extensions.inlineTokenizers.beforeEscape = extensions.inline;
+                }
+              } else {
+                if (!extensions.inlineTokenizers) {
+                  extensions.inlineTokenizers = Object.create(null);
+                  if (extensions.inline) {
+                    extensions.inlineTokenizers!.beforeEscape = extensions.inline;
+                  }
+                }
+                const slot = extensions.inlineTokenizers![inlinePos!];
+                if (slot) {
+                  slot.unshift(ext.tokenizer);
+                } else {
+                  extensions.inlineTokenizers![inlinePos!] = [ext.tokenizer];
+                }
+              }
+            }
+
             if (ext.start) { // Function to check for start of token
-              if (ext.level === 'block') {
+              if (level === 'block') {
                 if (extensions.startBlock) {
                   extensions.startBlock.push(ext.start);
                 } else {
                   extensions.startBlock = [ext.start];
                 }
-              } else if (ext.level === 'inline') {
+              } else {
                 if (extensions.startInline) {
                   extensions.startInline.push(ext.start);
                 } else {

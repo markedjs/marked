@@ -3,7 +3,12 @@ import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
 import { beginEmStrongDelCloserScan, cachedLastPossibleDelCloserIndex, cachedLastPossibleEmStrongCloserIndex, endEmStrongDelCloserScan, normalizeLabel } from './helpers.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
-import type { MarkedOptions } from './MarkedOptions.ts';
+import type {
+  BlockLexerPosition,
+  InlineLexerPosition,
+  MarkedOptions,
+  TokenizerExtensionFunction,
+} from './MarkedOptions.ts';
 
 /**
  * Block Lexer
@@ -134,6 +139,10 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     let lastParagraph: Token | undefined;
     const mergeAdjacentParagraphs = this.options.gfm && !this.options.pedantic
       && this.tokenizer.paragraph === _Tokenizer.prototype.paragraph;
+    const blockTokenizers = this.options.extensions?.blockTokenizers;
+    if (blockTokenizers) {
+      return this.#blockTokensWithPositions(src, tokens, lastParagraphClipped, outerLastToken, mergeAdjacentParagraphs, blockTokenizers);
+    }
     while (src) {
       if (src.length < srcLength) {
         srcLength = src.length;
@@ -413,6 +422,11 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
   }
 
   #tokenizeInlines(src: string, maskedSrc: string, tokens: Token[]): Token[] {
+    const inlineTokenizers = this.options.extensions?.inlineTokenizers;
+    if (inlineTokenizers) {
+      return this.#tokenizeInlinesWithPositions(src, maskedSrc, tokens, inlineTokenizers);
+    }
+
     let keepPrevChar = false;
     let prevChar = '';
     let srcLength = Infinity;
@@ -694,6 +708,499 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     maskedSrc = this.options.hooks?.emStrongMask?.call({ lexer: this }, maskedSrc) ?? maskedSrc;
 
     return maskedSrc;
+  }
+
+  #runExtensionTokenizers(
+    extTokenizers: TokenizerExtensionFunction[],
+    src: string,
+    tokens: Token[],
+  ): Tokens.Generic | undefined {
+    const extThis = { lexer: this };
+    for (let i = 0; i < extTokenizers.length; i++) {
+      const token = extTokenizers[i].call(extThis, src, tokens);
+      if (token) {
+        return token;
+      }
+    }
+  }
+
+  #blockTokensWithPositions(
+    src: string,
+    tokens: Token[],
+    lastParagraphClipped: boolean,
+    outerLastToken: Token | undefined,
+    mergeAdjacentParagraphs: boolean | undefined,
+    pos: Partial<Record<BlockLexerPosition, TokenizerExtensionFunction[]>>,
+  ): Token[] {
+    let srcLength = Infinity;
+    let lastParagraph: Token | undefined;
+    while (src) {
+      if (src.length < srcLength) {
+        srcLength = src.length;
+      } else {
+        this.infiniteLoopError(src.charCodeAt(0));
+        break;
+      }
+
+      this.state.lastToken = tokens.at(-1);
+      let token: Tokens.Generic | undefined;
+
+      if (pos.beforeSpace && (token = this.#runExtensionTokenizers(pos.beforeSpace, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // newline
+      if (token = this.tokenizer.space(src)) {
+        src = src.substring(token.raw.length);
+        const lastToken = tokens.at(-1);
+        if (token.raw.length === 1 && lastToken !== undefined) {
+          lastToken.raw += '\n';
+        } else {
+          tokens.push(token);
+        }
+        continue;
+      }
+
+      if (pos.beforeCode && (token = this.#runExtensionTokenizers(pos.beforeCode, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // code
+      if (token = this.tokenizer.code(src)) {
+        src = src.substring(token.raw.length);
+        const lastToken = tokens.at(-1);
+        if (lastToken?.type === 'paragraph' || lastToken?.type === 'text') {
+          lastToken.raw += (lastToken.raw.endsWith('\n') ? '' : '\n') + token.raw;
+          lastToken.text += '\n' + token.text;
+          this.inlineQueue.at(-1)!.src = lastToken.text;
+        } else {
+          tokens.push(token);
+        }
+        continue;
+      }
+
+      if (pos.beforeFences && (token = this.#runExtensionTokenizers(pos.beforeFences, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // fences
+      if (token = this.tokenizer.fences(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeHeading && (token = this.#runExtensionTokenizers(pos.beforeHeading, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // heading
+      if (token = this.tokenizer.heading(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeHr && (token = this.#runExtensionTokenizers(pos.beforeHr, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // hr
+      if (token = this.tokenizer.hr(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeBlockquote && (token = this.#runExtensionTokenizers(pos.beforeBlockquote, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // blockquote
+      if (token = this.tokenizer.blockquote(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeList && (token = this.#runExtensionTokenizers(pos.beforeList, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // list
+      if (token = this.tokenizer.list(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeHtml && (token = this.#runExtensionTokenizers(pos.beforeHtml, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // html
+      if (token = this.tokenizer.html(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeDef && (token = this.#runExtensionTokenizers(pos.beforeDef, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // def
+      if (token = this.tokenizer.def(src)) {
+        src = src.substring(token.raw.length);
+        const lastToken = tokens.at(-1);
+        if (lastToken?.type === 'paragraph' || lastToken?.type === 'text') {
+          lastToken.raw += (lastToken.raw.endsWith('\n') ? '' : '\n') + token.raw;
+          lastToken.text += '\n' + token.raw;
+          this.inlineQueue.at(-1)!.src = lastToken.text;
+        } else {
+          if (!this.tokens.links[token.tag]) {
+            this.tokens.links[token.tag] = {
+              href: token.href,
+              title: token.title,
+            };
+          }
+          tokens.push(token);
+        }
+        continue;
+      }
+
+      if (pos.beforeTable && (token = this.#runExtensionTokenizers(pos.beforeTable, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // table (gfm)
+      if (token = this.tokenizer.table(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeLheading && (token = this.#runExtensionTokenizers(pos.beforeLheading, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // lheading
+      if (token = this.tokenizer.lheading(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeParagraph && (token = this.#runExtensionTokenizers(pos.beforeParagraph, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // top-level paragraph
+      let cutSrc = src;
+      if (this.options.extensions?.startBlock) {
+        let startIndex = Infinity;
+        const tempSrc = src.slice(1);
+        let tempStart;
+        this.options.extensions.startBlock.forEach((getStartIndex) => {
+          tempStart = getStartIndex.call({ lexer: this }, tempSrc);
+          if (typeof tempStart === 'number' && tempStart >= 0) {
+            startIndex = Math.min(startIndex, tempStart);
+          }
+        });
+        if (startIndex < Infinity && startIndex >= 0) {
+          cutSrc = src.substring(0, startIndex + 1);
+        }
+      }
+      if (this.state.top && (token = this.tokenizer.paragraph(cutSrc))) {
+        const lastToken = tokens.at(-1);
+        if ((lastParagraphClipped || (lastToken === lastParagraph && mergeAdjacentParagraphs)) && lastToken?.type === 'paragraph') {
+          lastToken.raw += (lastToken.raw.endsWith('\n') ? '' : '\n') + token.raw;
+          lastToken.text += '\n' + token.text;
+          this.inlineQueue.pop();
+          this.inlineQueue.at(-1)!.src = lastToken.text;
+          lastParagraph = lastToken;
+        } else {
+          tokens.push(token);
+          lastParagraph = token;
+        }
+        lastParagraphClipped = cutSrc.length !== src.length;
+        src = src.substring(token.raw.length);
+        continue;
+      }
+
+      if (pos.beforeBlockText && (token = this.#runExtensionTokenizers(pos.beforeBlockText, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // text
+      if (token = this.tokenizer.text(src)) {
+        src = src.substring(token.raw.length);
+        const lastToken = tokens.at(-1);
+        if (lastToken?.type === 'text') {
+          lastToken.raw += (lastToken.raw.endsWith('\n') ? '' : '\n') + token.raw;
+          lastToken.text += '\n' + token.text;
+          this.inlineQueue.pop();
+          this.inlineQueue.at(-1)!.src = lastToken.text;
+        } else {
+          tokens.push(token);
+        }
+        continue;
+      }
+
+      if (pos.beforeBlockEnd && (token = this.#runExtensionTokenizers(pos.beforeBlockEnd, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (src) {
+        this.infiniteLoopError(src.charCodeAt(0));
+        break;
+      }
+    }
+
+    this.state.top = true;
+    this.state.lastToken = outerLastToken;
+    return tokens;
+  }
+
+  #tokenizeInlinesWithPositions(
+    src: string,
+    maskedSrc: string,
+    tokens: Token[],
+    pos: Partial<Record<InlineLexerPosition, TokenizerExtensionFunction[]>>,
+  ): Token[] {
+    let keepPrevChar = false;
+    let prevChar = '';
+    let srcLength = Infinity;
+    while (src) {
+      if (src.length < srcLength) {
+        srcLength = src.length;
+      } else {
+        this.infiniteLoopError(src.charCodeAt(0));
+        break;
+      }
+
+      if (!keepPrevChar) {
+        prevChar = '';
+      }
+      keepPrevChar = false;
+
+      let token: Tokens.Generic | undefined;
+
+      if (pos.beforeEscape && (token = this.#runExtensionTokenizers(pos.beforeEscape, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // escape
+      if (token = this.tokenizer.escape(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeTag && (token = this.#runExtensionTokenizers(pos.beforeTag, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // tag
+      if (token = this.tokenizer.tag(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeLink && (token = this.#runExtensionTokenizers(pos.beforeLink, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // link
+      if (token = this.tokenizer.link(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeReflink && (token = this.#runExtensionTokenizers(pos.beforeReflink, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // reflink, nolink
+      if (token = this.tokenizer.reflink(src, this.tokens.links)) {
+        src = src.substring(token.raw.length);
+        const lastToken = tokens.at(-1);
+        if (token.type === 'text' && lastToken?.type === 'text') {
+          lastToken.raw += token.raw;
+          lastToken.text += token.text;
+        } else {
+          tokens.push(token);
+        }
+        continue;
+      }
+
+      if (pos.beforeEmStrong && (token = this.#runExtensionTokenizers(pos.beforeEmStrong, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // em & strong
+      if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeCodespan && (token = this.#runExtensionTokenizers(pos.beforeCodespan, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // code
+      if (token = this.tokenizer.codespan(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeBr && (token = this.#runExtensionTokenizers(pos.beforeBr, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // br
+      if (token = this.tokenizer.br(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeDel && (token = this.#runExtensionTokenizers(pos.beforeDel, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // del (gfm)
+      if (token = this.tokenizer.del(src, maskedSrc, prevChar)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeAutolink && (token = this.#runExtensionTokenizers(pos.beforeAutolink, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // autolink
+      if (token = this.tokenizer.autolink(src)) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeUrl && (token = this.#runExtensionTokenizers(pos.beforeUrl, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // url (gfm)
+      if (!this.state.inLink && (token = this.tokenizer.url(src))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (pos.beforeInlineText && (token = this.#runExtensionTokenizers(pos.beforeInlineText, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      // text
+      let cutSrc = src;
+      if (this.options.extensions?.startInline) {
+        let startIndex = Infinity;
+        const tempSrc = src.slice(1);
+        let tempStart;
+        this.options.extensions.startInline.forEach((getStartIndex) => {
+          tempStart = getStartIndex.call({ lexer: this }, tempSrc);
+          if (typeof tempStart === 'number' && tempStart >= 0) {
+            startIndex = Math.min(startIndex, tempStart);
+          }
+        });
+        if (startIndex < Infinity && startIndex >= 0) {
+          cutSrc = src.substring(0, startIndex + 1);
+        }
+      }
+      if (token = this.tokenizer.inlineText(cutSrc)) {
+        src = src.substring(token.raw.length);
+        if (token.raw.slice(-1) !== '_') {
+          prevChar = token.raw.slice(-1);
+        }
+        keepPrevChar = true;
+        const lastToken = tokens.at(-1);
+        if (lastToken?.type === 'text') {
+          lastToken.raw += token.raw;
+          lastToken.text += token.text;
+        } else {
+          tokens.push(token);
+        }
+        continue;
+      }
+
+      if (pos.beforeInlineEnd && (token = this.#runExtensionTokenizers(pos.beforeInlineEnd, src, tokens))) {
+        src = src.substring(token.raw.length);
+        tokens.push(token);
+        continue;
+      }
+
+      if (src) {
+        this.infiniteLoopError(src.charCodeAt(0));
+        break;
+      }
+    }
+
+    return tokens;
   }
 
   private infiniteLoopError(byte: number) {

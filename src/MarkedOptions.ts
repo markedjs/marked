@@ -13,13 +13,97 @@ export type TokenizerExtensionFunction = (this: TokenizerThis, src: string, toke
 
 export type TokenizerStartFunction = (this: TokenizerThis, src: string) => number | void;
 
-export interface TokenizerExtension {
+export const blockTokenPositionMap = {
+  afterBlockStart: 'beforeSpace',
+  beforeSpace: 'beforeSpace',
+  afterSpace: 'beforeCode',
+  beforeCode: 'beforeCode',
+  afterCode: 'beforeFences',
+  beforeFences: 'beforeFences',
+  afterFences: 'beforeHeading',
+  beforeHeading: 'beforeHeading',
+  afterHeading: 'beforeHr',
+  beforeHr: 'beforeHr',
+  afterHr: 'beforeBlockquote',
+  beforeBlockquote: 'beforeBlockquote',
+  afterBlockquote: 'beforeList',
+  beforeList: 'beforeList',
+  afterList: 'beforeHtml',
+  beforeHtml: 'beforeHtml',
+  afterHtml: 'beforeDef',
+  beforeDef: 'beforeDef',
+  afterDef: 'beforeTable',
+  beforeTable: 'beforeTable',
+  afterTable: 'beforeLheading',
+  beforeLheading: 'beforeLheading',
+  afterLheading: 'beforeParagraph',
+  beforeParagraph: 'beforeParagraph',
+  afterParagraph: 'beforeBlockText',
+  beforeBlockText: 'beforeBlockText',
+  afterBlockText: 'beforeBlockEnd',
+  beforeBlockEnd: 'beforeBlockEnd',
+} as const;
+
+export const inlineTokenPositionMap = {
+  afterInlineStart: 'beforeEscape',
+  beforeEscape: 'beforeEscape',
+  afterEscape: 'beforeTag',
+  beforeTag: 'beforeTag',
+  afterTag: 'beforeLink',
+  beforeLink: 'beforeLink',
+  afterLink: 'beforeReflink',
+  beforeReflink: 'beforeReflink',
+  afterReflink: 'beforeEmStrong',
+  beforeEmStrong: 'beforeEmStrong',
+  afterEmStrong: 'beforeCodespan',
+  beforeCodespan: 'beforeCodespan',
+  afterCodespan: 'beforeBr',
+  beforeBr: 'beforeBr',
+  afterBr: 'beforeDel',
+  beforeDel: 'beforeDel',
+  afterDel: 'beforeAutolink',
+  beforeAutolink: 'beforeAutolink',
+  afterAutolink: 'beforeUrl',
+  beforeUrl: 'beforeUrl',
+  afterUrl: 'beforeInlineText',
+  beforeInlineText: 'beforeInlineText',
+  afterInlineText: 'beforeInlineEnd',
+  beforeInlineEnd: 'beforeInlineEnd',
+} as const;
+
+export type BlockTokenizerPosition = keyof typeof blockTokenPositionMap;
+export type InlineTokenizerPosition = keyof typeof inlineTokenPositionMap;
+export type TokenizerPosition = BlockTokenizerPosition | InlineTokenizerPosition;
+export type BlockLexerPosition = typeof blockTokenPositionMap[BlockTokenizerPosition];
+export type InlineLexerPosition = typeof inlineTokenPositionMap[InlineTokenizerPosition];
+export type LexerPosition = BlockLexerPosition | InlineLexerPosition;
+
+interface TokenizerExtensionBase {
   name: string;
-  level: 'block' | 'inline';
   start?: TokenizerStartFunction;
   tokenizer: TokenizerExtensionFunction;
   childTokens?: string[];
 }
+
+export interface BlockTokenizerExtension extends TokenizerExtensionBase {
+  level: 'block';
+  position?: BlockTokenizerPosition;
+}
+
+export interface InlineTokenizerExtension extends TokenizerExtensionBase {
+  level: 'inline';
+  position?: InlineTokenizerPosition;
+}
+
+export interface PositionedTokenizerExtension extends TokenizerExtensionBase {
+  level?: undefined;
+  position: TokenizerPosition;
+}
+
+export type TokenizerExtension =
+  | BlockTokenizerExtension
+  | InlineTokenizerExtension
+  | PositionedTokenizerExtension;
 
 export interface RendererThis<ParserOutput = string, RendererOutput = string> {
   parser: _Parser<ParserOutput, RendererOutput>;
@@ -144,6 +228,8 @@ export interface MarkedOptions<ParserOutput = string, RendererOutput = string> e
     };
     inline?: TokenizerExtensionFunction[];
     block?: TokenizerExtensionFunction[];
+    blockTokenizers?: Partial<Record<BlockLexerPosition, TokenizerExtensionFunction[]>>;
+    inlineTokenizers?: Partial<Record<InlineLexerPosition, TokenizerExtensionFunction[]>>;
     startInline?: TokenizerStartFunction[];
     startBlock?: TokenizerStartFunction[];
   };
