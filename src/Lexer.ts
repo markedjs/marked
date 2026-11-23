@@ -1,7 +1,16 @@
 import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
-import { beginEmStrongDelCloserScan, cachedLastPossibleDelCloserIndex, cachedLastPossibleEmStrongCloserIndex, endEmStrongDelCloserScan, normalizeLabel } from './helpers.ts';
+import {
+  beginEmStrongDelCloserScan,
+  beginInlineEmailScan,
+  cachedLastPossibleDelCloserIndex,
+  cachedLastPossibleEmStrongCloserIndex,
+  endEmStrongDelCloserScan,
+  endInlineEmailScan,
+  normalizeLabel,
+} from './helpers.ts';
+import type { InlineEmailScanFrame } from './helpers.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
@@ -396,23 +405,32 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       ? this.#maskSrc(src)
       : src;
 
-    // Without a delimiter no opener can match, so nothing reads the closer scan.
-    if (!hasDelimiter) {
-      return this.#tokenizeInlines(src, maskedSrc, tokens);
-    }
-
-    // One scan of this maskedSrc for the last emphasis, strong, and
-    // strikethrough closers, shared by every opener in the pass. Popped
-    // when the pass ends so the source is not retained (#4099).
-    beginEmStrongDelCloserScan(this.tokenizer, maskedSrc);
+    const trackEmails = this.tokenizer.rules.inline.url === inline.gfm.url;
+    const emailScan = trackEmails ? beginInlineEmailScan(this.tokenizer, src) : undefined;
     try {
-      return this.#tokenizeInlines(src, maskedSrc, tokens);
+      // Without a delimiter no opener can match, so nothing reads the closer scan.
+      if (!hasDelimiter) {
+        return this.#tokenizeInlines(src, maskedSrc, tokens, emailScan);
+      }
+
+      // One scan of this maskedSrc for the last emphasis, strong, and
+      // strikethrough closers, shared by every opener in the pass. Popped
+      // when the pass ends so the source is not retained (#4099).
+      beginEmStrongDelCloserScan(this.tokenizer, maskedSrc);
+      try {
+        return this.#tokenizeInlines(src, maskedSrc, tokens, emailScan);
+      } finally {
+        endEmStrongDelCloserScan(this.tokenizer);
+      }
     } finally {
-      endEmStrongDelCloserScan(this.tokenizer);
+      if (emailScan) {
+        endInlineEmailScan(this.tokenizer);
+      }
     }
   }
 
-  #tokenizeInlines(src: string, maskedSrc: string, tokens: Token[]): Token[] {
+  #tokenizeInlines(src: string, maskedSrc: string, tokens: Token[], emailScan?: InlineEmailScanFrame): Token[] {
+    const fullSrcLength = src.length;
     let keepPrevChar = false;
     let prevChar = '';
     let srcLength = Infinity;
@@ -558,10 +576,20 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       }
 
       // url (gfm)
-      if (!this.state.inLink && (token = this.tokenizer.url(src))) {
-        src = src.substring(token.raw.length);
-        tokens.push(token);
-        continue;
+      if (!this.state.inLink) {
+        if (emailScan) {
+          emailScan.currentSrc = src;
+          emailScan.pos = fullSrcLength - src.length;
+        }
+        token = this.tokenizer.url(src);
+        if (emailScan) {
+          emailScan.currentSrc = '';
+        }
+        if (token) {
+          src = src.substring(token.raw.length);
+          tokens.push(token);
+          continue;
+        }
       }
 
       // text
@@ -581,7 +609,15 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
           cutSrc = src.substring(0, startIndex + 1);
         }
       }
-      if (token = this.tokenizer.inlineText(cutSrc)) {
+      if (emailScan) {
+        emailScan.currentSrc = cutSrc;
+        emailScan.pos = fullSrcLength - src.length;
+      }
+      token = this.tokenizer.inlineText(cutSrc);
+      if (emailScan) {
+        emailScan.currentSrc = '';
+      }
+      if (token) {
         src = src.substring(token.raw.length);
         if (token.raw.slice(-1) !== '_') { // Track prevChar before string of ____ started
           prevChar = token.raw.slice(-1);

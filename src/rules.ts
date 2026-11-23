@@ -540,9 +540,38 @@ const reflinkSearch = edit('reflink|nolink(?!\\()', 'g')
   .getRegex();
 
 const _caseInsensitiveProtocol = /[hH][tT][tT][pP][sS]?|[fF][tT][pP]/;
-const _extendedEmail = /[A-Za-z0-9._+-]+@[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![\w-])/;
+const _emailDomain = /[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![\w-])/;
+const _extendedEmail = edit(/[A-Za-z0-9._+-]+@domain/)
+  .replace('domain', _emailDomain)
+  .getRegex();
 const _extendedEmailProtocol = edit(/(?:mailto:email|xmpp:email(?:\/[A-Za-z0-9@.]+)?)/)
   .replace(/email/g, _extendedEmail)
+  .getRegex();
+
+// Sticky matcher for the domain after `@` in a bare GFM email autolink,
+// shared with the per-pass email scan in helpers.ts.
+export const emailDomainSticky = edit(_emailDomain, 'y').getRegex();
+
+// GFM url rule without the trailing bare `^email` alternative, which is
+// resolved in O(1) from the per-pass email scan.
+export const urlGfmNoEmail = edit(/^emailProtocol|^((?:protocol):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*/)
+  .replace('emailProtocol', _extendedEmailProtocol)
+  .replace('protocol', _caseInsensitiveProtocol)
+  .getRegex();
+
+// GFM text rules without the bare email look-aheads; bare email starts are
+// clipped in O(1) from the per-pass email scan instead.
+export const inlineTextGfmNoEmail = edit(/^(?:[^a-zA-Z0-9](?=emailProtocol)|(`+|~+|[^`~])(?:(?=[`~])|(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|protocol:\/\/|wwwStart|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9](?=emailProtocol))))/)
+  .replace('protocol', _caseInsensitiveProtocol)
+  .replace(/emailProtocol/g, /(?:mailto|xmpp):/)
+  // GFM: a www autolink starts only at the beginning of a line, after whitespace or after
+  // `*`, `_`, `~` or `(`. Without lookbehind support, keep stopping at every `www.`.
+  .replace('wwwStart', supportsLookbehind ? '(?<![^\\s*_~(])www\\.' : 'www\\.')
+  .getRegex();
+
+export const inlineTextBreaksNoEmail = edit(inlineTextGfmNoEmail)
+  .replace('\\b_', '\\b_| {2,}\\n')
+  .replace(/\{2,\}/g, '*')
   .getRegex();
 
 /**
@@ -606,11 +635,11 @@ const inlineGfm: Record<InlineKeys, RegExp> = {
   url: edit(/^emailProtocol|^((?:protocol):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/)
     .replace('emailProtocol', _extendedEmailProtocol)
     .replace('protocol', _caseInsensitiveProtocol)
-    .replace('email', /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![\w-])/)
+    .replace('email', edit(/[A-Za-z0-9._+-]+(@)domain/).replace('domain', _emailDomain).getRegex())
     .getRegex(),
   _backpedal: /(?:[^?!.,:;*_'"~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_'"~)]+(?!$))+/,
   del: /^(~~?)(?=[^\s~])((?:\\[\s\S]|[^\\])*?(?:\\[\s\S]|[^\s~\\]))\1(?=[^~]|$)/,
-  text: edit(/^(?:[A-Za-z0-9.+-]+(?=@)|[^a-zA-Z0-9](?=emailProtocol)|(`+|~+|[^`~])(?:(?=[`~])|(?= {2,}\n)|(?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|protocol:\/\/|wwwStart|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9](?=emailProtocol)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@))))/)
+  text: edit(/^(?:[A-Za-z0-9.+-]+(?=@)|[^a-zA-Z0-9](?=emailProtocol)|(`+|~+|[^`~])(?:(?=[`~])|(?= {2,}\n)|(?=[A-Za-z0-9._+-]+@)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|protocol:\/\/|wwwStart|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9](?=emailProtocol)|[^A-Za-z0-9._+-](?=[A-Za-z0-9._+-]+@))))/)
     .replace('protocol', _caseInsensitiveProtocol)
     .replace(/emailProtocol/g, /(?:mailto|xmpp):/)
     // GFM: a www autolink starts only at the beginning of a line, after whitespace or after
