@@ -4816,8 +4816,7 @@
     "example": 602,
     "start_line": 8845,
     "end_line": 8849,
-    "section": "Autolinks",
-    "shouldFail": true
+    "section": "Autolinks"
   },
   {
     "markdown": "<https://example.com/\\[\\>\n",
