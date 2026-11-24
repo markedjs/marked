@@ -1025,7 +1025,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       const scanStart = src.charAt(0) === '!' ? 2 : 1;
       const labelEnd = scanLabelEnd(src, scanStart);
       if (labelEnd !== -1 && (!cap || labelEnd !== scanStart + cap[1].length)) {
-        const tail = this.rules.other.linkTail.exec(src.slice(labelEnd + 1));
+        const tail = this.rules.inline.linkTail.exec(src.slice(labelEnd + 1));
         if (tail) {
           cap = [src.slice(0, labelEnd + 1) + tail[0], src.slice(scanStart, labelEnd), tail[1], tail[2]] as unknown as RegExpExecArray;
         } else if (!cap) {
