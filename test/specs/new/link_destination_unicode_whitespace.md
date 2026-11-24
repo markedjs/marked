@@ -195,8 +195,6 @@ renderExact: true
 
 ---
 
-[x]( 	/url 	)
-
 [x](
 /url
 )
