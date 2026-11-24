@@ -144,6 +144,7 @@ marked.use({
 - <code>**code**(token: *Tokens.Code*): *string*</code>
 - <code>**blockquote**(token: *Tokens.Blockquote*): *string*</code>
 - <code>**html**(token: *Tokens.HTML | Tokens.Tag*): *string*</code>
+- <code>**def**(token: *Tokens.Def*): *string*</code>
 - <code>**heading**(token: *Tokens.Heading*): *string*</code>
 - <code>**hr**(token: *Tokens.Hr*): *string*</code>
 - <code>**list**(token: *Tokens.List*): *string*</code>
@@ -237,7 +238,7 @@ console.log(marked.parse('$ latex code $\n\n` other code `'));
 - <code>**emStrong**(src: *string*, maskedSrc: *string*, prevChar: *string*): *Tokens.Em | Tokens.Strong*</code>
 - <code>**codespan**(src: *string*): *Tokens.Codespan*</code>
 - <code>**br**(src: *string*): *Tokens.Br*</code>
-- <code>**del**(src: *string*): *Tokens.Del*</code>
+- <code>**del**(src: *string*, maskedSrc: *string*, prevChar: *string*): *Tokens.Del*</code>
 - <code>**autolink**(src: *string*): *Tokens.Link*</code>
 - <code>**url**(src: *string*): *Tokens.Link*</code>
 - <code>**inlineText**(src: *string*): *Tokens.Text*</code>
@@ -273,8 +274,8 @@ console.log(marked.parse('# heading 2\n\n## heading 3'));
 **Output:**
 
 ```html
-<h2 id="heading-2">heading 2</h2>
-<h3 id="heading-3">heading 3</h3>
+<h2>heading 2</h2>
+<h3>heading 3</h3>
 ```
 
 ***
@@ -774,6 +775,6 @@ console.log(html);
     }
   }
 ]
-<h1 id="heading">heading</h1>
+<h1>heading</h1>
 <p>  <a href="#heading" title="heading">link</a></p>
 ```

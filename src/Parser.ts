@@ -48,11 +48,12 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
       const anyToken = tokens[i];
 
       // Run any renderer extensions
-      if (this.options.extensions?.renderers?.[anyToken.type]) {
+      const rendererExt = this.options.extensions?.renderers;
+      if (rendererExt && Object.hasOwn(rendererExt, anyToken.type) && rendererExt[anyToken.type]) {
         const genericToken = anyToken as Tokens.Generic;
-        const ret = this.options.extensions.renderers[genericToken.type].call({ parser: this }, genericToken);
+        const ret = rendererExt[genericToken.type].call({ parser: this }, genericToken);
         if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'checkbox', 'html', 'def', 'paragraph', 'text'].includes(genericToken.type)) {
-          out += ret || '';
+          out += ret === false ? '' : ret ?? '';
           continue;
         }
       }
@@ -135,10 +136,11 @@ export class _Parser<ParserOutput = string, RendererOutput = string> {
       const anyToken = tokens[i];
 
       // Run any renderer extensions
-      if (this.options.extensions?.renderers?.[anyToken.type]) {
-        const ret = this.options.extensions.renderers[anyToken.type].call({ parser: this }, anyToken);
+      const rendererExt = this.options.extensions?.renderers;
+      if (rendererExt && Object.hasOwn(rendererExt, anyToken.type) && rendererExt[anyToken.type]) {
+        const ret = rendererExt[anyToken.type].call({ parser: this }, anyToken);
         if (ret !== false || !['escape', 'html', 'link', 'image', 'checkbox', 'strong', 'em', 'codespan', 'br', 'del', 'text'].includes(anyToken.type)) {
-          out += ret || '';
+          out += ret === false ? '' : ret ?? '';
           continue;
         }
       }

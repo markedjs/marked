@@ -5,8 +5,22 @@ import {
 } from './helpers.ts';
 import { other } from './rules.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
-import type { Tokens } from './Tokens.ts';
+import type { Token, Tokens } from './Tokens.ts';
 import type { _Parser } from './Parser.ts';
+
+// Literal code and escaped punctuation must survive the later alt-attribute
+// escaping. Copy tokens so rendering the image cannot change the token tree.
+function imageTextTokens(tokens: Token[]): Token[] {
+  return tokens.map((token) => {
+    if (token.type === 'codespan' || token.type === 'escape') {
+      return { ...token, text: escapeHtmlEntities(token.text, true) };
+    }
+    if ('tokens' in token && token.tokens) {
+      return { ...token, tokens: imageTextTokens(token.tokens) };
+    }
+    return token;
+  });
+}
 
 /**
  * Renderer
@@ -179,7 +193,7 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
 
   image({ href, title, text, tokens }: Tokens.Image): RendererOutput {
     if (tokens) {
-      text = this.parser.parseInline(tokens, this.parser.textRenderer) as string;
+      text = this.parser.parseInline(imageTextTokens(tokens), this.parser.textRenderer) as string;
     }
     const cleanHref = cleanUrl(href);
     if (cleanHref === null) {

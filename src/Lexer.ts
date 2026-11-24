@@ -1,7 +1,7 @@
 import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
-import { beginEmStrongDelCloserScan, endEmStrongDelCloserScan, normalizeLabel } from './helpers.ts';
+import { beginEmStrongDelCloserScan, cachedLastPossibleDelCloserIndex, cachedLastPossibleEmStrongCloserIndex, endEmStrongDelCloserScan, normalizeLabel } from './helpers.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
@@ -23,6 +23,10 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
      */
     linkParenPossible: boolean;
     top: boolean;
+    /** lexing the content of a block quote, whose nested markers the outermost one has expanded */
+    inBlockquote: boolean;
+    /** the last block token lexed in the current block run, so a tokenizer can check the token before it */
+    lastToken?: Token;
   };
 
   public inlineQueue: { src: string, tokens: Token[] }[];
@@ -45,6 +49,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       linkEmitted: false,
       linkParenPossible: true,
       top: true,
+      inBlockquote: false,
     };
 
     const rules = {
@@ -121,11 +126,17 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
   blockTokens(src: string, tokens?: TokensList, lastParagraphClipped?: boolean): TokensList;
   blockTokens(src: string, tokens: Token[] = [], lastParagraphClipped = false) {
     this.tokenizer.lexer = this;
+    // list items and block quotes lex their contents with a nested call, so
+    // restore the outer last token when it returns
+    const outerLastToken = this.state.lastToken;
     if (this.options.pedantic) {
       src = src.replace(other.tabCharGlobal, '    ').replace(other.spaceLine, '');
     }
 
     let srcLength = Infinity;
+    let lastParagraph: Token | undefined;
+    const mergeAdjacentParagraphs = this.options.gfm && !this.options.pedantic
+      && this.tokenizer.paragraph === _Tokenizer.prototype.paragraph;
     while (src) {
       if (src.length < srcLength) {
         srcLength = src.length;
@@ -134,6 +145,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
         break;
       }
 
+      this.state.lastToken = tokens.at(-1);
       let token: Tokens.Generic | undefined;
 
       if (this.options.extensions?.block?.some((extTokenizer) => {
@@ -272,13 +284,18 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       }
       if (this.state.top && (token = this.tokenizer.paragraph(cutSrc))) {
         const lastToken = tokens.at(-1);
-        if (lastParagraphClipped && lastToken?.type === 'paragraph') {
+        // A table-shaped header rejected by the table tokenizer is still
+        // paragraph continuation, not a new block. Keep custom paragraph
+        // tokenizers' choice to emit separate paragraphs unchanged.
+        if ((lastParagraphClipped || (lastToken === lastParagraph && mergeAdjacentParagraphs)) && lastToken?.type === 'paragraph') {
           lastToken.raw += (lastToken.raw.endsWith('\n') ? '' : '\n') + token.raw;
           lastToken.text += '\n' + token.text;
           this.inlineQueue.pop();
           this.inlineQueue.at(-1)!.src = lastToken.text;
+          lastParagraph = lastToken;
         } else {
           tokens.push(token);
+          lastParagraph = token;
         }
         lastParagraphClipped = cutSrc.length !== src.length;
         src = src.substring(token.raw.length);
@@ -307,6 +324,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     }
 
     this.state.top = true;
+    this.state.lastToken = outerLastToken;
     return tokens;
   }
 
@@ -357,16 +375,14 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     // One paren scan per inline run, shared with Tokenizer.link: without a
     // ')' ahead the link regex cannot match, and skipping it avoids its
     // quadratic backtracking over unterminated-link inputs like
-    // `'[a](b'.repeat(n)`. A nested run receives a substring of the outer
-    // run, so if the outer had no ')' neither does this substring — skip
-    // the scan in that case.
+    // `'[a](b'.repeat(n)`. Extension tokenizers can pass generated text to
+    // nested runs, so each run must check its own source.
     const prevLinkParenPossible = this.state.linkParenPossible;
-    this.state.linkParenPossible = prevLinkParenPossible && src.includes(')');
+    this.state.linkParenPossible = src.includes(')');
     try {
       return this.#inlineTokensInner(src, tokens);
     } finally {
-      // A nested run (e.g. a link label) anchored on its own substring;
-      // restore the outer run's flag for the rest of its loop.
+      // Restore the outer run's flag for the rest of its loop.
       this.state.linkParenPossible = prevLinkParenPossible;
     }
   }
@@ -375,12 +391,18 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     // The masked source is only read by emStrong and del, which need a *, _ or
     // ~ to start. Skip building it for a run without one, unless a custom
     // tokenizer or an emStrongMask hook may read it.
-    const maskedSrc = src.includes('*') || src.includes('_') || src.includes('~')
+    const hasDelimiter = src.includes('*') || src.includes('_') || src.includes('~');
+    const maskedSrc = hasDelimiter
       || this.options.hooks?.emStrongMask
       || this.tokenizer.emStrong !== _Tokenizer.prototype.emStrong
       || this.tokenizer.del !== _Tokenizer.prototype.del
       ? this.#maskSrc(src)
       : src;
+
+    // Without a delimiter no opener can match, so nothing reads the closer scan.
+    if (!hasDelimiter) {
+      return this.#tokenizeInlines(src, maskedSrc, tokens);
+    }
 
     // One scan of this maskedSrc for the last emphasis, strong, and
     // strikethrough closers, shared by every opener in the pass. Popped
@@ -456,6 +478,51 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
           tokens.push(token);
         }
         continue;
+      }
+
+      // #4099 follow-up: for a run of `*` or `_` with no possible closer
+      // anywhere ahead in maskedSrc, every opener position fails identically
+      // and the outer loop walks the run char-by-char, giving O(n^2) time.
+      // Consume the whole run as literal text in one step.
+      const firstChar = src[0];
+      if (firstChar === '*' || firstChar === '_') {
+        const pos = maskedSrc.length - src.length;
+        const lastCloser = cachedLastPossibleEmStrongCloserIndex(this.tokenizer, maskedSrc, firstChar);
+        if (lastCloser <= pos) {
+          let runEnd = 1;
+          while (runEnd < src.length && src.charCodeAt(runEnd) === firstChar.charCodeAt(0)) runEnd++;
+          const raw = src.substring(0, runEnd);
+          const lastToken = tokens.at(-1);
+          if (lastToken?.type === 'text' && !lastToken.escaped) {
+            lastToken.raw += raw;
+            lastToken.text += raw;
+          } else {
+            tokens.push({ type: 'text', raw, text: raw, escaped: false } as Tokens.Text);
+          }
+          src = src.substring(runEnd);
+          prevChar = firstChar;
+          keepPrevChar = true;
+          continue;
+        }
+      } else if (firstChar === '~') {
+        const pos = maskedSrc.length - src.length;
+        const lastCloser = cachedLastPossibleDelCloserIndex(this.tokenizer, maskedSrc);
+        if (lastCloser <= pos) {
+          let runEnd = 1;
+          while (runEnd < src.length && src.charCodeAt(runEnd) === 126 /* ~ */) runEnd++;
+          const raw = src.substring(0, runEnd);
+          const lastToken = tokens.at(-1);
+          if (lastToken?.type === 'text' && !lastToken.escaped) {
+            lastToken.raw += raw;
+            lastToken.text += raw;
+          } else {
+            tokens.push({ type: 'text', raw, text: raw, escaped: false } as Tokens.Text);
+          }
+          src = src.substring(runEnd);
+          prevChar = firstChar;
+          keepPrevChar = true;
+          continue;
+        }
       }
 
       // em & strong

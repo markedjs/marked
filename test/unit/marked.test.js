@@ -22,6 +22,28 @@ describe('marked unit', () => {
     });
   });
 
+  describe('rejected table paragraph continuation', () => {
+    it('keeps one inline queue entry so emphasis can cross the rejected table header', () => {
+      assert.strictEqual(marked.parse('*a\nb|c\n-|-|-*'), '<p><em>a\nb|c\n-|-|-</em></p>\n');
+    });
+
+    it('does not merge paragraphs separated by a blank line', () => {
+      assert.strictEqual(marked.parse('a\n\nb|c\n-|-|-'), '<p>a</p>\n<p>b|c\n-|-|-</p>\n');
+    });
+
+    it('preserves custom paragraph tokenizers that emit separate paragraphs', () => {
+      marked.use({
+        tokenizer: {
+          paragraph(src) {
+            const raw = src[0];
+            return { type: 'paragraph', raw, text: raw, tokens: this.lexer.inline(raw) };
+          },
+        },
+      });
+      assert.strictEqual(marked.parse('abc'), '<p>a</p>\n<p>b</p>\n<p>c</p>\n');
+    });
+  });
+
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
@@ -68,6 +90,57 @@ describe('marked unit', () => {
         marked.parse('[a & b <pre> [x](/uri)](/uri)').trim(),
         '<p>[a &amp; b <pre> <a href="/uri">x</a>](/uri)</p>',
       );
+    });
+  });
+
+  describe('nested inline tokenizers', () => {
+    const mention = {
+      name: 'mention',
+      level: 'inline',
+      start(src) { return src.indexOf('@'); },
+      tokenizer(src) {
+        const match = /^@(alice|bob|plain)\b/.exec(src);
+        if (match) {
+          const text = match[1] === 'plain' ? 'plain' : `[${match[1]}](/users/${match[1]})`;
+          return { type: 'mention', raw: match[0], tokens: this.lexer.inlineTokens(text) };
+        }
+      },
+      renderer(token) { return this.parser.parseInline(token.tokens); },
+    };
+
+    const cases = [
+      ['a generated link without a closing parenthesis in the input', '@alice', '<a href="/users/alice">alice</a>'],
+      ['a generated link when the input contains a closing parenthesis', '@alice)', '<a href="/users/alice">alice</a>)'],
+      ['a generated link inside emphasis', '*Hello @alice*', '<em>Hello <a href="/users/alice">alice</a></em>'],
+      ['multiple generated links', '@alice and @bob', '<a href="/users/alice">alice</a> and <a href="/users/bob">bob</a>'],
+      ['the outer link after a child without a closing parenthesis', '@plain [outside](/outer)', 'plain <a href="/outer">outside</a>'],
+    ];
+
+    for (const [name, input, expected] of cases) {
+      it(`should parse ${name}`, () => {
+        marked.use({ extensions: [mention] });
+        assert.strictEqual(marked.parseInline(input), expected);
+      });
+    }
+
+    it('should parse a generated link in a block', () => {
+      marked.use({ extensions: [mention] });
+      assert.strictEqual(marked.parse('@alice'), '<p><a href="/users/alice">alice</a></p>\n');
+    });
+
+    it('should parse generated links from an overridden tokenizer', () => {
+      marked.use({
+        tokenizer: {
+          emStrong(src) {
+            if (src.startsWith('@')) {
+              const text = '[inner](/inside)';
+              return { type: 'strong', raw: '@', text, tokens: this.lexer.inlineTokens(text) };
+            }
+            return false;
+          },
+        },
+      });
+      assert.strictEqual(marked.parseInline('@'), '<strong><a href="/inside">inner</a></strong>');
     });
   });
 
@@ -342,6 +415,25 @@ describe('marked unit', () => {
       marked.use({ extensions: [fallbackRenderer, extension] });
       const html = marked.parse(':Test:\n\n:test:\n\n:none:');
       assert.strictEqual(html, 'fallbacktest');
+    });
+
+    it('should keep zero from both block and inline extension renderers', () => {
+      const extension = level => ({
+        name: level + 'Count',
+        level,
+        tokenizer(src) {
+          if (src.startsWith(':count:')) {
+            return { type: level + 'Count', raw: ':count:' };
+          }
+        },
+        renderer() {
+          return 0;
+        },
+      });
+      marked.use({ extensions: [extension('block'), extension('inline')] });
+
+      assert.strictEqual(marked.parse(':count:'), '0');
+      assert.strictEqual(marked.parseInline(':count:'), '0');
     });
 
     it('should fall back when tokenizers return false', () => {
@@ -1221,6 +1313,30 @@ br
       const values = marked.walkTokens(tokens, (token) => [token.type]);
 
       assert.deepEqual(values, ['dl', 'text', 'strong', 'text']);
+    });
+
+    it('should ignore missing optional childTokens properties on extension tokens', () => {
+      marked.use({
+        extensions: [{
+          name: 'dl',
+          level: 'block',
+          childTokens: ['dt', 'dd'],
+          tokenizer(src) {
+            const match = /^:(.+)\n?/.exec(src);
+            if (match) {
+              return {
+                type: 'dl',
+                raw: match[0],
+                dt: this.lexer.inlineTokens(match[1]),
+              };
+            }
+          },
+        }],
+      });
+      const tokens = marked.lexer(':term');
+      const values = marked.walkTokens(tokens, (token) => [token.type]);
+
+      assert.deepEqual(values, ['dl', 'text']);
     });
 
     it('should return values from every walkTokens extension', () => {

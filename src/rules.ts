@@ -50,8 +50,12 @@ const linkTail = /^\([ \t\n]*(<(?:\\.|[^\n<>\\])+>|[^ \t\n\x00-\x1f]+|(?=\)))(?:
 // reference piece as `reflink`, plus the empty `[]` of a collapsed reference.
 const reflinkTail = /^\[((?:\\[\s\S]|[^\[\]\\])*)\]/;
 
+const gfmTableHeader = '^ *([^\\n ].*)\\n' // Header
+  + ' {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)'; // Align
+
 export const other = {
   codeRemoveIndent: /^(?: {0,3}\t| {1,4})/gm,
+  listInterruptsParagraph: /^ {0,3}(?:[*+-]|1[.)])[ \t]+[^ \t\n]/,
   outputLinkReplace: /\\([\[\]])/g,
   linkTail,
   reflinkTail,
@@ -68,19 +72,25 @@ export const other = {
   multipleSpaceGlobal: /\s+/g,
   blankLine: /^[ \t]*$/,
   doubleBlankLine: /\n[ \t]*\n[ \t]*$/,
+  textIndentedContinuation: /^(?:\n(?: {4}| {0,3}\t)[ \t]*[^ \t\n][^\n]*)+/,
   blockquoteStart: /^ {0,3}>/,
   // Neutralize a lazy setext underline, including one with trailing tabs.
   // CommonMark §4.3 allows those tabs on a real underline, so the same class
   // has to be recognized here or a lazy `===\t` becomes a heading.
   blockquoteSetextReplace: /\n {0,3}((?:=+|-+)[ \t]*)(?=\n|$)/g,
   blockquoteSetextReplace2: /^ {0,3}>[ \t]?/gm,
-  blockquoteMarkerWhitespace: /^( {0,3}>)([ \t]+)/gm,
+  blockquoteMarkerWhitespace: /^( {0,3}>)(\t[ \t]*)/gm,
+  blockquoteFenceOpen: /^ {0,3}(`{3,}(?=[^`]*$)|~{3,})/,
+  blockquoteFenceClose: /^ {0,3}(`{3,}|~{3,})[ \t]*$/,
+  blockquoteListItemStart: /^ {0,3}(?:[*+-]|\d{1,9}[.)])(?:[ \t]|$)/,
+  nestedBlockMarker: /^ {0,3}(?:(?:[*+-]|\d{1,9}[.)])(?: |$)|> ?)/,
   listReplaceNesting: /^ {1,4}(?=( {4})*[^ ])/g,
   listIsTask: /^\[[ xX]\][ \t]+\S/,
   listReplaceTask: /^\[[ xX]\][ \t]+/,
   listTaskCheckbox: /\[[ xX]\]/,
   anyLine: /\n.*\n/,
   hrefBrackets: /^<(.*)>$/,
+  tableHeader: new RegExp(gfmTableHeader + '(?:\\n|$)'),
   tableDelimiter: /[:|]/,
   tableAlignChars: /^\||\| *$/g,
   tableRowBlankLine: /\n[ \t]*$/,
@@ -120,7 +130,7 @@ export const other = {
   pedanticHeadingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#`)),
   // a list item ends where a paragraph would be interrupted, so this mirrors the
   // html start conditions in the paragraph rule below; type 7 is excluded there
-  htmlBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:</?(?:${_tag})(?: +|$|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)`, 'i')),
+  htmlBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:</?(?:${_tag})(?:[ \\t]+|$|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)`, 'i')),
   blockquoteBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}>`)),
   // list item and blockquote markers that open nested blocks at the start of a line, as in `- > # heading`
   nestedContainerMarkers: /^(?: {0,3}(?:(?:[*+-]|\d{1,9}[.)])[ \t]+|>[ \t]?))+/,
@@ -132,10 +142,20 @@ export const other = {
 
 const newline = /^(?:[ \t]*(?:\n|$))+/;
 const blockCode = /^((?: {4}| {0,3}\t)[^\n]+(?:\n(?:[ \t]*(?:\n|$))*)?)+/;
-const fences = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}(?:(?=`)\1`*|(?=~)\1~*) *(?=\n|$)|$)/;
+const fences = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}(?:(?=`)\1`*|(?=~)\1~*)[ \t]*(?=\n|$)|$)/;
 const hr = /^ {0,3}((?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/;
 const heading = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
 const bullet = / {0,3}(?:[*+-]|\d{1,9}[.)])/;
+const _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
+  + '|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption'
+  + '|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe'
+  + '|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option'
+  + '|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title'
+  + '|tr|track|ul';
+// HTML blocks of types (1) to (6) can interrupt a paragraph, type (7) cannot
+const _htmlInterrupt = edit(' {0,3}(?:</?(?:tag)(?:[ \\t]+|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
+  .replace('tag', _tag)
+  .getRegex();
 // The underline may end with spaces or tabs (CommonMark §4.3). Internal
 // spaces or tabs still fail to match, and more than three spaces of indent
 // still do not.
@@ -147,8 +167,8 @@ const lheading = edit(lheadingCore)
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
   .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
   .replace(/hr/g, / {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/) // thematic break can interrupt
-  .replace(/html/g, / {0,3}<[^\n>]+>\n/) // block html can interrupt
   .replace(/\|table/g, '') // table not in commonmark
+  .replace(/html/g, _htmlInterrupt) // block html of types (1) to (6) can interrupt
   .getRegex();
 const lheadingGfm = edit(lheadingCore)
   .replace(/bull/g, bullet) // lists can interrupt
@@ -157,13 +177,13 @@ const lheadingGfm = edit(lheadingCore)
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
   .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
   .replace(/hr/g, / {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/) // thematic break can interrupt
-  .replace(/html/g, / {0,3}<[^\n>]+>\n/) // block html can interrupt
   .replace(/table/g, / {0,3}\|?(?:[:\- ]*\|)+[\:\- ]*\n/) // table can interrupt
+  .replace(/html/g, _htmlInterrupt) // block html of types (1) to (6) can interrupt
   .getRegex();
 const _paragraph = /^([^\n]+(?:\n(?!hr|heading|lheading|blockquote|fences|list|html|table|[ \t]+\n)[^\n]+)*)/;
 const blockText = /^[^\n]+/;
 const _blockLabel = /(?!\s*\])(?:\\[\s\S]|[^\[\]\\\n]|\n(?![ \t]*\n))+/;
-const def = edit(/^ {0,3}\[(label)\]: *(?:\n[ \t]*)?([^<\s][^\s]*|<.*?>)(?:(?: +(?:\n[ \t]*)?| *\n[ \t]*)(title))? *(?:\n+|$)/)
+const def = edit(/^ {0,3}\[(label)\]: *(?:\n[ \t]*)?([^<\s][^\s]*|<(?:\\.|[^\n<>\\])*>)(?:(?: +(?:\n[ \t]*)?| *\n[ \t]*)(title))? *(?:\n+|$)/)
   .replace('label', _blockLabel)
   // An escaped delimiter is part of the title, so a backslash must consume the
   // next character. An optional closer (`\"?`) lets that character backtrack
@@ -175,12 +195,6 @@ const list = edit(/^(bull)([ \t][^\n]*?)?(?:\n|$)/)
   .replace(/bull/g, bullet)
   .getRegex();
 
-const _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
-  + '|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption'
-  + '|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe'
-  + '|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option'
-  + '|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title'
-  + '|tr|track|ul';
 const _comment = /<!--(?:-?>|[\s\S]*?(?:-->|$))/;
 const html = edit(
   '^ {0,3}(?:' // optional indentation
@@ -190,12 +204,12 @@ const html = edit(
 + '|<![A-Z][\\s\\S]*?(?:>[^\\n]*\\n*|$)' // (4)
 + '|<!\\[CDATA\\[[\\s\\S]*?(?:\\]\\]>[^\\n]*\\n*|$)' // (5)
 + '|</?(tag)(?:[ \\t]+|\\n|/?>|$)[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (6)
-+ '|<(?!(?:script|pre|style|textarea)(?![a-z0-9-]))([a-z][a-z0-9-]*)(?:attribute)*? */?>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (7) open tag
++ '|<(?!(?:script|pre|style|textarea)(?![a-z0-9-]))([a-z][a-z0-9-]*)(?:attribute)*?[ \\t]*/?>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (7) open tag
 + '|</[a-z][a-z0-9-]*\\s*>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ \t]*)+\\n|$)' // (7) closing tag
 + ')', 'i')
   .replace('comment', _comment)
   .replace('tag', _tag)
-  .replace('attribute', / +[a-zA-Z:_][\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'| *= *[^\s"'=<>`]+)?/)
+  .replace('attribute', /[ \t]+[a-zA-Z:_][\w.:-]*(?:[ \t]*=[ \t]*"[^"\n]*"|[ \t]*=[ \t]*'[^'\n]*'|[ \t]*=[ \t]*[^\s"'=<>`]+)?/)
   .getRegex();
 
 const createParagraph = (listInterrupt: RegExp) => edit(_paragraph)
@@ -206,8 +220,7 @@ const createParagraph = (listInterrupt: RegExp) => edit(_paragraph)
   .replace('blockquote', ' {0,3}>')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
   .replace('list', listInterrupt)
-  .replace('html', ' {0,3}(?:</?(?:tag)(?: +|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
-  .replace('tag', _tag) // pars can be interrupted by html blocks of types (1) to (6)
+  .replace('html', _htmlInterrupt) // pars can be interrupted by html blocks of types (1) to (6)
   .getRegex();
 
 // only non-empty lists starting from 1 can interrupt paragraphs
@@ -219,8 +232,14 @@ const blockquoteParagraph = createParagraph(/ {0,3}(?:[*+-]|\d{1,9}[.)])(?:[ \t]
 
 // a line with only whitespace after the marker is blank, so it must not start a
 // paragraph that lazily continues onto the next line
-const blockquote = edit(/^( {0,3}> ?(?:(?![ \t]*(?:\n|$))(paragraph)|[^\n]*)(?:\n|$))+/)
-  .replace('paragraph', blockquoteParagraph)
+// Only a paragraph can lazily continue the first quoted line. Indented code
+// must not scan the remaining document looking for paragraph continuation.
+// Later quoted lines may continue an earlier paragraph and keep the old rule.
+const blockquoteLine = / {0,3}> ?(?:(?!blank)(paragraph)|[^\n]*)(?:\n|$)/;
+const blockquote = edit(/^(first)(?:next)*/)
+  .replace('first', edit(blockquoteLine).replace('blank', /[ \t]*(?:\n|$)| {4}/).getRegex())
+  .replace('next', edit(blockquoteLine).replace('blank', /[ \t]*(?:\n|$)/).getRegex())
+  .replace(/paragraph/g, blockquoteParagraph)
   .getRegex();
 
 /**
@@ -249,9 +268,7 @@ type BlockKeys = keyof typeof blockNormal;
  * GFM Block Grammar
  */
 
-const gfmTable = edit(
-  '^ *([^\\n ].*)\\n' // Header
-+ ' {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)' // Align
+const gfmTable = edit(gfmTableHeader
 + '(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)') // Cells
   .replace('hr', hr)
   .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
@@ -259,8 +276,7 @@ const gfmTable = edit(
   .replace('code', '(?: {4}| {0,3}\t)[^\\n]')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
   .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]') // any bullet ends the table rows
-  .replace('html', ' {0,3}(?:</?(?:tag)(?: +|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
-  .replace('tag', _tag) // tables can be interrupted by html blocks of types (1) to (6)
+  .replace('html', _htmlInterrupt) // tables can be interrupted by html blocks of types (1) to (6)
   .getRegex();
 
 const blockGfm: Record<BlockKeys, RegExp> = {
@@ -271,12 +287,11 @@ const blockGfm: Record<BlockKeys, RegExp> = {
     .replace('hr', hr)
     .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
     .replace('|lheading', '') // setext headings don't interrupt commonmark paragraphs
-    .replace('table', gfmTable) // interrupt paragraphs with table
+    .replace('table', other.tableHeader) // only the header and delimiter are needed to interrupt
     .replace('blockquote', ' {0,3}>')
     .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
     .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]+[^ \\t\\n]') // only non-empty lists starting from 1 can interrupt
-    .replace('html', ' {0,3}(?:</?(?:tag)(?: +|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
-    .replace('tag', _tag) // pars can be interrupted by html blocks of types (1) to (6)
+    .replace('html', _htmlInterrupt) // pars can be interrupted by html blocks of types (1) to (6)
     .getRegex(),
 };
 
@@ -303,13 +318,13 @@ const blockPedantic: Record<BlockKeys, RegExp> = {
   paragraph: edit(_paragraph)
     .replace('hr', hr)
     .replace('heading', ' *#{1,6} *[^\n]')
-    .replace('lheading', lheading)
     .replace('|table', '')
     .replace('blockquote', ' {0,3}>')
     .replace('|fences', '')
     .replace('|list', '')
     .replace('|html', '')
     .replace('|tag', '')
+    .replace('lheading', lheading) // last, so the replacements above do not match inside it
     .getRegex(),
 };
 
@@ -495,9 +510,30 @@ const _inlineLabel = edit(/(?:\[(?:brackets|\\[\s\S]|[^\[\]\\])*\]|\\[\s\S]|`+(?
   .replace('brackets', _inlineLabelBrackets)
   .getRegex();
 
+// Bare link destinations allow balanced parentheses (CommonMark asks for at
+// least three levels of nesting) and backslash escapes, but must stop before
+// an unmatched ')' so adjacent links like `[a](b)[a](b)...` don't scan to the
+// end of the paragraph on every link.
+const _bareHrefChar = /\\[^ \t\n\x00-\x1f]|\\(?=[ \t\n])|[^ \t\n\x00-\x1f\\()]/;
+const _bareHrefParens1 = edit(/\((?:char)*\)/)
+  .replace('char', _bareHrefChar)
+  .getRegex();
+const _bareHrefParens2 = edit(/\((?:char|p1)*\)/)
+  .replace('char', _bareHrefChar)
+  .replace('p1', _bareHrefParens1)
+  .getRegex();
+const _bareHrefParens3 = edit(/\((?:char|p2)*\)/)
+  .replace('char', _bareHrefChar)
+  .replace('p2', _bareHrefParens2)
+  .getRegex();
+const _bareHref = edit(/(?!<)(?:char|p3)+/)
+  .replace('char', _bareHrefChar)
+  .replace('p3', _bareHrefParens3)
+  .getRegex();
+
 const link = edit(/^!?\[(label)\]\([ \t\n]*(href)(?:(?:[ \t]+(?:\n[ \t]*)?|\n[ \t]*)(title))?[ \t\n]*\)/)
   .replace('label', _inlineLabel)
-  .replace('href', /<(?:\\.|[^\n<>\\])+>|[^ \t\n\x00-\x1f]+|(?=\))/)
+  .replace('href', edit(/<(?:\\.|[^\n<>\\])*>|bareHref|(?=\))/).replace('bareHref', _bareHref).getRegex())
   // Same as the definition title: the escaped character is not the closer.
   .replace('title', /"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|\((?:\\[\s\S]|[^)\\])*\)/)
   .getRegex();
@@ -610,7 +646,7 @@ const inlineGfm: Record<InlineKeys, RegExp> = {
     .getRegex(),
   _backpedal: /(?:[^?!.,:;*_'"~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_'"~)]+(?!$))+/,
   del: /^(~~?)(?=[^\s~])((?:\\[\s\S]|[^\\])*?(?:\\[\s\S]|[^\s~\\]))\1(?=[^~]|$)/,
-  text: edit(/^(?:[^a-zA-Z0-9](?=emailProtocol)|(`+|~+|[^`~])(?:(?=[`~])|(?= {2,}\n)|(?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|protocol:\/\/|wwwStart|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9](?=emailProtocol)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@))))/)
+  text: edit(/^(?:[A-Za-z0-9.+-]+(?=@)|[^a-zA-Z0-9](?=emailProtocol)|(`+|~+|[^`~])(?:(?=[`~])|(?= {2,}\n)|(?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|protocol:\/\/|wwwStart|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9](?=emailProtocol)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@))))/)
     .replace('protocol', _caseInsensitiveProtocol)
     .replace(/emailProtocol/g, /(?:mailto|xmpp):/)
     // GFM: a www autolink starts only at the beginning of a line, after whitespace or after
