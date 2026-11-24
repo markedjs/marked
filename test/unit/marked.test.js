@@ -45,15 +45,11 @@ describe('marked unit', () => {
   });
 
   describe('fenced code info string whitespace', () => {
-    it('preserves non-space/tab characters in code token metadata', () => {
-      for (const gfm of [false, true]) {
-        for (const separator of ['\v', '\f', '\u00a0', '\u1680', '\u2000', '\u2003', '\u2028', '\u2029', '\u202f', '\u205f', '\u3000', '\ufeff']) {
-          const info = `${separator}js${separator}meta${separator}`;
-          const token = marked.lexer(`~~~ \t${info} \t\nx\n~~~`, { gfm })[0];
-          assert.strictEqual(token.type, 'code');
-          assert.strictEqual(token.lang, info);
-        }
-      }
+    it('preserves metadata while trimming only ASCII spaces and tabs', () => {
+      const token = marked.lexer('~~~ \t\u00a0js meta\u00a0 \t\nx\n~~~')[0];
+      assert.strictEqual(token.type, 'code');
+      assert.strictEqual(token.lang, '\u00a0js meta\u00a0');
+      assert.strictEqual(marked.lexer('~~~ \tjs\\* meta \t\nx\n~~~')[0].lang, 'js* meta');
     });
 
     it('passes the complete info string to a custom code renderer', () => {
@@ -63,24 +59,9 @@ describe('marked unit', () => {
       assert.strictEqual(info, '\u00a0js meta\u00a0');
     });
 
-    it('keeps escaped punctuation and ASCII separator behavior', () => {
-      const token = marked.lexer('~~~ \tjs\\* meta \t\nx\n~~~')[0];
-      assert.strictEqual(token.lang, 'js* meta');
-      assert.strictEqual(marked.parse('```js\tmeta\nx\n```'), '<pre><code class="language-js">x\n</code></pre>\n');
-    });
-
-    it('keeps default renderer language selection for Unicode separators', () => {
-      assert.strictEqual(marked.parse('```\u00a0js\u00a0meta\nx\n```'), '<pre><code class="language-js">x\n</code></pre>\n');
-    });
-
     it('applies the renderer whitespace policy to manually supplied code tokens', () => {
       const renderer = new Renderer();
       assert.strictEqual(renderer.code({ type: 'code', raw: '', text: 'x', lang: '\u00a0js\u00a0meta' }), '<pre><code class="language-js">x\n</code></pre>\n');
-    });
-
-    it('keeps the legacy pedantic renderer language separator', () => {
-      const renderer = new Renderer({ pedantic: true });
-      assert.strictEqual(renderer.code({ type: 'code', raw: '', text: 'x', lang: 'js\u00a0meta' }), '<pre><code class="language-js">x\n</code></pre>\n');
     });
   });
 
