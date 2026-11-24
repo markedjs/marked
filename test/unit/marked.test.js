@@ -1342,6 +1342,30 @@ br
       assert.deepEqual(values, ['dl', 'text', 'strong', 'text']);
     });
 
+    it('should ignore missing optional childTokens properties on extension tokens', () => {
+      marked.use({
+        extensions: [{
+          name: 'dl',
+          level: 'block',
+          childTokens: ['dt', 'dd'],
+          tokenizer(src) {
+            const match = /^:(.+)\n?/.exec(src);
+            if (match) {
+              return {
+                type: 'dl',
+                raw: match[0],
+                dt: this.lexer.inlineTokens(match[1]),
+              };
+            }
+          },
+        }],
+      });
+      const tokens = marked.lexer(':term');
+      const values = marked.walkTokens(tokens, (token) => [token.type]);
+
+      assert.deepEqual(values, ['dl', 'text']);
+    });
+
     it('should return values from every walkTokens extension', () => {
       marked.use(
         { walkTokens: () => 'one' },

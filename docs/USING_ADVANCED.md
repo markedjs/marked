@@ -127,6 +127,7 @@ Marked can be extended using [custom extensions](/using_pro#extensions). This is
 |[GitLab](https://github.com/UziTech/marked-gitlab)|[`marked-gitlab`](https://www.npmjs.com/package/marked-gitlab)|Extension for [GitLab Flavored Markdown (GLFM)](https://docs.gitlab.com/user/markdown/)|
 |[Highlight](https://github.com/markedjs/marked-highlight)|[`marked-highlight`](https://www.npmjs.com/package/marked-highlight)|Highlight code blocks|
 |[HTML Renderer](https://github.com/UziTech/marked-html-renderer)|[`marked-html-renderer`](https://www.npmjs.com/package/marked-html-renderer)|Output HTML Elements instead of a string|
+|[Inline Annotation](https://github.com/BaksiLi/markdown-inline-annotation/tree/main/packages/marked)|[`marked-inline-annotation`](https://www.npmjs.com/package/marked-inline-annotation)|Add ruby (furigana), interlinear glosses, and emphasis dots to Markdown text|
 |[Jira Renderer](https://github.com/mrmarble/marked-jira)|[`marked-jira`](https://www.npmjs.com/package/marked-jira)|Output Jira compatible format|
 |[Katex Code](https://github.com/UziTech/marked-katex-extension)|[`marked-katex-extension`](https://www.npmjs.com/package/marked-katex-extension)|Render [katex](https://katex.org/) code|
 |[LinkifyIt](https://github.com/UziTech/marked-linkify-it)|[`marked-linkify-it`](https://www.npmjs.com/package/marked-linkify-it)|Use [linkify-it](https://github.com/markdown-it/linkify-it) for urls|

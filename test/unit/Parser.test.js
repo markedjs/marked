@@ -1,4 +1,4 @@
-import { Parser } from '../../lib/marked.esm.js';
+import { Lexer, Parser, TextRenderer } from '../../lib/marked.esm.js';
 import { htmlIsEqual, firstDiff } from '@markedjs/testutils';
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
@@ -11,6 +11,28 @@ async function expectHtml({ tokens, options, html, inline }) {
 }
 
 describe('Parser', () => {
+  it('keeps the public TextRenderer output unencoded', () => {
+    const renderer = new TextRenderer();
+    assert.strictEqual(renderer.codespan({ type: 'codespan', raw: '`&amp;`', text: '&amp;' }), '&amp;');
+    assert.strictEqual(renderer.text({ type: 'escape', raw: '\\&', text: '&' }), '&');
+  });
+
+  it('keeps parser.textRenderer plain outside image rendering', () => {
+    const parser = new Parser();
+    const tokens = Lexer.lexInline('`&amp;`\\&');
+    assert.strictEqual(parser.parseInline(tokens, parser.textRenderer), '&amp;&');
+  });
+
+  it('keeps custom image text rendering and the original tokens', () => {
+    const parser = new Parser();
+    parser.textRenderer.strong = () => 'custom';
+    const tokens = Lexer.lexInline('![**bold** `&amp;` \\&amp;](u)');
+    const before = structuredClone(tokens);
+    assert.strictEqual(parser.parseInline(tokens), '<img src="u" alt="custom &amp;amp; &amp;amp;">');
+    assert.deepStrictEqual(tokens, before);
+    assert.strictEqual(parser.textRenderer.codespan(tokens[0].tokens[2]), '&amp;');
+  });
+
   describe('block', () => {
     it('space between paragraphs', async() => {
       await expectHtml({
@@ -493,5 +515,17 @@ describe('Parser', () => {
         html: 'text 1text 2',
       });
     });
+  });
+
+  it('ignores inherited Object.prototype properties on extensions.renderers', () => {
+    const parser = new Parser({ extensions: { renderers: {} } });
+    assert.throws(
+      () => parser.parse([{ type: 'toString', raw: '' }]),
+      /Token with "toString" type was not found\./,
+    );
+    assert.throws(
+      () => parser.parseInline([{ type: 'toString', raw: '' }]),
+      /Token with "toString" type was not found\./,
+    );
   });
 });
