@@ -32,7 +32,10 @@ function createMocks() {
         }),
       },
       stderr: {
-        write: mock.fn((str) => { mocks.stderr += str; }),
+        write: mock.fn((str, callback) => {
+          mocks.stderr += str;
+          callback?.();
+        }),
       },
       stdin: {
         setEncoding: mock.fn(),
@@ -103,7 +106,39 @@ function execMarked({ args = '', stdin = '', stdout = '', stderr = '' }) {
 }
 
 describe('bin/marked', () => {
+  describe('required option values', () => {
+    for (const option of ['-o', '--output', '-i', '--input', '-s', '--string', '-c', '--config']) {
+      it(`rejects ${option} without a value`, testInput({
+        args: [option],
+        stdin: '# ignored',
+        stderr: `marked: option '${option}' requires an argument`,
+        code: 1,
+      }));
+    }
+  });
+
   describe('output', () => {
+    it('writes all error output before exiting when stderr is piped', async() => {
+      const dir = await mkdtemp(resolve(tmpdir(), 'marked-stderr-'));
+      try {
+        const config = resolve(dir, 'config.cjs');
+        const message = 'config error '.repeat(131072);
+        await writeFile(config, `module.exports = () => { throw new Error(${JSON.stringify(message)}); };\n`);
+        await assert.rejects(execFileAsync(process.execPath, [
+          resolve(import.meta.dirname, '../../bin/marked.js'),
+          '--config', config, '--string', '# test',
+        ], { maxBuffer: 4 * 1024 * 1024 }), (err) => {
+          assert.strictEqual(err.code, 1);
+          assert.strictEqual(err.stdout, '');
+          assert.strictEqual(err.stderr.length, message.length);
+          assert.strictEqual(err.stderr, message);
+          return true;
+        });
+      } finally {
+        await rm(dir, { recursive: true, force: true });
+      }
+    });
+
     it('writes all output before exiting when stdout is piped', async() => {
       const dir = await mkdtemp(resolve(tmpdir(), 'marked-stdout-'));
       try {
@@ -182,6 +217,12 @@ describe('bin/marked', () => {
   });
 
   describe('string', () => {
+    it('--string= accepts empty input instead of reading stdin', testInput({
+      args: ['--string='],
+      stdin: '# ignored',
+      stdout: '\n',
+    }));
+
     it('-s', testInput({
       args: ['-s', '# test'],
       stdout: '<h1>test</h1>',
@@ -304,6 +345,29 @@ describe('bin/marked', () => {
   });
 
   describe('input', () => {
+    it('does not treat --=value as the end of options', testInput({
+      args: ['--=ignored', '--string', '# test'],
+      stdout: '<h1>test</h1>',
+    }));
+
+    for (const filename of ['-s.md', '--version']) {
+      it(`treats ${filename} as a filename after --`, async() => {
+        const dir = await mkdtemp(resolve(tmpdir(), 'marked-end-options-'));
+        try {
+          await writeFile(resolve(dir, filename), '~~file contents~~');
+          const { stdout, stderr } = await execFileAsync(process.execPath, [
+            resolve(import.meta.dirname, '../../bin/marked.js'),
+            '--no-gfm', '--', filename,
+          ], { cwd: dir });
+
+          assert.strictEqual(stdout, '<p>~~file contents~~</p>\n\n');
+          assert.strictEqual(stderr, '');
+        } finally {
+          await rm(dir, { recursive: true, force: true });
+        }
+      });
+    }
+
     it('input file positional', testInput({
       args: [fixturePath('bin-input.md')],
       stdout: '<h1>file</h1>',

@@ -23,6 +23,8 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
      */
     linkParenPossible: boolean;
     top: boolean;
+    /** lexing the content of a block quote, whose nested markers the outermost one has expanded */
+    inBlockquote: boolean;
     /** the last block token lexed in the current block run, so a tokenizer can check the token before it */
     lastToken?: Token;
   };
@@ -58,6 +60,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       linkEmitted: false,
       linkParenPossible: true,
       top: true,
+      inBlockquote: false,
     };
 
     const rules = {
