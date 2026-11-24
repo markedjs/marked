@@ -27,6 +27,12 @@ function expectInlineTokens({ md, options, tokens, links = {} }) {
 
 describe('Lexer', () => {
   describe('rules', () => {
+    it('should not scan lazy lines after an initial quoted code line', () => {
+      const rule = new Lexer().tokenizer.rules.block.blockquote;
+      assert.strictEqual(rule.exec('>     y\n    x\n>     y\n')[0], '>     y\n');
+      assert.strictEqual(rule.exec('> a\n>     y\n    x\n')[0], '> a\n>     y\n    x\n');
+    });
+
     it('should create indentation regexes for zero indent', () => {
       const {
         nextBulletRegex,

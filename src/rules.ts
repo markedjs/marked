@@ -68,6 +68,9 @@ export const other = {
   blockquoteSetextReplace: /\n {0,3}((?:=+|-+)[ \t]*)(?=\n|$)/g,
   blockquoteSetextReplace2: /^ {0,3}>[ \t]?/gm,
   blockquoteMarkerWhitespace: /^( {0,3}>)(\t[ \t]*)/gm,
+  blockquoteFenceOpen: /^ {0,3}(`{3,}(?=[^`]*$)|~{3,})/,
+  blockquoteFenceClose: /^ {0,3}(`{3,}|~{3,})[ \t]*$/,
+  blockquoteListItemStart: /^ {0,3}(?:[*+-]|\d{1,9}[.)])(?:[ \t]|$)/,
   nestedBlockMarker: /^ {0,3}(?:(?:[*+-]|\d{1,9}[.)])(?: |$)|> ?)/,
   listReplaceNesting: /^ {1,4}(?=( {4})*[^ ])/g,
   listIsTask: /^\[[ xX]\][ \t]+\S/,
@@ -127,7 +130,7 @@ export const other = {
 
 const newline = /^(?:[ \t]*(?:\n|$))+/;
 const blockCode = /^((?: {4}| {0,3}\t)[^\n]+(?:\n(?:[ \t]*(?:\n|$))*)?)+/;
-const fences = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}(?:(?=`)\1`*|(?=~)\1~*) *(?=\n|$)|$)/;
+const fences = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}(?:(?=`)\1`*|(?=~)\1~*)[ \t]*(?=\n|$)|$)/;
 const hr = /^ {0,3}((?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/;
 const heading = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
 const bullet = / {0,3}(?:[*+-]|\d{1,9}[.)])/;
@@ -225,8 +228,14 @@ const blockquoteParagraph = createParagraph(/ {0,3}(?:[*+-]|\d{1,9}[.)])(?:[ \t]
 
 // a line with only whitespace after the marker is blank, so it must not start a
 // paragraph that lazily continues onto the next line
-const createBlockquote = (paragraph: RegExp) => edit(/^( {0,3}> ?(?:(?![ \t]*(?:\n|$))(paragraph)|[^\n]*)(?:\n|$))+/)
-  .replace('paragraph', paragraph)
+// Only a paragraph can lazily continue the first quoted line. Indented code
+// must not scan the remaining document looking for paragraph continuation.
+// Later quoted lines may continue an earlier paragraph and keep the old rule.
+const blockquoteLine = / {0,3}> ?(?:(?!blank)(paragraph)|[^\n]*)(?:\n|$)/;
+const createBlockquote = (paragraph: RegExp) => edit(/^(first)(?:next)*/)
+  .replace('first', edit(blockquoteLine).replace('blank', /[ \t]*(?:\n|$)| {4}/).getRegex())
+  .replace('next', edit(blockquoteLine).replace('blank', /[ \t]*(?:\n|$)/).getRegex())
+  .replace(/paragraph/g, paragraph)
   .getRegex();
 const blockquote = createBlockquote(blockquoteParagraph);
 
@@ -500,9 +509,30 @@ const _inlineLabel = edit(/(?:\[(?:brackets|\\[\s\S]|[^\[\]\\])*\]|\\[\s\S]|`+(?
   .replace('brackets', _inlineLabelBrackets)
   .getRegex();
 
+// Bare link destinations allow balanced parentheses (CommonMark asks for at
+// least three levels of nesting) and backslash escapes, but must stop before
+// an unmatched ')' so adjacent links like `[a](b)[a](b)...` don't scan to the
+// end of the paragraph on every link.
+const _bareHrefChar = /\\[^ \t\n\x00-\x1f]|\\(?=[ \t\n])|[^ \t\n\x00-\x1f\\()]/;
+const _bareHrefParens1 = edit(/\((?:char)*\)/)
+  .replace('char', _bareHrefChar)
+  .getRegex();
+const _bareHrefParens2 = edit(/\((?:char|p1)*\)/)
+  .replace('char', _bareHrefChar)
+  .replace('p1', _bareHrefParens1)
+  .getRegex();
+const _bareHrefParens3 = edit(/\((?:char|p2)*\)/)
+  .replace('char', _bareHrefChar)
+  .replace('p2', _bareHrefParens2)
+  .getRegex();
+const _bareHref = edit(/(?!<)(?:char|p3)+/)
+  .replace('char', _bareHrefChar)
+  .replace('p3', _bareHrefParens3)
+  .getRegex();
+
 const link = edit(/^!?\[(label)\]\([ \t\n]*(href)(?:(?:[ \t]+(?:\n[ \t]*)?|\n[ \t]*)(title))?[ \t\n]*\)/)
   .replace('label', _inlineLabel)
-  .replace('href', /<(?:\\.|[^\n<>\\])*>|(?!<)[^ \t\n\x00-\x1f]+|(?=\))/)
+  .replace('href', edit(/<(?:\\.|[^\n<>\\])*>|bareHref|(?=\))/).replace('bareHref', _bareHref).getRegex())
   // Same as the definition title: the escaped character is not the closer.
   .replace('title', /"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|\((?:\\[\s\S]|[^)\\])*\)/)
   .getRegex();
