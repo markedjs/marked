@@ -8,18 +8,48 @@ import type { MarkedOptions } from './MarkedOptions.ts';
 import type { Token, Tokens } from './Tokens.ts';
 import type { _Parser } from './Parser.ts';
 
-// Literal code and escaped punctuation must survive the later alt-attribute
-// escaping. Copy tokens so rendering the image cannot change the token tree.
-function imageTextTokens(tokens: Token[]): Token[] {
-  return tokens.map((token) => {
-    if (token.type === 'codespan' || token.type === 'escape') {
-      return { ...token, text: escapeHtmlEntities(token.text, true) };
+// Literal code, escaped punctuation and autolinks must survive the later
+// alt-attribute escaping. Copy tokens so rendering the image cannot change
+// the token tree.
+function imageTextTokens(tokens: Token[], literal = false): Token[] {
+  let copy: Token[] | undefined;
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+    let next: Token = token;
+    if (token.type === 'codespan' || token.type === 'escape' || (literal && token.type === 'text')) {
+      const text = escapeHtmlEntities(token.text, true);
+      if (text !== token.text) {
+        next = { ...token, text };
+      }
+    } else if (token.type === 'link' && token.autolink) {
+      const text = escapeHtmlEntities(token.text, true);
+      const children = token.tokens;
+      const nextChildren = children
+        ? (children.length === 1 && children[0].type === 'text' && children[0].text === token.text
+          ? (text !== token.text ? [{ ...children[0], text }] : children)
+          : imageTextTokens(children, true))
+        : children;
+      if (text !== token.text || nextChildren !== children) {
+        next = nextChildren !== children
+          ? { ...token, text, tokens: nextChildren }
+          : { ...token, text };
+      }
+    } else if ('tokens' in token && token.tokens) {
+      const nextChildren = imageTextTokens(token.tokens, literal);
+      if (nextChildren !== token.tokens) {
+        next = { ...token, tokens: nextChildren };
+      }
     }
-    if ('tokens' in token && token.tokens) {
-      return { ...token, tokens: imageTextTokens(token.tokens) };
+    if (next !== token) {
+      if (!copy) {
+        copy = tokens.slice(0, i);
+      }
+      copy.push(next);
+    } else if (copy) {
+      copy.push(token);
     }
-    return token;
-  });
+  }
+  return copy || tokens;
 }
 
 /**
