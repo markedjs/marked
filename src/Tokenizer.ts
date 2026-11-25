@@ -1321,16 +1321,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         const noEmailRule = textRule === inline.breaks.text
           ? this.rules.other.inlineTextBreaksNoEmail
           : this.rules.other.inlineTextGfmNoEmail;
-        const cap = noEmailRule.exec(src);
-        if (cap) {
-          raw = cap[0];
-          if (!this.lexer.state.inLink && frame.emails.length > 0) {
-            const nextStart = findNextBareEmailStart(frame, frame.pos, frame.pos + raw.length, frame.pos + src.length);
-            if (nextStart !== -1) {
-              raw = raw.slice(0, nextStart - frame.pos);
-            }
-          }
-        }
+        const nextStart = !this.lexer.state.inLink && frame.emails.length > 0
+          ? findNextBareEmailStart(frame, frame.pos, frame.pos + src.length)
+          : -1;
+        raw = noEmailRule.exec(nextStart === -1 ? src : src.slice(0, nextStart - frame.pos))?.[0];
       } else {
         raw = textRule.exec(src)?.[0];
       }

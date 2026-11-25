@@ -40,4 +40,8 @@ module.exports = [
     markdown: 'a_'.repeat(25000),
     html: `<p>${'a_'.repeat(25000)}</p>`,
   },
+  {
+    markdown: 'a@b.co '.repeat(40000),
+    html: `<p>${'<a href="mailto:a@b.co">a@b.co</a> '.repeat(40000).trimEnd()}</p>`,
+  },
 ];

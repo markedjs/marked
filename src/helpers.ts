@@ -451,12 +451,11 @@ export function findBareEmailAt(frame: InlineEmailScanFrame, pos: number): BareE
 
 /**
  * Return the start offset of the first bare email autolink that begins
- * strictly inside `(pos, rawEnd)` and whose `@` lies before `cutEnd`, or `-1`.
+ * strictly after `pos` and whose `@` lies before `cutEnd`, or `-1`.
  */
 export function findNextBareEmailStart(
   frame: InlineEmailScanFrame,
   pos: number,
-  rawEnd: number,
   cutEnd: number,
 ): number {
   const emails = frame.emails;
@@ -471,7 +470,7 @@ export function findNextBareEmailStart(
   }
   if (idx < emails.length) {
     const next = emails[idx];
-    if (next.start < rawEnd && next.at < cutEnd) {
+    if (next.at < cutEnd) {
       return next.start;
     }
   }
