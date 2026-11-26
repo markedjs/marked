@@ -95,6 +95,9 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
    */
   static lexInline<ParserOutput = string, RendererOutput = string>(src: string, options?: MarkedOptions<ParserOutput, RendererOutput>) {
     const lexer = new _Lexer<ParserOutput, RendererOutput>(options);
+    if (src.includes('\r')) {
+      src = src.replace(other.carriageReturn, '\n');
+    }
     return lexer.inlineTokens(src);
   }
 
