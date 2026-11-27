@@ -308,6 +308,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         // merge paragraphs if this is a continuation
         const top = this.lexer.state.top;
         const outerInBlockquote = this.lexer.state.inBlockquote;
+        const outerLastToken = this.lexer.state.lastToken;
         this.lexer.state.top = true;
         this.lexer.state.inBlockquote = true;
         this.lexer.blockTokens(currentText, tokens, true);
@@ -334,8 +335,10 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           const continuation = lines.join('\n');
           const newText = oldToken.raw + '\n' + continuation.replace(this.rules.other.blockquoteSetextReplace2, '');
           this.lexer.state.inBlockquote = true;
+          this.lexer.state.lastToken = tokens.at(-2);
           const newToken = this.blockquote(newText)!;
           this.lexer.state.inBlockquote = outerInBlockquote;
+          this.lexer.state.lastToken = outerLastToken;
           tokens[tokens.length - 1] = newToken;
 
           // Only include continuation lines the nested blockquote actually
@@ -360,7 +363,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           // include continuation in nested list
           const oldToken = lastToken as Tokens.List;
           const newText = oldToken.raw + '\n' + lines.join('\n');
+          // Re-lex within this blockquote, not after the outer block run's lastToken
+          this.lexer.state.inBlockquote = true;
+          this.lexer.state.lastToken = tokens.at(-2);
           const newToken = this.list(newText)!;
+          this.lexer.state.top = top;
+          this.lexer.state.inBlockquote = outerInBlockquote;
+          this.lexer.state.lastToken = outerLastToken;
           tokens[tokens.length - 1] = newToken;
 
           // The list raw has no '>' markers, so it cannot be cut out of `raw`.
