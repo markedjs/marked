@@ -1,7 +1,7 @@
 import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
-import { beginEmStrongDelCloserScan, cachedLastPossibleDelCloserIndex, cachedLastPossibleEmStrongCloserIndex, endEmStrongDelCloserScan, normalizeLabel } from './helpers.ts';
+import { beginEmStrongDelCloserScan, cachedLastPossibleDelCloserIndex, cachedLastPossibleEmStrongCloserIndex, cleanUrl, endEmStrongDelCloserScan, escapeHtmlEntities, normalizeLabel } from './helpers.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
@@ -27,6 +27,10 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     inBlockquote: boolean;
     /** the last block token lexed in the current block run, so a tokenizer can check the token before it */
     lastToken?: Token;
+    referenceOutputBytes: number;
+    referenceOutputLimit: number;
+    referenceOutputDefinitions: Set<object>;
+    referenceOutputSizes: WeakMap<object, number>;
   };
 
   public inlineQueue: { src: string, tokens: Token[] }[];
@@ -50,6 +54,10 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       linkParenPossible: true,
       top: true,
       inBlockquote: false,
+      referenceOutputBytes: 0,
+      referenceOutputLimit: Number.MAX_SAFE_INTEGER,
+      referenceOutputDefinitions: new Set(),
+      referenceOutputSizes: new WeakMap(),
     };
 
     const rules = {
@@ -102,7 +110,12 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
    * Preprocessing
    */
   lex(src: string) {
+    const inputBytes = utf8ByteLength(src);
     src = src.replace(other.carriageReturn, '\n');
+    this.state.referenceOutputBytes = 0;
+    this.state.referenceOutputLimit = Math.max(100_000, inputBytes);
+    this.state.referenceOutputDefinitions = new Set();
+    this.state.referenceOutputSizes = new WeakMap();
 
     this.blockTokens(src, this.tokens);
 
@@ -117,6 +130,26 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     this.inlineQueue = [];
 
     return this.tokens;
+  }
+
+  reserveReferenceOutput(reference: { href: string, title?: string | null }) {
+    let size = this.state.referenceOutputSizes.get(reference);
+    if (size === undefined) {
+      const cleanHref = cleanUrl(reference.href);
+      size = cleanHref === null
+        ? 0
+        : utf8ByteLength(escapeHtmlEntities(cleanHref)) + utf8ByteLength(escapeHtmlEntities(reference.title || ''));
+      this.state.referenceOutputSizes.set(reference, size);
+    }
+    if (!this.state.referenceOutputDefinitions.has(reference)) {
+      this.state.referenceOutputDefinitions.add(reference);
+      return true;
+    }
+    if (size > this.state.referenceOutputLimit - this.state.referenceOutputBytes) {
+      return false;
+    }
+    this.state.referenceOutputBytes += size;
+    return true;
   }
 
   /**
@@ -707,4 +740,27 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       throw new Error(errMsg);
     }
   }
+}
+
+function utf8ByteLength(value: string) {
+  let length = 0;
+  for (let i = 0; i < value.length; i++) {
+    const code = value.charCodeAt(i);
+    if (code < 0x80) {
+      length++;
+    } else if (code < 0x800) {
+      length += 2;
+    } else if (code >= 0xD800 && code <= 0xDBFF && i + 1 < value.length) {
+      const next = value.charCodeAt(i + 1);
+      if (next >= 0xDC00 && next <= 0xDFFF) {
+        length += 4;
+        i++;
+      } else {
+        length += 3;
+      }
+    } else {
+      length += 3;
+    }
+  }
+  return length;
 }

@@ -1021,7 +1021,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           text,
         };
       }
-      return outputLink(cap, link, cap[0], this.lexer, this.rules);
+      const referenceOutputBytes = this.lexer.state.referenceOutputBytes;
+      if (!this.lexer.reserveReferenceOutput(link)) return;
+      const token = outputLink(cap, link, cap[0], this.lexer, this.rules);
+      if (!token) this.lexer.state.referenceOutputBytes = referenceOutputBytes;
+      return token;
     }
   }
 
