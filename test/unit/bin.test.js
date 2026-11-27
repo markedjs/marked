@@ -350,6 +350,23 @@ describe('bin/marked', () => {
       stdout: '<h1>test</h1>',
     }));
 
+    it('does not treat the value of an unknown --option=value as an input file', testInput({
+      args: ['--unknown=ignored'],
+      stdin: '# test\n',
+      stdout: '<h1>test</h1>',
+    }));
+
+    it('supports --option=false for boolean options without treating false as a file', testInput({
+      args: ['--gfm=false'],
+      stdin: '~~text~~\n',
+      stdout: '<p>~~text~~</p>',
+    }));
+
+    it('ignores prototype property names like --to-string without consuming the next argument', testInput({
+      args: ['--to-string', fixturePath('bin-input.md')],
+      stdout: '<h1>file</h1>',
+    }));
+
     for (const filename of ['-s.md', '--version']) {
       it(`treats ${filename} as a filename after --`, async() => {
         const dir = await mkdtemp(resolve(tmpdir(), 'marked-end-options-'));
