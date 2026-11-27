@@ -45,7 +45,7 @@ const gfmTableHeader = '^ *([^\\n ].*)\\n' // Header
 
 export const other = {
   codeRemoveIndent: /^(?: {0,3}\t| {1,4})/gm,
-  listInterruptsParagraph: /^ {0,3}(?:[*+-]|1[.)])[ \t]+[^ \t\n]/,
+  listInterruptsParagraph: /^ {0,3}(?:[*+-]|0{0,8}1[.)])[ \t]+[^ \t\n]/,
   outputLinkReplace: /\\([\[\]])/g,
   indentCodeCompensation: /^( {1,3})(?:`{3}|~{3})/,
   beginningSpace: /^[ \t]{1,3}/,
@@ -212,7 +212,7 @@ const createParagraph = (listInterrupt: RegExp) => edit(_paragraph)
   .getRegex();
 
 // only non-empty lists starting from 1 can interrupt paragraphs
-const paragraph = createParagraph(/ {0,3}(?:[*+-]|1[.)])[ \t]+[^ \t\n]/);
+const paragraph = createParagraph(/ {0,3}(?:[*+-]|0{0,8}1[.)])[ \t]+[^ \t\n]/);
 // inside a blockquote a bare list marker (any number) starts a sibling list,
 // so it must not be lazily continued as paragraph text (unlike a top level
 // paragraph, where an empty list cannot interrupt)
@@ -263,7 +263,7 @@ const gfmTable = edit(gfmTableHeader
   .replace('blockquote', ' {0,3}>')
   .replace('code', '(?: {4}| {0,3}\t)[^\\n]')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
-  .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]') // any bullet ends the table rows
+  .replace('list', ' {0,3}(?:[*+-]|0{0,8}1[.)])[ \\t]') // any bullet ends the table rows
   .replace('html', _htmlInterrupt) // tables can be interrupted by html blocks of types (1) to (6)
   .getRegex();
 
@@ -278,7 +278,7 @@ const blockGfm: Record<BlockKeys, RegExp> = {
     .replace('table', other.tableHeader) // only the header and delimiter are needed to interrupt
     .replace('blockquote', ' {0,3}>')
     .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
-    .replace('list', ' {0,3}(?:[*+-]|1[.)])[ \\t]+[^ \\t\\n]') // only non-empty lists starting from 1 can interrupt
+    .replace('list', ' {0,3}(?:[*+-]|0{0,8}1[.)])[ \\t]+[^ \\t\\n]') // only non-empty lists starting from 1 can interrupt
     .replace('html', _htmlInterrupt) // pars can be interrupted by html blocks of types (1) to (6)
     .getRegex(),
 };
