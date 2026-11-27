@@ -44,6 +44,27 @@ describe('marked unit', () => {
     });
   });
 
+  describe('fenced code info string whitespace', () => {
+    it('preserves metadata while trimming only ASCII spaces and tabs', () => {
+      const token = marked.lexer('~~~ \t\u00a0js meta\u00a0 \t\nx\n~~~')[0];
+      assert.strictEqual(token.type, 'code');
+      assert.strictEqual(token.lang, '\u00a0js meta\u00a0');
+      assert.strictEqual(marked.lexer('~~~ \tjs\\* meta \t\nx\n~~~')[0].lang, 'js* meta');
+    });
+
+    it('passes the complete info string to a custom code renderer', () => {
+      let info;
+      marked.use({ renderer: { code(token) { info = token.lang; return ''; } } });
+      marked.parse('``` \t\u00a0js meta\u00a0 \t\nx\n```');
+      assert.strictEqual(info, '\u00a0js meta\u00a0');
+    });
+
+    it('applies the renderer whitespace policy to manually supplied code tokens', () => {
+      const renderer = new Renderer();
+      assert.strictEqual(renderer.code({ type: 'code', raw: '', text: 'x', lang: '\u00a0js\u00a0meta' }), '<pre><code class="language-js">x\n</code></pre>\n');
+    });
+  });
+
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
