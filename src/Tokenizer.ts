@@ -10,6 +10,13 @@ import {
   trimTrailingBlankLines,
   cachedLastPossibleEmStrongCloserIndex,
   cachedLastPossibleDelCloserIndex,
+  getActiveEmStrongDelCloserFrame,
+  isBuiltinEmStrongRDelim,
+  isBuiltinDelRDelim,
+  buildEmStrongCloserIndex,
+  findEmStrongCloserIndexed,
+  buildDelCloserIndex,
+  findDelCloserIndexed,
 } from './helpers.ts';
 import type { Rules } from './rules.ts';
 import type { _Lexer } from './Lexer.ts';
@@ -1075,63 +1082,109 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       const lastPossibleEmStrongCloserIndex = cachedLastPossibleEmStrongCloserIndex(this, maskedSrc, delimChar);
       const emStrongCloserWindowStart = maskedSrc.length - src.length + lLength;
       if (lastPossibleEmStrongCloserIndex < emStrongCloserWindowStart) return;
-      // Clip maskedSrc to same section of string as src (move to lexer?)
-      maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
-      const lastPossibleEmStrongCloserIndexInWindow = lastPossibleEmStrongCloserIndex - emStrongCloserWindowStart;
-      endReg.lastIndex = 0;
 
-      while ((match = endReg.exec(maskedSrc)) !== null) {
-        if (match.index > lastPossibleEmStrongCloserIndexInWindow) break;
-        rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
+      const frame = getActiveEmStrongDelCloserFrame(this, maskedSrc);
+      const indexFrame = isBuiltinEmStrongRDelim(endReg) ? frame : undefined;
+      let rawLength = -1;
+      let matchedRLength = 0;
+      const existingIndex = indexFrame?.emStrongIndex?.[delimChar];
 
-        if (!rDelim) continue; // skip single * in __abc*abc__
+      if (existingIndex && indexFrame) {
+        const found = findEmStrongCloserIndexed(
+          indexFrame,
+          existingIndex,
+          maskedSrc,
+          srcStart,
+          lLength,
+          runLength,
+          openerCanClose,
+          midRun,
+          delimChar,
+          endReg,
+        );
+        if (!found) return;
+        rawLength = found.rawLength;
+        matchedRLength = found.rLength;
+      } else {
+        // Clip maskedSrc to same section of string as src (move to lexer?)
+        const sliceMasked = maskedSrc.slice(-1 * src.length + lLength);
+        const lastPossibleEmStrongCloserIndexInWindow = lastPossibleEmStrongCloserIndex - emStrongCloserWindowStart;
+        endReg.lastIndex = 0;
+        let steps = 0;
 
-        rLength = [...rDelim].length;
+        while ((match = endReg.exec(sliceMasked)) !== null) {
+          if (match.index > lastPossibleEmStrongCloserIndexInWindow) break;
+          rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
-        if (match[3] || match[4]) { // found another Left Delim
-          delimTotal += rLength;
-          continue;
-        } else if (match[5] || match[6] || openerCanClose) { // either Left or Right Delim
-          if (runLength % 3 && !((runLength + rLength) % 3)) { // CommonMark Emphasis Rules 9-10
-            if (midRun && (match[5] || match[6])) {
-              // A delimiter that can also open and cannot close this run
-              // opens its own span; a later closer pairs with it, not with a
-              // mid-run opener (`**a*a*` must be `**a<em>a</em>`).
-              break;
-            }
-            midDelimTotal += rLength;
-            continue;
+          if (!rDelim) continue; // skip single * in __abc*abc__
+
+          if (indexFrame && ++steps > 16) {
+            const index = buildEmStrongCloserIndex(indexFrame, endReg, delimChar);
+            const found = findEmStrongCloserIndexed(
+              indexFrame,
+              index,
+              maskedSrc,
+              srcStart,
+              lLength,
+              runLength,
+              openerCanClose,
+              midRun,
+              delimChar,
+              endReg,
+            );
+            if (!found) return;
+            rawLength = found.rawLength;
+            matchedRLength = found.rLength;
+            break;
           }
+
+          rLength = [...rDelim].length;
+
+          if (match[3] || match[4]) { // found another Left Delim
+            delimTotal += rLength;
+            continue;
+          } else if (match[5] || match[6] || openerCanClose) { // either Left or Right Delim
+            if (runLength % 3 && !((runLength + rLength) % 3)) { // CommonMark Emphasis Rules 9-10
+              if (midRun && (match[5] || match[6])) {
+                // A delimiter that can also open and cannot close this run
+                // opens its own span; a later closer pairs with it, not with a
+                // mid-run opener (`**a*a*` must be `**a<em>a</em>`).
+                break;
+              }
+              midDelimTotal += rLength;
+              continue;
+            }
+          }
+
+          delimTotal -= rLength;
+
+          if (delimTotal > 0) continue; // Haven't found enough closing delimiters
+
+          // Remove extra characters. *a*** -> *a*
+          rLength = Math.min(rLength, rLength + delimTotal + midDelimTotal);
+          // char length can be >1 for unicode characters;
+          const lastCharLength = [...match[0]][0].length;
+          rawLength = lLength + match.index + lastCharLength + rLength;
+          matchedRLength = rLength;
+          break;
         }
+      }
 
-        delimTotal -= rLength;
-
-        if (delimTotal > 0) continue; // Haven't found enough closing delimiters
-
-        // Remove extra characters. *a*** -> *a*
-        rLength = Math.min(rLength, rLength + delimTotal + midDelimTotal);
-        // char length can be >1 for unicode characters;
-        const lastCharLength = [...match[0]][0].length;
-        const raw = src.slice(0, lLength + match.index + lastCharLength + rLength);
-
-        // Create `em` if smallest delimiter has odd char count. *a***
-        if (Math.min(lLength, rLength) % 2) {
-          const text = raw.slice(1, -1);
-          return {
-            type: 'em',
-            raw,
-            text,
-            tokens: this.lexer.inlineTokens(text),
-          };
+      if (rawLength !== -1) {
+        const raw = src.slice(0, rawLength);
+        // Odd min delimiter length produces `em` (*a***), even produces `strong` (**a***).
+        const delimLen = Math.min(lLength, matchedRLength) % 2 ? 1 : 2;
+        const type = delimLen === 1 ? 'em' : 'strong';
+        const text = raw.slice(delimLen, -delimLen);
+        const defer = !!frame?.deferInline;
+        if (defer) {
+          frame.deferred = true;
         }
-
-        // Create 'strong' if smallest delimiter has even char count. **a***
-        const text = raw.slice(2, -2);
         return {
-          type: 'strong',
+          type,
           raw,
           text,
-          tokens: this.lexer.inlineTokens(text),
+          tokens: defer ? [] : this.lexer.inlineTokens(text),
         };
       }
     }
@@ -1181,45 +1234,71 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
       const endReg = this.rules.inline.delRDelim;
       const lastPossibleDelCloserIndex = cachedLastPossibleDelCloserIndex(this, maskedSrc);
-      const delCloserWindowStart = maskedSrc.length - src.length + lLength;
+      const delSrcStart = maskedSrc.length - src.length;
+      const delCloserWindowStart = delSrcStart + lLength;
       if (lastPossibleDelCloserIndex < delCloserWindowStart) return;
-      // Clip maskedSrc to same section of string as src
-      maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
-      const lastPossibleDelCloserIndexInWindow = lastPossibleDelCloserIndex - delCloserWindowStart;
-      endReg.lastIndex = 0;
 
-      while ((match = endReg.exec(maskedSrc)) !== null) {
-        if (match.index > lastPossibleDelCloserIndexInWindow) break;
-        rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
+      const frame = getActiveEmStrongDelCloserFrame(this, maskedSrc);
+      const indexFrame = isBuiltinDelRDelim(endReg) ? frame : undefined;
+      let rawLength = -1;
+      const existingIndex = indexFrame?.delIndex;
 
-        if (!rDelim) continue;
+      if (existingIndex && indexFrame) {
+        rawLength = findDelCloserIndexed(indexFrame, existingIndex, maskedSrc, delSrcStart, lLength, endReg);
+      } else {
+        // Clip maskedSrc to same section of string as src
+        const sliceMasked = maskedSrc.slice(-1 * src.length + lLength);
+        const lastPossibleDelCloserIndexInWindow = lastPossibleDelCloserIndex - delCloserWindowStart;
+        endReg.lastIndex = 0;
+        let steps = 0;
 
-        rLength = [...rDelim].length;
+        while ((match = endReg.exec(sliceMasked)) !== null) {
+          if (match.index > lastPossibleDelCloserIndexInWindow) break;
+          rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
 
-        if (rLength !== lLength) continue;
+          if (!rDelim) continue;
 
-        if (match[3] || match[4]) { // found another Left Delim
-          delimTotal += rLength;
-          continue;
+          if (indexFrame && ++steps > 16) {
+            const index = buildDelCloserIndex(indexFrame, endReg);
+            rawLength = findDelCloserIndexed(indexFrame, index, maskedSrc, delSrcStart, lLength, endReg);
+            break;
+          }
+
+          rLength = [...rDelim].length;
+
+          if (rLength !== lLength) continue;
+
+          if (match[3] || match[4]) { // found another Left Delim
+            delimTotal += rLength;
+            continue;
+          }
+
+          delimTotal -= rLength;
+
+          if (delimTotal > 0) continue; // Haven't found enough closing delimiters
+
+          // Remove extra characters
+          rLength = Math.min(rLength, rLength + delimTotal);
+          // char length can be >1 for unicode characters
+          const lastCharLength = [...match[0]][0].length;
+          rawLength = lLength + match.index + lastCharLength + rLength;
+          break;
         }
+      }
 
-        delimTotal -= rLength;
-
-        if (delimTotal > 0) continue; // Haven't found enough closing delimiters
-
-        // Remove extra characters
-        rLength = Math.min(rLength, rLength + delimTotal);
-        // char length can be >1 for unicode characters
-        const lastCharLength = [...match[0]][0].length;
-        const raw = src.slice(0, lLength + match.index + lastCharLength + rLength);
-
+      if (rawLength !== -1) {
+        const raw = src.slice(0, rawLength);
         // Create del token - only single ~ or double ~~ supported
         const text = raw.slice(lLength, -lLength);
+        const defer = !!frame?.deferInline;
+        if (defer) {
+          frame.deferred = true;
+        }
         return {
           type: 'del',
           raw,
           text,
-          tokens: this.lexer.inlineTokens(text),
+          tokens: defer ? [] : this.lexer.inlineTokens(text),
         };
       }
     }

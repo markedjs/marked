@@ -2323,4 +2323,65 @@ paragraph
       assert.deepEqual(tokensA, tokensB);
     });
   });
+
+  describe('deeply nested emphasis and strikethrough (#4286)', () => {
+    it('should lex 20000 nested emphasis levels without stack overflow', () => {
+      const depth = 20000;
+      const md = '*a '.repeat(depth) + 'b' + ' c*'.repeat(depth);
+      const tokens = Lexer.lex(md);
+      assert.strictEqual(tokens.length, 1);
+      assert.strictEqual(tokens[0].type, 'paragraph');
+      assert.strictEqual(tokens[0].tokens.length, 1);
+      assert.strictEqual(tokens[0].tokens[0].type, 'em');
+      let cur = tokens[0].tokens[0].tokens;
+      for (let i = 1; i < depth; i++) {
+        assert.strictEqual(cur.length, 3);
+        assert.strictEqual(cur[0].text, 'a ');
+        assert.strictEqual(cur[1].type, 'em');
+        assert.strictEqual(cur[2].text, ' c');
+        cur = cur[1].tokens;
+      }
+      assert.strictEqual(cur.length, 1);
+      assert.strictEqual(cur[0].text, 'a b c');
+    });
+
+    it('should lex 20000 nested strikethrough levels without stack overflow', () => {
+      const depth = 20000;
+      const md = '~~a '.repeat(depth) + 'b' + ' c~~'.repeat(depth);
+      const tokens = Lexer.lex(md);
+      assert.strictEqual(tokens.length, 1);
+      assert.strictEqual(tokens[0].type, 'paragraph');
+      assert.strictEqual(tokens[0].tokens.length, 1);
+      assert.strictEqual(tokens[0].tokens[0].type, 'del');
+      let cur = tokens[0].tokens[0].tokens;
+      for (let i = 1; i < depth; i++) {
+        assert.strictEqual(cur.length, 3);
+        assert.strictEqual(cur[0].text, 'a ');
+        assert.strictEqual(cur[1].type, 'del');
+        assert.strictEqual(cur[2].text, ' c');
+        cur = cur[1].tokens;
+      }
+      assert.strictEqual(cur.length, 1);
+      assert.strictEqual(cur[0].text, 'a b c');
+    });
+
+    it('should match fast-path tokens when the delimiter closer index is active', () => {
+      const pad = '`|`' + '*x *y* z* '.repeat(20);
+      const padTokens = Lexer.lex(pad)[0].tokens;
+      const cases = [
+        '*a *b***',
+        '***a*b***',
+        '__ *#**__',
+        '~~*a**~~',
+        '*__a*b__*',
+        'a*b**c*',
+        '**a *b** c*',
+      ];
+      for (const sample of cases) {
+        const direct = Lexer.lex(sample)[0].tokens;
+        const indexed = Lexer.lex(sample + pad)[0].tokens;
+        assert.deepEqual(indexed, [...direct, ...padTokens]);
+      }
+    });
+  });
 });

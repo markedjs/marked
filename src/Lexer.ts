@@ -1,7 +1,14 @@
 import { _Tokenizer } from './Tokenizer.ts';
 import { _defaults } from './defaults.ts';
 import { other, block, inline } from './rules.ts';
-import { beginEmStrongDelCloserScan, cachedLastPossibleDelCloserIndex, cachedLastPossibleEmStrongCloserIndex, endEmStrongDelCloserScan, normalizeLabel } from './helpers.ts';
+import {
+  beginEmStrongDelCloserScan,
+  cachedLastPossibleDelCloserIndex,
+  cachedLastPossibleEmStrongCloserIndex,
+  endEmStrongDelCloserScan,
+  normalizeLabel,
+  type EmStrongDelCloserHintFrame,
+} from './helpers.ts';
 import type { Token, TokensList, Tokens } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
@@ -378,16 +385,17 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     // `'[a](b'.repeat(n)`. Extension tokenizers can pass generated text to
     // nested runs, so each run must check its own source.
     const prevLinkParenPossible = this.state.linkParenPossible;
-    this.state.linkParenPossible = src.includes(')');
+    const firstParen = src.indexOf(')');
+    this.state.linkParenPossible = firstParen !== -1;
     try {
-      return this.#inlineTokensInner(src, tokens);
+      return this.#inlineTokensInner(src, tokens, firstParen);
     } finally {
       // Restore the outer run's flag for the rest of its loop.
       this.state.linkParenPossible = prevLinkParenPossible;
     }
   }
 
-  #inlineTokensInner(src: string, tokens: Token[]): Token[] {
+  #inlineTokensInner(src: string, tokens: Token[], firstParen: number): Token[] {
     // The masked source is only read by emStrong and del, which need a *, _ or
     // ~ to start. Skip building it for a run without one, unless a custom
     // tokenizer or an emStrongMask hook may read it.
@@ -401,212 +409,387 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
 
     // Without a delimiter no opener can match, so nothing reads the closer scan.
     if (!hasDelimiter) {
-      return this.#tokenizeInlines(src, maskedSrc, tokens);
+      return this.#tokenizeInlines(src, maskedSrc, tokens, null, firstParen);
     }
 
     // One scan of this maskedSrc for the last emphasis, strong, and
     // strikethrough closers, shared by every opener in the pass. Popped
     // when the pass ends so the source is not retained (#4099).
-    beginEmStrongDelCloserScan(this.tokenizer, maskedSrc);
+    const hintFrame = beginEmStrongDelCloserScan(this.tokenizer, maskedSrc);
     try {
-      return this.#tokenizeInlines(src, maskedSrc, tokens);
+      return this.#tokenizeInlines(src, maskedSrc, tokens, hintFrame, firstParen);
     } finally {
       endEmStrongDelCloserScan(this.tokenizer);
     }
   }
 
-  #tokenizeInlines(src: string, maskedSrc: string, tokens: Token[]): Token[] {
+  #tokenizeInlines(
+    rootSrc: string,
+    rootMaskedSrc: string,
+    rootTokens: Token[],
+    rootHintFrame: EmStrongDelCloserHintFrame | null,
+    firstParen: number,
+  ): Token[] {
+    interface InlineFrame {
+      src: string;
+      maskedSrc: string;
+      tokens: Token[];
+      prevChar: string;
+      keepPrevChar: boolean;
+      srcLength: number;
+      rootOffset: number;
+      nextParen: number;
+      ownsCloserFrame: boolean;
+      prevLinkParenPossible: boolean;
+      hintFrame: EmStrongDelCloserHintFrame | null;
+      subMaskedSrc: string;
+      subStart: number;
+      subEnd: number;
+      subLastAst: number;
+      subLastUnd: number;
+      subLastDel: number;
+    }
+
+    const canDeferEmStrong = rootHintFrame !== null && this.tokenizer.emStrong === _Tokenizer.prototype.emStrong;
+    const canDeferDel = rootHintFrame !== null && this.tokenizer.del === _Tokenizer.prototype.del;
+    const canReuseMask = !this.options.hooks?.emStrongMask;
+
+    let src = rootSrc;
+    let maskedSrc = rootMaskedSrc;
+    let tokens = rootTokens;
+    let hintFrame = rootHintFrame;
     let keepPrevChar = false;
     let prevChar = '';
     let srcLength = Infinity;
-    while (src) {
-      if (src.length < srcLength) {
-        srcLength = src.length;
-      } else {
-        this.infiniteLoopError(src.charCodeAt(0));
-        break;
-      }
+    let rootOffset = 0;
+    let nextParen = firstParen;
+    let ownsCloserFrame = false;
+    let subLastAst = -2;
+    let subLastUnd = -2;
+    let subLastDel = -2;
+    let stack: InlineFrame[] | undefined;
+    let extraCloserFrames = 0;
+    let pushedChild = false;
 
-      if (!keepPrevChar) {
-        prevChar = '';
-      }
-      keepPrevChar = false;
-
-      let token: Tokens.Generic | undefined;
-
-      // extensions
-      if (this.options.extensions?.inline?.some((extTokenizer) => {
-        if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
-          src = src.substring(token.raw.length);
-          tokens.push(token);
-          return true;
-        }
-        return false;
-      })) {
-        continue;
-      }
-
-      // escape
-      if (token = this.tokenizer.escape(src)) {
-        src = src.substring(token.raw.length);
-        tokens.push(token);
-        continue;
-      }
-
-      // tag
-      if (token = this.tokenizer.tag(src)) {
-        src = src.substring(token.raw.length);
-        tokens.push(token);
-        continue;
-      }
-
-      // link
-      if (token = this.tokenizer.link(src)) {
-        src = src.substring(token.raw.length);
-        tokens.push(token);
-        continue;
-      }
-
-      // reflink, nolink
-      if (token = this.tokenizer.reflink(src, this.tokens.links)) {
-        src = src.substring(token.raw.length);
-        const lastToken = tokens.at(-1);
-        if (token.type === 'text' && lastToken?.type === 'text') {
-          lastToken.raw += token.raw;
-          lastToken.text += token.text;
-        } else {
-          tokens.push(token);
-        }
-        continue;
-      }
-
-      // #4099 follow-up: for a run of `*` or `_` with no possible closer
-      // anywhere ahead in maskedSrc, every opener position fails identically
-      // and the outer loop walks the run char-by-char, giving O(n^2) time.
-      // Consume the whole run as literal text in one step.
-      const firstChar = src[0];
-      if (firstChar === '*' || firstChar === '_') {
-        const pos = maskedSrc.length - src.length;
-        const lastCloser = cachedLastPossibleEmStrongCloserIndex(this.tokenizer, maskedSrc, firstChar);
-        if (lastCloser <= pos) {
-          let runEnd = 1;
-          while (runEnd < src.length && src.charCodeAt(runEnd) === firstChar.charCodeAt(0)) runEnd++;
-          const raw = src.substring(0, runEnd);
-          const lastToken = tokens.at(-1);
-          if (lastToken?.type === 'text' && !lastToken.escaped) {
-            lastToken.raw += raw;
-            lastToken.text += raw;
-          } else {
-            tokens.push({ type: 'text', raw, text: raw, escaped: false } as Tokens.Text);
-          }
-          src = src.substring(runEnd);
-          prevChar = firstChar;
-          keepPrevChar = true;
+    const scanSliceLastCloser = (slice: string, delim: '*' | '_' | '~'): number => {
+      for (let i = slice.length - 1; i >= 0; i--) {
+        if (slice[i] !== delim) {
           continue;
         }
-      } else if (firstChar === '~') {
-        const pos = maskedSrc.length - src.length;
-        const lastCloser = cachedLastPossibleDelCloserIndex(this.tokenizer, maskedSrc);
-        if (lastCloser <= pos) {
-          let runEnd = 1;
-          while (runEnd < src.length && src.charCodeAt(runEnd) === 126 /* ~ */) runEnd++;
-          const raw = src.substring(0, runEnd);
-          const lastToken = tokens.at(-1);
-          if (lastToken?.type === 'text' && !lastToken.escaped) {
-            lastToken.raw += raw;
-            lastToken.text += raw;
+        let start = i;
+        while (start > 0 && slice[start - 1] === delim) {
+          start--;
+        }
+        const prev = start === 0 ? '\n' : slice[start - 1];
+        if (prev !== ' ' && prev !== '\t' && prev !== '\n' && prev !== '\r' && prev !== '\f') {
+          return start;
+        }
+        i = start;
+      }
+      return -1;
+    };
+
+    try {
+      while (true) {
+        while (src) {
+          if (src.length < srcLength) {
+            srcLength = src.length;
           } else {
-            tokens.push({ type: 'text', raw, text: raw, escaped: false } as Tokens.Text);
+            this.infiniteLoopError(src.charCodeAt(0));
+            break;
           }
-          src = src.substring(runEnd);
-          prevChar = firstChar;
-          keepPrevChar = true;
+
+          if (!keepPrevChar) {
+            prevChar = '';
+          }
+          keepPrevChar = false;
+
+          let token: Tokens.Generic | undefined;
+
+          // extensions
+          if (this.options.extensions?.inline?.some((extTokenizer) => {
+            if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
+              src = src.substring(token.raw.length);
+              tokens.push(token);
+              return true;
+            }
+            return false;
+          })) {
+            continue;
+          }
+
+          // escape
+          if (token = this.tokenizer.escape(src)) {
+            src = src.substring(token.raw.length);
+            tokens.push(token);
+            continue;
+          }
+
+          // tag
+          if (token = this.tokenizer.tag(src)) {
+            src = src.substring(token.raw.length);
+            tokens.push(token);
+            continue;
+          }
+
+          // link
+          if (token = this.tokenizer.link(src)) {
+            src = src.substring(token.raw.length);
+            tokens.push(token);
+            continue;
+          }
+
+          // reflink, nolink
+          if (token = this.tokenizer.reflink(src, this.tokens.links)) {
+            src = src.substring(token.raw.length);
+            const lastToken = tokens.at(-1);
+            if (token.type === 'text' && lastToken?.type === 'text') {
+              lastToken.raw += token.raw;
+              lastToken.text += token.text;
+            } else {
+              tokens.push(token);
+            }
+            continue;
+          }
+
+          // #4099 follow-up: for a run of `*`, `_`, or `~` with no possible closer
+          // anywhere ahead in maskedSrc, every opener position fails identically
+          // and the outer loop walks the run char-by-char, giving O(n^2) time.
+          // Consume the whole run as literal text in one step.
+          const firstChar = src[0];
+          if (firstChar === '*' || firstChar === '_' || firstChar === '~') {
+            const pos = maskedSrc.length - src.length;
+            let lastCloser = firstChar === '~'
+              ? cachedLastPossibleDelCloserIndex(this.tokenizer, maskedSrc)
+              : cachedLastPossibleEmStrongCloserIndex(this.tokenizer, maskedSrc, firstChar);
+            if (lastCloser >= maskedSrc.length) {
+              if (firstChar === '*') {
+                if (subLastAst === -2) subLastAst = scanSliceLastCloser(maskedSrc, '*');
+                lastCloser = subLastAst;
+              } else if (firstChar === '_') {
+                if (subLastUnd === -2) subLastUnd = scanSliceLastCloser(maskedSrc, '_');
+                lastCloser = subLastUnd;
+              } else {
+                if (subLastDel === -2) subLastDel = scanSliceLastCloser(maskedSrc, '~');
+                lastCloser = subLastDel;
+              }
+            }
+            if (lastCloser <= pos) {
+              const code = firstChar.charCodeAt(0);
+              let runEnd = 1;
+              while (runEnd < src.length && src.charCodeAt(runEnd) === code) runEnd++;
+              const raw = src.substring(0, runEnd);
+              const lastToken = tokens.at(-1);
+              if (lastToken?.type === 'text' && !lastToken.escaped) {
+                lastToken.raw += raw;
+                lastToken.text += raw;
+              } else {
+                tokens.push({ type: 'text', raw, text: raw, escaped: false } as Tokens.Text);
+              }
+              src = src.substring(runEnd);
+              prevChar = firstChar;
+              keepPrevChar = true;
+              continue;
+            }
+          }
+
+          // em & strong
+          if (canDeferEmStrong && hintFrame) {
+            hintFrame.deferInline = true;
+            hintFrame.deferred = false;
+            token = this.tokenizer.emStrong(src, maskedSrc, prevChar);
+            hintFrame.deferInline = false;
+          } else {
+            token = this.tokenizer.emStrong(src, maskedSrc, prevChar);
+          }
+          if (!token) {
+            // code
+            if (token = this.tokenizer.codespan(src)) {
+              src = src.substring(token.raw.length);
+              tokens.push(token);
+              continue;
+            }
+
+            // br
+            if (token = this.tokenizer.br(src)) {
+              src = src.substring(token.raw.length);
+              tokens.push(token);
+              continue;
+            }
+
+            // del (gfm)
+            if (canDeferDel && hintFrame) {
+              hintFrame.deferInline = true;
+              hintFrame.deferred = false;
+              token = this.tokenizer.del(src, maskedSrc, prevChar);
+              hintFrame.deferInline = false;
+            } else {
+              token = this.tokenizer.del(src, maskedSrc, prevChar);
+            }
+          }
+
+          if (token) {
+            const posInFrame = maskedSrc.length - src.length;
+            src = src.substring(token.raw.length);
+            tokens.push(token);
+            if (hintFrame?.deferred) {
+              hintFrame.deferred = false;
+              stack ??= [];
+              stack.push({
+                src,
+                maskedSrc,
+                tokens,
+                prevChar,
+                keepPrevChar,
+                srcLength,
+                rootOffset,
+                nextParen,
+                ownsCloserFrame,
+                prevLinkParenPossible: this.state.linkParenPossible,
+                hintFrame,
+                subMaskedSrc: hintFrame.subMaskedSrc,
+                subStart: hintFrame.subStart,
+                subEnd: hintFrame.subEnd,
+                subLastAst,
+                subLastUnd,
+                subLastDel,
+              });
+              const childText = token.text as string;
+              const delimLen = (token.raw.length - childText.length) >> 1;
+              src = childText;
+              tokens = token.tokens!;
+              prevChar = '';
+              keepPrevChar = false;
+              srcLength = Infinity;
+              subLastAst = -2;
+              subLastUnd = -2;
+              subLastDel = -2;
+              if (canReuseMask && rootOffset !== -1) {
+                const childStart = rootOffset + posInFrame + delimLen;
+                const childEnd = childStart + childText.length;
+                maskedSrc = maskedSrc.slice(posInFrame + delimLen, posInFrame + token.raw.length - delimLen);
+                rootOffset = childStart;
+                ownsCloserFrame = false;
+                hintFrame.subMaskedSrc = maskedSrc;
+                hintFrame.subStart = childStart;
+                hintFrame.subEnd = childEnd;
+                if (nextParen === -1) {
+                  this.state.linkParenPossible = false;
+                } else {
+                  if (nextParen < childStart) {
+                    nextParen = rootSrc.indexOf(')', childStart);
+                  }
+                  this.state.linkParenPossible = nextParen !== -1 && nextParen < childEnd;
+                }
+              } else {
+                maskedSrc = this.#maskSrc(childText);
+                rootOffset = -1;
+                const childParen = childText.indexOf(')');
+                nextParen = childParen;
+                this.state.linkParenPossible = childParen !== -1;
+                hintFrame = beginEmStrongDelCloserScan(this.tokenizer, maskedSrc);
+                ownsCloserFrame = true;
+                extraCloserFrames++;
+              }
+              pushedChild = true;
+              break;
+            }
+            continue;
+          }
+
+          // autolink
+          if (token = this.tokenizer.autolink(src)) {
+            src = src.substring(token.raw.length);
+            tokens.push(token);
+            continue;
+          }
+
+          // url (gfm)
+          if (!this.state.inLink && (token = this.tokenizer.url(src))) {
+            src = src.substring(token.raw.length);
+            tokens.push(token);
+            continue;
+          }
+
+          // text
+          // prevent inlineText consuming extensions by clipping 'src' to extension start
+          let cutSrc = src;
+          if (this.options.extensions?.startInline) {
+            let startIndex = Infinity;
+            const tempSrc = src.slice(1);
+            let tempStart;
+            this.options.extensions.startInline.forEach((getStartIndex) => {
+              tempStart = getStartIndex.call({ lexer: this }, tempSrc);
+              if (typeof tempStart === 'number' && tempStart >= 0) {
+                startIndex = Math.min(startIndex, tempStart);
+              }
+            });
+            if (startIndex < Infinity && startIndex >= 0) {
+              cutSrc = src.substring(0, startIndex + 1);
+            }
+          }
+          if (token = this.tokenizer.inlineText(cutSrc)) {
+            src = src.substring(token.raw.length);
+            if (token.raw.slice(-1) !== '_') { // Track prevChar before string of ____ started
+              prevChar = token.raw.slice(-1);
+            }
+            keepPrevChar = true;
+            const lastToken = tokens.at(-1);
+            if (lastToken?.type === 'text') {
+              lastToken.raw += token.raw;
+              lastToken.text += token.text;
+            } else {
+              tokens.push(token);
+            }
+            continue;
+          }
+
+          if (src) {
+            this.infiniteLoopError(src.charCodeAt(0));
+            break;
+          }
+        }
+
+        if (pushedChild) {
+          pushedChild = false;
           continue;
         }
-      }
 
-      // em & strong
-      if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar)) {
-        src = src.substring(token.raw.length);
-        tokens.push(token);
-        continue;
-      }
-
-      // code
-      if (token = this.tokenizer.codespan(src)) {
-        src = src.substring(token.raw.length);
-        tokens.push(token);
-        continue;
-      }
-
-      // br
-      if (token = this.tokenizer.br(src)) {
-        src = src.substring(token.raw.length);
-        tokens.push(token);
-        continue;
-      }
-
-      // del (gfm)
-      if (token = this.tokenizer.del(src, maskedSrc, prevChar)) {
-        src = src.substring(token.raw.length);
-        tokens.push(token);
-        continue;
-      }
-
-      // autolink
-      if (token = this.tokenizer.autolink(src)) {
-        src = src.substring(token.raw.length);
-        tokens.push(token);
-        continue;
-      }
-
-      // url (gfm)
-      if (!this.state.inLink && (token = this.tokenizer.url(src))) {
-        src = src.substring(token.raw.length);
-        tokens.push(token);
-        continue;
-      }
-
-      // text
-      // prevent inlineText consuming extensions by clipping 'src' to extension start
-      let cutSrc = src;
-      if (this.options.extensions?.startInline) {
-        let startIndex = Infinity;
-        const tempSrc = src.slice(1);
-        let tempStart;
-        this.options.extensions.startInline.forEach((getStartIndex) => {
-          tempStart = getStartIndex.call({ lexer: this }, tempSrc);
-          if (typeof tempStart === 'number' && tempStart >= 0) {
-            startIndex = Math.min(startIndex, tempStart);
-          }
-        });
-        if (startIndex < Infinity && startIndex >= 0) {
-          cutSrc = src.substring(0, startIndex + 1);
+        if (!stack || stack.length === 0) {
+          break;
         }
-      }
-      if (token = this.tokenizer.inlineText(cutSrc)) {
-        src = src.substring(token.raw.length);
-        if (token.raw.slice(-1) !== '_') { // Track prevChar before string of ____ started
-          prevChar = token.raw.slice(-1);
+        if (ownsCloserFrame) {
+          endEmStrongDelCloserScan(this.tokenizer);
+          extraCloserFrames--;
         }
-        keepPrevChar = true;
-        const lastToken = tokens.at(-1);
-        if (lastToken?.type === 'text') {
-          lastToken.raw += token.raw;
-          lastToken.text += token.text;
-        } else {
-          tokens.push(token);
+        const parent = stack.pop()!;
+        src = parent.src;
+        maskedSrc = parent.maskedSrc;
+        tokens = parent.tokens;
+        prevChar = parent.prevChar;
+        keepPrevChar = parent.keepPrevChar;
+        srcLength = parent.srcLength;
+        rootOffset = parent.rootOffset;
+        nextParen = parent.nextParen;
+        ownsCloserFrame = parent.ownsCloserFrame;
+        this.state.linkParenPossible = parent.prevLinkParenPossible;
+        hintFrame = parent.hintFrame;
+        if (hintFrame) {
+          hintFrame.subMaskedSrc = parent.subMaskedSrc;
+          hintFrame.subStart = parent.subStart;
+          hintFrame.subEnd = parent.subEnd;
         }
-        continue;
+        subLastAst = parent.subLastAst;
+        subLastUnd = parent.subLastUnd;
+        subLastDel = parent.subLastDel;
       }
-
-      if (src) {
-        this.infiniteLoopError(src.charCodeAt(0));
-        break;
+    } finally {
+      while (extraCloserFrames-- > 0) {
+        endEmStrongDelCloserScan(this.tokenizer);
       }
     }
 
-    return tokens;
+    return rootTokens;
   }
 
   /**
