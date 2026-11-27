@@ -1088,10 +1088,14 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
         rLength = [...rDelim].length;
 
+        // A closer used up by spans opened inside this run does not pair with
+        // the run, so rules 9-10 do not apply to it (`a**b *c* d**`).
+        const closesRun = rLength > delimTotal - lLength;
+
         if (match[3] || match[4]) { // found another Left Delim
           delimTotal += rLength;
           continue;
-        } else if (match[5] || match[6] || openerCanClose) { // either Left or Right Delim
+        } else if (match[5] || match[6] || (openerCanClose && closesRun)) { // either Left or Right Delim
           if (runLength % 3 && !((runLength + rLength) % 3)) { // CommonMark Emphasis Rules 9-10
             if (midRun && (match[5] || match[6])) {
               // A delimiter that can also open and cannot close this run
