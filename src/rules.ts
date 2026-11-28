@@ -40,6 +40,11 @@ try {
 }
 })();
 
+// The tail of `reflink` after the label, re-matched from a corrected label
+// end when the label holds code spans (see `Tokenizer.reflink`). Same
+// reference piece as `reflink`, plus the empty `[]` of a collapsed reference.
+const reflinkTail = /^\[((?:\\[\s\S]|[^\[\]\\])*)\]/;
+
 const gfmTableHeader = '^ *([^\\n ].*)\\n' // Header
   + ' {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)'; // Align
 
@@ -47,6 +52,7 @@ export const other = {
   codeRemoveIndent: /^(?: {0,3}\t| {1,4})/gm,
   listInterruptsParagraph: /^ {0,3}(?:[*+-]|1[.)])[ \t]+[^ \t\n]/,
   outputLinkReplace: /\\([\[\]])/g,
+  reflinkTail,
   indentCodeCompensation: /^( {1,3})(?:`{3}|~{3})/,
   beginningSpace: /^[ \t]{1,3}/,
   endingHash: /#$/,
@@ -519,11 +525,23 @@ const _bareHref = edit(/(?!<)(?:char|p3)+/)
   .replace('p3', _bareHrefParens3)
   .getRegex();
 
+const _linkHref = edit(/<(?:\\.|[^\n<>\\])*>|bareHref|(?=\))/).replace('bareHref', _bareHref).getRegex();
+// Same as the definition title: the escaped character is not the closer.
+const _linkTitle = /"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|\((?:\\[\s\S]|[^)\\])*\)/;
+
 const link = edit(/^!?\[(label)\]\([ \t\n]*(href)(?:(?:[ \t]+(?:\n[ \t]*)?|\n[ \t]*)(title))?[ \t\n]*\)/)
   .replace('label', _inlineLabel)
-  .replace('href', edit(/<(?:\\.|[^\n<>\\])*>|bareHref|(?=\))/).replace('bareHref', _bareHref).getRegex())
-  // Same as the definition title: the escaped character is not the closer.
-  .replace('title', /"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'|\((?:\\[\s\S]|[^)\\])*\)/)
+  .replace('href', _linkHref)
+  .replace('title', _linkTitle)
+  .getRegex();
+
+// The tail of `link` after the label, re-matched from a corrected label end
+// when the label holds code spans (see `Tokenizer.link`). It is built from the
+// same href and title pieces as `link`, so the rescan reads a destination the
+// way the label regex does.
+const linkTail = edit(/^\([ \t\n]*(href)(?:(?:[ \t]+(?:\n[ \t]*)?|\n[ \t]*)(title))?[ \t\n]*\)/)
+  .replace('href', _linkHref)
+  .replace('title', _linkTitle)
   .getRegex();
 
 const reflink = edit(/^!?\[(label)\]\[(ref)\]/)
@@ -592,6 +610,7 @@ const inlineNormal = {
   nolink,
   punctuation,
   reflink,
+  linkTail,
   reflinkSearch,
   tag,
   text: inlineText,
