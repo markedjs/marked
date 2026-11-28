@@ -153,12 +153,15 @@ export function trimTrailingBlankLines(str: string) {
  * through upper case does, as in commonmark.js; the final `toLowerCase()`
  * keeps the folded label lower case, the form `def.tag` has always used.
  */
-export function normalizeLabel(label: string) {
+export function normalizeLabel(label: string, pedantic = false) {
   // The spec also asks for leading and trailing spaces, tabs and line endings
   // to be stripped, and for internal runs of them to collapse to one space.
+  // Modern modes preserve other whitespace as label content.
   // Doing it here keeps every call site in agreement: the definition and the
   // reference have to normalize to the same key.
-  return label.trim().replace(other.multipleSpaceGlobal, ' ').toLowerCase().toUpperCase().toLowerCase();
+  // Keep the legacy pedantic whitespace handling unchanged.
+  const spaces = pedantic ? other.multipleSpaceGlobal : other.multipleSpaceTabGlobal;
+  return label.trim().replace(spaces, ' ').toLowerCase().toUpperCase().toLowerCase();
 }
 
 export function findClosingBracket(str: string, b: string) {
