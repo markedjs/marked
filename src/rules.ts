@@ -147,7 +147,7 @@ const _htmlInterrupt = edit(' {0,3}(?:</?(?:tag)(?:[ \\t]+|\\n|/?>)|<(?:(?:scrip
 // The underline may end with spaces or tabs (CommonMark §4.3). Internal
 // spaces or tabs still fail to match, and more than three spaces of indent
 // still do not.
-const lheadingCore = /^(?!bull |blockCode|fences|blockquote|heading|html|table)((?:.|\n(?!\s*?\n|bull |fences|blockquote|heading|hr|html|table))+?)\n {0,3}(=+|-+)[ \t]*(?:\n+|$)/;
+const lheadingCore = /^(?!bull |blockCode|fences|blockquote|heading|html|table)((?:.|\n(?![ \t]*\n|bull |fences|blockquote|heading|hr|html|table))+?)\n {0,3}(=+|-+)[ \t]*(?:\n+|$)/;
 const lheading = edit(lheadingCore)
   .replace(/bull/g, bullet) // lists can interrupt
   .replace(/blockCode/g, /(?: {4}| {0,3}\t)/) // indented code can start a block but cannot interrupt a paragraph
