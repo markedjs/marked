@@ -1068,6 +1068,9 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       // unicode Regex counts emoji as 1 char; spread into array for proper count (used multiple times below)
       const lLength = [...match[0]].length - 1;
       let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
+      // Counts, by length mod 3, of delimiters after a mid-run opener that open their own span
+      const midRunOpeners = [0, 0, 0];
+      let hasMidRunOpeners = false;
 
       // Rules 9-10 count the whole run, and also apply when the opener could
       // close as well (`a*b**`, where `*` is both left- and right-flanking).
@@ -1101,10 +1104,25 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
               // A delimiter that can also open and cannot close this run
               // opens its own span; a later closer pairs with it, not with a
               // mid-run opener (`**a*a*` must be `**a<em>a</em>`).
-              break;
+              midRunOpeners[rLength % 3]++;
+              hasMidRunOpeners = true;
+              continue;
             }
             midDelimTotal += rLength;
             continue;
+          }
+        }
+
+        // A closer that rules 9-10 let pair with one of those openers closes
+        // that span instead, but one they keep apart can still close this run
+        // (`****x**x*` must be `***<em>x**x</em>`).
+        if (hasMidRunOpeners) {
+          const closerMod = rLength % 3;
+          // Rules 9-10 only keep a pair apart when the lengths sum to a multiple of 3
+          // and are not both multiples of 3
+          const keptApart = closerMod ? 3 - closerMod : -1;
+          if (midRunOpeners.some((count, openerMod) => count && openerMod !== keptApart)) {
+            break;
           }
         }
 
