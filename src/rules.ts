@@ -141,14 +141,20 @@ const _tag = 'address|article|aside|base|basefont|blockquote|body|caption'
   + '|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title'
   + '|tr|track|ul';
 // HTML blocks of types (1) to (6) can interrupt a paragraph, type (7) cannot
-const _htmlInterrupt = edit(' {0,3}(?:</?(?:tag)(?:[ \\t]+|\\n|/?>)|<(?:(?:script|pre|style|textarea)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
-  .replace('tag', _tag)
+// Fold only ASCII tag names; the CDATA start marker stays case-sensitive.
+const caseInsensitiveTag = (tag: string) => tag.replace(/[a-z]/g, char => `[${char}${char.toUpperCase()}]`);
+const createHtmlInterrupt = (caseInsensitive: boolean) => edit(' {0,3}(?:</?(?:tag)(?:[ \\t]+|\\n|/?>)|<(?:(?:specialTag)(?:[\\s>]|$)|!--)|<\\?|<![A-Za-z]|<!\\[CDATA\\[)')
+  .replace('specialTag', caseInsensitive ? caseInsensitiveTag('script|pre|style|textarea') : 'script|pre|style|textarea')
+  // meta is a type-7 tag, so it cannot interrupt a paragraph.
+  .replace('tag', caseInsensitive ? caseInsensitiveTag(_tag.replace('|meta', '')) : _tag)
   .getRegex();
+const _htmlInterrupt = createHtmlInterrupt(true);
+const _htmlInterruptPedantic = createHtmlInterrupt(false);
 // The underline may end with spaces or tabs (CommonMark §4.3). Internal
 // spaces or tabs still fail to match, and more than three spaces of indent
 // still do not.
 const lheadingCore = /^(?!bull |blockCode|fences|blockquote|heading|html|table)((?:.|\n(?!\s*?\n|bull |fences|blockquote|heading|hr|html|table))+?)\n {0,3}(=+|-+)[ \t]*(?:\n+|$)/;
-const lheading = edit(lheadingCore)
+const createLheading = (htmlInterrupt: RegExp) => edit(lheadingCore)
   .replace(/bull/g, bullet) // lists can interrupt
   .replace(/blockCode/g, /(?: {4}| {0,3}\t)/) // indented code can start a block but cannot interrupt a paragraph
   .replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/) // fenced code blocks can interrupt
@@ -156,8 +162,10 @@ const lheading = edit(lheadingCore)
   .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
   .replace(/hr/g, / {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/) // thematic break can interrupt
   .replace(/\|table/g, '') // table not in commonmark
-  .replace(/html/g, _htmlInterrupt) // block html of types (1) to (6) can interrupt
+  .replace(/html/g, htmlInterrupt) // block html of types (1) to (6) can interrupt
   .getRegex();
+const lheading = createLheading(_htmlInterrupt);
+const lheadingPedantic = createLheading(_htmlInterruptPedantic);
 const lheadingGfm = edit(lheadingCore)
   .replace(/bull/g, bullet) // lists can interrupt
   .replace(/blockCode/g, /(?: {4}| {0,3}\t)/) // indented code can start a block but cannot interrupt a paragraph
@@ -200,7 +208,7 @@ const html = edit(
   .replace('attribute', /[ \t]+[a-zA-Z:_][\w.:-]*(?:[ \t]*=[ \t]*"[^"\n]*"|[ \t]*=[ \t]*'[^'\n]*'|[ \t]*=[ \t]*[^\s"'=<>`]+)?/)
   .getRegex();
 
-const createParagraph = (listInterrupt: RegExp) => edit(_paragraph)
+const createParagraph = (listInterrupt: RegExp, htmlInterrupt = _htmlInterrupt) => edit(_paragraph)
   .replace('hr', hr)
   .replace('heading', ' {0,3}#{1,6}(?:\\s|$)')
   .replace('|lheading', '') // setext headings don't interrupt commonmark paragraphs
@@ -208,7 +216,7 @@ const createParagraph = (listInterrupt: RegExp) => edit(_paragraph)
   .replace('blockquote', ' {0,3}>')
   .replace('fences', ' {0,3}(?:`{3,}(?=[^`\\n]*(?:\\n|$))|~~~)[^\\n]*(?:\\n|$)')
   .replace('list', listInterrupt)
-  .replace('html', _htmlInterrupt) // pars can be interrupted by html blocks of types (1) to (6)
+  .replace('html', htmlInterrupt) // pars can be interrupted by html blocks of types (1) to (6)
   .getRegex();
 
 // only non-empty lists starting from 1 can interrupt paragraphs
@@ -224,11 +232,12 @@ const blockquoteParagraph = createParagraph(/ {0,3}(?:[*+-]|\d{1,9}[.)])(?:[ \t]
 // must not scan the remaining document looking for paragraph continuation.
 // Later quoted lines may continue an earlier paragraph and keep the old rule.
 const blockquoteLine = / {0,3}> ?(?:(?!blank)(paragraph)|[^\n]*)(?:\n|$)/;
-const blockquote = edit(/^(first)(?:next)*/)
+const createBlockquote = (paragraph: RegExp) => edit(/^(first)(?:next)*/)
   .replace('first', edit(blockquoteLine).replace('blank', /[ \t]*(?:\n|$)| {4}/).getRegex())
   .replace('next', edit(blockquoteLine).replace('blank', /[ \t]*(?:\n|$)/).getRegex())
-  .replace(/paragraph/g, blockquoteParagraph)
+  .replace(/paragraph/g, paragraph)
   .getRegex();
+const blockquote = createBlockquote(blockquoteParagraph);
 
 /**
  * Normal Block Grammar
@@ -289,6 +298,8 @@ const blockGfm: Record<BlockKeys, RegExp> = {
 
 const blockPedantic: Record<BlockKeys, RegExp> = {
   ...blockNormal,
+  // Keep the legacy paragraph and lazy-continuation rules in pedantic mode.
+  blockquote: createBlockquote(createParagraph(/ {0,3}(?:[*+-]|\d{1,9}[.)])(?:[ \t]|\n|$)/, _htmlInterruptPedantic)),
   html: edit(
     '^ *(?:comment(?: *\\n|\\s*$)'
     + '|<(tag)[\\s\\S]+?</\\1>(?: *\\n{2,}|\\s*$)' // closed tag
@@ -312,7 +323,7 @@ const blockPedantic: Record<BlockKeys, RegExp> = {
     .replace('|list', '')
     .replace('|html', '')
     .replace('|tag', '')
-    .replace('lheading', lheading) // last, so the replacements above do not match inside it
+    .replace('lheading', lheadingPedantic) // last, so the replacements above do not match inside it
     .getRegex(),
 };
 
