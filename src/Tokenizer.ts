@@ -16,6 +16,14 @@ import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens, Token } from './Tokens.ts';
 import type { MarkedOptions } from './MarkedOptions.ts';
 
+function trimSpaceTabs(text: string) {
+  let start = 0;
+  let end = text.length;
+  while (start < end && (text[start] === ' ' || text[start] === '\t')) start++;
+  while (end > start && (text[end - 1] === ' ' || text[end - 1] === '\t')) end--;
+  return text.slice(start, end);
+}
+
 /**
  * Remove the bracket escapes that the label match consumed, but leave code
  * spans untouched: their content is literal, so a `\[` or `\]` inside a
@@ -218,7 +226,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   heading(src: string): Tokens.Heading | undefined {
     const cap = this.rules.block.heading.exec(src);
     if (cap) {
-      let text = cap[2].trim();
+      let text = this.options.pedantic ? cap[2].trim() : trimSpaceTabs(cap[2]);
 
       // remove trailing #s
       if (this.rules.other.endingHash.test(text)) {
@@ -227,7 +235,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           text = trimmed.trim();
         } else if (!trimmed || this.rules.other.endingSpaceTabChar.test(trimmed)) {
           // CommonMark requires a space or tab before trailing #s
-          text = trimmed.trim();
+          text = trimSpaceTabs(trimmed);
         }
       }
 
