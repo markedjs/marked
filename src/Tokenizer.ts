@@ -716,8 +716,13 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     const cap = this.rules.block.html.exec(src);
     if (cap) {
       // an html block of type 7 cannot interrupt a paragraph, so a lazy
-      // continuation line that starts one continues the paragraph instead
-      if (this.lexer.state.lastToken?.type === 'paragraph' && !this.rules.other.htmlBeginRegex(4).test(src)) {
+      // continuation line that starts one continues the paragraph instead.
+      // Capture 3 identifies a type 6 block, including a tag name followed by
+      // a newline, which htmlBeginRegex (also used on list lines) does not match.
+      // Keep the existing guard for pedantic grammar and the legacy meta tag.
+      if (this.lexer.state.lastToken?.type === 'paragraph'
+        && (this.options.pedantic || !cap[3] || cap[3].toLowerCase() === 'meta')
+        && !this.rules.other.htmlBeginRegex(4).test(src)) {
         return;
       }
 
