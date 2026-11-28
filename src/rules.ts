@@ -78,6 +78,9 @@ export const other = {
   listTaskCheckbox: /\[[ xX]\]/,
   anyLine: /\n.*\n/,
   hrefBrackets: /^<(.*)>$/,
+  // A setext underline does not interrupt a paragraph: it turns the paragraph
+  // before it into a heading. Matches a line of only = or - after a line end.
+  setextUnderline: /\n {0,3}(?:=+|-+)[ \t]*(?=\n|$)/,
   tableHeader: new RegExp(gfmTableHeader + '(?:\\n|$)'),
   tableDelimiter: /[:|]/,
   tableAlignChars: /^\||\| *$/g,
