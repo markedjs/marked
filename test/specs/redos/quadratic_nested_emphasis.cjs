@@ -17,4 +17,8 @@ module.exports = [
     markdown: '~~a '.repeat(2000) + 'b' + ' c~~'.repeat(2000),
     html: `<p>${'<del>a '.repeat(2000)}b${' c</del>'.repeat(2000)}</p>`,
   },
+  {
+    markdown: '**a*b '.repeat(2000),
+    html: `<p>${'**a*b '.repeat(2000)}</p>`,
+  },
 ];
