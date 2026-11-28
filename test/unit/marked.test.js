@@ -44,6 +44,26 @@ describe('marked unit', () => {
     });
   });
 
+  describe('URI autolink whitespace', () => {
+    it('keeps Unicode whitespace in angle URI token text and destinations', () => {
+      for (const separator of ['\u00a0', '\u1680', '\u2000', '\u2003', '\u2028', '\u2029', '\u202f', '\u205f', '\u3000', '\ufeff']) {
+        const uri = `https://example.com/a${separator}b`;
+        const token = marked.lexer(`<${uri}>`, { gfm: true })[0].tokens[0];
+        assert.strictEqual(token.type, 'link');
+        assert.strictEqual(token.autolink, true);
+        assert.strictEqual(token.text, uri);
+        assert.strictEqual(token.href, uri);
+      }
+    });
+
+    it('continues rejecting ASCII spaces and control characters', () => {
+      for (const separator of [' ', '\t', '\n', '\v', '\f', '\r', '\x01', '\x1f']) {
+        const tokens = marked.lexer(`<ab:a${separator}b>`, { gfm: true })[0].tokens;
+        assert.ok(tokens.every(token => token.type !== 'link'));
+      }
+    });
+  });
+
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
