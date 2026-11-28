@@ -111,7 +111,8 @@ export const other = {
   listItemRegex: (bull: string) => new RegExp(`^( {0,3}${bull})((?:[\t ][^\\n]*)?(?:\\n|$))`),
   nextBulletRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:[*+-]|\\d{1,9}[.)])((?:[ \t][^\\n]*)?(?:\\n|$))`)),
   hrRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}((?:-[ \t]*){3,}|(?:_[ \t]*){3,}|(?:\\*[ \t]*){3,})(?:\\n+|$)`)),
-  fencesBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:\`\`\`|~~~)`)),
+  // a backtick fence's info string cannot contain a backtick, so `` ``` ` `` is paragraph text
+  fencesBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}(?:\`{3,}(?=[^\`\\n]*(?:\\n|$))|~~~)`)),
   // an ATX heading needs a space (or the end of the line) after the hashes, so a line
   // like `#tag` does not end a list item; pedantic mode accepts it as a heading
   headingBeginRegex: cachedIndentRegex((indent: number) => new RegExp(`^ {0,${indent}}#{1,6}(?:\\s|$)`)),
@@ -151,7 +152,7 @@ const lheadingCore = /^(?!bull |blockCode|fences|blockquote|heading|html|table)(
 const lheading = edit(lheadingCore)
   .replace(/bull/g, bullet) // lists can interrupt
   .replace(/blockCode/g, /(?: {4}| {0,3}\t)/) // indented code can start a block but cannot interrupt a paragraph
-  .replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/) // fenced code blocks can interrupt
+  .replace(/fences/g, / {0,3}(?:`{3,}(?=[^`\n]*(?:\n|$))|~{3,})/) // fenced code blocks can interrupt
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
   .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
   .replace(/hr/g, / {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/) // thematic break can interrupt
@@ -161,7 +162,7 @@ const lheading = edit(lheadingCore)
 const lheadingGfm = edit(lheadingCore)
   .replace(/bull/g, bullet) // lists can interrupt
   .replace(/blockCode/g, /(?: {4}| {0,3}\t)/) // indented code can start a block but cannot interrupt a paragraph
-  .replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/) // fenced code blocks can interrupt
+  .replace(/fences/g, / {0,3}(?:`{3,}(?=[^`\n]*(?:\n|$))|~{3,})/) // fenced code blocks can interrupt
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
   .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
   .replace(/hr/g, / {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/) // thematic break can interrupt
