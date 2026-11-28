@@ -734,7 +734,15 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   def(src: string): Tokens.Def | undefined {
-    const cap = this.rules.block.def.exec(src);
+    let cap = this.rules.block.def.exec(src);
+    // A definition title cannot continue through an interrupting block. Only
+    // check multiline titles, so ordinary definitions keep the fast path.
+    if (!this.options.pedantic && cap?.[3]?.includes('\n')) {
+      const paragraph = this.rules.block.paragraph.exec(cap[0]);
+      if (paragraph && paragraph[0].length < cap[0].trimEnd().length) {
+        cap = this.rules.block.def.exec(paragraph[0]);
+      }
+    }
     if (cap) {
       // outside angle brackets a link destination holds only balanced parentheses
       if (!this.rules.other.startAngleBracket.test(cap[2]) && findClosingBracket(cap[2], '()') !== -1) {
