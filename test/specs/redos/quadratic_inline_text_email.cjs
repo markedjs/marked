@@ -12,6 +12,10 @@ module.exports = [
     html: `<p>${'a_'.repeat(25000)}</p>`,
   },
   {
+    markdown: 'a__'.repeat(20000),
+    html: `<p>${'a__'.repeat(20000)}</p>`,
+  },
+  {
     markdown: '_a_'.repeat(15000),
     html: `<p><em>${'a__'.repeat(14999)}a</em></p>`,
   },
