@@ -619,7 +619,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
    * emphasis can open and close in it. A tag may also run past the first `>`,
    * as in `<a title=">">`, so mask the whole tag.
    */
-  #maskBlocks(src: string): string {
+  #maskBlocks(src: string, originalSrc: string): string {
     const { blockSkip, tag, autolink } = this.tokenizer.rules.inline;
     let masked = '';
     let last = 0;
@@ -629,7 +629,9 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
       const start = match.index + (match[2] ? match[2].length : 0);
       let end = match.index + match[0].length;
       if (src.charAt(start) === '<') {
-        const rest = src.slice(start);
+        // Escapes are already masked in src. Validate the original bytes so an
+        // invalid address such as <_a\\>_@b> cannot become a masked autolink.
+        const rest = originalSrc.slice(start);
         const html = tag.exec(rest) || autolink.exec(rest);
         if (!html) {
           blockSkip.lastIndex = start + 1;
@@ -694,7 +696,7 @@ export class _Lexer<ParserOutput = string, RendererOutput = string> {
     });
 
     // Mask out other blocks
-    maskedSrc = this.#maskBlocks(maskedSrc);
+    maskedSrc = this.#maskBlocks(maskedSrc, src);
 
     // Mask out blocks from extensions
     maskedSrc = this.options.hooks?.emStrongMask?.call({ lexer: this }, maskedSrc) ?? maskedSrc;
