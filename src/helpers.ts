@@ -310,6 +310,173 @@ export function cachedLastPossibleDelCloserIndex(tokenizer: object, maskedSrc: s
   return scanLastPossibleEmStrongDelClosers(maskedSrc).lastPossibleDelCloserIndex;
 }
 
+export interface BareEmailRange {
+  /** Start index of the maximal `[A-Za-z0-9._+-]` run before `@`. */
+  start: number;
+  /** Index of `@`. */
+  at: number;
+  /** Exclusive end index of the matched domain after `@`. */
+  end: number;
+}
+
+/**
+ * Per-pass bare GFM email autolink index for one inline `src`. Held only while
+ * that pass runs so `src` is not retained once lexing returns.
+ */
+export interface InlineEmailScanFrame {
+  /** Whether `src` contains any `@` character. */
+  hasAt: boolean;
+  /** Non-overlapping valid bare email autolinks in `src`, sorted by `start`. */
+  emails: readonly BareEmailRange[];
+  /** Monotonic cursor into `emails` as the lexer advances through `src`. */
+  cursor: number;
+  /** Exact substring currently passed to `url` or `inlineText`. */
+  currentSrc: string;
+  /** Start offset of `currentSrc` within the pass's full `src`. */
+  pos: number;
+}
+
+const EMPTY_EMAIL_RANGES: readonly BareEmailRange[] = [];
+
+const inlineEmailScanStacks = new WeakMap<object, InlineEmailScanFrame[]>();
+
+function isEmailLocalChar(code: number): boolean {
+  return (code >= 97 && code <= 122) // a-z
+    || (code >= 65 && code <= 90) // A-Z
+    || (code >= 48 && code <= 57) // 0-9
+    || code === 46 // .
+    || code === 95 // _
+    || code === 43 // +
+    || code === 45; // -
+}
+
+/**
+ * Scan `src` once in O(n) time for every `@` that has both a non-empty
+ * `[A-Za-z0-9._+-]` local-part run before it and a valid GFM email domain
+ * directly after it. Because `@` is not in the local-part class, backward
+ * local-part scans are pairwise disjoint and intervals `[start, at)` are
+ * disjoint and strictly increasing.
+ */
+function scanBareEmails(src: string): readonly BareEmailRange[] {
+  let emails: BareEmailRange[] | undefined;
+  let searchFrom = 0;
+  while (true) {
+    const at = src.indexOf('@', searchFrom);
+    if (at === -1) {
+      break;
+    }
+    searchFrom = at + 1;
+
+    let start = at;
+    while (start > 0 && isEmailLocalChar(src.charCodeAt(start - 1))) {
+      start--;
+    }
+    if (start === at) {
+      continue;
+    }
+
+    other.emailDomainSticky.lastIndex = at + 1;
+    const domain = other.emailDomainSticky.exec(src);
+    if (!domain) {
+      continue;
+    }
+
+    emails ??= [];
+    emails.push({
+      start,
+      at,
+      end: at + 1 + domain[0].length,
+    });
+  }
+  return emails ?? EMPTY_EMAIL_RANGES;
+}
+
+/**
+ * Push a per-pass bare email scan frame for `src`. Call `endInlineEmailScan`
+ * in a `finally` block when the pass ends so no strings are retained (#4272).
+ */
+export function beginInlineEmailScan(tokenizer: object, src: string): InlineEmailScanFrame {
+  const hasAt = src.includes('@');
+  const frame: InlineEmailScanFrame = {
+    hasAt,
+    emails: hasAt ? scanBareEmails(src) : EMPTY_EMAIL_RANGES,
+    cursor: 0,
+    currentSrc: '',
+    pos: 0,
+  };
+  const stack = inlineEmailScanStacks.get(tokenizer);
+  if (stack) {
+    stack.push(frame);
+  } else {
+    inlineEmailScanStacks.set(tokenizer, [frame]);
+  }
+  return frame;
+}
+
+/**
+ * Pop the active inline email scan frame for `tokenizer`.
+ */
+export function endInlineEmailScan(tokenizer: object): void {
+  const stack = inlineEmailScanStacks.get(tokenizer);
+  if (!stack) {
+    return;
+  }
+  stack.pop();
+  if (stack.length === 0) {
+    inlineEmailScanStacks.delete(tokenizer);
+  }
+}
+
+/**
+ * Return the active inline email scan frame for `tokenizer`, if any.
+ */
+export function getActiveInlineEmailScan(tokenizer: object): InlineEmailScanFrame | undefined {
+  return inlineEmailScanStacks.get(tokenizer)?.at(-1);
+}
+
+/**
+ * Return the bare email range covering `pos` (`start <= pos < at`), if any.
+ */
+export function findBareEmailAt(frame: InlineEmailScanFrame, pos: number): BareEmailRange | undefined {
+  const emails = frame.emails;
+  let cursor = frame.cursor;
+  while (cursor < emails.length && emails[cursor].at <= pos) {
+    cursor++;
+  }
+  frame.cursor = cursor;
+  if (cursor < emails.length && emails[cursor].start <= pos) {
+    return emails[cursor];
+  }
+}
+
+/**
+ * Return the start offset of the first bare email autolink that begins
+ * strictly after `pos` and whose `@` lies before `cutEnd`, or `-1`.
+ */
+export function findNextBareEmailStart(
+  frame: InlineEmailScanFrame,
+  pos: number,
+  cutEnd: number,
+): number {
+  const emails = frame.emails;
+  let cursor = frame.cursor;
+  while (cursor < emails.length && emails[cursor].at <= pos) {
+    cursor++;
+  }
+  frame.cursor = cursor;
+  let idx = cursor;
+  if (idx < emails.length && emails[idx].start <= pos) {
+    idx++;
+  }
+  if (idx < emails.length) {
+    const next = emails[idx];
+    if (next.at < cutEnd) {
+      return next.start;
+    }
+  }
+  return -1;
+}
+
 export function expandTabs(line: string, indent = 0) {
   let col = indent;
   let expanded = '';

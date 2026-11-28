@@ -10,7 +10,11 @@ import {
   trimTrailingBlankLines,
   cachedLastPossibleEmStrongCloserIndex,
   cachedLastPossibleDelCloserIndex,
+  findBareEmailAt,
+  findNextBareEmailStart,
+  getActiveInlineEmailScan,
 } from './helpers.ts';
+import { inline } from './rules.ts';
 import type { Rules } from './rules.ts';
 import type { _Lexer } from './Lexer.ts';
 import type { Links, Tokens, Token } from './Tokens.ts';
@@ -1261,7 +1265,43 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
 
   url(src: string): Tokens.Link | undefined {
     let cap;
-    if (cap = this.rules.inline.url.exec(src)) {
+    if (this.rules.inline.url === inline.gfm.url) {
+      const frame = getActiveInlineEmailScan(this);
+      if (frame && frame.currentSrc === src) {
+        const first = src.charCodeAt(0);
+        if (first === 104 || first === 72 // h, H (http/https)
+          || first === 102 || first === 70 // f, F (ftp)
+          || first === 119 // w (www.)
+          || (frame.hasAt && (first === 109 || first === 120))) { // m, x (mailto:/xmpp:)
+          cap = this.rules.other.urlGfmNoEmail.exec(src);
+        }
+        if (!cap && frame.emails.length > 0) {
+          const email = findBareEmailAt(frame, frame.pos);
+          if (email) {
+            const text = src.slice(0, email.end - frame.pos);
+            return {
+              type: 'link',
+              raw: text,
+              text,
+              href: 'mailto:' + text,
+              autolink: true,
+              tokens: [
+                {
+                  type: 'text',
+                  raw: text,
+                  text,
+                },
+              ],
+            };
+          }
+        }
+      } else {
+        cap = this.rules.inline.url.exec(src);
+      }
+    } else {
+      cap = this.rules.inline.url.exec(src);
+    }
+    if (cap) {
       let text, href;
       if (cap[2] === '@') {
         text = cap[0];
@@ -1298,15 +1338,33 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
   }
 
   inlineText(src: string): Tokens.Text | undefined {
-    const cap = this.rules.inline.text.exec(src);
-    if (cap) {
+    let raw: string | undefined;
+    const textRule = this.rules.inline.text;
+    if ((textRule === inline.gfm.text || textRule === inline.breaks.text)
+      && this.rules.inline.url === inline.gfm.url) {
+      const frame = getActiveInlineEmailScan(this);
+      if (frame && frame.currentSrc === src) {
+        const noEmailRule = textRule === inline.breaks.text
+          ? this.rules.other.inlineTextBreaksNoEmail
+          : this.rules.other.inlineTextGfmNoEmail;
+        const nextStart = !this.lexer.state.inLink && frame.emails.length > 0
+          ? findNextBareEmailStart(frame, frame.pos, frame.pos + src.length)
+          : -1;
+        raw = noEmailRule.exec(nextStart === -1 ? src : src.slice(0, nextStart - frame.pos))?.[0];
+      } else {
+        raw = textRule.exec(src)?.[0];
+      }
+    } else {
+      raw = textRule.exec(src)?.[0];
+    }
+    if (raw !== undefined) {
       const escaped = this.lexer.state.inRawBlock;
       return {
         type: 'text',
-        raw: cap[0],
+        raw,
         // raw HTML keeps whatever it was written with, everywhere else a numeric
         // character reference stands for the character itself
-        text: escaped ? cap[0] : decodeNumericCharacterReferences(cap[0]),
+        text: escaped ? raw : decodeNumericCharacterReferences(raw),
         escaped,
       };
     }
