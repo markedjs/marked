@@ -360,7 +360,16 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
           // include continuation in nested list
           const oldToken = lastToken as Tokens.List;
           const newText = oldToken.raw + '\n' + lines.join('\n');
-          const newToken = this.list(newText)!;
+          // Replaying this list must use its own preceding sibling, not the
+          // outer block run whose context blockTokens restored on return.
+          const outerLastToken = this.lexer.state.lastToken;
+          this.lexer.state.lastToken = tokens.at(-2);
+          let newToken: Tokens.List;
+          try {
+            newToken = this.list(newText)!;
+          } finally {
+            this.lexer.state.lastToken = outerLastToken;
+          }
           tokens[tokens.length - 1] = newToken;
 
           // The list raw has no '>' markers, so it cannot be cut out of `raw`.
