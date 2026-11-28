@@ -42,6 +42,11 @@ function unescapeLinkLabel(label: string, rules: Rules): string {
   return result;
 }
 
+/** Keep an escaped ampersand from becoming a character reference on output. */
+function unescapeLinkAttribute(value: string, rules: Rules): string {
+  return value.replace(rules.inline.anyPunctuation, (_, char: string) => char === '&' ? '&amp;' : char);
+}
+
 function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer, rules: Rules): Tokens.Link | Tokens.Image | undefined {
   const href = link.href;
   const title = link.title || null;
@@ -742,8 +747,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
       }
 
       const tag = normalizeLabel(cap[1]);
-      const href = cap[2] ? cap[2].replace(this.rules.other.hrefBrackets, '$1').replace(this.rules.inline.anyPunctuation, '$1') : '';
-      const title = cap[3] ? cap[3].substring(1, cap[3].length - 1).replace(this.rules.inline.anyPunctuation, '$1') : cap[3];
+      const href = cap[2] ? unescapeLinkAttribute(cap[2].replace(this.rules.other.hrefBrackets, '$1'), this.rules) : '';
+      const title = cap[3] ? unescapeLinkAttribute(cap[3].substring(1, cap[3].length - 1), this.rules) : cap[3];
       return {
         type: 'def',
         tag,
@@ -999,8 +1004,8 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         }
       }
       return outputLink(cap, {
-        href: href ? href.replace(this.rules.inline.anyPunctuation, '$1') : href,
-        title: title ? title.replace(this.rules.inline.anyPunctuation, '$1') : title,
+        href: href ? unescapeLinkAttribute(href, this.rules) : href,
+        title: title ? unescapeLinkAttribute(title, this.rules) : title,
       }, cap[0], this.lexer, this.rules);
     }
   }
