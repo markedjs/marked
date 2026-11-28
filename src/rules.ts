@@ -147,26 +147,26 @@ const _htmlInterrupt = edit(' {0,3}(?:</?(?:tag)(?:[ \\t]+|\\n|/?>)|<(?:(?:scrip
 // The underline may end with spaces or tabs (CommonMark §4.3). Internal
 // spaces or tabs still fail to match, and more than three spaces of indent
 // still do not.
-const lheadingCore = /^(?!bull |blockCode|fences|blockquote|heading|html|table)((?:.|\n(?!\s*?\n|bull |fences|blockquote|heading|hr|html|table))+?)\n {0,3}(=+|-+)[ \t]*(?:\n+|$)/;
-const lheading = edit(lheadingCore)
-  .replace(/bull/g, bullet) // lists can interrupt
+const lheadingCore = /^(?!bull |blockCode|fences|blockquote|heading|html|table)((?:.|\n(?!\s*?\n|listInterrupt|fences|blockquote|heading|hr|html|table))+?)\n {0,3}(=+|-+)[ \t]*(?:\n+|$)/;
+const createLheading = (listInterrupt: RegExp) => edit(lheadingCore)
+  .replace('listInterrupt', listInterrupt)
+  .replace(/bull/g, bullet) // a list can start a block with any number
   .replace(/blockCode/g, /(?: {4}| {0,3}\t)/) // indented code can start a block but cannot interrupt a paragraph
   .replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/) // fenced code blocks can interrupt
   .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
   .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
-  .replace(/hr/g, / {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/) // thematic break can interrupt
+  .replace(/hr/g, / {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/); // thematic break can interrupt
+const lheading = createLheading(other.listInterruptsParagraph)
   .replace(/\|table/g, '') // table not in commonmark
   .replace(/html/g, _htmlInterrupt) // block html of types (1) to (6) can interrupt
   .getRegex();
-const lheadingGfm = edit(lheadingCore)
-  .replace(/bull/g, bullet) // lists can interrupt
-  .replace(/blockCode/g, /(?: {4}| {0,3}\t)/) // indented code can start a block but cannot interrupt a paragraph
-  .replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/) // fenced code blocks can interrupt
-  .replace(/blockquote/g, / {0,3}>/) // blockquote can interrupt
-  .replace(/heading/g, / {0,3}#{1,6}(?:\s|$)/) // ATX heading can interrupt
-  .replace(/hr/g, / {0,3}(?:(?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/) // thematic break can interrupt
+const lheadingGfm = createLheading(other.listInterruptsParagraph)
   .replace(/table/g, / {0,3}\|?(?:[:\- ]*\|)+[\:\- ]*\n/) // table can interrupt
   .replace(/html/g, _htmlInterrupt) // block html of types (1) to (6) can interrupt
+  .getRegex();
+const lheadingPedantic = createLheading(edit(/bull /).replace('bull', bullet).getRegex())
+  .replace(/\|table/g, '')
+  .replace(/html/g, _htmlInterrupt)
   .getRegex();
 const _paragraph = /^([^\n]+(?:\n(?!hr|heading|lheading|blockquote|fences|list|html|table|[ \t]+\n)[^\n]+)*)/;
 const blockText = /^[^\n]+/;
@@ -312,7 +312,7 @@ const blockPedantic: Record<BlockKeys, RegExp> = {
     .replace('|list', '')
     .replace('|html', '')
     .replace('|tag', '')
-    .replace('lheading', lheading) // last, so the replacements above do not match inside it
+    .replace('lheading', lheadingPedantic) // last, so the replacements above do not match inside it
     .getRegex(),
 };
 
