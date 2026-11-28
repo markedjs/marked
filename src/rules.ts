@@ -186,7 +186,7 @@ const list = edit(/^(bull)([ \t][^\n]*?)?(?:\n|$)/)
 const _comment = /<!--(?:-?>|[\s\S]*?(?:-->|$))/;
 const html = edit(
   '^ {0,3}(?:' // optional indentation
-+ '<(script|pre|style|textarea)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n*|$)' // (1)
++ '<(script|pre|style|textarea)(?:[\\s>]|$)[\\s\\S]*?(?:</\\1>[^\\n]*\\n*|$)' // (1)
 + '|comment[^\\n]*(\\n+|$)' // (2)
 + '|<\\?[\\s\\S]*?(?:\\?>[^\\n]*\\n*|$)' // (3)
 + '|<![A-Z][\\s\\S]*?(?:>[^\\n]*\\n*|$)' // (4)

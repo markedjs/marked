@@ -44,6 +44,31 @@ describe('marked unit', () => {
     });
   });
 
+  describe('raw HTML tag names at end of input', () => {
+    it('emits HTML tokens for the four raw block openers without a final newline', () => {
+      for (const gfm of [false, true]) {
+        for (const tag of ['pre', 'script', 'style', 'textarea', 'PRE', 'ScRiPt']) {
+          for (const indent of ['', ' ', '   ']) {
+            const source = `${indent}<${tag}`;
+            const token = marked.lexer(source, { gfm })[0];
+            assert.strictEqual(token.type, 'html');
+            assert.strictEqual(token.block, true);
+            assert.strictEqual(token.raw, source);
+            assert.strictEqual(token.text, source);
+          }
+        }
+      }
+    });
+
+    it('keeps prefixed names and four-space indentation out of raw blocks', () => {
+      for (const gfm of [false, true]) {
+        for (const source of ['<preview', '<scriptx', '<style-guide', '<textareas', '<pre/', '    <pre']) {
+          assert.notStrictEqual(marked.lexer(source, { gfm })[0].type, 'html');
+        }
+      }
+    });
+  });
+
   describe('changeDefaults', () => {
     it('should change global defaults', async() => {
       const { defaults, setOptions } = await import('../../lib/marked.esm.js');
