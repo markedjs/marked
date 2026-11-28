@@ -2283,6 +2283,27 @@ paragraph
             ],
           });
         });
+
+        it('does not autolink protocol url directly after <', () => {
+          expectTokens({
+            md: '<https://example.com/foo bar>',
+            tokens: [
+              {
+                type: 'paragraph',
+                raw: '<https://example.com/foo bar>',
+                text: '<https://example.com/foo bar>',
+                tokens: [
+                  {
+                    type: 'text',
+                    raw: '<https://example.com/foo bar>',
+                    text: '<https://example.com/foo bar>',
+                    escaped: false,
+                  },
+                ],
+              },
+            ],
+          });
+        });
       });
 
       it('text', () => {
