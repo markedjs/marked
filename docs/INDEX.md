@@ -96,7 +96,7 @@ By default the marked cli will look for a config file in your home directory in 
 
 echo '{ "breaks": true }' > config.json
 
-$ marked -s 'line1\nline2' -c config.json
+$ printf 'line1\nline2\n' | marked -c config.json
 <p>line1<br>line2</p>
 ```
 
