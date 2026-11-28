@@ -483,7 +483,7 @@ const tag = edit(
     + '|^</[a-zA-Z][a-zA-Z0-9-]*\\s*>' // self-closing tag
     + '|^<[a-zA-Z][a-zA-Z0-9-]*(?:attribute)*?\\s*/?>' // open tag
     + '|^<\\?[\\s\\S]*?\\?>' // processing instruction, e.g. <?php ?>
-    + '|^<![a-zA-Z]+\\s[\\s\\S]*?>' // declaration, e.g. <!DOCTYPE html>
+    + '|^<![a-zA-Z][\\s\\S]*?>' // declaration, e.g. <!DOCTYPE html>
     + '|^<!\\[CDATA\\[[\\s\\S]*?\\]\\]>') // CDATA section
   .replace('comment', _inlineComment)
   .replace('attribute', /\s+[a-zA-Z:_][\w.:-]*(?:\s*=\s*"[^"]*"|\s*=\s*'[^']*'|\s*=\s*[^\s"'=<>`]+)?/)
@@ -606,6 +606,7 @@ type InlineKeys = keyof typeof inlineNormal;
 
 const inlinePedantic: Record<InlineKeys, RegExp> = {
   ...inlineNormal,
+  tag: new RegExp(tag.source.replace('^<![a-zA-Z][\\s\\S]*?>', '^<![a-zA-Z]+\\s[\\s\\S]*?>')),
   emStrongLDelim: emStrongLDelimPedantic,
   emStrongRDelimAst: emStrongRDelimAstPedantic,
   emStrongRDelimUnd: emStrongRDelimUndPedantic,
