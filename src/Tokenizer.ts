@@ -176,14 +176,14 @@ function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, ra
   };
 }
 
-function indentCodeCompensation(raw: string, text: string, rules: Rules) {
+function indentCodeCompensation(raw: string, text: string, rules: Rules, canExpandTabs: boolean) {
   const matchIndentToCode = raw.match(rules.other.indentCodeCompensation);
 
   if (matchIndentToCode === null) {
     return text;
   }
 
-  const indentToCode = matchIndentToCode[1];
+  const indent = matchIndentToCode[1].length;
 
   return text
     .split('\n')
@@ -194,10 +194,23 @@ function indentCodeCompensation(raw: string, text: string, rules: Rules) {
       }
 
       const [indentInNode] = matchIndentInNode;
+      const tab = indentInNode.indexOf('\t');
+      if (tab !== -1 && tab < indent) {
+        if (canExpandTabs) {
+          // The fence indent is at most three spaces. A tab within that indent
+          // reaches column four, leaving the remaining columns as code content.
+          return ' '.repeat(4 - indent) + node.slice(tab + 1);
+        }
+        // Container tokens lack the original tab column. Keep their existing
+        // behavior for lines whose indentation ends inside a tab.
+        if (raw[indent] === '~') {
+          return node;
+        }
+      }
 
       // Up to the fence's own indentation is removed from each line, so a line
       // indented less than the fence loses whatever indentation it has.
-      return node.slice(Math.min(indentInNode.length, indentToCode.length));
+      return node.slice(Math.min(indentInNode.length, indent));
     })
     .join('\n');
 }
@@ -281,7 +294,7 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
     const cap = this.rules.block.fences.exec(src);
     if (cap) {
       const raw = cap[0];
-      let text = indentCodeCompensation(raw, cap[3] || '', this.rules);
+      let text = indentCodeCompensation(raw, cap[3] || '', this.rules, this.lexer.state.top && !this.lexer.state.inBlockquote);
       // The fence pattern consumes the final content newline outside the capture.
       // Keep it when the captured content ends in a blank line.
       if (cap[3] !== undefined && (text === '' || text.endsWith('\n'))) {
@@ -1089,7 +1102,11 @@ export class _Tokenizer<ParserOutput = string, RendererOutput = string> {
         title = cap[3] ? cap[3].slice(1, -1) : '';
       }
 
-      href = href.trim();
+      // Modern link rules already separate ASCII whitespace from the destination.
+      // Other whitespace is destination content and must not be trimmed.
+      if (this.options.pedantic) {
+        href = href.trim();
+      }
       if (this.rules.other.startAngleBracket.test(href)) {
         if (this.options.pedantic && !(this.rules.other.endAngleBracket.test(trimmedUrl))) {
           // pedantic allows starting angle bracket without ending angle bracket

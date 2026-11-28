@@ -78,6 +78,20 @@ describe('marked unit', () => {
 
       assert.strictEqual(html, '# header\n\n<em>em</em>');
     });
+
+    for (const [name, lineEnding] of [['LF', '\n'], ['CRLF', '\r\n'], ['CR', '\r']]) {
+      it(`should recognize a hard line break with ${name}`, () => {
+        assert.strictEqual(parseInline(`one  ${lineEnding}two`), 'one<br>two');
+      });
+
+      it(`should recognize a line break with ${name} and breaks enabled`, () => {
+        assert.strictEqual(parseInline(`one${lineEnding}two`, { breaks: true }), 'one<br>two');
+      });
+
+      it(`should normalize ${name} to a space inside a code span`, () => {
+        assert.strictEqual(parseInline('`one' + lineEnding + 'two`'), '<code>one two</code>');
+      });
+    }
   });
 
   describe('link in link text', () => {
