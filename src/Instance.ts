@@ -126,22 +126,23 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
           if (!ext.name) {
             throw new Error('extension name required');
           }
-          if ('renderer' in ext) { // Renderer extensions
+          if ('renderer' in ext && ext.renderer) { // Renderer extensions
+            const extRenderer = ext.renderer;
             const prevRenderer = extensions.renderers[ext.name];
             if (prevRenderer) {
               // Replace extension with func to run new extension but fall back if false
               extensions.renderers[ext.name] = function(...args) {
-                let ret = ext.renderer.apply(this, args);
+                let ret = extRenderer.apply(this, args);
                 if (ret === false) {
                   ret = prevRenderer.apply(this, args);
                 }
                 return ret;
               };
             } else {
-              extensions.renderers[ext.name] = ext.renderer;
+              extensions.renderers[ext.name] = extRenderer;
             }
           }
-          if ('tokenizer' in ext) { // Tokenizer Extensions
+          if ('tokenizer' in ext && ext.tokenizer) { // Tokenizer Extensions
             if (!ext.level || (ext.level !== 'block' && ext.level !== 'inline')) {
               throw new Error("extension level must be 'block' or 'inline'");
             }
@@ -186,7 +187,10 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
             continue;
           }
           const rendererProp = prop as Exclude<keyof _Renderer<ParserOutput, RendererOutput>, 'options' | 'parser'>;
-          const rendererFunc = pack.renderer[rendererProp] as GenericRendererFunction<RendererOutput>;
+          const rendererFunc = pack.renderer[rendererProp] as GenericRendererFunction<RendererOutput> | undefined;
+          if (rendererFunc === undefined) {
+            continue;
+          }
           const prevRenderer = renderer[rendererProp] as GenericRendererFunction<RendererOutput>;
           // Replace renderer with func to run extension, but fall back if false
           renderer[rendererProp] = (...args: unknown[]) => {
@@ -210,7 +214,10 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
             continue;
           }
           const tokenizerProp = prop as Exclude<keyof _Tokenizer<ParserOutput, RendererOutput>, 'options' | 'rules' | 'lexer'>;
-          const tokenizerFunc = pack.tokenizer[tokenizerProp] as UnknownFunction;
+          const tokenizerFunc = pack.tokenizer[tokenizerProp] as UnknownFunction | undefined;
+          if (tokenizerFunc === undefined) {
+            continue;
+          }
           const prevTokenizer = tokenizer[tokenizerProp] as UnknownFunction;
           // Replace tokenizer with func to run extension, but fall back if false
           // @ts-expect-error cannot type tokenizer function dynamically
@@ -237,7 +244,10 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
             continue;
           }
           const hooksProp = prop as Exclude<keyof _Hooks<ParserOutput, RendererOutput>, 'options' | 'block'>;
-          const hooksFunc = pack.hooks[hooksProp] as UnknownFunction;
+          const hooksFunc = pack.hooks[hooksProp] as UnknownFunction | undefined;
+          if (hooksFunc === undefined) {
+            continue;
+          }
           const prevHook = hooks[hooksProp] as UnknownFunction;
           if (_Hooks.passThroughHooks.has(prop)) {
             // @ts-expect-error cannot type hook function dynamically

@@ -169,4 +169,52 @@ describe('Marked', () => {
       assert.strictEqual(marked.parse('# header'), '<p>im marked hooks</p>\n');
     });
   });
+
+  it('should ignore undefined renderer, tokenizer, hooks, and extension methods in use()', () => {
+    const instance = new Marked({
+      renderer: {
+        heading() {
+          return 'custom heading';
+        },
+      },
+      hooks: {
+        preprocess(markdown) {
+          return markdown.toUpperCase();
+        },
+      },
+      extensions: [
+        {
+          name: 'ping',
+          level: 'inline',
+          start(src) {
+            return src.indexOf('PING');
+          },
+          tokenizer(src) {
+            if (src.startsWith('PING')) {
+              return { type: 'ping', raw: 'PING' };
+            }
+          },
+          renderer() {
+            return 'PONG';
+          },
+        },
+      ],
+    });
+
+    instance.use({
+      renderer: { heading: undefined },
+      tokenizer: { heading: undefined },
+      hooks: { preprocess: undefined },
+      extensions: [
+        {
+          name: 'ping',
+          renderer: undefined,
+          tokenizer: undefined,
+        },
+      ],
+    });
+
+    assert.strictEqual(instance.parse('# header'), 'custom heading');
+    assert.strictEqual(instance.parse('ping'), '<p>PONG</p>\n');
+  });
 });
