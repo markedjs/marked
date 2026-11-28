@@ -5,19 +5,19 @@ import type { _Renderer } from './Renderer.ts';
 import type { _Tokenizer } from './Tokenizer.ts';
 import type { _Hooks } from './Hooks.ts';
 
-export interface TokenizerThis {
-  lexer: _Lexer;
+export interface TokenizerThis<ParserOutput = string, RendererOutput = string> {
+  lexer: _Lexer<ParserOutput, RendererOutput>;
 }
 
-export type TokenizerExtensionFunction = (this: TokenizerThis, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
+export type TokenizerExtensionFunction<ParserOutput = string, RendererOutput = string> = (this: TokenizerThis<ParserOutput, RendererOutput>, src: string, tokens: Token[] | TokensList) => Tokens.Generic | undefined;
 
-export type TokenizerStartFunction = (this: TokenizerThis, src: string) => number | void;
+export type TokenizerStartFunction<ParserOutput = string, RendererOutput = string> = (this: TokenizerThis<ParserOutput, RendererOutput>, src: string) => number | void;
 
-export interface TokenizerExtension {
+export interface TokenizerExtension<ParserOutput = string, RendererOutput = string> {
   name: string;
   level: 'block' | 'inline';
-  start?: TokenizerStartFunction;
-  tokenizer: TokenizerExtensionFunction;
+  start?: TokenizerStartFunction<ParserOutput, RendererOutput>;
+  tokenizer: TokenizerExtensionFunction<ParserOutput, RendererOutput>;
   childTokens?: string[];
 }
 
@@ -32,20 +32,20 @@ export interface RendererExtension<ParserOutput = string, RendererOutput = strin
   renderer: RendererExtensionFunction<ParserOutput, RendererOutput>;
 }
 
-export type TokenizerAndRendererExtension<ParserOutput = string, RendererOutput = string> = TokenizerExtension | RendererExtension<ParserOutput, RendererOutput> | (TokenizerExtension & RendererExtension<ParserOutput, RendererOutput>);
+export type TokenizerAndRendererExtension<ParserOutput = string, RendererOutput = string> = TokenizerExtension<ParserOutput, RendererOutput> | RendererExtension<ParserOutput, RendererOutput> | (TokenizerExtension<ParserOutput, RendererOutput> & RendererExtension<ParserOutput, RendererOutput>);
 
-type HooksApi<ParserOutput = string, RendererOutput = string> = Omit<_Hooks<ParserOutput, RendererOutput>, 'constructor' | 'options' | 'block'>;
-type HooksObject<ParserOutput = string, RendererOutput = string> = {
+export type HooksApi<ParserOutput = string, RendererOutput = string> = Omit<_Hooks<ParserOutput, RendererOutput>, 'constructor' | 'options' | 'block'>;
+export type HooksObject<ParserOutput = string, RendererOutput = string> = {
   [K in keyof HooksApi<ParserOutput, RendererOutput>]?: (this: _Hooks<ParserOutput, RendererOutput>, ...args: Parameters<HooksApi<ParserOutput, RendererOutput>[K]>) => ReturnType<HooksApi<ParserOutput, RendererOutput>[K]> | Promise<ReturnType<HooksApi<ParserOutput, RendererOutput>[K]>>
 };
 
-type RendererApi<ParserOutput = string, RendererOutput = string> = Omit<_Renderer<ParserOutput, RendererOutput>, 'constructor' | 'options' | 'parser'>;
-type RendererObject<ParserOutput = string, RendererOutput = string> = {
+export type RendererApi<ParserOutput = string, RendererOutput = string> = Omit<_Renderer<ParserOutput, RendererOutput>, 'constructor' | 'options' | 'parser'>;
+export type RendererObject<ParserOutput = string, RendererOutput = string> = {
   [K in keyof RendererApi<ParserOutput, RendererOutput>]?: (this: _Renderer<ParserOutput, RendererOutput>, ...args: Parameters<RendererApi<ParserOutput, RendererOutput>[K]>) => ReturnType<RendererApi<ParserOutput, RendererOutput>[K]> | false
 };
 
-type TokenizerApi<ParserOutput = string, RendererOutput = string> = Omit<_Tokenizer<ParserOutput, RendererOutput>, 'constructor' | 'options' | 'rules' | 'lexer'>;
-type TokenizerObject<ParserOutput = string, RendererOutput = string> = {
+export type TokenizerApi<ParserOutput = string, RendererOutput = string> = Omit<_Tokenizer<ParserOutput, RendererOutput>, 'constructor' | 'options' | 'rules' | 'lexer'>;
+export type TokenizerObject<ParserOutput = string, RendererOutput = string> = {
   [K in keyof TokenizerApi<ParserOutput, RendererOutput>]?: (this: _Tokenizer<ParserOutput, RendererOutput>, ...args: Parameters<TokenizerApi<ParserOutput, RendererOutput>[K]>) => ReturnType<TokenizerApi<ParserOutput, RendererOutput>[K]> | false
 };
 
@@ -142,10 +142,10 @@ export interface MarkedOptions<ParserOutput = string, RendererOutput = string> e
     childTokens: {
       [name: string]: string[];
     };
-    inline?: TokenizerExtensionFunction[];
-    block?: TokenizerExtensionFunction[];
-    startInline?: TokenizerStartFunction[];
-    startBlock?: TokenizerStartFunction[];
+    inline?: TokenizerExtensionFunction<ParserOutput, RendererOutput>[];
+    block?: TokenizerExtensionFunction<ParserOutput, RendererOutput>[];
+    startInline?: TokenizerStartFunction<ParserOutput, RendererOutput>[];
+    startBlock?: TokenizerStartFunction<ParserOutput, RendererOutput>[];
   };
 
   /**

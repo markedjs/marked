@@ -26,7 +26,7 @@ const markedInstance = new Marked();
  * @param options Hash of options, having async: true
  * @return Promise of string of compiled HTML
  */
-export function marked(src: string, options: MarkedOptions & { async: true }): Promise<string>;
+export function marked<ParserOutput = string, RendererOutput = string>(src: string, options: MarkedOptions<ParserOutput, RendererOutput> & { async: true }): Promise<NoInfer<ParserOutput>>;
 
 /**
  * Compiles markdown to HTML.
@@ -38,11 +38,17 @@ export function marked(src: string, options: MarkedOptions & { async: true }): P
  * @param options Optional hash of options
  * @return String of compiled HTML. Will be a Promise of string if async is set to true by any extensions.
  */
-export function marked(src: string, options: MarkedOptions & { async: false }): string;
-export function marked(src: string, options: MarkedOptions & { async: true }): Promise<string>;
-export function marked(src: string, options?: MarkedOptions | null): string | Promise<string>;
-export function marked(src: string, opt?: MarkedOptions | null): string | Promise<string> {
-  return markedInstance.parse(src, opt);
+export function marked<ParserOutput = string, RendererOutput = string>(src: string, options: MarkedOptions<ParserOutput, RendererOutput> & { async: false }): NoInfer<ParserOutput>;
+export function marked<ParserOutput = string, RendererOutput = string>(src: string, options?: MarkedOptions<ParserOutput, RendererOutput> | null): NoInfer<ParserOutput> | Promise<NoInfer<ParserOutput>>;
+export function marked<ParserOutput = string, RendererOutput = string>(src: string, opt?: MarkedOptions<ParserOutput, RendererOutput> | null): ParserOutput | Promise<ParserOutput> {
+  return markedInstance.parse(src, opt as MarkedOptions | null | undefined) as ParserOutput | Promise<ParserOutput>;
+}
+
+function parseInlineMarkdown<ParserOutput = string, RendererOutput = string>(src: string, options: MarkedOptions<ParserOutput, RendererOutput> & { async: true }): Promise<NoInfer<ParserOutput>>;
+function parseInlineMarkdown<ParserOutput = string, RendererOutput = string>(src: string, options: MarkedOptions<ParserOutput, RendererOutput> & { async: false }): NoInfer<ParserOutput>;
+function parseInlineMarkdown<ParserOutput = string, RendererOutput = string>(src: string, options?: MarkedOptions<ParserOutput, RendererOutput> | null): NoInfer<ParserOutput> | Promise<NoInfer<ParserOutput>>;
+function parseInlineMarkdown<ParserOutput = string, RendererOutput = string>(src: string, opt?: MarkedOptions<ParserOutput, RendererOutput> | null): ParserOutput | Promise<ParserOutput> {
+  return markedInstance.parseInline(src, opt as MarkedOptions | null | undefined) as ParserOutput | Promise<ParserOutput>;
 }
 
 export declare namespace marked {
@@ -52,7 +58,7 @@ export declare namespace marked {
    * To configure hooks, a renderer, or a tokenizer, create a `Marked` instance
    * and use `Marked#use` instead of passing them as options on each call.
    */
-  let parseInline: typeof markedInstance.parseInline;
+  let parseInline: typeof parseInlineMarkdown;
 
   /**
    * Registers extensions with the default Marked instance.
@@ -125,7 +131,7 @@ marked.walkTokens = function(tokens: Token[] | TokensList, callback: (token: Tok
  * @param options Hash of options
  * @return String of compiled HTML
  */
-marked.parseInline = markedInstance.parseInline;
+marked.parseInline = parseInlineMarkdown;
 
 /**
  * Expose

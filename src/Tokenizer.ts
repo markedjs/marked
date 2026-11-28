@@ -42,7 +42,7 @@ function unescapeLinkLabel(label: string, rules: Rules): string {
   return result;
 }
 
-function outputLink(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer, rules: Rules): Tokens.Link | Tokens.Image | undefined {
+function outputLink<ParserOutput = string, RendererOutput = string>(cap: string[], link: Pick<Tokens.Link, 'href' | 'title'>, raw: string, lexer: _Lexer<ParserOutput, RendererOutput>, rules: Rules): Tokens.Link | Tokens.Image | undefined {
   const href = link.href;
   const title = link.title || null;
   const text = unescapeLinkLabel(cap[1], rules);

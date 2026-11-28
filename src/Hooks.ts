@@ -57,7 +57,7 @@ export class _Hooks<ParserOutput = string, RendererOutput = string> {
    * Provide function to tokenize markdown
    */
   provideLexer(block = this.block) {
-    return block ? _Lexer.lex : _Lexer.lexInline;
+    return block ? _Lexer.lex<ParserOutput, RendererOutput> : _Lexer.lexInline<ParserOutput, RendererOutput>;
   }
 
   /**

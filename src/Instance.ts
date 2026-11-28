@@ -50,7 +50,7 @@ export class Marked<ParserOutput = string, RendererOutput = string> {
   Parser = _Parser<ParserOutput, RendererOutput>;
   Renderer = _Renderer<ParserOutput, RendererOutput>;
   TextRenderer = _TextRenderer<RendererOutput>;
-  Lexer = _Lexer;
+  Lexer = _Lexer<ParserOutput, RendererOutput>;
   Tokenizer = _Tokenizer<ParserOutput, RendererOutput>;
   Hooks = _Hooks<ParserOutput, RendererOutput>;
 

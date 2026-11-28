@@ -1,4 +1,4 @@
-import { marked, Marked, Renderer, Tokenizer, Hooks } from '../../lib/marked.esm.js';
+import { marked, Marked, Renderer, Parser, Tokenizer, Hooks, parseInline } from '../../lib/marked.esm.js';
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert';
 
@@ -56,6 +56,182 @@ describe('Marked', () => {
       assert.strictEqual(instance.parse('```\n```'), '');
     });
   }
+
+  describe('custom non-string renderer return types', () => {
+    class AstRenderer extends Renderer {
+      heading({ tokens, depth }) {
+        return { kind: 'heading', depth, children: this.parser.parseInline(tokens) };
+      }
+
+      paragraph({ tokens }) {
+        return { kind: 'paragraph', children: this.parser.parseInline(tokens) };
+      }
+
+      strong({ tokens }) {
+        return { kind: 'strong', children: this.parser.parseInline(tokens) };
+      }
+
+      text(token) {
+        if ('tokens' in token && token.tokens) {
+          return { kind: 'span', children: this.parser.parseInline(token.tokens) };
+        }
+        return { kind: 'text', value: token.text };
+      }
+    }
+
+    class AstParser extends Parser {
+      parse(tokens) {
+        this.renderer.parser = this;
+        const out = [];
+        for (const token of tokens) {
+          if (this.options.extensions?.renderers?.[token.type]) {
+            const ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
+            if (ret !== false) {
+              out.push(ret);
+              continue;
+            }
+          }
+          if (token.type === 'space') {
+            continue;
+          }
+          out.push(this.renderer[token.type](token));
+        }
+        return out;
+      }
+
+      parseInline(tokens) {
+        this.renderer.parser = this;
+        const out = [];
+        for (const token of tokens) {
+          if (this.options.extensions?.renderers?.[token.type]) {
+            const ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
+            if (ret !== false) {
+              out.push(ret);
+              continue;
+            }
+          }
+          out.push(this.renderer[token.type](token));
+        }
+        return out;
+      }
+    }
+
+    class AstHooks extends Hooks {
+      provideParser(block = this.block) {
+        return (tokens, options) => {
+          const parser = new AstParser(options);
+          return block ? parser.parse(tokens) : parser.parseInline(tokens);
+        };
+      }
+    }
+
+    it('should render structured AST nodes via Marked instance (sync, async, inline, and fallback)', async() => {
+      const instance = new Marked({
+        renderer: {
+          heading({ tokens, depth }) {
+            return { kind: 'heading', depth, children: this.parser.parseInline(tokens) };
+          },
+          paragraph({ tokens }) {
+            return { kind: 'paragraph', children: this.parser.parseInline(tokens) };
+          },
+          strong({ tokens }) {
+            return { kind: 'strong', children: this.parser.parseInline(tokens) };
+          },
+          text(token) {
+            return { kind: 'text', value: token.text };
+          },
+        },
+        hooks: {
+          provideParser() {
+            return (tokens, options) => {
+              const parser = new AstParser(options);
+              return this.block ? parser.parse(tokens) : parser.parseInline(tokens);
+            };
+          },
+        },
+        extensions: [{
+          name: 'badge',
+          level: 'inline',
+          start(src) {
+            return src.indexOf('[[');
+          },
+          tokenizer(src) {
+            const match = /^\[\[([^\]]+)\]\]/.exec(src);
+            if (match) {
+              return { type: 'badge', raw: match[0], label: match[1] };
+            }
+          },
+          renderer(token) {
+            return { kind: 'badge', label: token.label };
+          },
+        }],
+      });
+
+      // Fallback override returning false delegates to the previous AST renderer
+      instance.use({
+        renderer: {
+          heading({ depth }) {
+            if (depth === 1) {
+              return false;
+            }
+            return { kind: 'subheading', depth };
+          },
+        },
+      });
+
+      const expectedBlock = [
+        {
+          kind: 'heading',
+          depth: 1,
+          children: [
+            { kind: 'text', value: 'Hello ' },
+            { kind: 'strong', children: [{ kind: 'text', value: 'world' }] },
+          ],
+        },
+        {
+          kind: 'paragraph',
+          children: [{ kind: 'badge', label: 'beta' }],
+        },
+      ];
+
+      assert.deepStrictEqual(instance.parse('# Hello **world**\n\n[[beta]]', { async: false }), expectedBlock);
+      assert.deepStrictEqual(await instance.parse('# Hello **world**\n\n[[beta]]', { async: true }), expectedBlock);
+      assert.deepStrictEqual(instance.parseInline('**bold** [[ok]]', { async: false }), [
+        { kind: 'strong', children: [{ kind: 'text', value: 'bold' }] },
+        { kind: 'text', value: ' ' },
+        { kind: 'badge', label: 'ok' },
+      ]);
+      // Default marked remains string HTML
+      assert.strictEqual(marked.parse('# Hello **world**', { async: false }), '<h1>Hello <strong>world</strong></h1>\n');
+    });
+
+    it('should support custom Renderer and Hooks subclasses on top-level marked() and parseInline()', async() => {
+      const options = {
+        renderer: new AstRenderer(),
+        hooks: new AstHooks(),
+      };
+
+      const expected = [
+        {
+          kind: 'heading',
+          depth: 2,
+          children: [{ kind: 'text', value: 'Title' }],
+        },
+      ];
+
+      assert.deepStrictEqual(marked('## Title', { ...options, async: false }), expected);
+      assert.deepStrictEqual(await marked('## Title', { ...options, async: true }), expected);
+      assert.deepStrictEqual(marked.parseInline('**hi**', { ...options, async: false }), [
+        { kind: 'strong', children: [{ kind: 'text', value: 'hi' }] },
+      ]);
+      assert.deepStrictEqual(await parseInline('**hi**', { ...options, async: true }), [
+        { kind: 'strong', children: [{ kind: 'text', value: 'hi' }] },
+      ]);
+      // Global marked default output is unaffected
+      assert.strictEqual(marked('## Title', { async: false }), '<h2>Title</h2>\n');
+      assert.strictEqual(parseInline('**hi**', { async: false }), '<strong>hi</strong>');
+    });
+  });
 
   it('should work with use', () => {
     const marked1 = new Marked();
